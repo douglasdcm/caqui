@@ -9,6 +9,7 @@ from caqui.driver.sdk import (
     go_to_page,
     get_property_value,
 )
+from tests.constants import PAGE_URL
 from pytest import fixture
 
 
@@ -28,7 +29,7 @@ def __setup():
     go_to_page(
         driver_url,
         session,
-        "file:///home/douglas/repo/caqui/caqui/tests/playground.html",
+        PAGE_URL,
     )
     yield driver_url, session
     close_session(driver_url, session)

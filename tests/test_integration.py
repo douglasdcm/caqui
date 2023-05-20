@@ -7,7 +7,9 @@ from caqui.driver.sdk import (
     get_text,
     close_session,
     go_to_page,
+    get_property_value,
 )
+from tests.constants import PAGE_URL
 from pytest import fixture
 
 
@@ -27,7 +29,7 @@ def __setup():
     go_to_page(
         driver_url,
         session,
-        "file:///home/douglas/repo/caqui/caqui/tests/playground.html",
+        PAGE_URL,
     )
     yield driver_url, session
     close_session(driver_url, session)
@@ -41,7 +43,7 @@ def test_add_text__click_button_and_get_text(__setup):
 
     input = find_element(driver_url, session, locator_type, locator_value="//input")
     send_keys(driver_url, session, input, "any")
-    assert get_text(driver_url, session, input) == input_text
+    assert get_property_value(driver_url, session, input) == input_text
 
     button = find_element(driver_url, session, locator_type, locator_value="//button")
     click(driver_url, session, button)
