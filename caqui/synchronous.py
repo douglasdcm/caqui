@@ -66,7 +66,8 @@ def click(driver_url, session, element):
 
 def get_session(driver_url, capabilities):
     url = f"{driver_url}/session"
-    response = __post(url, capabilities)
+    data = json.dumps(capabilities)
+    response = __post(url, payload=data)
     return __get_session(response)
 
 

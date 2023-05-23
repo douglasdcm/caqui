@@ -1,5 +1,5 @@
 import json
-from caqui.driver.sdk import (
+from caqui.synchronous import (
     find_element,
     get_session,
     click,
@@ -16,15 +16,13 @@ from pytest import fixture
 @fixture
 def __setup():
     driver_url = "http://127.0.0.1:9999"
-    capabilities = json.dumps(
-        {
-            "desiredCapabilities": {
-                "browserName": "firefox",
-                "marionette": True,
-                "acceptInsecureCerts": True,
-            }
+    capabilities = {
+        "desiredCapabilities": {
+            "browserName": "firefox",
+            "marionette": True,
+            "acceptInsecureCerts": True,
         }
-    )
+    }
     session = get_session(driver_url, capabilities)
     go_to_page(
         driver_url,

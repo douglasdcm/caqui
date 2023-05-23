@@ -1,10 +1,6 @@
 from selenium import webdriver
 from pytest import fixture, mark
-from os import getcwd
-
-BASE_DIR = getcwd()
-ROOT_DIR = BASE_DIR + "/caqui/src"
-TEST_DIR = BASE_DIR + "/caqui/tests"
+from tests.constants import PAGE_URL
 
 
 @fixture
@@ -22,7 +18,7 @@ def setup():
         command_executor="http://localhost:9999",
         desired_capabilities=desired_capabilities,
     )
-    driver.get(f"file:////{TEST_DIR}/playground.html")
+    driver.get(PAGE_URL)
     yield driver
     driver.quit()
 

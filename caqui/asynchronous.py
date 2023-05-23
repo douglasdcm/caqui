@@ -1,0 +1,69 @@
+import aiohttp
+import json
+from caqui.constants import HEADERS
+
+
+async def __post(url, payload):
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, data=payload, headers=HEADERS) as resp:
+            response = await resp.json()
+            return response
+
+
+async def get_property_value(driver_url, session, element):
+    url = f"{driver_url}/session/{session}/element/{element}/property/value"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=HEADERS) as resp:
+            response = await resp.json()
+            return response.get("value")
+
+
+async def get_text(driver_url, session, element):
+    url = f"{driver_url}/session/{session}/element/{element}/text"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=HEADERS) as resp:
+            response = await resp.json()
+            return response.get("value")
+
+
+async def close_session(driver_url, session):
+    url = f"{driver_url}/session/{session}"
+    async with aiohttp.ClientSession() as session:
+        async with session.delete(url, headers=HEADERS) as resp:
+            response = await resp.json()
+            return response.get("sessionId")
+
+
+async def go_to_page(driver_url, session, page_url):
+    url = f"{driver_url}/session/{session}/url"
+    payload = json.dumps({"url": page_url})
+    response = await __post(url, payload)
+    return response.get("sessionId")
+
+
+async def send_keys(driver_url, session, element, text):
+    url = f"{driver_url}/session/{session}/element/{element}/value"
+    payload = json.dumps({"text": text, "value": [*text], "id": element})
+    response = await __post(url, payload)
+    return response.get("sessionId")
+
+
+async def click(driver_url, session, element):
+    payload = json.dumps({"id": element})
+    url = f"{driver_url}/session/{session}/element/{element}/click"
+    response = await __post(url, payload)
+    return response.get("sessionId")
+
+
+async def find_element(driver_url, session, locator_type, locator_value):
+    payload = json.dumps({"using": locator_type, "value": locator_value})
+    url = f"{driver_url}/session/{session}/element"
+    response = await __post(url, payload)
+    return response.get("value").get("ELEMENT")
+
+
+async def get_session(driver_url, capabilities):
+    payload = json.dumps(capabilities)
+    url = f"{driver_url}/session"
+    response = await __post(payload, url)
+    return response.get("sessionId")
