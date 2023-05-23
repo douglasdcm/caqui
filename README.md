@@ -1,8 +1,8 @@
 # Caqui
 
-**Caqui** is intended to command executions against Drivers synchronously, asynchronously and in parallel. Launch the Driver as a server and send requests to it. The intention is that the user does not worry about which Driver he/she is using. It can be **Web**Drivers like [Selenium](https://www.selenium.dev/), **Mobile**Drivers like [Appium](http://appium.io/docs/en/2.0/), or **Desktop**Drivers like [Winium](https://github.com/2gis/Winium.Desktop).
+**Caqui** is intended to command executions against Drivers synchronously and asynchronously. Launch the Driver as a server and send requests to it. The intention is that the user does not worry about which Driver he/she is using. It can be **Web**Drivers like [Selenium](https://www.selenium.dev/), **Mobile**Drivers like [Appium](http://appium.io/docs/en/2.0/), or **Desktop**Drivers like [Winium](https://github.com/2gis/Winium.Desktop).
 
-The process **Caqui** follows is similar of the one described in this [article](https://medium.com/@douglas.dcm/testing-windows-apps-with-http-rest-b4e8f80f8b7e) that experiments Drivers as servers together with [Jmeter](https://jmeter.apache.org/) to test Windows Calculator. However, the motivation to create **Caqui** was feed by the inspiration in [Arsenic](https://github.com/HENNGE/arsenic) library.
+The process **Caqui** follows is similar of the one described in this [article](https://medium.com/@douglas.dcm/testing-windows-apps-with-http-rest-b4e8f80f8b7e) that experiments Drivers as servers together with [Jmeter](https://jmeter.apache.org/) to test the Windows Calculator. However, the motivation to create **Caqui** was feed by the inspiration in [Arsenic](https://github.com/HENNGE/arsenic) library.
 
 **Caqui** is planned to be Driver agnostic, so the user can start any Driver as a server and just inform the server URL. Hence, the code is decoupled from the chosen Driver.
 
@@ -15,7 +15,7 @@ Install the lastest version of **Caqui**
 pip install caqui
 ```
 
-Download the same ChromeDriver version as your installed Chrome and start the Driver as a server using the port "9999"
+Download the same [ChromeDriver](https://chromedriver.chromium.org/downloads) version as your installed Chrome and start the Driver as a server using the port "9999"
 
 ```
 $ ./chromedriver --port=9999
@@ -25,7 +25,7 @@ Please see https://chromedriver.chromium.org/security-considerations for suggest
 ChromeDriver was started successfully.
 ```
 
-Copy the HTML content to `playgrond.html`
+Copy the HTML content to `playground.html`
 
 ```
 <html>
@@ -60,7 +60,11 @@ Copy the code to `sample.py` file. This file must be in the same folder of `play
 import asyncio
 import time
 from caqui import synchronous, asynchronous
-from tests.constants import PAGE_URL
+
+from os import getcwd
+
+BASE_DIR = getcwd()
+PAGE_URL = f"file:///{BASE_DIR}/playground.html"
 
 
 async def get_all_links():
