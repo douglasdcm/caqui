@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "caqui"
-version = "0.0.0.1"
+version = "1.0.1"
 authors = [
   { name="Douglas Cardoso", email="noemail@noemail.com" },
 ]
@@ -12,14 +12,15 @@ description = "Run asynchronous commands in WebDrivers"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 3 - Alpha",
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
 dependencies = [
-  "requests"
+  "requests",
+  "aiohttp"
 ]
 
 [project.urls]
