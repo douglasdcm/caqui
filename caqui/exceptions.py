@@ -1,0 +1,2 @@
+class WebDriverError(Exception):
+    pass
