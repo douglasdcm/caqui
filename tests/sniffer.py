@@ -1,3 +1,5 @@
+#### File used to figure out the request format and parameters ####
+
 from selenium import webdriver
 from pytest import fixture, mark
 from tests.constants import PAGE_URL
@@ -23,6 +25,14 @@ def setup():
     driver.quit()
 
 
+@mark.skip("used just to discover request data")
+def test_find_elements(setup):
+    driver = setup
+    actual = driver.find_elements("xpath", "//input")
+    assert actual == "any"
+
+
+@mark.skip("used just to discover request data")
 def test_get_attribute_from_input(setup):
     driver = setup
     search_box = driver.find_element("xpath", "//input")

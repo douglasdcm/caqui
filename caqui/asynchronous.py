@@ -14,6 +14,18 @@ async def __post(url, payload):
         raise WebDriverError("'POST' request failed.") from error
 
 
+async def find_elements(driver_url, session, locator_type, locator_value):
+    try:
+        payload = json.dumps({"using": locator_type, "value": locator_value})
+        url = f"{driver_url}/session/{session}/elements"
+        response = await __post(url, payload)
+        return [x.get("ELEMENT") for x in response.get("value")]
+    except Exception as error:
+        raise WebDriverError(
+            f"Failed to find element by '{locator_type}'-'{locator_value}'."
+        ) from error
+
+
 async def get_property_value(driver_url, session, element):
     try:
         url = f"{driver_url}/session/{session}/element/{element}/property/value"

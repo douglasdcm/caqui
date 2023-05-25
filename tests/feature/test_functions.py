@@ -24,6 +24,23 @@ def __setup():
 
 
 @mark.asyncio
+async def test_find_elements(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+
+    elements = synchronous.find_elements(
+        driver_url, session, locator_type, locator_value
+    )
+    async_elements = await asynchronous.find_elements(
+        driver_url, session, locator_type, locator_value
+    )
+
+    assert len(elements) > 0
+    assert len(async_elements) > 0
+
+
+@mark.asyncio
 async def test_get_property_value(__setup):
     driver_url, session = __setup
     text = "any_value"
