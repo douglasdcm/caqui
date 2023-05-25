@@ -16,6 +16,7 @@ def __get(url, payload):
     except Exception as error:
         raise WebDriverError("'GET' request failed.") from error
 
+
 def __post(url, payload):
     try:
         return requests.request("POST", url, headers=HEADERS, data=payload).json()
@@ -32,6 +33,18 @@ def __delete(url):
 
 def __get_session(response):
     return response.get("sessionId")
+
+
+def find_elements(driver_url, session, locator_type, locator_value):
+    try:
+        url = f"{driver_url}/session/{session}/elements"
+        payload = json.dumps({"using": locator_type, "value": locator_value})
+        response = __post(url, payload)
+        return [x.get("ELEMENT") for x in response.get("value")]
+    except Exception as error:
+        raise WebDriverError(
+            f"Failed to find elements by '{locator_type}'-'{locator_value}'."
+        ) from error
 
 
 def get_property_value(driver_url, session, element):
@@ -80,6 +93,7 @@ def send_keys(driver_url, session, element, text):
     except Exception as error:
         raise WebDriverError(f"Failed to send key '{text}'.") from error
 
+
 def click(driver_url, session, element):
     try:
         url = f"{driver_url}/session/{session}/element/{element}/click"
@@ -107,4 +121,6 @@ def find_element(driver_url, session, locator_type, locator_value):
         response = __post(url, payload)
         return response.get("value").get("ELEMENT")
     except Exception as error:
-        raise WebDriverError(f"Failed to find element by '{locator_type}'-'{locator_value}'.") from error
+        raise WebDriverError(
+            f"Failed to find element by '{locator_type}'-'{locator_value}'."
+        ) from error

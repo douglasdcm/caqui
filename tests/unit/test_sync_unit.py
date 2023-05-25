@@ -1,4 +1,3 @@
-import json
 from unittest.mock import patch
 from caqui.synchronous import (
     find_element,
@@ -9,8 +8,9 @@ from caqui.synchronous import (
     close_session,
     go_to_page,
     get_property_value,
+    find_elements,
 )
-from tests.doubles.fake_responses import (
+from tests.fake_responses import (
     FIND_ELEMENT,
     GET_SESSION,
     CLICK,
@@ -19,14 +19,28 @@ from tests.doubles.fake_responses import (
     GO_TO_PAGE,
     GET_PROPERTY_VALUE,
     SEND_KEYS,
+    FIND_ELEMENTS,
 )
 
 
 def __setup():
-    driver_url = "http://127.0.0.1:9999"
+    driver_url = "http://any:9999"
     session = "4358a5b53794586af59678fc1653dc40"
     element = "0.8851292311864847-1"
     return driver_url, session, element
+
+
+@patch("requests.request", return_value=FIND_ELEMENTS)
+def test_find_elements(*args):
+    driver_url, session, _ = __setup()
+    locator_type = "xpath"
+    locator_value = "//input"
+    element = "C230605181E69CB2C4C36B8E83FE1245_element_2"
+
+    elements = find_elements(driver_url, session, locator_type, locator_value)
+
+    assert element in elements
+    assert len(elements) == 3
 
 
 @patch("requests.request", return_value=GET_PROPERTY_VALUE)
@@ -78,7 +92,7 @@ def test_click(*args):
 
 @patch("requests.request", return_value=GET_SESSION)
 def test_get_session(*args):
-    driver_url = "http://127.0.0.1:9999"
+    driver_url = "http://any:9999"
     payload = {
         "desiredCapabilities": {
             "browserName": "firefox",

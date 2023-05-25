@@ -1,3 +1,6 @@
+# All fake responses where collected from chromedriver responses
+
+
 class Dictionary:
     def __init__(self, dictionary) -> None:
         self.dictionary = dictionary
@@ -27,6 +30,18 @@ SEND_KEYS = DEFAULT
 CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
+
+FIND_ELEMENTS = dict_to_json(
+    {
+        "sessionId": "9be93a374d185216134bf0c3fafee52e",
+        "status": 0,
+        "value": [
+            {"ELEMENT": "C230605181E69CB2C4C36B8E83FE1245_element_1"},
+            {"ELEMENT": "C230605181E69CB2C4C36B8E83FE1245_element_2"},
+            {"ELEMENT": "C230605181E69CB2C4C36B8E83FE1245_element_3"},
+        ],
+    }
+)
 
 GET_PROPERTY_VALUE = dict_to_json(
     {
