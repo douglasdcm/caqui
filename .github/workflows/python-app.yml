@@ -36,6 +36,8 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
+        pip install --upgrade pip
+        pip install --upgrade setuptools
         pip install -e .
         pip install -r test-requirements.txt
         python -m pytest -k test_sync_unit
