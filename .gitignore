@@ -1,5 +1,6 @@
 chromedriver*
 geckodriver*
+sniffer.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
