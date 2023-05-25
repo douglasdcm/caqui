@@ -2,9 +2,13 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.setuptools.packages.find]
+include = ["caqui*"]
+exclude = ["tests*", "utils", ".vscode", ".git*", "dist"]
+
 [project]
 name = "caqui"
-version = "1.0.2"
+version = "1.0.3"
 authors = [
   { name="Douglas Cardoso", email="noemail@noemail.com" },
 ]
