@@ -227,7 +227,7 @@ Options
   --allowed-ips                   comma-separated allowlist of remote IP addresses which are allowed to connect to ChromeDriver
 ```
 # Contributing
-Install the dependencies (Python >= 3.7)
+Read the [Code of Conduct](https://github.com/douglasdcm/caqui/blob/main/CODE_OF_CONDUCT.md) before push new Merge Requests. To start to contribute, install the dependencies (Python >= 3.7)
 ```
 python3 -m venv venv
 pip install -e .
