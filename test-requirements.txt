@@ -1,4 +1,2 @@
 pytest
 pytest-asyncio
-build
-twine
