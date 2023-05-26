@@ -26,9 +26,9 @@ async def find_elements(driver_url, session, locator_type, locator_value):
         ) from error
 
 
-async def get_property_value(driver_url, session, element):
+async def get_property(driver_url, session, element, property):
     try:
-        url = f"{driver_url}/session/{session}/element/{element}/property/value"
+        url = f"{driver_url}/session/{session}/element/{element}/property/{property}"
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=HEADERS) as resp:
                 response = await resp.json()

@@ -41,17 +41,20 @@ async def test_find_elements(__setup):
 
 
 @mark.asyncio
-async def test_get_property_value(__setup):
+async def test_get_property(__setup):
     driver_url, session = __setup
     text = "any_value"
     locator_type = "xpath"
     locator_value = "//input"
+    property = "value"
 
     element = synchronous.find_element(driver_url, session, locator_type, locator_value)
     synchronous.send_keys(driver_url, session, element, text)
 
-    assert synchronous.get_property_value(driver_url, session, element) == text
-    assert await asynchronous.get_property_value(driver_url, session, element) == text
+    assert synchronous.get_property(driver_url, session, element, property) == text
+    assert (
+        await asynchronous.get_property(driver_url, session, element, property) == text
+    )
 
 
 @mark.asyncio

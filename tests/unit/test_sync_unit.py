@@ -7,7 +7,7 @@ from caqui.synchronous import (
     get_text,
     close_session,
     go_to_page,
-    get_property_value,
+    get_property,
     find_elements,
 )
 from tests.fake_responses import (
@@ -44,12 +44,13 @@ def test_find_elements(*args):
 
 
 @patch("requests.request", return_value=GET_PROPERTY_VALUE)
-def test_get_property_value(*args):
+def test_get_property(*args):
     driver_url, session, _ = __setup()
     element = "any"
+    property = "value"
     expected = "any_value"
 
-    assert get_property_value(driver_url, session, element) == expected
+    assert get_property(driver_url, session, element, property) == expected
 
 
 @patch("requests.request", return_value=GO_TO_PAGE)

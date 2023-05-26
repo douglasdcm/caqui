@@ -7,7 +7,7 @@ from caqui.synchronous import (
     get_text,
     close_session,
     go_to_page,
-    get_property_value,
+    get_property,
 )
 from tests.constants import PAGE_URL
 from pytest import fixture
@@ -33,15 +33,19 @@ def __setup():
     close_session(driver_url, session)
 
 
-def test_add_text__click_button_and_get_text(__setup):
+def test_add_text__click_button_and_get_properties(__setup):
     driver_url, session = __setup
     expected = "end"
     locator_type = "xpath"
-    input_text = "any"
 
     input = find_element(driver_url, session, locator_type, locator_value="//input")
     send_keys(driver_url, session, input, "any")
-    assert get_property_value(driver_url, session, input) == input_text
+    assert get_property(driver_url, session, input, property="value") == "any"
+
+    anchor = find_element(driver_url, session, locator_type, locator_value="//a")
+    assert (
+        get_property(driver_url, session, anchor, property="href") == "http://any1.com/"
+    )
 
     button = find_element(driver_url, session, locator_type, locator_value="//button")
     click(driver_url, session, button)
