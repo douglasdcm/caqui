@@ -47,9 +47,9 @@ def find_elements(driver_url, session, locator_type, locator_value):
         ) from error
 
 
-def get_property_value(driver_url, session, element):
+def get_property(driver_url, session, element, property):
     try:
-        url = f"{driver_url}/session/{session}/element/{element}/property/value"
+        url = f"{driver_url}/session/{session}/element/{element}/property/{property}"
         response = __get(url, {})
         return response.get("value")
     except Exception as error:

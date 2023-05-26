@@ -1,7 +1,3 @@
-chromedriver*
-geckodriver*
-test_sniffer.py
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
