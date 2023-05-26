@@ -227,20 +227,5 @@ Options
   --allowed-ips                   comma-separated allowlist of remote IP addresses which are allowed to connect to ChromeDriver
 ```
 # Contributing
-Read the [Code of Conduct](https://github.com/douglasdcm/caqui/blob/main/CODE_OF_CONDUCT.md) before push new Merge Requests. To start to contribute, install the dependencies (Python >= 3.7)
-```
-python3 -m venv venv
-pip install -e .
-pip install -r test-requirements.txt
-```
-Fork this repository, make the changes into the forked repository and push a new Merge Request to 'main' branch.
-Open an issue in case of big MRs.
-# Testing
-To run the tests, start a new Driver as server on port `9999`, for example:
-```
-./chromedriver --port=9999
-```
-And execute the tests
-```
-python -m pytest
-```
+Read the [Code of Conduct](https://github.com/douglasdcm/caqui/blob/main/CODE_OF_CONDUCT.md) before push new Merge Requests.
+Now, follow the steps in [Contributing](https://github.com/douglasdcm/caqui/blob/main/CONTRIBUTING.md) session.
