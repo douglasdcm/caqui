@@ -8,8 +8,6 @@ BASE_DIR = getcwd()
 ROOT_DIR = BASE_DIR + "/caqui/src"
 TEST_DIR = BASE_DIR + "/tests"
 
-PAGE_URL = f"file:///{TEST_DIR}/html/playground.html"
-
 
 async def get_all_links():
     driver_url = "http://127.0.0.1:9999"
@@ -20,48 +18,68 @@ async def get_all_links():
             "acceptInsecureCerts": True,
         }
     }
-    session = synchronous.get_session(driver_url, capabilities)
-    synchronous.go_to_page(
-        driver_url,
-        session,
-        PAGE_URL,
+    comp_data = [
+        {
+            "page": f"https://www.dqrtech.com.br/vagas/",
+            "locator": f"//a[contains(@title,'Veja detalhes')]",
+        },
+        {
+            "page": f"https://ciandt.com/us/en-us/careers/open-positions",
+            "locator": "//a[contains(@class,'wp-block-cit-block-ciandt-link')]",
+        },
+    ]
+
+    for data in comp_data:
+        session = await asynchronous.get_session(driver_url, capabilities)
+        await asynchronous.go_to_page(
+            driver_url,
+            session,
+            data["page"],
+        )
+
+        locator_type = "xpath"
+        anchors = []
+
+        anchors = await asynchronous.find_elements(
+            driver_url, session, locator_type, data["locator"]
+        )
+        print(f"Found {len(anchors)} links")
+        for anchor in anchors:
+            text = await asynchronous.get_property(driver_url, session, anchor, "href")
+            print(f"Link found '{text}'")
+
+        synchronous.close_session(driver_url, session)
+
+
+async def main():
+    # Schedule three calls *concurrently*:
+    await asyncio.gather(
+        get_all_links(),
+        get_all_links(),
+        get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
+        # get_all_links(),
     )
-
-    locator_type = "xpath"
-    anchors = []
-
-    for i in range(4):
-        i += 1
-        locator_value = f"//a[@id='a{i}']"
-        anchor = synchronous.find_element(
-            driver_url, session, locator_type, locator_value
-        )
-        anchors.append(anchor)
-        assert (
-            await asynchronous.get_text(driver_url, session, anchors[i - 1])
-            == f"any{i}.com"
-        )
-
-    synchronous.close_session(driver_url, session)
 
 
 start = time.time()
 
-loop = asyncio.get_event_loop()
-tasks = [
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-]
-loop.run_until_complete(asyncio.wait(tasks))
-loop.close()
+asyncio.run(main())
 
 end = time.time()
 print(f"Time: {end-start:.2f} sec")
