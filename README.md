@@ -25,7 +25,7 @@ Please see https://chromedriver.chromium.org/security-considerations for suggest
 ChromeDriver was started successfully.
 ```
 
-Copy the HTML content to `playground.html`
+Given the HTML content in `playground.html`
 
 ```
 <html>
@@ -55,78 +55,134 @@ Copy the HTML content to `playground.html`
 </html>
 ```
 
-Copy the code to `sample.py` file. This file must be in the same folder of `playground.html`
+And the code in `sample.py` file
 ```
 import asyncio
 import time
 from caqui import synchronous, asynchronous
-
 from os import getcwd
+from tests.constants import PAGE_URL
 
 BASE_DIR = getcwd()
-PAGE_URL = f"file:///{BASE_DIR}/playground.html"
+
+MAX_CONCURRENCY = 5  # number of webdriver instances running
+sem = asyncio.Semaphore(MAX_CONCURRENCY)
 
 
 async def get_all_links():
-    driver_url = "http://127.0.0.1:9999"
-    capabilities = {
-        "desiredCapabilities": {
-            "browserName": "firefox",
-            "marionette": True,
-            "acceptInsecureCerts": True,
+    async with sem:
+        driver_url = "http://127.0.0.1:9999"
+        capabilities = {
+            "desiredCapabilities": {
+                "browserName": "firefox",
+                "marionette": True,
+                "acceptInsecureCerts": True,
+            }
         }
-    }
-    session = synchronous.get_session(driver_url, capabilities)
-    synchronous.go_to_page(
-        driver_url,
-        session,
-        PAGE_URL,
-    )
 
-    locator_type = "xpath"
-    anchors = []
-
-    for i in range(4):
-        i += 1
-        locator_value = f"//a[@id='a{i}']"
-        anchor = synchronous.find_element(
-            driver_url, session, locator_type, locator_value
-        )
-        anchors.append(anchor)
-        assert (
-            await asynchronous.get_text(driver_url, session, anchors[i - 1])
-            == f"any{i}.com"
+        session = await asynchronous.get_session(driver_url, capabilities)
+        await asynchronous.go_to_page(
+            driver_url,
+            session,
+            PAGE_URL,
         )
 
-    synchronous.close_session(driver_url, session)
+        for i in range(4):
+            i += 1
+            locator_value = f"//a[@id='a{i}']"
+            locator_type = "xpath"
+            anchors = []
+
+            anchors = await asynchronous.find_elements(
+                driver_url, session, locator_type, locator_value
+            )
+            print(f"Found {len(anchors)} links")
+
+        for anchor in anchors:
+            text = await asynchronous.get_property(driver_url, session, anchor, "href")
+            print(f"Link found '{text}'")
+
+        synchronous.close_session(driver_url, session)
 
 
-start = time.time()
+# Reference: https://stackoverflow.com/questions/48483348/how-to-limit-concurrency-with-python-asyncio
+async def main():
+    number_of_websites = range(10)
+    tasks = [asyncio.ensure_future(get_all_links()) for number in number_of_websites]
+    await asyncio.gather(*tasks)
 
-loop = asyncio.get_event_loop()
-tasks = [
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-    loop.create_task(get_all_links()),
-]
-loop.run_until_complete(asyncio.wait(tasks))
-loop.close()
 
-end = time.time()
-print(f"Time: {end-start:.2f} sec")
+if __name__ == "__main__":
+    start = time.time()
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(main())
+    finally:
+        loop.run_until_complete(loop.shutdown_asyncgens())
+        loop.close()
+        end = time.time()
+        print(f"Time: {end-start:.2f} sec")
 
 ```
 
 Run the file
 ```
 python sample.py
+```
+Output
+```
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Link found 'http://any4.com/'
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Link found 'http://any4.com/'
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Link found 'http://any4.com/'
+Link found 'http://any4.com/'
+Found 1 links
+Found 1 links
+Link found 'http://any4.com/'
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Link found 'http://any4.com/'
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Link found 'http://any4.com/'
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Link found 'http://any4.com/'
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Link found 'http://any4.com/'
+Found 1 links
+Found 1 links
+Found 1 links
+Found 1 links
+Link found 'http://any4.com/'
+Time: 5.01 sec
+
 ```
 
 # Driver as server
