@@ -58,14 +58,14 @@ def test_go_to_page(*args):
     driver_url, session, _ = __setup()
     url = "http://any.com"
 
-    assert go_to_page(driver_url, session, url) == session
+    assert go_to_page(driver_url, session, url) is True
 
 
 @patch("requests.request", return_value=CLOSE_SESSION)
 def test_close_session(*args):
     driver_url, session, _ = __setup()
 
-    assert close_session(driver_url, session) == session
+    assert close_session(driver_url, session) is True
 
 
 @patch("requests.request", return_value=GET_TEXT)
@@ -81,14 +81,14 @@ def test_send_keys(*args):
     driver_url, session, element = __setup()
     text = "any"
 
-    assert send_keys(driver_url, session, element, text) == session
+    assert send_keys(driver_url, session, element, text) is True
 
 
 @patch("requests.request", return_value=CLICK)
 def test_click(*args):
     driver_url, session, element = __setup()
 
-    assert click(driver_url, session, element) == session
+    assert click(driver_url, session, element) is True
 
 
 @patch("requests.request", return_value=GET_SESSION)

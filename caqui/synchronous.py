@@ -1,6 +1,7 @@
 import requests
 import json
 from caqui.exceptions import WebDriverError
+from caqui.helper import get_element
 
 HEADERS = {
     "Accept-Encoding": "identity",
@@ -31,10 +32,6 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
-def __get_session(response):
-    return response.get("sessionId")
-
-
 def find_elements(driver_url, session, locator_type, locator_value):
     try:
         url = f"{driver_url}/session/{session}/elements"
@@ -60,8 +57,8 @@ def go_to_page(driver_url, session, page_url):
     try:
         url = f"{driver_url}/session/{session}/url"
         payload = json.dumps({"url": page_url})
-        response = __post(url, payload)
-        return __get_session(response)
+        __post(url, payload)
+        return True
     except Exception as error:
         raise WebDriverError(f"Failed to navigate to '{page_url}'") from error
 
@@ -69,8 +66,8 @@ def go_to_page(driver_url, session, page_url):
 def close_session(driver_url, session):
     try:
         url = f"{driver_url}/session/{session}"
-        response = __delete(url)
-        return __get_session(response)
+        __delete(url)
+        return True
     except Exception as error:
         raise WebDriverError("Failed to close session.") from error
 
@@ -88,8 +85,8 @@ def send_keys(driver_url, session, element, text):
     try:
         url = f"{driver_url}/session/{session}/element/{element}/value"
         payload = json.dumps({"text": text, "value": [*text], "id": element})
-        response = __post(url, payload)
-        return __get_session(response)
+        __post(url, payload)
+        return True
     except Exception as error:
         raise WebDriverError(f"Failed to send key '{text}'.") from error
 
@@ -98,10 +95,21 @@ def click(driver_url, session, element):
     try:
         url = f"{driver_url}/session/{session}/element/{element}/click"
         payload = json.dumps({"id": element})
-        response = __post(url, payload)
-        return __get_session(response)
+        __post(url, payload)
+        return True
     except Exception as error:
         raise WebDriverError("Failed to click on element.") from error
+
+
+def __get_session(response):
+    # Firefox response
+    value = response.get("value")
+    session_id = value.get("sessionId")
+    if session_id:
+        return session_id
+
+    # Chrome response
+    return response.get("sessionId")
 
 
 def get_session(driver_url, capabilities):
@@ -119,7 +127,7 @@ def find_element(driver_url, session, locator_type, locator_value):
         url = f"{driver_url}/session/{session}/element"
         payload = json.dumps({"using": locator_type, "value": locator_value})
         response = __post(url, payload)
-        return response.get("value").get("ELEMENT")
+        return get_element(response)
     except Exception as error:
         raise WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."
