@@ -8,6 +8,13 @@ The process **Caqui** follows is similar of the one described in this [article](
 
 **Caqui** can be used in remote calls. As it needs just the server URL, the user can start the Driver as a server in any host and provide the URL to **Caqui** clients.
 
+# Tested WebDrivers
+
+| WebDriver               | Version       |
+| ----------------------- | ------------- |
+| Google Chrome           | 113           |
+| Firefox (geckodriver)   | 113           |
+
 # Simple start
 Install the lastest version of **Caqui**
 

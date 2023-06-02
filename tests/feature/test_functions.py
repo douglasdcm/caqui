@@ -41,6 +41,24 @@ async def test_find_elements(__setup):
 
 
 @mark.asyncio
+async def test_find_element(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+
+    assert (
+        synchronous.find_element(driver_url, session, locator_type, locator_value)
+        is not None
+    )
+    assert (
+        await asynchronous.find_element(
+            driver_url, session, locator_type, locator_value
+        )
+        is not None
+    )
+
+
+@mark.asyncio
 async def test_get_property(__setup):
     driver_url, session = __setup
     text = "any_value"
@@ -77,15 +95,13 @@ async def test_send_keys(__setup):
     text_sync = "any_sync"
     locator_type = "xpath"
     locator_value = "//input"
-    expected = session
 
     element = synchronous.find_element(driver_url, session, locator_type, locator_value)
 
     assert (
-        await asynchronous.send_keys(driver_url, session, element, text_async)
-        == expected
+        await asynchronous.send_keys(driver_url, session, element, text_async) is True
     )
-    assert synchronous.send_keys(driver_url, session, element, text_sync) == expected
+    assert synchronous.send_keys(driver_url, session, element, text_sync) is True
 
 
 @mark.asyncio
@@ -93,9 +109,8 @@ async def test_click(__setup):
     driver_url, session = __setup
     locator_type = "xpath"
     locator_value = "//button"
-    expected = session
 
     element = synchronous.find_element(driver_url, session, locator_type, locator_value)
 
-    assert await asynchronous.click(driver_url, session, element) == expected
-    assert synchronous.click(driver_url, session, element) == expected
+    assert await asynchronous.click(driver_url, session, element) is True
+    assert synchronous.click(driver_url, session, element) is True
