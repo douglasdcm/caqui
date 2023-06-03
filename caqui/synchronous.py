@@ -42,7 +42,7 @@ def go_back(driver_url, session):
         __post(url, {})
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to get page url.") from error
+        raise WebDriverError(f"Failed to go back to page.") from error
 
 
 def get_url(driver_url, session):
@@ -110,7 +110,7 @@ def find_elements(driver_url, session, locator_type, locator_value):
 
 
 def get_property(driver_url, session, element, property):
-    """Get the givn HTML property of an element, for example, 'href'"""
+    """Get the given HTML property of an element, for example, 'href'"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/property/{property}"
         response = __get(url)
@@ -131,7 +131,7 @@ def go_to_page(driver_url, session, page_url):
 
 
 def close_session(driver_url, session):
-    """Close an open session and close the browser"""
+    """Close an opened session and close the browser"""
     try:
         url = f"{driver_url}/session/{session}"
         __delete(url)

@@ -26,7 +26,6 @@ def __setup():
 @mark.asyncio
 async def test_go_back(__setup):
     driver_url, session = __setup
-    expected = "playground.html"
 
     assert synchronous.go_back(driver_url, session) is True
     assert await asynchronous.go_back(driver_url, session) is True
@@ -54,17 +53,18 @@ async def test_get_timeouts(__setup):
 async def test_get_status(__setup):
     driver_url, _ = __setup
     expected = "ready"
-    assert expected in synchronous.get_status(driver_url).get("value") is not None
+    assert expected in synchronous.get_status(driver_url).get("value")
     response = await asynchronous.get_status(driver_url)
-    assert expected in response.get("value") is not None
+    assert expected in response.get("value")
 
 
 @mark.asyncio
 async def test_get_title(__setup):
     driver_url, session = __setup
+    expected = "Sample page"
 
-    assert synchronous.get_title(driver_url, session) == "Sample page"
-    assert await asynchronous.get_title(driver_url, session) == "Sample page"
+    assert synchronous.get_title(driver_url, session) == expected
+    assert await asynchronous.get_title(driver_url, session) == expected
 
 
 @mark.asyncio

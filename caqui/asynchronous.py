@@ -41,11 +41,11 @@ async def go_back(driver_url, session):
     current browse. This is equivalent to pressing the back button in the browser.
     """
     try:
-        url = f"{driver_url}/session/{session}/url"
+        url = f"{driver_url}/session/{session}/back"
         await __post(url, {})
         return True
     except Exception as error:
-        raise WebDriverError("Failed to get page url.") from error
+        raise WebDriverError("Failed to go back to page.") from error
 
 
 async def get_url(driver_url, session):
@@ -114,7 +114,7 @@ async def find_elements(driver_url, session, locator_type, locator_value):
 
 
 async def get_property(driver_url, session, element, property):
-    """Get the givn HTML property of an element, for example, 'href'"""
+    """Get the given HTML property of an element, for example, 'href'"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/property/{property}"
         response = await __get(url)
@@ -134,7 +134,7 @@ async def get_text(driver_url, session, element):
 
 
 async def close_session(driver_url, session):
-    """Close an open session and close the browser"""
+    """Close an opened session and close the browser"""
     try:
         url = f"{driver_url}/session/{session}"
         await __delete(url)

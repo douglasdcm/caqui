@@ -34,7 +34,7 @@ GET_URL = dict_to_json(
     {
         "sessionId": "af67b8ef665d30a687f37365d229fb53",
         "status": 0,
-        "value": "file:///home/douglas/repo/caqui/tests/html/playground.html",
+        "value": "file:///html/playground.html",
     }
 )
 GET_TIMEOUTS = dict_to_json(
