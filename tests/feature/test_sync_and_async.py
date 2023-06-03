@@ -24,6 +24,50 @@ def __setup():
 
 
 @mark.asyncio
+async def test_go_back(__setup):
+    driver_url, session = __setup
+
+    assert synchronous.go_back(driver_url, session) is True
+    assert await asynchronous.go_back(driver_url, session) is True
+
+
+@mark.asyncio
+async def test_get_url(__setup):
+    driver_url, session = __setup
+    expected = "playground.html"
+
+    assert expected in synchronous.get_url(driver_url, session)
+    assert expected in await asynchronous.get_url(driver_url, session)
+
+
+@mark.asyncio
+async def test_get_timeouts(__setup):
+    driver_url, session = __setup
+    expected = "implicit"
+
+    assert expected in synchronous.get_timeouts(driver_url, session)
+    assert expected in await asynchronous.get_timeouts(driver_url, session)
+
+
+@mark.asyncio
+async def test_get_status(__setup):
+    driver_url, _ = __setup
+    expected = "ready"
+    assert expected in synchronous.get_status(driver_url).get("value")
+    response = await asynchronous.get_status(driver_url)
+    assert expected in response.get("value")
+
+
+@mark.asyncio
+async def test_get_title(__setup):
+    driver_url, session = __setup
+    expected = "Sample page"
+
+    assert synchronous.get_title(driver_url, session) == expected
+    assert await asynchronous.get_title(driver_url, session) == expected
+
+
+@mark.asyncio
 async def test_find_elements(__setup):
     driver_url, session = __setup
     locator_type = "xpath"
