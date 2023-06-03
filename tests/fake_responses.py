@@ -25,12 +25,18 @@ DEFAULT = dict_to_json(
 )
 
 FIND_ELEMENT = DEFAULT
-GET_URL = DEFAULT
 SEND_KEYS = DEFAULT
 CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
 
+GET_URL = dict_to_json(
+    {
+        "sessionId": "af67b8ef665d30a687f37365d229fb53",
+        "status": 0,
+        "value": "file:///home/douglas/repo/caqui/tests/html/playground.html",
+    }
+)
 GET_TIMEOUTS = dict_to_json(
     {
         "sessionId": "10754c8ec2e19133235223f1914ea376",
@@ -61,7 +67,6 @@ GET_TITLE = dict_to_json(
     }
 )
 
-# Chrome
 FIND_ELEMENTS = dict_to_json(
     {
         "sessionId": "9be93a374d185216134bf0c3fafee52e",
@@ -86,7 +91,6 @@ GET_TEXT = dict_to_json(
     {"sessionId": "5be82d4cd17af92d7ea53a36900d78cb", "status": 0, "value": "any"}
 )
 
-# Chrome
 GET_SESSION = dict_to_json(
     {
         "sessionId": "4358a5b53794586af59678fc1653dc40",

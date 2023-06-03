@@ -32,6 +32,16 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def get_url(driver_url, session):
+    """Return the URL from web page:"""
+    try:
+        url = f"{driver_url}/session/{session}/url"
+        response = __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get page url.") from error
+
+
 def get_timeouts(driver_url, session):
     """
     Return the configured timeouts:
@@ -42,7 +52,7 @@ def get_timeouts(driver_url, session):
         response = __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get page timeouts.") from error
+        raise WebDriverError(f"Failed to get timeouts.") from error
 
 
 def get_status(driver_url):

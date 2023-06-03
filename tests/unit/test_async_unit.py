@@ -4,6 +4,7 @@ import caqui
 from pytest import mark
 from caqui import asynchronous
 from tests import fake_responses
+from unittest.mock import patch
 
 
 async def mock_post(*args):
@@ -21,7 +22,16 @@ async def test_get_property():
         assert await asynchronous.get_property("", "", "", "") == expected
 
 
-from unittest.mock import patch
+@mark.asyncio
+async def test_get_url():
+    expected = "playground.html"
+
+    async def mock_post(*args):
+        return fake_responses.GET_URL
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        response = await asynchronous.get_url("", "")
+        assert expected in response
 
 
 @mark.asyncio
@@ -39,7 +49,6 @@ async def test_get_timeouts():
 @mark.asyncio
 async def test_get_status():
     async def mock_post(*args):
-        expected = "ready"
         return fake_responses.GET_STATUS
 
     with patch("caqui.asynchronous.__get", mock_post):

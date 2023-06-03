@@ -24,6 +24,15 @@ def __setup():
 
 
 @mark.asyncio
+async def test_get_url(__setup):
+    driver_url, session = __setup
+    expected = "playground.html"
+
+    assert expected in synchronous.get_url(driver_url, session)
+    assert expected in await asynchronous.get_url(driver_url, session)
+
+
+@mark.asyncio
 async def test_get_timeouts(__setup):
     driver_url, session = __setup
     expected = "implicit"

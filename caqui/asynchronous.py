@@ -35,6 +35,16 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def get_url(driver_url, session):
+    """Return the URL from web page:"""
+    try:
+        url = f"{driver_url}/session/{session}/url"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get page url.") from error
+
+
 async def get_timeouts(driver_url, session):
     """
     Return the configured timeouts:
