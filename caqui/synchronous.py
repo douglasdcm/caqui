@@ -32,6 +32,19 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def go_back(driver_url, session):
+    """
+    This command causes the browser to traverse one step backward in the joint session history of the
+    current browse. This is equivalent to pressing the back button in the browser.
+    """
+    try:
+        url = f"{driver_url}/session/{session}/back"
+        __post(url, {})
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to get page url.") from error
+
+
 def get_url(driver_url, session):
     """Return the URL from web page:"""
     try:

@@ -12,6 +12,12 @@ async def mock_post(*args):
 
 
 @mark.asyncio
+async def test_go_back():
+    with patch("caqui.asynchronous.__post", mock_post):
+        assert await asynchronous.go_back("", "") is True
+
+
+@mark.asyncio
 async def test_get_property():
     expected = "any_value"
 
@@ -100,6 +106,17 @@ async def test_send_keys():
 async def test_click():
     with patch("caqui.asynchronous.__post", mock_post):
         assert await asynchronous.click("", "", "") is True
+
+
+@mark.asyncio
+async def test_find_elements():
+    element = "C230605181E69CB2C4C36B8E83FE1245_element_2"
+
+    async def mock_post(*args):
+        return fake_responses.FIND_ELEMENTS
+
+    with patch("caqui.asynchronous.__post", mock_post):
+        assert element in await asynchronous.find_elements("", "", "", "")
 
 
 @mark.asyncio

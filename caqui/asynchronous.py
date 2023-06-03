@@ -35,6 +35,19 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def go_back(driver_url, session):
+    """
+    This command causes the browser to traverse one step backward in the joint session history of the
+    current browse. This is equivalent to pressing the back button in the browser.
+    """
+    try:
+        url = f"{driver_url}/session/{session}/url"
+        await __post(url, {})
+        return True
+    except Exception as error:
+        raise WebDriverError("Failed to get page url.") from error
+
+
 async def get_url(driver_url, session):
     """Return the URL from web page:"""
     try:

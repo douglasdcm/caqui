@@ -24,6 +24,15 @@ def __setup():
 
 
 @mark.asyncio
+async def test_go_back(__setup):
+    driver_url, session = __setup
+    expected = "playground.html"
+
+    assert synchronous.go_back(driver_url, session) is True
+    assert await asynchronous.go_back(driver_url, session) is True
+
+
+@mark.asyncio
 async def test_get_url(__setup):
     driver_url, session = __setup
     expected = "playground.html"

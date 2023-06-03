@@ -27,6 +27,11 @@ def setup():
 
 
 @mark.skip("used just to discover request data")
+def test_back(setup):
+    assert setup.back() == "any"
+
+
+@mark.skip("used just to discover request data")
 def test_get_title(setup):
     assert setup.title == "any"
 
