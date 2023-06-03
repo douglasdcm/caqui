@@ -31,6 +31,15 @@ CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
 
+GET_TIMEOUTS = dict_to_json(
+    {
+        "sessionId": "10754c8ec2e19133235223f1914ea376",
+        "status": 0,
+        "value": {"implicit": 0, "pageLoad": 300000, "script": 30000},
+    }
+)
+
+
 GET_STATUS = dict_to_json(
     {
         "value": {

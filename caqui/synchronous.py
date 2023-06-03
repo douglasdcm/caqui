@@ -32,15 +32,39 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def get_timeouts(driver_url, session):
+    """
+    Return the configured timeouts:
+        {"implicit": 0, "pageLoad": 300000, "script": 30000}
+    """
+    try:
+        url = f"{driver_url}/session/{session}/timeouts"
+        response = __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get page timeouts.") from error
+
+
 def get_status(driver_url):
+    """
+    Return the status and details of the WebDriver:
+        "build": {
+                "version": "113.0.5672.63 (0e1a4471d5ae5bf128b1bd8f4d627c8cbd55f70c-refs/branch-heads/5672@{#912})"
+            },
+            "message": "ChromeDriver ready for new sessions.",
+            "os": {"arch": "x86_64", "name": "Linux", "version": "5.4.0-150-generic"},
+            "ready": True,
+        }
+    """
     try:
         url = f"{driver_url}/status"
         return __get(url)
     except Exception as error:
-        raise WebDriverError(f"Failed to get page title.") from error
+        raise WebDriverError(f"Failed to get status.") from error
 
 
 def get_title(driver_url, session):
+    """Get the page title"""
     try:
         url = f"{driver_url}/session/{session}/title"
         response = __get(url)
@@ -50,6 +74,7 @@ def get_title(driver_url, session):
 
 
 def find_elements(driver_url, session, locator_type, locator_value):
+    """Search the DOM elements by 'locator', for example, 'xpath'"""
     try:
         url = f"{driver_url}/session/{session}/elements"
         payload = json.dumps({"using": locator_type, "value": locator_value})
@@ -62,6 +87,7 @@ def find_elements(driver_url, session, locator_type, locator_value):
 
 
 def get_property(driver_url, session, element, property):
+    """Get the givn HTML property of an element, for example, 'href'"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/property/{property}"
         response = __get(url)
@@ -71,6 +97,7 @@ def get_property(driver_url, session, element, property):
 
 
 def go_to_page(driver_url, session, page_url):
+    """Navigate to 'page_url'"""
     try:
         url = f"{driver_url}/session/{session}/url"
         payload = json.dumps({"url": page_url})
@@ -81,6 +108,7 @@ def go_to_page(driver_url, session, page_url):
 
 
 def close_session(driver_url, session):
+    """Close an open session and close the browser"""
     try:
         url = f"{driver_url}/session/{session}"
         __delete(url)
@@ -90,6 +118,7 @@ def close_session(driver_url, session):
 
 
 def get_text(driver_url, session, element):
+    """Get the text of an element"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/text"
         response = __get(url)
@@ -99,6 +128,7 @@ def get_text(driver_url, session, element):
 
 
 def send_keys(driver_url, session, element, text):
+    """Fill an editable element, for example a textarea, with a given text"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/value"
         payload = json.dumps({"text": text, "value": [*text], "id": element})
@@ -109,6 +139,7 @@ def send_keys(driver_url, session, element, text):
 
 
 def click(driver_url, session, element):
+    """Click on an element"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/click"
         payload = json.dumps({"id": element})
@@ -130,6 +161,7 @@ def __get_session(response):
 
 
 def get_session(driver_url, capabilities):
+    """Opens a browser and a session. This session is used for all functions to perform events in the page"""
     try:
         url = f"{driver_url}/session"
         data = json.dumps(capabilities)
@@ -140,6 +172,7 @@ def get_session(driver_url, capabilities):
 
 
 def find_element(driver_url, session, locator_type, locator_value):
+    """Find an element by a 'locator', for example 'xpath'"""
     try:
         url = f"{driver_url}/session/{session}/element"
         payload = json.dumps({"using": locator_type, "value": locator_value})

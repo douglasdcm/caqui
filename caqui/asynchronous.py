@@ -35,25 +35,50 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def get_timeouts(driver_url, session):
+    """
+    Return the configured timeouts:
+        {"implicit": 0, "pageLoad": 300000, "script": 30000}
+    """
+    try:
+        url = f"{driver_url}/session/{session}/timeouts"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get timeouts.") from error
+
+
 async def get_status(driver_url):
+    """
+    Return the status and details of the WebDriver:
+        "build": {
+                "version": "113.0.5672.63 (0e1a4471d5ae5bf128b1bd8f4d627c8cbd55f70c-refs/branch-heads/5672@{#912})"
+            },
+            "message": "ChromeDriver ready for new sessions.",
+            "os": {"arch": "x86_64", "name": "Linux", "version": "5.4.0-150-generic"},
+            "ready": True,
+        }
+    """
     try:
         url = f"{driver_url}/status"
         response = await __get(url)
         return response
     except Exception as error:
-        raise WebDriverError("Failed to get value from element.") from error
+        raise WebDriverError("Failed to get status.") from error
 
 
 async def get_title(driver_url, session):
+    """Get the page title"""
     try:
         url = f"{driver_url}/session/{session}/title"
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get value from element.") from error
+        raise WebDriverError("Failed to get page title.") from error
 
 
 async def find_elements(driver_url, session, locator_type, locator_value):
+    """Search the DOM elements by 'locator', for example, 'xpath'"""
     try:
         payload = json.dumps({"using": locator_type, "value": locator_value})
         url = f"{driver_url}/session/{session}/elements"
@@ -66,6 +91,7 @@ async def find_elements(driver_url, session, locator_type, locator_value):
 
 
 async def get_property(driver_url, session, element, property):
+    """Get the givn HTML property of an element, for example, 'href'"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/property/{property}"
         response = await __get(url)
@@ -75,6 +101,7 @@ async def get_property(driver_url, session, element, property):
 
 
 async def get_text(driver_url, session, element):
+    """Get the text of an element"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/text"
         response = await __get(url)
@@ -84,6 +111,7 @@ async def get_text(driver_url, session, element):
 
 
 async def close_session(driver_url, session):
+    """Close an open session and close the browser"""
     try:
         url = f"{driver_url}/session/{session}"
         await __delete(url)
@@ -93,6 +121,7 @@ async def close_session(driver_url, session):
 
 
 async def go_to_page(driver_url, session, page_url):
+    """Navigate to 'page_url'"""
     try:
         url = f"{driver_url}/session/{session}/url"
         payload = json.dumps({"url": page_url})
@@ -103,6 +132,7 @@ async def go_to_page(driver_url, session, page_url):
 
 
 async def send_keys(driver_url, session, element, text):
+    """Fill an editable element, for example a textarea, with a given text"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/value"
         payload = json.dumps({"text": text, "value": [*text], "id": element})
@@ -113,6 +143,7 @@ async def send_keys(driver_url, session, element, text):
 
 
 async def click(driver_url, session, element):
+    """Click on an element"""
     try:
         payload = json.dumps({"id": element})
         url = f"{driver_url}/session/{session}/element/{element}/click"
@@ -123,6 +154,8 @@ async def click(driver_url, session, element):
 
 
 async def find_element(driver_url, session, locator_type, locator_value):
+    """Find an element by a 'locator', for example 'xpath'"""
+
     try:
         payload = json.dumps({"using": locator_type, "value": locator_value})
         url = f"{driver_url}/session/{session}/element"
@@ -135,6 +168,7 @@ async def find_element(driver_url, session, locator_type, locator_value):
 
 
 async def get_session(driver_url, capabilities):
+    """Opens a browser and a session. This session is used for all functions to perform events in the page"""
     try:
         payload = json.dumps(capabilities)
         url = f"{driver_url}/session"

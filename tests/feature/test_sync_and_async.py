@@ -24,12 +24,21 @@ def __setup():
 
 
 @mark.asyncio
+async def test_get_timeouts(__setup):
+    driver_url, session = __setup
+    expected = "implicit"
+
+    assert expected in synchronous.get_timeouts(driver_url, session)
+    assert expected in await asynchronous.get_timeouts(driver_url, session)
+
+
+@mark.asyncio
 async def test_get_status(__setup):
     driver_url, _ = __setup
-
-    assert synchronous.get_status(driver_url).get("value") is not None
+    expected = "ready"
+    assert expected in synchronous.get_status(driver_url).get("value") is not None
     response = await asynchronous.get_status(driver_url)
-    assert response.get("value") is not None
+    assert expected in response.get("value") is not None
 
 
 @mark.asyncio

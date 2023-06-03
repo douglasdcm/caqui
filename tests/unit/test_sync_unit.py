@@ -10,6 +10,14 @@ def __setup():
     return driver_url, session, element
 
 
+@patch("requests.request", return_value=fake_responses.GET_TIMEOUTS)
+def test_get_timeouts(*args):
+    driver_url, _, _ = __setup()
+    expected = "implicit"
+
+    assert expected in synchronous.get_timeouts(driver_url)
+
+
 @patch("requests.request", return_value=fake_responses.GET_STATUS)
 def test_get_status(*args):
     driver_url, _, _ = __setup()

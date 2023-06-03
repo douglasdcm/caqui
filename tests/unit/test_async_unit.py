@@ -25,6 +25,40 @@ from unittest.mock import patch
 
 
 @mark.asyncio
+async def test_get_timeouts():
+    expected = "implicit"
+
+    async def mock_post(*args):
+        return fake_responses.GET_TIMEOUTS
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        response = await asynchronous.get_timeouts("", "")
+        assert expected in response
+
+
+@mark.asyncio
+async def test_get_status():
+    async def mock_post(*args):
+        expected = "ready"
+        return fake_responses.GET_STATUS
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        response = await asynchronous.get_status("")
+        assert response.get("value").get("ready") is True
+
+
+@mark.asyncio
+async def test_get_title():
+    expected = "Sample page"
+
+    async def mock_post(*args):
+        return fake_responses.GET_TITLE
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        assert await asynchronous.get_title("", "") == expected
+
+
+@mark.asyncio
 async def test_get_text():
     expected = "any"
 
