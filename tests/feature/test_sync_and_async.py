@@ -24,6 +24,23 @@ def __setup():
 
 
 @mark.asyncio
+async def test_get_status(__setup):
+    driver_url, _ = __setup
+
+    assert synchronous.get_status(driver_url).get("value") is not None
+    response = await asynchronous.get_status(driver_url)
+    assert response.get("value") is not None
+
+
+@mark.asyncio
+async def test_get_title(__setup):
+    driver_url, session = __setup
+
+    assert synchronous.get_title(driver_url, session) == "Sample page"
+    assert await asynchronous.get_title(driver_url, session) == "Sample page"
+
+
+@mark.asyncio
 async def test_find_elements(__setup):
     driver_url, session = __setup
     locator_type = "xpath"

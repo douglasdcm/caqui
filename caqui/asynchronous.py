@@ -5,6 +5,16 @@ from caqui.exceptions import WebDriverError
 from caqui.helper import get_element
 
 
+async def __delete(url):
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.delete(url, headers=HEADERS) as resp:
+                response = await resp.json()
+                return response
+    except Exception as error:
+        raise WebDriverError("'POST' request failed.") from error
+
+
 async def __post(url, payload):
     try:
         async with aiohttp.ClientSession() as session:
@@ -13,6 +23,34 @@ async def __post(url, payload):
                 return response
     except Exception as error:
         raise WebDriverError("'POST' request failed.") from error
+
+
+async def __get(url):
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, headers=HEADERS) as resp:
+                response = await resp.json()
+                return response
+    except Exception as error:
+        raise WebDriverError("'GET' request failed.") from error
+
+
+async def get_status(driver_url):
+    try:
+        url = f"{driver_url}/status"
+        response = await __get(url)
+        return response
+    except Exception as error:
+        raise WebDriverError("Failed to get value from element.") from error
+
+
+async def get_title(driver_url, session):
+    try:
+        url = f"{driver_url}/session/{session}/title"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get value from element.") from error
 
 
 async def find_elements(driver_url, session, locator_type, locator_value):
@@ -30,10 +68,8 @@ async def find_elements(driver_url, session, locator_type, locator_value):
 async def get_property(driver_url, session, element, property):
     try:
         url = f"{driver_url}/session/{session}/element/{element}/property/{property}"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers=HEADERS) as resp:
-                response = await resp.json()
-                return response.get("value")
+        response = await __get(url)
+        return response.get("value")
     except Exception as error:
         raise WebDriverError("Failed to get value from element.") from error
 
@@ -41,10 +77,8 @@ async def get_property(driver_url, session, element, property):
 async def get_text(driver_url, session, element):
     try:
         url = f"{driver_url}/session/{session}/element/{element}/text"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers=HEADERS) as resp:
-                response = await resp.json()
-                return response.get("value")
+        response = await __get(url)
+        return response.get("value")
     except Exception as error:
         raise WebDriverError("Failed to get text from element.") from error
 
@@ -52,10 +86,8 @@ async def get_text(driver_url, session, element):
 async def close_session(driver_url, session):
     try:
         url = f"{driver_url}/session/{session}"
-        async with aiohttp.ClientSession() as session:
-            async with session.delete(url, headers=HEADERS) as resp:
-                await resp.json()
-                return True
+        await __delete(url)
+        return True
     except Exception as error:
         raise WebDriverError("Failed to close session.") from error
 

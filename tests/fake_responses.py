@@ -31,6 +31,28 @@ CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
 
+GET_STATUS = dict_to_json(
+    {
+        "value": {
+            "build": {
+                "version": "113.0.5672.63 (0e1a4471d5ae5bf128b1bd8f4d627c8cbd55f70c-refs/branch-heads/5672@{#912})"
+            },
+            "message": "ChromeDriver ready for new sessions.",
+            "os": {"arch": "x86_64", "name": "Linux", "version": "5.4.0-150-generic"},
+            "ready": True,
+        }
+    }
+)
+
+GET_TITLE = dict_to_json(
+    {
+        "sessionId": "07b00b2e94be84920495d83890c82b60",
+        "status": 0,
+        "value": "Sample page",
+    }
+)
+
+# Chrome
 FIND_ELEMENTS = dict_to_json(
     {
         "sessionId": "9be93a374d185216134bf0c3fafee52e",
@@ -55,7 +77,7 @@ GET_TEXT = dict_to_json(
     {"sessionId": "5be82d4cd17af92d7ea53a36900d78cb", "status": 0, "value": "any"}
 )
 
-
+# Chrome
 GET_SESSION = dict_to_json(
     {
         "sessionId": "4358a5b53794586af59678fc1653dc40",

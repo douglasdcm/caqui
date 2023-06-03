@@ -21,8 +21,14 @@ def setup():
         desired_capabilities=desired_capabilities,
     )
     driver.get(PAGE_URL)
+    driver
     yield driver
     driver.quit()
+
+
+@mark.skip("used just to discover request data")
+def test_get_title(setup):
+    assert setup.title == "any"
 
 
 @mark.skip("used just to discover request data")

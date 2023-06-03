@@ -1,7 +1,7 @@
 import requests
 import json
 from caqui.exceptions import WebDriverError
-from caqui.helper import get_element
+from caqui import helper
 
 HEADERS = {
     "Accept-Encoding": "identity",
@@ -11,9 +11,9 @@ HEADERS = {
 }
 
 
-def __get(url, payload):
+def __get(url):
     try:
-        return requests.request("GET", url, headers=HEADERS, data=payload).json()
+        return requests.request("GET", url, headers=HEADERS, data={}).json()
     except Exception as error:
         raise WebDriverError("'GET' request failed.") from error
 
@@ -32,6 +32,23 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def get_status(driver_url):
+    try:
+        url = f"{driver_url}/status"
+        return __get(url)
+    except Exception as error:
+        raise WebDriverError(f"Failed to get page title.") from error
+
+
+def get_title(driver_url, session):
+    try:
+        url = f"{driver_url}/session/{session}/title"
+        response = __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get page title.") from error
+
+
 def find_elements(driver_url, session, locator_type, locator_value):
     try:
         url = f"{driver_url}/session/{session}/elements"
@@ -47,7 +64,7 @@ def find_elements(driver_url, session, locator_type, locator_value):
 def get_property(driver_url, session, element, property):
     try:
         url = f"{driver_url}/session/{session}/element/{element}/property/{property}"
-        response = __get(url, {})
+        response = __get(url)
         return response.get("value")
     except Exception as error:
         raise WebDriverError("Failed to get value from element.") from error
@@ -75,7 +92,7 @@ def close_session(driver_url, session):
 def get_text(driver_url, session, element):
     try:
         url = f"{driver_url}/session/{session}/element/{element}/text"
-        response = __get(url, {})
+        response = __get(url)
         return response.get("value")
     except Exception as error:
         raise WebDriverError("Failed to get text from element.") from error
@@ -127,7 +144,7 @@ def find_element(driver_url, session, locator_type, locator_value):
         url = f"{driver_url}/session/{session}/element"
         payload = json.dumps({"using": locator_type, "value": locator_value})
         response = __post(url, payload)
-        return get_element(response)
+        return helper.get_element(response)
     except Exception as error:
         raise WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."
