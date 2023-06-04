@@ -127,6 +127,15 @@ def get_attribute(driver_url, session, element, attribute):
     except Exception as error:
         raise WebDriverError("Failed to get value from element.") from error
 
+def get_cookies(driver_url, session):
+    """Get the page cookies"""
+    try:
+        url = f"{driver_url}/session/{session}/cookie"
+        response = __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get page cookies.") from error
+
 def go_to_page(driver_url, session, page_url):
     """Navigate to 'page_url'"""
     try:
