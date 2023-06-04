@@ -140,6 +140,14 @@ async def get_text(driver_url, session, element):
     except Exception as error:
         raise WebDriverError("Failed to get text from element.") from error
 
+async def get_cookies(driver_url, session):
+    """Get the page cookies"""
+    try:
+        url = f"{driver_url}/session/{session}/cookie"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get page cookies.") from error
 
 async def close_session(driver_url, session):
     """Close an opened session and close the browser"""
