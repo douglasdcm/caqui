@@ -118,6 +118,14 @@ def get_property(driver_url, session, element, property):
     except Exception as error:
         raise WebDriverError("Failed to get value from element.") from error
 
+def get_attribute(driver_url, session, element, attribute):
+    """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/property/{attribute}"
+        response = __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get value from element.") from error
 
 def go_to_page(driver_url, session, page_url):
     """Navigate to 'page_url'"""
