@@ -27,6 +27,15 @@ async def test_get_property():
     with patch("caqui.asynchronous.__get", mock_post):
         assert await asynchronous.get_property("", "", "", "") == expected
 
+@mark.asyncio
+async def test_get_attribute():
+    expected = "any_value"
+
+    async def mock_post(*args):
+        return fake_responses.GET_ATTRIBUTE_VALUE
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        assert await asynchronous.get_attribute("", "", "", "") == expected
 
 @mark.asyncio
 async def test_get_url():
@@ -72,6 +81,15 @@ async def test_get_title():
     with patch("caqui.asynchronous.__get", mock_post):
         assert await asynchronous.get_title("", "") == expected
 
+@mark.asyncio
+async def test_get_cookies():
+    expected = []
+
+    async def mock_post(*args):
+        return fake_responses.GET_COOKIES
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        assert await asynchronous.get_cookies("", "") == expected
 
 @mark.asyncio
 async def test_get_text():
