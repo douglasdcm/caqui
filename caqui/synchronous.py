@@ -121,7 +121,7 @@ def get_property(driver_url, session, element, property):
 def get_attribute(driver_url, session, element, attribute):
     """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
     try:
-        url = f"{driver_url}/session/{session}/element/{element}/property/{attribute}"
+        url = f"{driver_url}/session/{session}/element/{element}/attribute/{attribute}"
         response = __get(url)
         return response.get("value")
     except Exception as error:
