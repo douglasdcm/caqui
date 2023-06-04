@@ -67,6 +67,15 @@ GET_TITLE = dict_to_json(
     }
 )
 
+GET_COOKIES = dict_to_json(
+    {
+        "sessionId": "07b00b2e94be84920495d83890c82b60",
+        "status": 0,
+        "value": [],
+    }
+)
+
+
 FIND_ELEMENTS = dict_to_json(
     {
         "sessionId": "9be93a374d185216134bf0c3fafee52e",
@@ -80,6 +89,14 @@ FIND_ELEMENTS = dict_to_json(
 )
 
 GET_PROPERTY_VALUE = dict_to_json(
+    {
+        "sessionId": "5be82d4cd17af92d7ea53a36900d78cb",
+        "status": 0,
+        "value": "any_value",
+    }
+)
+
+GET_ATTRIBUTE_VALUE = dict_to_json(
     {
         "sessionId": "5be82d4cd17af92d7ea53a36900d78cb",
         "status": 0,

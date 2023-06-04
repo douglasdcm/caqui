@@ -28,6 +28,11 @@ def test_get_title(*args):
 
     assert synchronous.get_title("", "") == expected
 
+@patch("requests.request", return_value=fake_responses.GET_COOKIES)
+def test_get_cookies(*args):
+    expected = []
+
+    assert synchronous.get_cookies("", "") == expected
 
 @patch("requests.request", return_value=fake_responses.FIND_ELEMENTS)
 def test_find_elements(*args):
@@ -45,6 +50,11 @@ def test_get_property(*args):
 
     assert synchronous.get_property("", "", "", "") == expected
 
+@patch("requests.request", return_value=fake_responses.GET_ATTRIBUTE_VALUE)
+def test_get_attribute(*args):
+    expected = "any_value"
+
+    assert synchronous.get_attribute("", "", "", "") == expected
 
 @patch("requests.request", return_value=fake_responses.GO_TO_PAGE)
 def test_go_to_page(*args):
