@@ -3,6 +3,13 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.CLOSE_WINDOW)
+def test_close_window(*args):
+    expected = []
+
+    assert synchronous.close_window("", "") == expected
+
+
 @patch("requests.request", return_value=fake_responses.GET_WINDOW)
 def test_get_window(*args):
     expected = "845623CAE8115F2B60C9AE8596F13D94"

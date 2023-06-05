@@ -12,6 +12,17 @@ async def mock_post(*args):
 
 
 @mark.asyncio
+async def test_close_window():
+    expected = []
+
+    async def mock_post(*args):
+        return fake_responses.CLOSE_WINDOW
+
+    with patch("caqui.asynchronous.__delete", mock_post):
+        assert await asynchronous.close_window("", "") == expected
+
+
+@mark.asyncio
 async def test_get_window():
     expected = "845623CAE8115F2B60C9AE8596F13D94"
 
@@ -19,7 +30,7 @@ async def test_get_window():
         return fake_responses.GET_WINDOW
 
     with patch("caqui.asynchronous.__get", mock_post):
-        assert await asynchronous.get_property("", "", "", "") == expected
+        assert await asynchronous.get_window("", "") == expected
 
 
 @mark.asyncio

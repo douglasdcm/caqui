@@ -25,6 +25,19 @@ def __setup():
     synchronous.close_session(driver_url, session)
 
 
+def test_close_window_sync(__setup):
+    driver_url, session = __setup
+    assert isinstance(synchronous.close_window(driver_url, session), list)
+
+
+@mark.asyncio
+async def test_close_window_async(__setup):
+    driver_url, session = __setup
+
+    response = await asynchronous.close_window(driver_url, session)
+    assert isinstance(response, list)
+
+
 @mark.asyncio
 async def test_get_window(__setup):
     driver_url, session = __setup

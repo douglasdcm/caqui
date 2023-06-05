@@ -32,6 +32,15 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def close_window(driver_url, session):
+    """Close active window"""
+    try:
+        url = f"{driver_url}/session/{session}/window"
+        return __delete(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to close active window.") from error
+
+
 def get_window(driver_url, session):
     """Get window handle"""
     try:
