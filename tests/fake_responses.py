@@ -30,6 +30,15 @@ CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
 
+
+GET_WINDOW = dict_to_json(
+    {
+        "sessionId": "ce68162d420e9cb2b1617c2d1a800f85",
+        "status": 0,
+        "value": "845623CAE8115F2B60C9AE8596F13D94",
+    }
+)
+
 GET_URL = dict_to_json(
     {
         "sessionId": "af67b8ef665d30a687f37365d229fb53",

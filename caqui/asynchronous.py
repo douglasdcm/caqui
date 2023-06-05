@@ -35,6 +35,16 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def get_window(driver_url, session):
+    """Get window handle"""
+    try:
+        url = f"{driver_url}/session/{session}/window"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get window.") from error
+
+
 async def go_back(driver_url, session):
     """
     This command causes the browser to traverse one step backward in the joint session history of the
@@ -122,6 +132,7 @@ async def get_property(driver_url, session, element, property):
     except Exception as error:
         raise WebDriverError("Failed to get value from element.") from error
 
+
 async def get_attribute(driver_url, session, element, attribute):
     """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
     try:
@@ -130,6 +141,7 @@ async def get_attribute(driver_url, session, element, attribute):
         return response.get("value")
     except Exception as error:
         raise WebDriverError("Failed to get value from element.") from error
+
 
 async def get_text(driver_url, session, element):
     """Get the text of an element"""
@@ -140,6 +152,7 @@ async def get_text(driver_url, session, element):
     except Exception as error:
         raise WebDriverError("Failed to get text from element.") from error
 
+
 async def get_cookies(driver_url, session):
     """Get the page cookies"""
     try:
@@ -148,6 +161,7 @@ async def get_cookies(driver_url, session):
         return response.get("value")
     except Exception as error:
         raise WebDriverError("Failed to get page cookies.") from error
+
 
 async def close_session(driver_url, session):
     """Close an opened session and close the browser"""

@@ -21,6 +21,7 @@ def __setup():
             "browserName": "firefox",
             "marionette": True,
             "acceptInsecureCerts": True,
+            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
         }
     }
     session = get_session(driver_url, capabilities)
