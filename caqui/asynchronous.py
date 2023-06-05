@@ -12,7 +12,7 @@ async def __delete(url):
                 response = await resp.json()
                 return response
     except Exception as error:
-        raise WebDriverError("'POST' request failed.") from error
+        raise WebDriverError("'DELETE' request failed.") from error
 
 
 async def __post(url, payload):
@@ -33,6 +33,26 @@ async def __get(url):
                 return response
     except Exception as error:
         raise WebDriverError("'GET' request failed.") from error
+
+
+async def close_window(driver_url, session):
+    """Close active window"""
+    try:
+        url = f"{driver_url}/session/{session}/window"
+        response = await __delete(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to close active window.") from error
+
+
+async def get_window(driver_url, session):
+    """Get window handle"""
+    try:
+        url = f"{driver_url}/session/{session}/window"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get window.") from error
 
 
 async def go_back(driver_url, session):
@@ -122,6 +142,7 @@ async def get_property(driver_url, session, element, property):
     except Exception as error:
         raise WebDriverError("Failed to get value from element.") from error
 
+
 async def get_attribute(driver_url, session, element, attribute):
     """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
     try:
@@ -130,6 +151,7 @@ async def get_attribute(driver_url, session, element, attribute):
         return response.get("value")
     except Exception as error:
         raise WebDriverError("Failed to get value from element.") from error
+
 
 async def get_text(driver_url, session, element):
     """Get the text of an element"""
@@ -140,6 +162,7 @@ async def get_text(driver_url, session, element):
     except Exception as error:
         raise WebDriverError("Failed to get text from element.") from error
 
+
 async def get_cookies(driver_url, session):
     """Get the page cookies"""
     try:
@@ -148,6 +171,7 @@ async def get_cookies(driver_url, session):
         return response.get("value")
     except Exception as error:
         raise WebDriverError("Failed to get page cookies.") from error
+
 
 async def close_session(driver_url, session):
     """Close an opened session and close the browser"""

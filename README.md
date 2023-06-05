@@ -12,7 +12,7 @@ The process **Caqui** follows is similar of the one described in this [article](
 
 | WebDriver               | Version       |
 | ----------------------- | ------------- |
-| Google Chrome           | 113           |
+| Google Chrome           | 113, 114      |
 | Firefox (geckodriver)   | 113           |
 
 # Simple start

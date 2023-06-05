@@ -3,6 +3,20 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.CLOSE_WINDOW)
+def test_close_window(*args):
+    expected = []
+
+    assert synchronous.close_window("", "") == expected
+
+
+@patch("requests.request", return_value=fake_responses.GET_WINDOW)
+def test_get_window(*args):
+    expected = "845623CAE8115F2B60C9AE8596F13D94"
+
+    assert expected in synchronous.get_window("", "")
+
+
 @patch("requests.request", return_value=fake_responses.GET_URL)
 def test_get_url(*args):
     expected = "playground.html"
@@ -28,11 +42,13 @@ def test_get_title(*args):
 
     assert synchronous.get_title("", "") == expected
 
+
 @patch("requests.request", return_value=fake_responses.GET_COOKIES)
 def test_get_cookies(*args):
     expected = []
 
     assert synchronous.get_cookies("", "") == expected
+
 
 @patch("requests.request", return_value=fake_responses.FIND_ELEMENTS)
 def test_find_elements(*args):
@@ -50,11 +66,13 @@ def test_get_property(*args):
 
     assert synchronous.get_property("", "", "", "") == expected
 
+
 @patch("requests.request", return_value=fake_responses.GET_ATTRIBUTE_VALUE)
 def test_get_attribute(*args):
     expected = "any_value"
 
     assert synchronous.get_attribute("", "", "", "") == expected
+
 
 @patch("requests.request", return_value=fake_responses.GO_TO_PAGE)
 def test_go_to_page(*args):

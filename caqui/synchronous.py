@@ -32,6 +32,24 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def close_window(driver_url, session):
+    """Close active window"""
+    try:
+        url = f"{driver_url}/session/{session}/window"
+        return __delete(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to close active window.") from error
+
+
+def get_window(driver_url, session):
+    """Get window handle"""
+    try:
+        url = f"{driver_url}/session/{session}/window"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get window.") from error
+
+
 def go_back(driver_url, session):
     """
     This command causes the browser to traverse one step backward in the joint session history of the
@@ -118,6 +136,7 @@ def get_property(driver_url, session, element, property):
     except Exception as error:
         raise WebDriverError("Failed to get value from element.") from error
 
+
 def get_attribute(driver_url, session, element, attribute):
     """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
     try:
@@ -127,6 +146,7 @@ def get_attribute(driver_url, session, element, attribute):
     except Exception as error:
         raise WebDriverError("Failed to get value from element.") from error
 
+
 def get_cookies(driver_url, session):
     """Get the page cookies"""
     try:
@@ -135,6 +155,7 @@ def get_cookies(driver_url, session):
         return response.get("value")
     except Exception as error:
         raise WebDriverError("Failed to get page cookies.") from error
+
 
 def go_to_page(driver_url, session, page_url):
     """Navigate to 'page_url'"""

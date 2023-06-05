@@ -7,17 +7,20 @@ from tests.constants import PAGE_URL
 BASE_DIR = getcwd()
 
 MAX_CONCURRENCY = 5  # number of webdriver instances running
-sem = asyncio.Semaphore(MAX_CONCURRENCY)
+all_anchors = []
+semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 
 
 async def get_all_links():
-    async with sem:
+    async with semaphore:
         driver_url = "http://127.0.0.1:9999"
         capabilities = {
             "desiredCapabilities": {
-                "browserName": "firefox",
+                "browserName": "chrome",
                 "marionette": True,
                 "acceptInsecureCerts": True,
+                "pageLoadStrategy": "normal",
+                "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
             }
         }
 
@@ -28,6 +31,7 @@ async def get_all_links():
             PAGE_URL,
         )
 
+        all_anchors = []
         for i in range(4):
             i += 1
             locator_value = f"//a[@id='a{i}']"
@@ -37,10 +41,14 @@ async def get_all_links():
             anchors = await asynchronous.find_elements(
                 driver_url, session, locator_type, locator_value
             )
-            print(f"Found {len(anchors)} links")
+            all_anchors.extend(anchors)
 
-        for anchor in anchors:
+        texts = []
+        for anchor in all_anchors:
             text = await asynchronous.get_property(driver_url, session, anchor, "href")
+            texts.append(text)
+
+        for text in texts:
             print(f"Link found '{text}'")
 
         synchronous.close_session(driver_url, session)
@@ -62,4 +70,5 @@ if __name__ == "__main__":
         loop.run_until_complete(loop.shutdown_asyncgens())
         loop.close()
         end = time.time()
+        print(f"Found 40 links")  # 10 websites with 4 links each
         print(f"Time: {end-start:.2f} sec")

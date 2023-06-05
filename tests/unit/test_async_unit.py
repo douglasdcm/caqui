@@ -12,6 +12,28 @@ async def mock_post(*args):
 
 
 @mark.asyncio
+async def test_close_window():
+    expected = []
+
+    async def mock_post(*args):
+        return fake_responses.CLOSE_WINDOW
+
+    with patch("caqui.asynchronous.__delete", mock_post):
+        assert await asynchronous.close_window("", "") == expected
+
+
+@mark.asyncio
+async def test_get_window():
+    expected = "845623CAE8115F2B60C9AE8596F13D94"
+
+    async def mock_post(*args):
+        return fake_responses.GET_WINDOW
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        assert await asynchronous.get_window("", "") == expected
+
+
+@mark.asyncio
 async def test_go_back():
     with patch("caqui.asynchronous.__post", mock_post):
         assert await asynchronous.go_back("", "") is True
@@ -27,6 +49,7 @@ async def test_get_property():
     with patch("caqui.asynchronous.__get", mock_post):
         assert await asynchronous.get_property("", "", "", "") == expected
 
+
 @mark.asyncio
 async def test_get_attribute():
     expected = "any_value"
@@ -36,6 +59,7 @@ async def test_get_attribute():
 
     with patch("caqui.asynchronous.__get", mock_post):
         assert await asynchronous.get_attribute("", "", "", "") == expected
+
 
 @mark.asyncio
 async def test_get_url():
@@ -81,6 +105,7 @@ async def test_get_title():
     with patch("caqui.asynchronous.__get", mock_post):
         assert await asynchronous.get_title("", "") == expected
 
+
 @mark.asyncio
 async def test_get_cookies():
     expected = []
@@ -90,6 +115,7 @@ async def test_get_cookies():
 
     with patch("caqui.asynchronous.__get", mock_post):
         assert await asynchronous.get_cookies("", "") == expected
+
 
 @mark.asyncio
 async def test_get_text():

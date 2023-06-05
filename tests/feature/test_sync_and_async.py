@@ -8,9 +8,11 @@ def __setup():
     driver_url = "http://127.0.0.1:9999"
     capabilities = {
         "desiredCapabilities": {
+            "name": "webdriver",
             "browserName": "firefox",
             "marionette": True,
             "acceptInsecureCerts": True,
+            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
         }
     }
     session = synchronous.get_session(driver_url, capabilities)
@@ -21,6 +23,52 @@ def __setup():
     )
     yield driver_url, session
     synchronous.close_session(driver_url, session)
+
+
+def test_close_window_sync(__setup):
+    driver_url, session = __setup
+    assert isinstance(synchronous.close_window(driver_url, session), list)
+
+
+@mark.asyncio
+async def test_close_window_async(__setup):
+    driver_url, session = __setup
+
+    response = await asynchronous.close_window(driver_url, session)
+    assert isinstance(response, list)
+
+
+@mark.asyncio
+async def test_get_window(__setup):
+    driver_url, session = __setup
+
+    assert synchronous.get_window(driver_url, session) is not None
+    assert await asynchronous.get_window(driver_url, session) is not None
+
+
+@mark.asyncio
+async def test_get_attribute(__setup):
+    driver_url, session = __setup
+    attribute = "href"
+    element = synchronous.find_element(driver_url, session, "xpath", "//a[@id='a1']")
+
+    assert (
+        synchronous.get_attribute(driver_url, session, element, attribute)
+        == "http://any1.com/"
+    )
+    assert (
+        await asynchronous.get_attribute(driver_url, session, element, attribute)
+        == "http://any1.com/"
+    )
+
+
+@mark.asyncio
+async def test_get_cookies(__setup):
+    driver_url, session = __setup
+
+    assert isinstance(synchronous.get_cookies(driver_url, session), list)
+    cookies = await asynchronous.get_cookies(driver_url, session)
+    assert isinstance(cookies, list)
 
 
 @mark.asyncio
