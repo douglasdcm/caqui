@@ -26,6 +26,18 @@ def __setup():
 
 
 @mark.asyncio
+async def test_is_element_selected(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert synchronous.is_element_selected(driver_url, session, element) is False
+    assert await asynchronous.is_element_selected(driver_url, session, element) is False
+
+
+@mark.asyncio
 async def test_get_window_rectangle(__setup):
     driver_url, session = __setup
     expected = "height"

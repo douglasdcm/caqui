@@ -35,6 +35,16 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def is_element_selected(driver_url, session, element):
+    """Check if element is selected"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/selected"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to check if element is selected.") from error
+
+
 async def get_window_rectangle(driver_url, session):
     """Get window rectangle"""
     try:

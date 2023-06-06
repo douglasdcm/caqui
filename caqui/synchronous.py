@@ -32,6 +32,15 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def is_element_selected(driver_url, session, element):
+    """CHeck if element is selected"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/selected"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to check if element is selected.") from error
+
+
 def get_window_rectangle(driver_url, session):
     """Get window rectangle"""
     try:

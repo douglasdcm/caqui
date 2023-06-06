@@ -38,6 +38,10 @@ GET_WINDOW_RECTANGLE = dict_to_json(
     }
 )
 
+IS_ELEMENT_SELECTED = dict_to_json(
+    {"sessionId": "341d21063846141d2716d300652ddd81", "status": 0, "value": False}
+)
+
 GET_WINDOW_HANDLES = dict_to_json(
     {
         "sessionId": "b3f92cf70d734ecc6fcddbd88671998a",

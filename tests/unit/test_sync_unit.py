@@ -3,6 +3,11 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.IS_ELEMENT_SELECTED)
+def test_is_element_selected(*args):
+    assert synchronous.is_element_selected("", "", "") is False
+
+
 @patch("requests.request", return_value=fake_responses.GET_WINDOW_RECTANGLE)
 def test_get_window_rectangle(*args):
     expected = "height"

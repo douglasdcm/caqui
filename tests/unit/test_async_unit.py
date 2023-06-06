@@ -12,6 +12,15 @@ async def mock_post(*args):
 
 
 @mark.asyncio
+async def test_is_element_selected():
+    async def mock_post(*args):
+        return fake_responses.IS_ELEMENT_SELECTED
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        assert await asynchronous.is_element_selected("", "", "") is False
+
+
+@mark.asyncio
 async def test_get_window_rectangle():
     expected = "height"
 
