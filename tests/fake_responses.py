@@ -38,6 +38,11 @@ GET_WINDOW_RECTANGLE = dict_to_json(
     }
 )
 
+
+CLEAR_ELEMENT = dict_to_json(
+    {"sessionId": "486fa32a9876b4519e149b39135edcb5", "status": 0, "value": None}
+)
+
 IS_ELEMENT_ENABLED = dict_to_json(
     {"sessionId": "e0e43cd1ce532b5aa62b6df0de11e3bd", "status": 0, "value": True}
 )

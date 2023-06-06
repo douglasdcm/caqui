@@ -3,6 +3,11 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.CLEAR_ELEMENT)
+def test_clear_element(*args):
+    assert synchronous.clear_element("", "", "") is True
+
+
 @patch("requests.request", return_value=fake_responses.IS_ELEMENT_ENABLED)
 def test_is_element_enabled(*args):
     assert synchronous.is_element_enabled("", "", "") is True

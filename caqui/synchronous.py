@@ -32,6 +32,17 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def clear_element(driver_url, session, element):
+    """Clear the element text"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/clear"
+        payload = json.dumps({"id": element})
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to clear the element text.") from error
+
+
 def is_element_enabled(driver_url, session, element):
     """Check if element is enabled"""
     try:

@@ -35,6 +35,17 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def clear_element(driver_url, session, element):
+    """Clear the element text"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/clear"
+        payload = json.dumps({"id": element})
+        await __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError("Failed to clear the element text.") from error
+
+
 async def is_element_enabled(driver_url, session, element):
     """Check if element is enabled"""
     try:

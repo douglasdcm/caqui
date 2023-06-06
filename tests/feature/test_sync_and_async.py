@@ -26,6 +26,21 @@ def __setup():
 
 
 @mark.asyncio
+async def test_clear_element(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+    text = "any"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+    synchronous.send_keys(driver_url, session, element, text)
+    assert synchronous.clear_element(driver_url, session, element) is True
+
+    synchronous.send_keys(driver_url, session, element, text)
+    assert await asynchronous.clear_element(driver_url, session, element) is True
+
+
+@mark.asyncio
 async def test_is_element_enabled(__setup):
     driver_url, session = __setup
     locator_type = "xpath"

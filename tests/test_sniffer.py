@@ -27,6 +27,13 @@ def setup():
 
 
 @mark.skip("used just to discover request data")
+def test_clear(setup):
+    driver = setup
+    element = driver.find_element("xpath", "//input")
+    assert element.clear() == "any"
+
+
+@mark.skip("used just to discover request data")
 def test_back(setup):
     assert setup.back() == "any"
 

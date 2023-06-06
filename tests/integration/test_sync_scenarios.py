@@ -1,4 +1,3 @@
-import json
 from caqui.synchronous import (
     find_element,
     get_session,
@@ -8,6 +7,7 @@ from caqui.synchronous import (
     close_session,
     go_to_page,
     get_property,
+    clear_element,
 )
 from tests.constants import PAGE_URL
 from pytest import fixture
@@ -18,7 +18,7 @@ def __setup():
     driver_url = "http://127.0.0.1:9999"
     capabilities = {
         "desiredCapabilities": {
-            "browserName": "firefox",
+            "browserName": "chrome",
             "marionette": True,
             "acceptInsecureCerts": True,
             "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
@@ -42,6 +42,8 @@ def test_add_text__click_button_and_get_properties(__setup):
     input = find_element(driver_url, session, locator_type, locator_value="//input")
     send_keys(driver_url, session, input, "any")
     assert get_property(driver_url, session, input, property="value") == "any"
+    clear_element(driver_url, session, input)
+    assert get_property(driver_url, session, input, property="value") == ""
 
     anchor = find_element(driver_url, session, locator_type, locator_value="//a")
     assert (
