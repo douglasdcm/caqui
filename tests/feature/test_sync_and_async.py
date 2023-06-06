@@ -25,6 +25,84 @@ def __setup():
     synchronous.close_session(driver_url, session)
 
 
+@mark.asyncio
+async def test_clear_element(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+    text = "any"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+    synchronous.send_keys(driver_url, session, element, text)
+    assert synchronous.clear_element(driver_url, session, element) is True
+
+    synchronous.send_keys(driver_url, session, element, text)
+    assert await asynchronous.clear_element(driver_url, session, element) is True
+
+
+@mark.asyncio
+async def test_is_element_enabled(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert synchronous.is_element_enabled(driver_url, session, element) is True
+    assert await asynchronous.is_element_enabled(driver_url, session, element) is True
+
+
+@mark.asyncio
+async def test_get_css_value(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+    property_name = "color"
+    expected = "rgba(0, 0, 0, 1)"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert (
+        synchronous.get_css_value(driver_url, session, element, property_name)
+        == expected
+    )
+    assert (
+        await asynchronous.get_css_value(driver_url, session, element, property_name)
+        == expected
+    )
+
+
+@mark.asyncio
+async def test_is_element_selected(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert synchronous.is_element_selected(driver_url, session, element) is False
+    assert await asynchronous.is_element_selected(driver_url, session, element) is False
+
+
+@mark.asyncio
+async def test_get_window_rectangle(__setup):
+    driver_url, session = __setup
+    expected = "height"
+
+    assert expected in synchronous.get_window_rectangle(driver_url, session)
+    rectangle = await asynchronous.get_window_rectangle(driver_url, session)
+    assert expected in rectangle
+
+
+@mark.asyncio
+async def test_get_window_handles(__setup):
+    driver_url, session = __setup
+
+    assert isinstance(synchronous.get_window_handles(driver_url, session), list)
+    handles = await asynchronous.get_window_handles(driver_url, session)
+    assert isinstance(handles, list)
+
+
 def test_close_window_sync(__setup):
     driver_url, session = __setup
     assert isinstance(synchronous.close_window(driver_url, session), list)

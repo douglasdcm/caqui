@@ -32,6 +32,62 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def clear_element(driver_url, session, element):
+    """Clear the element text"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/clear"
+        payload = json.dumps({"id": element})
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to clear the element text.") from error
+
+
+def is_element_enabled(driver_url, session, element):
+    """Check if element is enabled"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/enabled"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to check if element is enabled.") from error
+
+
+def get_css_value(driver_url, session, element, property_name):
+    """Get the css property value"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/css/{property_name}"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the css property value.") from error
+
+
+def is_element_selected(driver_url, session, element):
+    """Check if element is selected"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/selected"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to check if element is selected.") from error
+
+
+def get_window_rectangle(driver_url, session):
+    """Get window rectangle"""
+    try:
+        url = f"{driver_url}/session/{session}/window/rect"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get window rectangle.") from error
+
+
+def get_window_handles(driver_url, session):
+    """Get window handles"""
+    try:
+        url = f"{driver_url}/session/{session}/window/handles"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get window handles.") from error
+
+
 def close_window(driver_url, session):
     """Close active window"""
     try:
@@ -42,7 +98,7 @@ def close_window(driver_url, session):
 
 
 def get_window(driver_url, session):
-    """Get window handle"""
+    """Get window"""
     try:
         url = f"{driver_url}/session/{session}/window"
         return __get(url).get("value")

@@ -30,9 +30,47 @@ CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
 
+GET_WINDOW_RECTANGLE = dict_to_json(
+    {
+        "sessionId": "79e4bd950a886e0119e3760d201b059e",
+        "status": 0,
+        "value": {"height": 600, "width": 800, "x": 0, "y": 0},
+    }
+)
+
+
+CLEAR_ELEMENT = dict_to_json(
+    {"sessionId": "486fa32a9876b4519e149b39135edcb5", "status": 0, "value": None}
+)
+
+IS_ELEMENT_ENABLED = dict_to_json(
+    {"sessionId": "e0e43cd1ce532b5aa62b6df0de11e3bd", "status": 0, "value": True}
+)
+
+GET_CSS_COLOR_VALUE = dict_to_json(
+    {
+        "sessionId": "e7f659e7183778e98ce9357051e40a47",
+        "status": 0,
+        "value": "rgba(0, 0, 0, 1)",
+    }
+)
+
+IS_ELEMENT_SELECTED = dict_to_json(
+    {"sessionId": "341d21063846141d2716d300652ddd81", "status": 0, "value": False}
+)
+
+GET_WINDOW_HANDLES = dict_to_json(
+    {
+        "sessionId": "b3f92cf70d734ecc6fcddbd88671998a",
+        "status": 0,
+        "value": ["2E55CCE389196328988ED244DAA52A5D"],
+    }
+)
+
 CLOSE_WINDOW = dict_to_json(
     {"sessionId": "48399161591a0bc1dffaa2ff2d65aa0f", "status": 0, "value": []}
 )
+
 GET_WINDOW = dict_to_json(
     {
         "sessionId": "ce68162d420e9cb2b1617c2d1a800f85",

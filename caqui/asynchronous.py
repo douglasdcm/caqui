@@ -35,6 +35,67 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def clear_element(driver_url, session, element):
+    """Clear the element text"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/clear"
+        payload = json.dumps({"id": element})
+        await __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError("Failed to clear the element text.") from error
+
+
+async def is_element_enabled(driver_url, session, element):
+    """Check if element is enabled"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/enabled"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to check if element is enabled.") from error
+
+
+async def get_css_value(driver_url, session, element, property_name):
+    """Check if element is selected"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/css/{property_name}"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to check if element is selected.") from error
+
+
+async def is_element_selected(driver_url, session, element):
+    """Check if element is selected"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/selected"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to check if element is selected.") from error
+
+
+async def get_window_rectangle(driver_url, session):
+    """Get window rectangle"""
+    try:
+        url = f"{driver_url}/session/{session}/window/rect"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get window rectangle.") from error
+
+
+async def get_window_handles(driver_url, session):
+    """Get window handles"""
+    try:
+        url = f"{driver_url}/session/{session}/window/handles"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get window handles.") from error
+
+
 async def close_window(driver_url, session):
     """Close active window"""
     try:
@@ -46,7 +107,7 @@ async def close_window(driver_url, session):
 
 
 async def get_window(driver_url, session):
-    """Get window handle"""
+    """Get window"""
     try:
         url = f"{driver_url}/session/{session}/window"
         response = await __get(url)
