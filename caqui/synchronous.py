@@ -32,6 +32,15 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def is_element_enabled(driver_url, session, element):
+    """Check if element is enabled"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/enabled"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to check if element is enabled.") from error
+
+
 def get_css_value(driver_url, session, element, property_name):
     """Get the css property value"""
     try:

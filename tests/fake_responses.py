@@ -38,6 +38,10 @@ GET_WINDOW_RECTANGLE = dict_to_json(
     }
 )
 
+IS_ELEMENT_ENABLED = dict_to_json(
+    {"sessionId": "e0e43cd1ce532b5aa62b6df0de11e3bd", "status": 0, "value": True}
+)
+
 GET_CSS_COLOR_VALUE = dict_to_json(
     {
         "sessionId": "e7f659e7183778e98ce9357051e40a47",

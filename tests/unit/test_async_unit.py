@@ -12,6 +12,15 @@ async def mock_post(*args):
 
 
 @mark.asyncio
+async def test_is_element_enabled():
+    async def mock_post(*args):
+        return fake_responses.IS_ELEMENT_ENABLED
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        assert await asynchronous.is_element_enabled("", "", "") is True
+
+
+@mark.asyncio
 async def test_get_css_value():
     expected = "rgba(0, 0, 0, 1)"
 

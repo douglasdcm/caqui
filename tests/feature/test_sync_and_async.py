@@ -26,6 +26,18 @@ def __setup():
 
 
 @mark.asyncio
+async def test_is_element_enabled(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert synchronous.is_element_enabled(driver_url, session, element) is True
+    assert await asynchronous.is_element_enabled(driver_url, session, element) is True
+
+
+@mark.asyncio
 async def test_get_css_value(__setup):
     driver_url, session = __setup
     locator_type = "xpath"
