@@ -3,6 +3,20 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.GET_WINDOW_RECTANGLE)
+def test_get_window_rectangle(*args):
+    expected = "height"
+
+    assert expected in synchronous.get_window_rectangle("", "")
+
+
+@patch("requests.request", return_value=fake_responses.GET_WINDOW_HANDLES)
+def test_get_window_handles(*args):
+    expected = "2E55CCE389196328988ED244DAA52A5D"
+
+    assert expected in synchronous.get_window_handles("", "")
+
+
 @patch("requests.request", return_value=fake_responses.CLOSE_WINDOW)
 def test_close_window(*args):
     expected = []

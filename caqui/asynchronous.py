@@ -35,6 +35,26 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def get_window_rectangle(driver_url, session):
+    """Get window rectangle"""
+    try:
+        url = f"{driver_url}/session/{session}/window/rect"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get window rectangle.") from error
+
+
+async def get_window_handles(driver_url, session):
+    """Get window handles"""
+    try:
+        url = f"{driver_url}/session/{session}/window/handles"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get window handles.") from error
+
+
 async def close_window(driver_url, session):
     """Close active window"""
     try:
@@ -46,7 +66,7 @@ async def close_window(driver_url, session):
 
 
 async def get_window(driver_url, session):
-    """Get window handle"""
+    """Get window"""
     try:
         url = f"{driver_url}/session/{session}/window"
         response = await __get(url)

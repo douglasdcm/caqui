@@ -25,6 +25,25 @@ def __setup():
     synchronous.close_session(driver_url, session)
 
 
+@mark.asyncio
+async def test_get_window_rectangle(__setup):
+    driver_url, session = __setup
+    expected = "height"
+
+    assert expected in synchronous.get_window_rectangle(driver_url, session)
+    rectangle = await asynchronous.get_window_rectangle(driver_url, session)
+    assert expected in rectangle
+
+
+@mark.asyncio
+async def test_get_window_handles(__setup):
+    driver_url, session = __setup
+
+    assert isinstance(synchronous.get_window_handles(driver_url, session), list)
+    handles = await asynchronous.get_window_handles(driver_url, session)
+    assert isinstance(handles, list)
+
+
 def test_close_window_sync(__setup):
     driver_url, session = __setup
     assert isinstance(synchronous.close_window(driver_url, session), list)

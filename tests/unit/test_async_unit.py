@@ -12,6 +12,28 @@ async def mock_post(*args):
 
 
 @mark.asyncio
+async def test_get_window_rectangle():
+    expected = "height"
+
+    async def mock_post(*args):
+        return fake_responses.GET_WINDOW_RECTANGLE
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        assert expected in await asynchronous.get_window_rectangle("", "")
+
+
+@mark.asyncio
+async def test_get_window_handles():
+    expected = ["2E55CCE389196328988ED244DAA52A5D"]
+
+    async def mock_post(*args):
+        return fake_responses.GET_WINDOW_HANDLES
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        assert await asynchronous.get_window_handles("", "") == expected
+
+
+@mark.asyncio
 async def test_close_window():
     expected = []
 

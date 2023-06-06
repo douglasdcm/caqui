@@ -32,6 +32,24 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def get_window_rectangle(driver_url, session):
+    """Get window rectangle"""
+    try:
+        url = f"{driver_url}/session/{session}/window/rect"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get window rectangle.") from error
+
+
+def get_window_handles(driver_url, session):
+    """Get window handles"""
+    try:
+        url = f"{driver_url}/session/{session}/window/handles"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get window handles.") from error
+
+
 def close_window(driver_url, session):
     """Close active window"""
     try:
@@ -42,7 +60,7 @@ def close_window(driver_url, session):
 
 
 def get_window(driver_url, session):
-    """Get window handle"""
+    """Get window"""
     try:
         url = f"{driver_url}/session/{session}/window"
         return __get(url).get("value")
