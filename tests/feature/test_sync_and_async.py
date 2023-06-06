@@ -26,6 +26,26 @@ def __setup():
 
 
 @mark.asyncio
+async def test_get_css_value(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+    property_name = "color"
+    expected = "rgba(0, 0, 0, 1)"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert (
+        synchronous.get_css_value(driver_url, session, element, property_name)
+        == expected
+    )
+    assert (
+        await asynchronous.get_css_value(driver_url, session, element, property_name)
+        == expected
+    )
+
+
+@mark.asyncio
 async def test_is_element_selected(__setup):
     driver_url, session = __setup
     locator_type = "xpath"

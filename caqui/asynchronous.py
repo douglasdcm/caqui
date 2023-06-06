@@ -35,6 +35,16 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def get_css_value(driver_url, session, element, property_name):
+    """Check if element is selected"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/css/{property_name}"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to check if element is selected.") from error
+
+
 async def is_element_selected(driver_url, session, element):
     """Check if element is selected"""
     try:

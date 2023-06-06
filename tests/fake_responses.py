@@ -38,6 +38,14 @@ GET_WINDOW_RECTANGLE = dict_to_json(
     }
 )
 
+GET_CSS_COLOR_VALUE = dict_to_json(
+    {
+        "sessionId": "e7f659e7183778e98ce9357051e40a47",
+        "status": 0,
+        "value": "rgba(0, 0, 0, 1)",
+    }
+)
+
 IS_ELEMENT_SELECTED = dict_to_json(
     {"sessionId": "341d21063846141d2716d300652ddd81", "status": 0, "value": False}
 )

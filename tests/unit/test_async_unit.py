@@ -12,6 +12,17 @@ async def mock_post(*args):
 
 
 @mark.asyncio
+async def test_get_css_value():
+    expected = "rgba(0, 0, 0, 1)"
+
+    async def mock_post(*args):
+        return fake_responses.GET_CSS_COLOR_VALUE
+
+    with patch("caqui.asynchronous.__get", mock_post):
+        assert await asynchronous.get_css_value("", "", "", "") == expected
+
+
+@mark.asyncio
 async def test_is_element_selected():
     async def mock_post(*args):
         return fake_responses.IS_ELEMENT_SELECTED
