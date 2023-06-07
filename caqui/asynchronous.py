@@ -2,7 +2,7 @@ import aiohttp
 import json
 from caqui.constants import HEADERS
 from caqui.exceptions import WebDriverError
-from caqui.helper import get_element
+from caqui import helper
 
 
 async def __delete(url):
@@ -18,7 +18,9 @@ async def __delete(url):
 async def __post(url, payload):
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, data=payload, headers=HEADERS) as resp:
+            async with session.post(
+                url, data=json.dumps(payload), headers=HEADERS
+            ) as resp:
                 response = await resp.json()
                 return response
     except Exception as error:
@@ -35,11 +37,21 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def get_active_element(driver_url, session):
+    """Get the active element"""
+    try:
+        url = f"{driver_url}/session/{session}/element/active"
+        response = await __get(url)
+        return helper.get_element(response)
+    except Exception as error:
+        raise WebDriverError("Failed to check if element is selected.") from error
+
+
 async def clear_element(driver_url, session, element):
     """Clear the element text"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/clear"
-        payload = json.dumps({"id": element})
+        payload = {"id": element}
         await __post(url, payload)
         return True
     except Exception as error:
@@ -184,7 +196,7 @@ async def get_title(driver_url, session):
 async def find_elements(driver_url, session, locator_type, locator_value):
     """Search the DOM elements by 'locator', for example, 'xpath'"""
     try:
-        payload = json.dumps({"using": locator_type, "value": locator_value})
+        payload = {"using": locator_type, "value": locator_value}
         url = f"{driver_url}/session/{session}/elements"
         response = await __post(url, payload)
         return [x.get("ELEMENT") for x in response.get("value")]
@@ -248,7 +260,7 @@ async def go_to_page(driver_url, session, page_url):
     """Navigate to 'page_url'"""
     try:
         url = f"{driver_url}/session/{session}/url"
-        payload = json.dumps({"url": page_url})
+        payload = {"url": page_url}
         await __post(url, payload)
         return True
     except Exception as error:
@@ -259,7 +271,7 @@ async def send_keys(driver_url, session, element, text):
     """Fill an editable element, for example a textarea, with a given text"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/value"
-        payload = json.dumps({"text": text, "value": [*text], "id": element})
+        payload = {"text": text, "value": [*text], "id": element}
         await __post(url, payload)
         return True
     except Exception as error:
@@ -269,7 +281,7 @@ async def send_keys(driver_url, session, element, text):
 async def click(driver_url, session, element):
     """Click on an element"""
     try:
-        payload = json.dumps({"id": element})
+        payload = {"id": element}
         url = f"{driver_url}/session/{session}/element/{element}/click"
         await __post(url, payload)
         return True
@@ -281,10 +293,10 @@ async def find_element(driver_url, session, locator_type, locator_value):
     """Find an element by a 'locator', for example 'xpath'"""
 
     try:
-        payload = json.dumps({"using": locator_type, "value": locator_value})
+        payload = {"using": locator_type, "value": locator_value}
         url = f"{driver_url}/session/{session}/element"
         response = await __post(url, payload)
-        return get_element(response)
+        return helper.get_element(response)
     except Exception as error:
         raise WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."
@@ -294,7 +306,7 @@ async def find_element(driver_url, session, locator_type, locator_value):
 async def get_session(driver_url, capabilities):
     """Opens a browser and a session. This session is used for all functions to perform events in the page"""
     try:
-        payload = json.dumps(capabilities)
+        payload = capabilities
         url = f"{driver_url}/session"
         response = await __post(url, payload)
         return response.get("sessionId")

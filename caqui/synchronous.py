@@ -20,7 +20,9 @@ def __get(url):
 
 def __post(url, payload):
     try:
-        return requests.request("POST", url, headers=HEADERS, data=payload).json()
+        return requests.request(
+            "POST", url, headers=HEADERS, data=json.dumps(payload)
+        ).json()
     except Exception as error:
         raise WebDriverError("'POST' request failed.") from error
 
@@ -32,11 +34,21 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def get_active_element(driver_url, session):
+    """Get the active element"""
+    try:
+        url = f"{driver_url}/session/{session}/element/active"
+        response = __get(url)
+        return helper.get_element(response)
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the active element.") from error
+
+
 def clear_element(driver_url, session, element):
     """Clear the element text"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/clear"
-        payload = json.dumps({"id": element})
+        payload = {"id": element}
         __post(url, payload)
         return True
     except Exception as error:
@@ -174,7 +186,7 @@ def find_elements(driver_url, session, locator_type, locator_value):
     """Search the DOM elements by 'locator', for example, 'xpath'"""
     try:
         url = f"{driver_url}/session/{session}/elements"
-        payload = json.dumps({"using": locator_type, "value": locator_value})
+        payload = {"using": locator_type, "value": locator_value}
         response = __post(url, payload)
         return [x.get("ELEMENT") for x in response.get("value")]
     except Exception as error:
@@ -217,7 +229,7 @@ def go_to_page(driver_url, session, page_url):
     """Navigate to 'page_url'"""
     try:
         url = f"{driver_url}/session/{session}/url"
-        payload = json.dumps({"url": page_url})
+        payload = {"url": page_url}
         __post(url, payload)
         return True
     except Exception as error:
@@ -248,7 +260,7 @@ def send_keys(driver_url, session, element, text):
     """Fill an editable element, for example a textarea, with a given text"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/value"
-        payload = json.dumps({"text": text, "value": [*text], "id": element})
+        payload = {"text": text, "value": [*text], "id": element}
         __post(url, payload)
         return True
     except Exception as error:
@@ -259,7 +271,7 @@ def click(driver_url, session, element):
     """Click on an element"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/click"
-        payload = json.dumps({"id": element})
+        payload = {"id": element}
         __post(url, payload)
         return True
     except Exception as error:
@@ -281,7 +293,7 @@ def get_session(driver_url, capabilities):
     """Opens a browser and a session. This session is used for all functions to perform events in the page"""
     try:
         url = f"{driver_url}/session"
-        data = json.dumps(capabilities)
+        data = capabilities
         response = __post(url, payload=data)
         return __get_session(response)
     except Exception as error:
@@ -292,7 +304,7 @@ def find_element(driver_url, session, locator_type, locator_value):
     """Find an element by a 'locator', for example 'xpath'"""
     try:
         url = f"{driver_url}/session/{session}/element"
-        payload = json.dumps({"using": locator_type, "value": locator_value})
+        payload = {"using": locator_type, "value": locator_value}
         response = __post(url, payload)
         return helper.get_element(response)
     except Exception as error:
