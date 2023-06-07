@@ -3,6 +3,12 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.GET_ALERT_TEXT)
+def test_get_alert_text(*args):
+    expected = "any warn"
+    assert synchronous.get_alert_text("", "") == expected
+
+
 @patch("requests.request", return_value=fake_responses.GET_ACTIVE_ELEMENT)
 def test_get_active_element(*args):
     expected = "0.8851292311864847-1"

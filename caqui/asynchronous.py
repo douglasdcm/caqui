@@ -37,6 +37,16 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def get_alert_text(driver_url, session):
+    """Get the text from an alert"""
+    try:
+        url = f"{driver_url}/session/{session}/alert/text"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get the alert text.") from error
+
+
 async def get_active_element(driver_url, session):
     """Get the active element"""
     try:

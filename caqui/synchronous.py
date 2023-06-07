@@ -34,6 +34,15 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def get_alert_text(driver_url, session):
+    """Get the text from an alert"""
+    try:
+        url = f"{driver_url}/session/{session}/alert/text"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the alert text.") from error
+
+
 def get_active_element(driver_url, session):
     """Get the active element"""
     try:
@@ -306,6 +315,10 @@ def find_element(driver_url, session, locator_type, locator_value):
         url = f"{driver_url}/session/{session}/element"
         payload = {"using": locator_type, "value": locator_value}
         response = __post(url, payload)
+        # Firefox does not support id locator, so it prints the error message to the user
+        # It helps on debug
+        if response.get("value").get("error"):
+            raise WebDriverError(f"Failed to find element. {response}")
         return helper.get_element(response)
     except Exception as error:
         raise WebDriverError(

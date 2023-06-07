@@ -14,6 +14,7 @@ The process **Caqui** follows is similar of the one described in this [article](
 | ----------------------- | ------------- |
 | Google Chrome           | 113, 114      |
 | Firefox (geckodriver)   | 113           |
+| Winium Desktop          | 1.6.0         |
 
 # Simple start
 Install the lastest version of **Caqui**

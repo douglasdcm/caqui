@@ -1,13 +1,7 @@
-import asyncio
-import time
-from caqui import synchronous, asynchronous
-from os import getcwd
-from tests.constants import PAGE_URL
-
-BASE_DIR = getcwd()
-
-MAX_CONCURRENCY = 5  # number of webdriver instances running
-all_anchors = []
+# Simple example of usage of caqui with Windows Calculator
+# It opens the Calculator and clicks the number "8"
+# Test works just i Windows environment. Tested with Windows 10
+from caqui import synchronous
 
 
 def main():
