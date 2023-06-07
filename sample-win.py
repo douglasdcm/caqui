@@ -25,6 +25,7 @@ def main():
     )
 
     synchronous.click(driver_url, session, element)
+    synchronous.close_session(driver_url, session)
 
 
 if __name__ == "__main__":
