@@ -26,6 +26,22 @@ def __setup():
 
 
 @mark.asyncio
+async def test_get_alert_text(__setup):
+    driver_url, session = __setup
+    locator_type = "css selector"
+    locator_value = "#alert-button"
+    expected = "any warn"
+
+    alert_button = synchronous.find_element(
+        driver_url, session, locator_type, locator_value
+    )
+    synchronous.click(driver_url, session, alert_button)
+
+    assert synchronous.get_alert_text(driver_url, session) == expected
+    assert await asynchronous.get_alert_text(driver_url, session) == expected
+
+
+@mark.asyncio
 async def test_get_active_element(__setup):
     driver_url, session = __setup
     locator_type = "xpath"
