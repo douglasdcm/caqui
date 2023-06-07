@@ -12,6 +12,17 @@ async def mock_request(*args):
 
 
 @mark.asyncio
+async def test_get_active_element():
+    expected = "0.8851292311864847-1"
+
+    async def mock_request(*args):
+        return fake_responses.GET_ACTIVE_ELEMENT
+
+    with patch("caqui.asynchronous.__get", mock_request):
+        assert await asynchronous.get_active_element("", "") == expected
+
+
+@mark.asyncio
 async def test_clear_element():
     async def mock_request(*args):
         return fake_responses.CLEAR_ELEMENT

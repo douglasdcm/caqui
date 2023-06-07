@@ -3,6 +3,12 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.GET_ACTIVE_ELEMENT)
+def test_get_active_element(*args):
+    expected = "0.8851292311864847-1"
+    assert synchronous.get_active_element("", "") == expected
+
+
 @patch("requests.request", return_value=fake_responses.CLEAR_ELEMENT)
 def test_clear_element(*args):
     assert synchronous.clear_element("", "", "") is True

@@ -34,6 +34,16 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def get_active_element(driver_url, session):
+    """Get the active element"""
+    try:
+        url = f"{driver_url}/session/{session}/element/active"
+        response = __get(url)
+        return helper.get_element(response)
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the active element.") from error
+
+
 def clear_element(driver_url, session, element):
     """Clear the element text"""
     try:

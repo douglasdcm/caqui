@@ -38,6 +38,7 @@ GET_WINDOW_RECTANGLE = dict_to_json(
     }
 )
 
+GET_ACTIVE_ELEMENT = DEFAULT
 
 CLEAR_ELEMENT = dict_to_json(
     {"sessionId": "486fa32a9876b4519e149b39135edcb5", "status": 0, "value": None}

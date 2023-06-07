@@ -2,7 +2,7 @@ import aiohttp
 import json
 from caqui.constants import HEADERS
 from caqui.exceptions import WebDriverError
-from caqui.helper import get_element
+from caqui import helper
 
 
 async def __delete(url):
@@ -35,6 +35,16 @@ async def __get(url):
                 return response
     except Exception as error:
         raise WebDriverError("'GET' request failed.") from error
+
+
+async def get_active_element(driver_url, session):
+    """Get the active element"""
+    try:
+        url = f"{driver_url}/session/{session}/element/active"
+        response = await __get(url)
+        return helper.get_element(response)
+    except Exception as error:
+        raise WebDriverError("Failed to check if element is selected.") from error
 
 
 async def clear_element(driver_url, session, element):
@@ -286,7 +296,7 @@ async def find_element(driver_url, session, locator_type, locator_value):
         payload = {"using": locator_type, "value": locator_value}
         url = f"{driver_url}/session/{session}/element"
         response = await __post(url, payload)
-        return get_element(response)
+        return helper.get_element(response)
     except Exception as error:
         raise WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."
