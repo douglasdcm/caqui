@@ -3,6 +3,19 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.EXECUTE_SCRIPT)
+def test_execute_script(*args):
+    expected = "any"
+
+    assert synchronous.execute_script("", "", "", "") == expected
+
+
+@patch("requests.request", return_value=fake_responses.GET_PAGE_SOURCE)
+def test_get_page_source(*args):
+    expected = "Sample page"
+    assert expected in synchronous.get_page_source("", "")
+
+
 @patch("requests.request", return_value=fake_responses.GET_ALERT_TEXT)
 def test_get_alert_text(*args):
     expected = "any warn"

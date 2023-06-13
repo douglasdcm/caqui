@@ -12,6 +12,28 @@ async def mock_request(*args):
 
 
 @mark.asyncio
+async def test_execute_script():
+    expected = "any"
+
+    async def mock_request(*args):
+        return fake_responses.EXECUTE_SCRIPT
+
+    with patch("caqui.asynchronous.__post", mock_request):
+        assert await asynchronous.execute_script("", "", "", "") == expected
+
+
+@mark.asyncio
+async def test_get_page_source():
+    expected = "Sample page"
+
+    async def mock_request(*args):
+        return fake_responses.GET_PAGE_SOURCE
+
+    with patch("caqui.asynchronous.__get", mock_request):
+        assert expected in await asynchronous.get_page_source("", "")
+
+
+@mark.asyncio
 async def test_get_alert_text():
     expected = "any warn"
 

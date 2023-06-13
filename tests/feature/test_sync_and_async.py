@@ -26,6 +26,30 @@ def __setup():
 
 
 @mark.asyncio
+async def test_get_page_source(__setup):
+    driver_url, session = __setup
+    expected = "Sample page"
+
+    assert expected in synchronous.get_page_source(driver_url, session)
+    assert expected in await asynchronous.get_page_source(driver_url, session)
+
+
+@mark.asyncio
+async def test_execute_script_asynchronous(__setup):
+    driver_url, session = __setup
+    script = "alert('any warn')"
+
+    assert await asynchronous.execute_script(driver_url, session, script) == None
+
+
+def test_execute_script_synchronous(__setup):
+    driver_url, session = __setup
+    script = "alert('any warn')"
+
+    assert synchronous.execute_script(driver_url, session, script) == None
+
+
+@mark.asyncio
 async def test_get_alert_text(__setup):
     driver_url, session = __setup
     locator_type = "css selector"
