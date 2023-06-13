@@ -1,4 +1,4 @@
-To start to contribute, install the dependencies (Python >= 3.7)
+To start to contribute, install the dependencies (Python >= 3.6)
 ```
 python3 -m venv venv
 pip install -e .
