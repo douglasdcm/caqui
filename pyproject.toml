@@ -14,7 +14,7 @@ authors = [
 ]
 description = "Run asynchronous commands in WebDrivers"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.6"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
