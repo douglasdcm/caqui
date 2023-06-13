@@ -13,7 +13,18 @@ class Dictionary:
 
 
 def dict_to_json(dictionary):
-    return Dictionary(dictionary)
+    class MockResponse:
+        @property
+        def status_code(self):
+            return 200
+
+        def get(self, argument):
+            return dictionary.get(argument)
+
+        def json(self):
+            return Dictionary(dictionary)
+
+    return MockResponse()
 
 
 DEFAULT = dict_to_json(
@@ -29,6 +40,18 @@ SEND_KEYS = DEFAULT
 CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
+
+EXECUTE_SCRIPT = dict_to_json(
+    {"sessionId": "9f4a4a9420663d0c0cc18957ab463b90", "status": 0, "value": "any"}
+)
+
+GET_PAGE_SOURCE = dict_to_json(
+    {
+        "sessionId": "e34234d1445ed6d4833370d1d8019282",
+        "status": 0,
+        "value": "<html><head><title>Sample page</title></head><body><h1>Basic page</h1></body></html>",
+    }
+)
 
 GET_ALERT_TEXT = dict_to_json(
     {"sessionId": "171ba19c927e0b95e1a53dbbdcfcdc19", "status": 0, "value": "any warn"}

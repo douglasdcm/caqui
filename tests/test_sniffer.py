@@ -27,6 +27,11 @@ def setup():
 
 
 @mark.skip("used just to discover request data")
+def test_exec_script(setup):
+    driver = setup
+    assert driver.execute_script("return document.body.scrollHeight") == "any"
+
+@mark.skip("used just to discover request data")
 def test_clear(setup):
     driver = setup
     element = driver.find_element("xpath", "//input")

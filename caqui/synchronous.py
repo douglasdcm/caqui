@@ -13,7 +13,10 @@ HEADERS = {
 
 def __get(url):
     try:
-        return requests.request("GET", url, headers=HEADERS, data={}).json()
+        response = requests.request("GET", url, headers=HEADERS, data={})
+        if response.status_code in range(200, 399):
+            return response.json()
+        raise WebDriverError(f"Status code: {response.status_code}, {response.text}")
     except Exception as error:
         raise WebDriverError("'GET' request failed.") from error
 
@@ -32,6 +35,26 @@ def __delete(url):
         return requests.request("DELETE", url, headers={}, data={}).json()
     except Exception as error:
         raise WebDriverError("'DELETE' request failed.") from error
+
+
+def get_page_source(driver_url, session):
+    """Get the page source (all content)"""
+    try:
+        url = f"{driver_url}/session/{session}/source"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the page source.") from error
+
+
+def execute_script(driver_url, session, script, args=[]):
+    """Executes a script, like 'alert('something')' to open an alert window"""
+    try:
+        url = f"{driver_url}/session/{session}/execute/sync"
+        payload = {"script": script, "args": args}
+        response = __post(url, payload)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to run the script.") from error
 
 
 def get_alert_text(driver_url, session):

@@ -37,6 +37,27 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def get_page_source(driver_url, session):
+    """Get the page source (all content)"""
+    try:
+        url = f"{driver_url}/session/{session}/source"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get the page source.") from error
+
+
+async def execute_script(driver_url, session, script, args=[]):
+    """Executes a script, like 'alert('something')' to open an alert window"""
+    try:
+        url = f"{driver_url}/session/{session}/execute/sync"
+        payload = {"script": script, "args": args}
+        response = await __post(url, payload)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to open session.") from error
+
+
 async def get_alert_text(driver_url, session):
     """Get the text from an alert"""
     try:
