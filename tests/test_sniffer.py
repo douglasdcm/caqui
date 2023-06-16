@@ -3,6 +3,7 @@
 from selenium import webdriver
 from pytest import fixture, mark
 from tests.constants import PAGE_URL
+from selenium.webdriver.common.by import By
 
 
 @fixture
@@ -27,9 +28,19 @@ def setup():
 
 
 @mark.skip("used just to discover request data")
+def test_sniffer_find_children_elements(setup):
+    driver = setup
+    element = driver.find_element(By.XPATH, '//div[@class="parent"]')
+    elements = element.find_elements(By.XPATH, "//div")
+    for e in elements:
+        print("element_text:", e.text)
+
+
+@mark.skip("used just to discover request data")
 def test_exec_script(setup):
     driver = setup
     assert driver.execute_script("return document.body.scrollHeight") == "any"
+
 
 @mark.skip("used just to discover request data")
 def test_clear(setup):

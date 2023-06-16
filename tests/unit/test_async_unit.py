@@ -12,6 +12,17 @@ async def mock_request(*args):
 
 
 @mark.asyncio
+async def test_find_children_elements():
+    element = "C230605181E69CB2C4C36B8E83FE1245_element_2"
+
+    async def mock_request(*args):
+        return fake_responses.FIND_ELEMENTS
+
+    with patch("caqui.asynchronous.__post", mock_request):
+        assert element in await asynchronous.find_children_elements("", "", "", "", "")
+
+
+@mark.asyncio
 async def test_find_child_element():
     element = "0.8851292311864847-1"
 

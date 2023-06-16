@@ -37,6 +37,21 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def find_children_elements(
+    driver_url, session, parent_element, locator_type, locator_value
+):
+    """Find the children elements by 'locator_type'"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{parent_element}/elements"
+        payload = {"using": locator_type, "value": locator_value, "id": parent_element}
+        response = await __post(url, payload)
+        return helper.get_elements(response)
+    except Exception as error:
+        raise WebDriverError(
+            f"Failed to find the children elements from '{parent_element}'."
+        ) from error
+
+
 async def find_child_element(
     driver_url, session, parent_element, locator_type, locator_value
 ):

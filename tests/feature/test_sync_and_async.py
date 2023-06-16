@@ -26,6 +26,30 @@ def __setup():
 
 
 @mark.asyncio
+async def test_find_children_elements(__setup):
+    driver_url, session = __setup
+    expected = 5  # parent inclusive
+    locator_type = "xpath"
+    locator_value = "//div"
+
+    parent_element = synchronous.find_element(
+        driver_url, session, locator_type, '//div[@class="parent"]'
+    )
+
+    children_elements = synchronous.find_children_elements(
+        driver_url, session, parent_element, locator_type, locator_value
+    )
+
+    assert len(children_elements) == expected
+
+    children_elements = await asynchronous.find_children_elements(
+        driver_url, session, parent_element, locator_type, locator_value
+    )
+
+    assert len(children_elements) == expected
+
+
+@mark.asyncio
 async def test_find_child_element(__setup):
     driver_url, session = __setup
     expected = "any4"
