@@ -26,6 +26,70 @@ def __setup():
 
 
 @mark.asyncio
+async def test_set_timeouts(__setup):
+    driver_url, session = __setup
+    timeouts_1 = 5000  # milliseconds
+    timeouts_2 = 3000  # milliseconds
+
+    synchronous.set_timeouts(driver_url, session, timeouts_1)
+
+    assert synchronous.get_timeouts(driver_url, session).get("implicit") == timeouts_1
+
+    await asynchronous.set_timeouts(driver_url, session, timeouts_2)
+
+    assert synchronous.get_timeouts(driver_url, session).get("implicit") == timeouts_2
+
+
+@mark.asyncio
+async def test_find_children_elements(__setup):
+    driver_url, session = __setup
+    expected = 5  # parent inclusive
+    locator_type = "xpath"
+    locator_value = "//div"
+
+    parent_element = synchronous.find_element(
+        driver_url, session, locator_type, '//div[@class="parent"]'
+    )
+
+    children_elements = synchronous.find_children_elements(
+        driver_url, session, parent_element, locator_type, locator_value
+    )
+
+    assert len(children_elements) == expected
+
+    children_elements = await asynchronous.find_children_elements(
+        driver_url, session, parent_element, locator_type, locator_value
+    )
+
+    assert len(children_elements) == expected
+
+
+@mark.asyncio
+async def test_find_child_element(__setup):
+    driver_url, session = __setup
+    expected = "any4"
+    locator_type = "xpath"
+    locator_value = '//div[@class="child4"]'
+
+    parent_element = synchronous.find_element(
+        driver_url, session, locator_type, '//div[@class="parent"]'
+    )
+
+    child_element = synchronous.find_child_element(
+        driver_url, session, parent_element, locator_type, locator_value
+    )
+
+    text = synchronous.get_text(driver_url, session, child_element)
+
+    assert text == expected
+    child_element = await asynchronous.find_child_element(
+        driver_url, session, parent_element, locator_type, locator_value
+    )
+    text = synchronous.get_text(driver_url, session, child_element)
+    assert text == expected
+
+
+@mark.asyncio
 async def test_get_page_source(__setup):
     driver_url, session = __setup
     expected = "Sample page"

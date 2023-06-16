@@ -3,6 +3,28 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.GET_TIMEOUTS)
+def test_set_timeouts(*args):
+    assert synchronous.set_timeouts("", "", "") == True
+
+
+@patch("requests.request", return_value=fake_responses.FIND_ELEMENTS)
+def test_find_children_elements(*args):
+    element = "C230605181E69CB2C4C36B8E83FE1245_element_2"
+
+    elements = synchronous.find_children_elements("", "", "", "", "")
+
+    assert element in elements
+    assert len(elements) == 3
+
+
+@patch("requests.request", return_value=fake_responses.FIND_ELEMENT)
+def test_find_child_element(*args):
+    expected = "0.8851292311864847-1"
+
+    assert synchronous.find_child_element("", "", "", "", "") == expected
+
+
 @patch("requests.request", return_value=fake_responses.EXECUTE_SCRIPT)
 def test_execute_script(*args):
     expected = "any"
