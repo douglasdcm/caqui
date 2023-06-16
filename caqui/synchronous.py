@@ -37,6 +37,19 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def set_timeouts(driver_url, session, timeouts):
+    """Set timeouts"""
+    try:
+        url = f"{driver_url}/session/{session}/timeouts"
+        payload = {
+            "implicit": timeouts,
+        }
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to set timeouts.") from error
+
+
 def find_children_elements(
     driver_url, session, parent_element, locator_type, locator_value
 ):

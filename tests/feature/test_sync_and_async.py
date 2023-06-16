@@ -26,6 +26,21 @@ def __setup():
 
 
 @mark.asyncio
+async def test_set_timeouts(__setup):
+    driver_url, session = __setup
+    timeouts_1 = 5000  # milliseconds
+    timeouts_2 = 3000  # milliseconds
+
+    synchronous.set_timeouts(driver_url, session, timeouts_1)
+
+    assert synchronous.get_timeouts(driver_url, session).get("implicit") == timeouts_1
+
+    await asynchronous.set_timeouts(driver_url, session, timeouts_2)
+
+    assert synchronous.get_timeouts(driver_url, session).get("implicit") == timeouts_2
+
+
+@mark.asyncio
 async def test_find_children_elements(__setup):
     driver_url, session = __setup
     expected = 5  # parent inclusive

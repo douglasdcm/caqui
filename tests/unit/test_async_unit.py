@@ -12,6 +12,15 @@ async def mock_request(*args):
 
 
 @mark.asyncio
+async def test_set_timeouts():
+    async def mock_request(*args):
+        return fake_responses.GET_TIMEOUTS
+
+    with patch("caqui.asynchronous.__post", mock_request):
+        assert await asynchronous.set_timeouts("", "", "") == True
+
+
+@mark.asyncio
 async def test_find_children_elements():
     element = "C230605181E69CB2C4C36B8E83FE1245_element_2"
 
