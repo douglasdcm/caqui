@@ -3,6 +3,13 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.FIND_ELEMENT)
+def test_find_child_element(*args):
+    expected = "0.8851292311864847-1"
+
+    assert synchronous.find_child_element("", "", "", "", "") == expected
+
+
 @patch("requests.request", return_value=fake_responses.EXECUTE_SCRIPT)
 def test_execute_script(*args):
     expected = "any"
