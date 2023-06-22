@@ -13,8 +13,9 @@ The process **Caqui** follows is similar of the one described in this [article](
 | WebDriver               | Version       | Remote* | Comment |
 | ----------------------- | ------------- | ------- |-------- |
 | Appium                  | 2.0.0         | Y       | Accepts remote calls by default. Tested with Appium in Docker container |
-| Firefox (geckodriver)   | 113           | Y       | Need to add the host ip, e.g. "--host 123.45.6.78"
-| Google Chrome           | 113, 114      | Y       | Need to inform allowed ips to connect, e.g "--allowed-ips=123.45.6.78"
+| Firefox (geckodriver)   | 113           | Y       | Need to add the host ip, e.g. "--host 123.45.6.78" |
+| Google Chrome           | 113, 114      | Y       | Need to inform allowed ips to connect, e.g "--allowed-ips=123.45.6.78" |
+| Opera                   | 99            | Y       | Need to inform allowed ips to connect, e.g "--allowed-ips=123.45.6.78". Similar to Google Chrome |
 | WinAppDriver            | 1.2.1         | Y       | Need to define the host ip, e.g. "WinAppDriver.exe 10.0.0.10 4723" |
 | Winium Desktop          | 1.6.0         | Y       | Accepts remote calls by default |
 
