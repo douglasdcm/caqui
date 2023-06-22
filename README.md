@@ -10,12 +10,15 @@ The process **Caqui** follows is similar of the one described in this [article](
 
 # Tested WebDrivers
 
-| WebDriver               | Version       |
-| ----------------------- | ------------- |
-| Google Chrome           | 113, 114      |
-| Firefox (geckodriver)   | 113           |
-| Winium Desktop          | 1.6.0         |
-| Appium                  | 2.0.0         |
+| WebDriver               | Version       | Remote* | Comment |
+| ----------------------- | ------------- | ------- |-------- |
+| Appium                  | 2.0.0         | Y       | Accepts remote calls by default. Tested with Appium in Docker container |
+| Firefox (geckodriver)   | 113           | Y       | Need to add the host ip, e.g. "--host 123.45.6.78"
+| Google Chrome           | 113, 114      | Y       | Need to inform allowed ips to connect, e.g "--allowed-ips=123.45.6.78"
+| WinAppDriver            | 2.0.0         | Y       | Need to define the host ip, e.g. "WinAppDriver.exe 10.0.0.10 4723" |
+| Winium Desktop          | 1.6.0         | Y       | Accepts remote calls by default |
+
+* Accepts remote requests when running as servers
 
 # Simple start
 Install the lastest version of **Caqui**

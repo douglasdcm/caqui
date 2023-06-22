@@ -5,12 +5,15 @@ from caqui import synchronous
 
 
 def main():
-    driver_url = "http://127.0.0.1:9999"
+    driver_url = "http://127.0.0.1:4723"
     capabilities = {
-        "capabilities": {"firstMatch": [{}], "alwaysMatch": {}},
+        "capabilities": {
+            "firstMatch": [{}],
+            "alwaysMatch": {},
+        },
         "desiredCapabilities": {
             "debugConnectToRunningApp": "false",
-            "app": "C:/windows/system32/calc.exe",
+            "app": "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App",
         },
     }
     session = synchronous.get_session(driver_url, capabilities)
