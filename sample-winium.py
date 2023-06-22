@@ -1,6 +1,6 @@
 # Simple example of usage of caqui with Windows Calculator
 # It opens the Calculator and clicks the number "8"
-# Test works just i Windows environment. Tested with Windows 10
+# Test works just in Windows environment. Tested with Windows 10
 from caqui import synchronous
 
 

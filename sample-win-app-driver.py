@@ -1,13 +1,20 @@
 # Simple example of usage of caqui with Windows Calculator
 # It opens the Calculator and clicks the number "8"
-# Test works just i Windows environment. Tested with Windows 10
+# Test works just in Windows environment. Tested with Windows 10
 from caqui import synchronous
 
 
 def main():
-    driver_url = "http://127.0.0.1:9999"
+    driver_url = "http://127.0.0.1:4723"
     capabilities = {
-        "capabilities": {"firstMatch": [{}], "alwaysMatch": {"appium:app": "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App"}},
+        "capabilities": {
+            "firstMatch": [{}],
+            "alwaysMatch": {},
+        },
+        "desiredCapabilities": {
+            "debugConnectToRunningApp": "false",
+            "app": "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App",
+        },
     }
     session = synchronous.get_session(driver_url, capabilities)
     element = synchronous.find_element(
