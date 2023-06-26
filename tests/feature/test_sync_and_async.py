@@ -1,6 +1,7 @@
-from pytest import fixture, mark
+from pytest import fixture, mark, raises
 from caqui import asynchronous, synchronous
 from tests.constants import PAGE_URL
+from caqui.exceptions import WebDriverError
 
 
 @fixture
@@ -23,6 +24,21 @@ def __setup():
     )
     yield driver_url, session
     synchronous.close_session(driver_url, session)
+
+
+@mark.asyncio
+async def test_raise_exception_when_element_not_found(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//invalid-tag"
+
+    with raises(WebDriverError):
+        synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    with raises(WebDriverError):
+        await asynchronous.find_element(
+            driver_url, session, locator_type, locator_value
+        )
 
 
 @mark.asyncio

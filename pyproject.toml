@@ -8,7 +8,7 @@ exclude = ["tests*", "utils", ".vscode", ".git*", "dist"]
 
 [project]
 name = "caqui"
-version = "1.12.0"
+version = "1.13.0"
 authors = [
   { name="Douglas Cardoso", email="noemail@noemail.com" },
 ]
