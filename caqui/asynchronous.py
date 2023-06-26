@@ -21,8 +21,10 @@ async def __post(url, payload):
             async with session.post(
                 url, data=json.dumps(payload), headers=HEADERS
             ) as resp:
-                response = await resp.json()
-                return response
+                status = resp.status
+                if status in range(200, 399):
+                    return await resp.json()
+                raise WebDriverError(f"Status code: {resp.status}, {resp.text}")
     except Exception as error:
         raise WebDriverError("'POST' request failed.") from error
 
@@ -31,8 +33,10 @@ async def __get(url):
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=HEADERS) as resp:
-                response = await resp.json()
-                return response
+                status = resp.status
+                if status in range(200, 399):
+                    return await resp.json()
+                raise WebDriverError(f"Status code: {resp.status}, {resp.text}")
     except Exception as error:
         raise WebDriverError("'GET' request failed.") from error
 
@@ -370,6 +374,10 @@ async def find_element(driver_url, session, locator_type, locator_value):
         payload = {"using": locator_type, "value": locator_value}
         url = f"{driver_url}/session/{session}/element"
         response = await __post(url, payload)
+        if response.get("value").get("error"):
+            raise WebDriverError(f"Failed to find element. {response}")
+        if response.get("status") > 0:
+            raise WebDriverError(f"Failed to find element. {response}")
         return helper.get_element(response)
     except Exception as error:
         raise WebDriverError(

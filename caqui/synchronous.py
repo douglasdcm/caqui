@@ -22,10 +22,11 @@ def __get(url):
 
 
 def __post(url, payload):
+    response = requests.request("POST", url, headers=HEADERS, data=json.dumps(payload))
     try:
-        return requests.request(
-            "POST", url, headers=HEADERS, data=json.dumps(payload)
-        ).json()
+        if response.status_code in range(200, 399):
+            return response.json()
+        raise WebDriverError(f"Status code: {response.status_code}, {response.text}")
     except Exception as error:
         raise WebDriverError("'POST' request failed.") from error
 
@@ -384,6 +385,8 @@ def find_element(driver_url, session, locator_type, locator_value):
         # Firefox does not support id locator, so it prints the error message to the user
         # It helps on debug
         if response.get("value").get("error"):
+            raise WebDriverError(f"Failed to find element. {response}")
+        if response.get("status") > 0:
             raise WebDriverError(f"Failed to find element. {response}")
         return helper.get_element(response)
     except Exception as error:
