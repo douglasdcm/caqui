@@ -334,6 +334,11 @@ async def close_session(driver_url, session):
         raise WebDriverError("Failed to close session.") from error
 
 
+async def get(driver_url, session, page_url):
+    """Does the same of 'go_to_page'. Added to be compatible with selenium method name'"""
+    return go_to_page(driver_url, session, page_url)
+
+
 async def go_to_page(driver_url, session, page_url):
     """Navigate to 'page_url'"""
     try:

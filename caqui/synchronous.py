@@ -302,6 +302,11 @@ def get_cookies(driver_url, session):
 
 
 def go_to_page(driver_url, session, page_url):
+    """Does the same of 'go_to_page'. Added to be compatible with selenium method name'"""
+    return go_to_page(driver_url, session, page_url)
+
+
+def go_to_page(driver_url, session, page_url):
     """Navigate to 'page_url'"""
     try:
         url = f"{driver_url}/session/{session}/url"
