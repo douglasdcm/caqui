@@ -8,7 +8,8 @@ class Dictionary:
     def json(self):
         return self.dictionary
 
-    def get(self, key):
+    # used by sync functions
+    def get(self, key, *args):
         return self.dictionary.get(key)
 
 
@@ -18,7 +19,8 @@ def dict_to_json(dictionary):
         def status_code(self):
             return 200
 
-        def get(self, argument):
+        # used by async functions
+        def get(self, argument, *args):
             return dictionary.get(argument)
 
         def json(self):
@@ -40,6 +42,10 @@ SEND_KEYS = DEFAULT
 CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
+
+ACTIONS_CLICK = dict_to_json(
+    {"sessionId": "449dbd1df001e9a9e13b3bac5babe809", "status": 0, "value": "null"}
+)
 
 EXECUTE_SCRIPT = dict_to_json(
     {"sessionId": "9f4a4a9420663d0c0cc18957ab463b90", "status": 0, "value": "any"}

@@ -4,6 +4,7 @@ from selenium import webdriver
 from pytest import fixture, mark
 from tests.constants import PAGE_URL
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 @fixture
@@ -25,6 +26,20 @@ def setup():
     driver
     yield driver
     driver.quit()
+
+
+@mark.skip("used just to discover request data")
+def test_submit(setup):
+    driver = setup
+    search_button = driver.find_element("name", "my-form")
+    search_button.submit()
+
+
+@mark.skip("used just to discover request data")
+def test_sniffer_actions_click(setup):
+    driver = setup
+    search_button = driver.find_element("xpath", "//button")
+    ActionChains(driver).click(search_button).perform()
 
 
 @mark.skip("used just to discover request data")

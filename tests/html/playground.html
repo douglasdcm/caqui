@@ -9,6 +9,7 @@
     <p> This is a sample page to be used to sanity check </p>
     <input id="input">
     <button id="button" onclick="myFunction(this, 'red')">test</button>
+    <br>
     <a href="http://any1.com" id="a1">any1.com</a><br>
     <a href="http://any2.com" id="a2">any2.com</a><br>
     <a href="http://any3.com" id="a3">any3.com</a><br>
@@ -25,6 +26,14 @@
         <div class="child3">any3</div>
         <div class="child4">any4</div>
     </div>
+    <br>
+    <form name="my-form" action="#">
+        <label for="fname">First name:</label><br>
+        <input type="text" id="fname" name="fname" value="John"><br>
+        <label for="lname">Last name:</label><br>
+        <input type="text" id="lname" name="lname" value="Doe"><br><br>
+        <input type="submit" value="Submit">
+    </form>
 
     <script>
         function myFunction(element, color) {

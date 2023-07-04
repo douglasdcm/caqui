@@ -12,6 +12,24 @@ async def mock_request(*args):
 
 
 @mark.asyncio
+async def test_submit():
+    async def mock_request(*args):
+        return fake_responses.CLICK
+
+    with patch("caqui.asynchronous.__post", mock_request):
+        assert await asynchronous.submit("", "", "") == True
+
+
+@mark.asyncio
+async def test_actions_click():
+    async def mock_request(*args):
+        return fake_responses.ACTIONS_CLICK
+
+    with patch("caqui.asynchronous.__post", mock_request):
+        assert await asynchronous.actions_click("", "", "") == True
+
+
+@mark.asyncio
 async def test_set_timeouts():
     async def mock_request(*args):
         return fake_responses.GET_TIMEOUTS

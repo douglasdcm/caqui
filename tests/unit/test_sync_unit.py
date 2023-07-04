@@ -3,6 +3,16 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.CLICK)
+def test_submit(*args):
+    assert synchronous.submit("", "", "") == True
+
+
+@patch("requests.request", return_value=fake_responses.ACTIONS_CLICK)
+def test_actions_click(*args):
+    assert synchronous.actions_click("", "", "") == True
+
+
 @patch("requests.request", return_value=fake_responses.GET_TIMEOUTS)
 def test_set_timeouts(*args):
     assert synchronous.set_timeouts("", "", "") == True
