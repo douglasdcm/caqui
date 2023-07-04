@@ -51,7 +51,7 @@ async def submit(driver_url, session, element):
             session,
             element,
             locator_type="xpath",
-            locator_value="input[@type='submit']",
+            locator_value="*[@type='submit']",
         )
         return await click(driver_url, session, submit_element)
     except Exception as error:

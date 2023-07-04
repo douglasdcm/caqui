@@ -43,14 +43,14 @@ def submit(driver_url, session, element):
     It is not part of W3C WebDriver. Just added for convenience
     """
     try:
-        form_element = find_child_element(
+        submit_element = find_child_element(
             driver_url,
             session,
             element,
             locator_type="xpath",
-            locator_value="input[@type='submit']",
+            locator_value="//*[@type='submit']",
         )
-        return click(driver_url, session, form_element)
+        return click(driver_url, session, submit_element)
     except Exception as error:
         raise WebDriverError(f"Failed to submit form.") from error
 
