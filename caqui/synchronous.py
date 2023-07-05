@@ -38,6 +38,62 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def submit(driver_url, session, element):
+    """Submit a form. It is similar to 'submit' funtion in Seleniu
+    It is not part of W3C WebDriver. Just added for convenience
+    """
+    try:
+        submit_element = find_child_element(
+            driver_url,
+            session,
+            element,
+            locator_type="xpath",
+            locator_value="//*[@type='submit']",
+        )
+        return click(driver_url, session, submit_element)
+    except Exception as error:
+        raise WebDriverError(f"Failed to submit form.") from error
+
+
+def actions_click(driver_url, session, element):
+    """Click an element simulating a mouse movement"""
+    try:
+        url = f"{driver_url}/session/{session}/actions"
+        payload = {
+            "actions": [
+                {
+                    "type": "pointer",
+                    "parameters": {"pointerType": "mouse"},
+                    "id": "mouse",
+                    "actions": [
+                        {
+                            "type": "pointerMove",
+                            "duration": 250,
+                            "x": 0,
+                            "y": 0,
+                            "origin": {"ELEMENT": element},
+                        },
+                        {"type": "pointerDown", "duration": 0, "button": 0},
+                        {"type": "pointerUp", "duration": 0, "button": 0},
+                    ],
+                },
+                {
+                    "type": "key",
+                    "id": "key",
+                    "actions": [
+                        {"type": "pause", "duration": 0},
+                        {"type": "pause", "duration": 0},
+                        {"type": "pause", "duration": 0},
+                    ],
+                },
+            ]
+        }
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to click the element.") from error
+
+
 def set_timeouts(driver_url, session, timeouts):
     """Set timeouts"""
     try:
@@ -301,6 +357,11 @@ def get_cookies(driver_url, session):
         raise WebDriverError("Failed to get page cookies.") from error
 
 
+def get(driver_url, session, page_url):
+    """Does the same of 'go_to_page'. Added to be compatible with selenium method name'"""
+    return go_to_page(driver_url, session, page_url)
+
+
 def go_to_page(driver_url, session, page_url):
     """Navigate to 'page_url'"""
     try:
@@ -382,11 +443,14 @@ def find_element(driver_url, session, locator_type, locator_value):
         url = f"{driver_url}/session/{session}/element"
         payload = {"using": locator_type, "value": locator_value}
         response = __post(url, payload)
+
         # Firefox does not support id locator, so it prints the error message to the user
         # It helps on debug
         if response.get("value").get("error"):
             raise WebDriverError(f"Failed to find element. {response}")
-        if response.get("status") > 0:
+
+        # Google Chrome does not have status, so it is ignored
+        if response.get("status", 0) > 0:
             raise WebDriverError(f"Failed to find element. {response}")
         return helper.get_element(response)
     except Exception as error:

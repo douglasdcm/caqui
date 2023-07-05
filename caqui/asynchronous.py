@@ -41,6 +41,62 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def submit(driver_url, session, element):
+    """Submit a form. It is similar to 'submit' funtion in Seleniu
+    It is not part of W3C WebDriver. Just added for convenience
+    """
+    try:
+        submit_element = await find_child_element(
+            driver_url,
+            session,
+            element,
+            locator_type="xpath",
+            locator_value="*[@type='submit']",
+        )
+        return await click(driver_url, session, submit_element)
+    except Exception as error:
+        raise WebDriverError(f"Failed to submit form.") from error
+
+
+async def actions_click(driver_url, session, element):
+    """Click an element simulating a mouse movement"""
+    try:
+        url = f"{driver_url}/session/{session}/actions"
+        payload = {
+            "actions": [
+                {
+                    "type": "pointer",
+                    "parameters": {"pointerType": "mouse"},
+                    "id": "mouse",
+                    "actions": [
+                        {
+                            "type": "pointerMove",
+                            "duration": 250,
+                            "x": 0,
+                            "y": 0,
+                            "origin": {"ELEMENT": element},
+                        },
+                        {"type": "pointerDown", "duration": 0, "button": 0},
+                        {"type": "pointerUp", "duration": 0, "button": 0},
+                    ],
+                },
+                {
+                    "type": "key",
+                    "id": "key",
+                    "actions": [
+                        {"type": "pause", "duration": 0},
+                        {"type": "pause", "duration": 0},
+                        {"type": "pause", "duration": 0},
+                    ],
+                },
+            ]
+        }
+        await __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to to click the element.") from error
+
+
 async def set_timeouts(driver_url, session, timeouts):
     """Set timeouts"""
     try:
@@ -334,6 +390,11 @@ async def close_session(driver_url, session):
         raise WebDriverError("Failed to close session.") from error
 
 
+async def get(driver_url, session, page_url):
+    """Does the same of 'go_to_page'. Added to be compatible with selenium method name'"""
+    return go_to_page(driver_url, session, page_url)
+
+
 async def go_to_page(driver_url, session, page_url):
     """Navigate to 'page_url'"""
     try:
@@ -376,7 +437,7 @@ async def find_element(driver_url, session, locator_type, locator_value):
         response = await __post(url, payload)
         if response.get("value").get("error"):
             raise WebDriverError(f"Failed to find element. {response}")
-        if response.get("status") > 0:
+        if response.get("status", 0) > 0:
             raise WebDriverError(f"Failed to find element. {response}")
         return helper.get_element(response)
     except Exception as error:

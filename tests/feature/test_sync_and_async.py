@@ -10,7 +10,7 @@ def __setup():
     capabilities = {
         "desiredCapabilities": {
             "name": "webdriver",
-            "browserName": "firefox",
+            "browserName": "chrome",
             "marionette": True,
             "acceptInsecureCerts": True,
             "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
@@ -24,6 +24,30 @@ def __setup():
     )
     yield driver_url, session
     synchronous.close_session(driver_url, session)
+
+
+@mark.asyncio
+async def test_submit(__setup):
+    driver_url, session = __setup
+    locator_type = "name"
+    locator_value = "my-form"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+    assert synchronous.submit(driver_url, session, element) is True
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+    assert await asynchronous.submit(driver_url, session, element) is True
+
+
+@mark.asyncio
+async def test_actions_click(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//button"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+    assert synchronous.actions_click(driver_url, session, element) is True
+    assert await asynchronous.actions_click(driver_url, session, element) is True
 
 
 @mark.asyncio
