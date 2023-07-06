@@ -52,6 +52,13 @@ def test_submit(setup):
 
 
 @mark.skip("used just to discover request data")
+def test_sniffer_is_displayed(setup_binary):
+    driver = setup_binary
+    search_button = driver.find_element("xpath", "//button")
+    search_button.is_displayed()
+
+
+@mark.skip("used just to discover request data")
 def test_sniffer_actions_scroll_to_element(setup_binary):
     driver = setup_binary
     search_button = driver.find_element("xpath", "//button")

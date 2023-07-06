@@ -197,6 +197,19 @@ async def test_get_active_element(__setup):
 
 
 @mark.asyncio
+async def test_clear_element_fails_when_invalid_inputs(__setup):
+    driver_url, session = __setup
+    text = "any"
+    element = "invalid"
+
+    with raises(WebDriverError):
+        synchronous.clear_element(driver_url, session, element) is True
+
+    with raises(WebDriverError):
+        await asynchronous.clear_element(driver_url, session, element)
+
+
+@mark.asyncio
 async def test_clear_element(__setup):
     driver_url, session = __setup
     locator_type = "xpath"
@@ -296,6 +309,19 @@ async def test_get_window(__setup):
 
 
 @mark.asyncio
+async def test_get_attribute_fails_when_invalid_attribute(__setup):
+    driver_url, session = __setup
+    attribute = "href"
+    element = "invalid"
+
+    with raises(WebDriverError):
+        synchronous.get_attribute(driver_url, session, element, attribute)
+
+    with raises(WebDriverError):
+        await asynchronous.get_attribute(driver_url, session, element, attribute)
+
+
+@mark.asyncio
 async def test_get_attribute(__setup):
     driver_url, session = __setup
     attribute = "href"
@@ -365,6 +391,21 @@ async def test_get_title(__setup):
 
 
 @mark.asyncio
+async def test_find_elements_fails_when_invalid_data_input(__setup):
+    driver_url, session = __setup
+    locator_type = "invalid"
+    locator_value = "//input"
+
+    with raises(WebDriverError):
+        synchronous.find_elements(driver_url, session, locator_type, locator_value)
+
+    with raises(WebDriverError):
+        await asynchronous.find_elements(
+            driver_url, session, locator_type, locator_value
+        )
+
+
+@mark.asyncio
 async def test_find_elements(__setup):
     driver_url, session = __setup
     locator_type = "xpath"
@@ -379,6 +420,21 @@ async def test_find_elements(__setup):
 
     assert len(elements) > 0
     assert len(async_elements) > 0
+
+
+@mark.asyncio
+async def test_find_element_fails_when_invalid_data_input(__setup):
+    driver_url, session = __setup
+    locator_type = "invalid"
+    locator_value = "//input"
+
+    with raises(WebDriverError):
+        synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    with raises(WebDriverError):
+        await asynchronous.find_element(
+            driver_url, session, locator_type, locator_value
+        )
 
 
 @mark.asyncio
