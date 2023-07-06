@@ -138,7 +138,8 @@ GET_STATUS = dict_to_json(
             "message": "ChromeDriver ready for new sessions.",
             "os": {"arch": "x86_64", "name": "Linux", "version": "5.4.0-150-generic"},
             "ready": True,
-        }
+        },
+        "status": "0",  # fake status fro mock purposes. Not present in real response
     }
 )
 

@@ -5,12 +5,24 @@ from caqui.exceptions import WebDriverError
 from caqui import helper
 
 
+async def __handle_response(resp):
+    result = None
+    if resp.status in range(200, 399):
+        result = await resp.json()
+    else:
+        raise WebDriverError(f"Status code: {resp.status}, Body: {resp.text}")
+
+    if int(result.get("status", 0)) > 0:
+        raise WebDriverError(f"Status code: {resp.status}, Body: {resp.text}")
+
+    return result
+
+
 async def __delete(url):
     try:
         async with aiohttp.ClientSession() as session:
             async with session.delete(url, headers=HEADERS) as resp:
-                response = await resp.json()
-                return response
+                return await __handle_response(resp)
     except Exception as error:
         raise WebDriverError("'DELETE' request failed.") from error
 
@@ -21,10 +33,7 @@ async def __post(url, payload):
             async with session.post(
                 url, data=json.dumps(payload), headers=HEADERS
             ) as resp:
-                status = resp.status
-                if status in range(200, 399):
-                    return await resp.json()
-                raise WebDriverError(f"Status code: {resp.status}, {resp.text}")
+                return await __handle_response(resp)
     except Exception as error:
         raise WebDriverError("'POST' request failed.") from error
 
@@ -33,10 +42,7 @@ async def __get(url):
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=HEADERS) as resp:
-                status = resp.status
-                if status in range(200, 399):
-                    return await resp.json()
-                raise WebDriverError(f"Status code: {resp.status}, {resp.text}")
+                return await __handle_response(resp)
     except Exception as error:
         raise WebDriverError("'GET' request failed.") from error
 
@@ -466,9 +472,10 @@ async def find_element(driver_url, session, locator_type, locator_value):
         payload = {"using": locator_type, "value": locator_value}
         url = f"{driver_url}/session/{session}/element"
         response = await __post(url, payload)
+
+        # Firefox does not support id locator, so it prints the error message to the user
+        # It helps on debug
         if response.get("value").get("error"):
-            raise WebDriverError(f"Failed to find element. {response}")
-        if response.get("status", 0) > 0:
             raise WebDriverError(f"Failed to find element. {response}")
         return helper.get_element(response)
     except Exception as error:

@@ -11,12 +11,22 @@ HEADERS = {
 }
 
 
+def __handle_response(response):
+    result = None
+    if response.status_code in range(200, 399):
+        result = response.json()
+    else:
+        raise WebDriverError(f"Status: {response.status_code}, {response.text}")
+
+    if int(result.get("status", 0)) > 0:
+        raise WebDriverError(f"Status: {response.status_code}, {response.text}")
+    return result
+
+
 def __get(url):
     try:
         response = requests.request("GET", url, headers=HEADERS, data={})
-        if response.status_code in range(200, 399):
-            return response.json()
-        raise WebDriverError(f"Status code: {response.status_code}, {response.text}")
+        return __handle_response(response)
     except Exception as error:
         raise WebDriverError("'GET' request failed.") from error
 
@@ -24,16 +34,15 @@ def __get(url):
 def __post(url, payload):
     response = requests.request("POST", url, headers=HEADERS, data=json.dumps(payload))
     try:
-        if response.status_code in range(200, 399):
-            return response.json()
-        raise WebDriverError(f"Status code: {response.status_code}, {response.text}")
+        return __handle_response(response)
     except Exception as error:
         raise WebDriverError("'POST' request failed.") from error
 
 
 def __delete(url):
     try:
-        return requests.request("DELETE", url, headers={}, data={}).json()
+        response = requests.request("DELETE", url, headers={}, data={})
+        return __handle_response(response)
     except Exception as error:
         raise WebDriverError("'DELETE' request failed.") from error
 
@@ -478,9 +487,6 @@ def find_element(driver_url, session, locator_type, locator_value):
         if response.get("value").get("error"):
             raise WebDriverError(f"Failed to find element. {response}")
 
-        # Google Chrome does not have status, so it is ignored
-        if response.get("status", 0) > 0:
-            raise WebDriverError(f"Failed to find element. {response}")
         return helper.get_element(response)
     except Exception as error:
         raise WebDriverError(
