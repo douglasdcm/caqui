@@ -8,6 +8,9 @@ from caqui.synchronous import (
     go_to_page,
     get_property,
     clear_element,
+    get_rect,
+    get_css_value,
+    get_attribute,
 )
 from tests.constants import PAGE_URL
 from pytest import fixture
@@ -32,6 +35,23 @@ def __setup():
     )
     yield driver_url, session
     close_session(driver_url, session)
+
+
+def test_get_data_from_hidden_button(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+
+    hidden_button = find_element(
+        driver_url, session, locator_type, locator_value="//*[@id='hidden-button']"
+    )
+
+    assert "width" in get_rect(driver_url, session, hidden_button)
+    assert "visible" == get_css_value(driver_url, session, hidden_button, "visibility")
+    assert True == get_property(driver_url, session, hidden_button, "hidden")
+    assert ["display"] == get_property(driver_url, session, hidden_button, "style")
+    assert "display: none;" == get_attribute(
+        driver_url, session, hidden_button, "style"
+    )
 
 
 def test_add_text__click_button_and_get_properties(__setup):
