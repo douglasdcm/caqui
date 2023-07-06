@@ -43,6 +43,14 @@ CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
 
+GET_RECT = dict_to_json(
+    {
+        "sessionId": "a9d6e77726f3eda12e92b06b5066dbb4",
+        "status": 0,
+        "value": {"height": 23, "width": 183, "x": 10, "y": 9652.12},
+    }
+)
+
 ACTIONS = dict_to_json(
     {"sessionId": "449dbd1df001e9a9e13b3bac5babe809", "status": 0, "value": "null"}
 )

@@ -47,10 +47,18 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def get_rect(driver_url, session, element):
+    """Get the element rectangle"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/rect"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the element rect.") from error
+
+
 def actions_scroll_to_element(driver_url, session, element):
     """Scroll to an element simulating a mouse movement"""
     try:
-        url = f"{driver_url}/session/{session}/actions"
         payload = {
             "actions": [
                 {
@@ -70,10 +78,15 @@ def actions_scroll_to_element(driver_url, session, element):
                 }
             ]
         }
-        __post(url, payload)
-        return True
+        return actions(driver_url, session, payload)
     except Exception as error:
         raise WebDriverError(f"Failed to scroll to element.") from error
+
+
+def actions(driver_url, session, payload):
+    url = f"{driver_url}/session/{session}/actions"
+    __post(url, payload)
+    return True
 
 
 def submit(driver_url, session, element):
@@ -96,7 +109,6 @@ def submit(driver_url, session, element):
 def actions_click(driver_url, session, element):
     """Click an element simulating a mouse movement"""
     try:
-        url = f"{driver_url}/session/{session}/actions"
         payload = {
             "actions": [
                 {
@@ -126,8 +138,7 @@ def actions_click(driver_url, session, element):
                 },
             ]
         }
-        __post(url, payload)
-        return True
+        return actions(driver_url, session, payload)
     except Exception as error:
         raise WebDriverError(f"Failed to click the element.") from error
 
