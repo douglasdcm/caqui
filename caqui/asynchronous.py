@@ -41,6 +41,39 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def actions(driver_url, session, element, payload):
+    url = f"{driver_url}/session/{session}/actions"
+    await __post(url, payload)
+    return True
+
+
+async def actions_scroll_to_element(driver_url, session, element):
+    """Scroll to an element simulating a mouse movement"""
+    try:
+        payload = {
+            "actions": [
+                {
+                    "type": "wheel",
+                    "id": "wheel",
+                    "actions": [
+                        {
+                            "type": "scroll",
+                            "x": 0,
+                            "y": 0,
+                            "deltaX": 0,
+                            "deltaY": 0,
+                            "duration": 0,
+                            "origin": {"ELEMENT": element},
+                        }
+                    ],
+                }
+            ]
+        }
+        return await actions(driver_url, session, element, payload)
+    except Exception as error:
+        raise WebDriverError(f"Failed to scroll to element.") from error
+
+
 async def submit(driver_url, session, element):
     """Submit a form. It is similar to 'submit' funtion in Seleniu
     It is not part of W3C WebDriver. Just added for convenience
@@ -61,7 +94,6 @@ async def submit(driver_url, session, element):
 async def actions_click(driver_url, session, element):
     """Click an element simulating a mouse movement"""
     try:
-        url = f"{driver_url}/session/{session}/actions"
         payload = {
             "actions": [
                 {
@@ -91,10 +123,9 @@ async def actions_click(driver_url, session, element):
                 },
             ]
         }
-        await __post(url, payload)
-        return True
+        return await actions(driver_url, session, element, payload)
     except Exception as error:
-        raise WebDriverError(f"Failed to to click the element.") from error
+        raise WebDriverError(f"Failed to click the element.") from error
 
 
 async def set_timeouts(driver_url, session, timeouts):

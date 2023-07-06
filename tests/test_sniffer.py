@@ -5,6 +5,9 @@ from pytest import fixture, mark
 from tests.constants import PAGE_URL
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+import os
 
 
 @fixture
@@ -28,11 +31,31 @@ def setup():
     driver.quit()
 
 
+@fixture
+def setup_binary():
+    homedir = os.path.expanduser("~")
+    service = Service(f"/home/douglas/web_drivers/chromedriver.113")
+    options = Options()
+    # options.add_argument('--headless')
+    options.add_argument("window-size=1920,1080")
+    browser = webdriver.Chrome(service=service, options=options)
+    browser.get(PAGE_URL)
+    yield browser
+    # browser.quit()
+
+
 @mark.skip("used just to discover request data")
 def test_submit(setup):
     driver = setup
     search_button = driver.find_element("name", "my-form")
     search_button.submit()
+
+
+@mark.skip("used just to discover request data")
+def test_sniffer_actions_scroll_to_element(setup_binary):
+    driver = setup_binary
+    search_button = driver.find_element("xpath", "//button")
+    ActionChains(driver).scroll_to_element(search_button).perform()
 
 
 @mark.skip("used just to discover request data")

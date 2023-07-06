@@ -43,7 +43,7 @@ CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
 
-ACTIONS_CLICK = dict_to_json(
+ACTIONS = dict_to_json(
     {"sessionId": "449dbd1df001e9a9e13b3bac5babe809", "status": 0, "value": "null"}
 )
 
