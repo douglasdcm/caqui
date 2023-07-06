@@ -38,6 +38,35 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def actions_scroll_to_element(driver_url, session, element):
+    """Scroll to an element simulating a mouse movement"""
+    try:
+        url = f"{driver_url}/session/{session}/actions"
+        payload = {
+            "actions": [
+                {
+                    "type": "wheel",
+                    "id": "wheel",
+                    "actions": [
+                        {
+                            "type": "scroll",
+                            "x": 0,
+                            "y": 0,
+                            "deltaX": 0,
+                            "deltaY": 0,
+                            "duration": 0,
+                            "origin": {"ELEMENT": element},
+                        }
+                    ],
+                }
+            ]
+        }
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to scroll to element.") from error
+
+
 def submit(driver_url, session, element):
     """Submit a form. It is similar to 'submit' funtion in Seleniu
     It is not part of W3C WebDriver. Just added for convenience

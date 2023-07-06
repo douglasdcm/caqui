@@ -12,6 +12,15 @@ async def mock_request(*args):
 
 
 @mark.asyncio
+async def test_actions_scroll_to_element():
+    async def mock_request(*args):
+        return fake_responses.ACTIONS
+
+    with patch("caqui.asynchronous.__post", mock_request):
+        assert await asynchronous.actions_scroll_to_element("", "", "") == True
+
+
+@mark.asyncio
 async def test_submit():
     async def mock_request(*args):
         return fake_responses.CLICK
@@ -23,7 +32,7 @@ async def test_submit():
 @mark.asyncio
 async def test_actions_click():
     async def mock_request(*args):
-        return fake_responses.ACTIONS_CLICK
+        return fake_responses.ACTIONS
 
     with patch("caqui.asynchronous.__post", mock_request):
         assert await asynchronous.actions_click("", "", "") == True

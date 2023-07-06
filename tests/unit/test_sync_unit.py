@@ -3,12 +3,17 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.ACTIONS)
+def test_actions_scroll_to_element(*args):
+    assert synchronous.actions_scroll_to_element("", "", "") == True
+
+
 @patch("requests.request", return_value=fake_responses.CLICK)
 def test_submit(*args):
     assert synchronous.submit("", "", "") == True
 
 
-@patch("requests.request", return_value=fake_responses.ACTIONS_CLICK)
+@patch("requests.request", return_value=fake_responses.ACTIONS)
 def test_actions_click(*args):
     assert synchronous.actions_click("", "", "") == True
 
