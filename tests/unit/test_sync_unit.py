@@ -3,6 +3,12 @@ from caqui import synchronous
 from tests import fake_responses
 
 
+@patch("requests.request", return_value=fake_responses.GET_RECT)
+def test_get_rect(*args):
+    expected = {"height": 23, "width": 183, "x": 10, "y": 9652.12}
+    assert synchronous.get_rect("", "", "") == expected
+
+
 @patch("requests.request", return_value=fake_responses.ACTIONS)
 def test_actions_scroll_to_element(*args):
     assert synchronous.actions_scroll_to_element("", "", "") == True

@@ -12,6 +12,17 @@ async def mock_request(*args):
 
 
 @mark.asyncio
+async def test_get_rect():
+    expected = {"height": 23, "width": 183, "x": 10, "y": 9652.12}
+
+    async def mock_request(*args):
+        return fake_responses.GET_RECT
+
+    with patch("caqui.asynchronous.__get", mock_request):
+        assert await asynchronous.get_rect("", "", "") == expected
+
+
+@mark.asyncio
 async def test_actions_scroll_to_element():
     async def mock_request(*args):
         return fake_responses.ACTIONS

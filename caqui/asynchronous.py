@@ -47,7 +47,17 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
-async def actions(driver_url, session, element, payload):
+async def get_rect(driver_url, session, element):
+    """Get the element rectangle"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/rect"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get element rect.") from error
+
+
+async def actions(driver_url, session, payload):
     url = f"{driver_url}/session/{session}/actions"
     await __post(url, payload)
     return True
@@ -75,7 +85,7 @@ async def actions_scroll_to_element(driver_url, session, element):
                 }
             ]
         }
-        return await actions(driver_url, session, element, payload)
+        return await actions(driver_url, session, payload)
     except Exception as error:
         raise WebDriverError(f"Failed to scroll to element.") from error
 
@@ -129,7 +139,7 @@ async def actions_click(driver_url, session, element):
                 },
             ]
         }
-        return await actions(driver_url, session, element, payload)
+        return await actions(driver_url, session, payload)
     except Exception as error:
         raise WebDriverError(f"Failed to click the element.") from error
 

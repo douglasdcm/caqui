@@ -27,6 +27,20 @@ def __setup():
 
 
 @mark.asyncio
+async def test_get_rect(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+    expected = {"height": 21, "width": 185, "x": 8, "y": 100.4375}
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert synchronous.get_rect(driver_url, session, element) == expected
+
+    assert await asynchronous.get_rect(driver_url, session, element) == expected
+
+
+@mark.asyncio
 async def test_actions_scroll_to_element(__setup):
     driver_url, session = __setup
     locator_type = "xpath"
