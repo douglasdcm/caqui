@@ -43,6 +43,20 @@ CLICK = DEFAULT
 CLOSE_SESSION = DEFAULT
 GO_TO_PAGE = DEFAULT
 
+GET_NAMED_COOKIE = dict_to_json(
+    {
+        "value": {
+            "name": "username",
+            "value": "John Doe",
+            "path": "//home/user/fullpath",
+            "domain": "",
+            "secure": False,
+            "httpOnly": False,
+            "sameSite": "None",
+        }
+    }
+)
+
 GET_RECT = dict_to_json(
     {
         "sessionId": "a9d6e77726f3eda12e92b06b5066dbb4",

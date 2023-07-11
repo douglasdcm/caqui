@@ -47,6 +47,82 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def take_screenshot_element(
+    driver_url, session, element, path="/tmp", file_name="caqui"
+):
+    """Take screenshot of element"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/screenshot"
+        response = await __get(url)
+        picture = response.get("value")
+        helper.save_picture(session, path, file_name, picture)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to take screenshot.") from error
+
+
+async def take_screenshot(driver_url, session, path="/tmp", file_name="caqui"):
+    """Take screenshot"""
+    try:
+        url = f"{driver_url}/session/{session}/screenshot"
+        response = await __get(url)
+        picture = response.get("value")
+        helper.save_picture(session, path, file_name, picture)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to take screenshot.") from error
+
+
+async def get_named_cookie(driver_url, session, name):
+    """Get cookie by name"""
+    try:
+        url = f"{driver_url}/session/{session}/cookie/{name}"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get cookie '{name}'.") from error
+
+
+async def get_computed_label(driver_url, session, element):
+    """Get the element tag computed label. Get the accessibility name"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/computedlabel"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get element computed label.") from error
+
+
+async def get_computed_role(driver_url, session, element):
+    """Get the element tag computed role (the element role)"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/computedrole"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get element computed role.") from error
+
+
+async def get_tag_name(driver_url, session, element):
+    """Get the element tag name"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/name"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get element name.") from error
+
+
+async def get_shadow_root(driver_url, session, element):
+    """Get the shadow root element"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/shadow"
+        response = await __get(url)
+        return response.get("value")
+    except Exception as error:
+        raise WebDriverError("Failed to get element shadow.") from error
+
+
 async def get_rect(driver_url, session, element):
     """Get the element rectangle"""
     try:

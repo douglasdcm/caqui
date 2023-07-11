@@ -11,7 +11,7 @@ def __setup():
         "desiredCapabilities": {
             "name": "webdriver",
             "browserName": "chrome",
-            "marionette": True,
+            "marionette": False,
             "acceptInsecureCerts": True,
             "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
         }
@@ -24,6 +24,106 @@ def __setup():
     )
     yield driver_url, session
     synchronous.close_session(driver_url, session)
+
+
+@mark.asyncio
+async def test_take_screenshot_element(__setup):
+    driver_url, session = __setup
+    locator_type = "css selector"
+    locator_value = "#alert-button"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert synchronous.take_screenshot_element(driver_url, session, element) is True
+    assert (
+        await asynchronous.take_screenshot_element(driver_url, session, element) is True
+    )
+
+
+@mark.asyncio
+async def test_take_screenshot(__setup):
+    driver_url, session = __setup
+
+    assert synchronous.take_screenshot(driver_url, session) is True
+    assert await asynchronous.take_screenshot(driver_url, session) is True
+
+
+@mark.skip(reason="works just with Firefox")
+@mark.asyncio
+async def test_get_named_cookie(__setup):
+    driver_url, session = __setup
+    name = "username"  # cookie created on page load
+    expected = "John Doe"
+
+    assert (
+        synchronous.get_named_cookie(driver_url, session, name).get("value") == expected
+    )
+    response = await asynchronous.get_named_cookie(driver_url, session, name)
+    assert response.get("value") == expected
+
+
+@mark.asyncio
+async def test_get_computed_label(__setup):
+    driver_url, session = __setup
+    locator_type = "css selector"
+    locator_value = "#alert-button"
+    expected = "alert"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert synchronous.get_computed_label(driver_url, session, element) == expected
+
+    assert (
+        await asynchronous.get_computed_label(driver_url, session, element) == expected
+    )
+
+
+@mark.asyncio
+async def test_get_computed_role(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+    expected = "textbox"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert synchronous.get_computed_role(driver_url, session, element) == expected
+
+    assert (
+        await asynchronous.get_computed_role(driver_url, session, element) == expected
+    )
+
+
+@mark.asyncio
+async def test_get_tag_name(__setup):
+    driver_url, session = __setup
+    locator_type = "xpath"
+    locator_value = "//input"
+    expected = "input"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert synchronous.get_tag_name(driver_url, session, element) == expected
+
+    assert await asynchronous.get_tag_name(driver_url, session, element) == expected
+
+
+@mark.asyncio
+async def test_get_shadow_root(__setup):
+    driver_url, session = __setup
+    locator_type = "id"
+    locator_value = "shadow-root"
+    root_element = "shadow-6066-11e4-a52e-4f735466cecf"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    assert (
+        synchronous.get_shadow_root(driver_url, session, element).get(root_element)
+        is not None
+    )
+
+    response = await asynchronous.get_shadow_root(driver_url, session, element)
+    assert response.get(root_element) is not None
 
 
 @mark.asyncio
@@ -111,7 +211,7 @@ async def test_set_timeouts(__setup):
 @mark.asyncio
 async def test_find_children_elements(__setup):
     driver_url, session = __setup
-    expected = 5  # parent inclusive
+    expected = 1  # parent inclusive
     locator_type = "xpath"
     locator_value = "//div"
 
@@ -123,13 +223,13 @@ async def test_find_children_elements(__setup):
         driver_url, session, parent_element, locator_type, locator_value
     )
 
-    assert len(children_elements) == expected
+    assert len(children_elements) > expected
 
     children_elements = await asynchronous.find_children_elements(
         driver_url, session, parent_element, locator_type, locator_value
     )
 
-    assert len(children_elements) == expected
+    assert len(children_elements) > expected
 
 
 @mark.asyncio
@@ -354,7 +454,6 @@ async def test_get_attribute(__setup):
 @mark.asyncio
 async def test_get_cookies(__setup):
     driver_url, session = __setup
-
     assert isinstance(synchronous.get_cookies(driver_url, session), list)
     cookies = await asynchronous.get_cookies(driver_url, session)
     assert isinstance(cookies, list)

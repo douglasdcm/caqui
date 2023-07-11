@@ -47,6 +47,86 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+# def add_cookie(driver_url, session, name, value):
+#     """Add cookie by name"""
+#     try:
+#         url = f"{driver_url}/session/{session}/cookie"
+#         payload = {"cookie": {"name": name, "value": value}}
+#         __post(url, payload)
+#         return True
+#     except Exception as error:
+#         raise WebDriverError(f"Failed to add cookie '{name}'.") from error
+
+
+def take_screenshot_element(
+    driver_url, session, element, path="/tmp", file_name="caqui"
+):
+    """Take screenshot of element."""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/screenshot"
+        response = __get(url).get("value")
+        helper.save_picture(session, path, file_name, response)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to take screeshot.") from error
+
+
+def take_screenshot(driver_url, session, path="/tmp", file_name="caqui"):
+    """Take screenshot."""
+    try:
+        url = f"{driver_url}/session/{session}/screenshot"
+        response = __get(url).get("value")
+        helper.save_picture(session, path, file_name, response)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to take screeshot.") from error
+
+
+def get_named_cookie(driver_url, session, name):
+    """Get cookie by name."""
+    try:
+        url = f"{driver_url}/session/{session}/cookie/{name}"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the cookie '{name}'.") from error
+
+
+def get_computed_label(driver_url, session, element):
+    """Get the element computed label. Get the accessibility name."""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/computedlabel"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the element computed label.") from error
+
+
+def get_computed_role(driver_url, session, element):
+    """Get the element computed role (the element role)"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/computedrole"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the element computed role.") from error
+
+
+def get_tag_name(driver_url, session, element):
+    """Get the element tag name"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/name"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the element name.") from error
+
+
+def get_shadow_root(driver_url, session, element):
+    """Get the shadow root element"""
+    try:
+        url = f"{driver_url}/session/{session}/element/{element}/shadow"
+        return __get(url).get("value")
+    except Exception as error:
+        raise WebDriverError(f"Failed to get the element shadow.") from error
+
+
 def get_rect(driver_url, session, element):
     """Get the element rectangle"""
     try:

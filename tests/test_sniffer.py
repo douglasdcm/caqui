@@ -45,6 +45,12 @@ def setup_binary():
 
 
 @mark.skip("used just to discover request data")
+def test_add_cookie(setup):
+    driver = setup
+    driver.add_cookie({"name": "firstname", "value": "James"})
+
+
+@mark.skip("used just to discover request data")
 def test_submit(setup):
     driver = setup
     search_button = driver.find_element("name", "my-form")
