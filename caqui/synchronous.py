@@ -65,6 +65,16 @@ def __handle_alerts(driver_url, session, command):
 #         raise WebDriverError(f"Failed to add cookie '{name}'.") from error
 
 
+def delete_all_cookies(driver_url, session):
+    """Delete all cookies"""
+    try:
+        url = f"{driver_url}/session/{session}/cookie"
+        __delete(url)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to delete cookies.") from error
+
+
 def send_alert_text(driver_url, session, text):
     """Fill the alert text area and send the text"""
     try:

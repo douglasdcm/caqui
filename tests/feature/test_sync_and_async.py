@@ -95,6 +95,21 @@ async def test_take_screenshot(__setup):
     assert await asynchronous.take_screenshot(driver_url, session) is True
 
 
+@mark.asyncio
+async def test_delete_cookies_asynchronous(__setup):
+    driver_url, session = __setup
+
+    response = await asynchronous.delete_all_cookies(driver_url, session)
+    assert response is True
+
+
+@mark.asyncio
+async def test_delete_cookies_synchronous(__setup):
+    driver_url, session = __setup
+
+    assert synchronous.delete_all_cookies(driver_url, session) is True
+
+
 @mark.skip(reason="works just with Firefox")
 @mark.asyncio
 async def test_get_named_cookie(__setup):

@@ -56,6 +56,16 @@ async def __handle_alert(driver_url, session, command):
     return True
 
 
+async def delete_all_cookies(driver_url, session):
+    """Delete all cookies"""
+    try:
+        url = f"{driver_url}/session/{session}/cookie"
+        await __delete(url)
+        return True
+    except Exception as error:
+        raise WebDriverError("Failed to delete cookies.") from error
+
+
 async def send_alert_text(driver_url, session, text):
     """Fill the alert text area and send the text"""
     try:
