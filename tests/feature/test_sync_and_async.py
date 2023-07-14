@@ -27,6 +27,53 @@ def __setup():
 
 
 @mark.asyncio
+async def test_send_alert_text(__setup):
+    driver_url, session = __setup
+    locator_type = "css selector"
+    locator_value = "#alert-button-prompt"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+    synchronous.click(driver_url, session, element)
+
+    assert synchronous.send_alert_text(driver_url, session, text="any1") is True
+    synchronous.accept_alert(driver_url, session) is True
+
+    synchronous.click(driver_url, session, element)
+    assert await asynchronous.send_alert_text(driver_url, session, "any2") is True
+    synchronous.accept_alert(driver_url, session) is True
+
+
+@mark.asyncio
+async def test_accept_alert(__setup):
+    driver_url, session = __setup
+    locator_type = "css selector"
+    locator_value = "#alert-button"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+    synchronous.click(driver_url, session, element)
+
+    assert synchronous.accept_alert(driver_url, session) is True
+
+    synchronous.click(driver_url, session, element)
+    assert await asynchronous.accept_alert(driver_url, session) is True
+
+
+@mark.asyncio
+async def test_dismiss_alert(__setup):
+    driver_url, session = __setup
+    locator_type = "css selector"
+    locator_value = "#alert-button"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+    synchronous.click(driver_url, session, element)
+
+    assert synchronous.dismiss_alert(driver_url, session) is True
+
+    synchronous.click(driver_url, session, element)
+    assert await asynchronous.dismiss_alert(driver_url, session) is True
+
+
+@mark.asyncio
 async def test_take_screenshot_element(__setup):
     driver_url, session = __setup
     locator_type = "css selector"

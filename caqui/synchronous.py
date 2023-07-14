@@ -47,6 +47,13 @@ def __delete(url):
         raise WebDriverError("'DELETE' request failed.") from error
 
 
+def __handle_alerts(driver_url, session, command):
+    url = f"{driver_url}/session/{session}/alert/{command}"
+    payload = {"value": command}
+    __post(url, payload)
+    return True
+
+
 # def add_cookie(driver_url, session, name, value):
 #     """Add cookie by name"""
 #     try:
@@ -56,6 +63,33 @@ def __delete(url):
 #         return True
 #     except Exception as error:
 #         raise WebDriverError(f"Failed to add cookie '{name}'.") from error
+
+
+def send_alert_text(driver_url, session, text):
+    """Fill the alert text area and send the text"""
+    try:
+        url = f"{driver_url}/session/{session}/alert/text"
+        payload = {"text": text}
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to sent text to alert.") from error
+
+
+def accept_alert(driver_url, session):
+    """Accept an alert"""
+    try:
+        return __handle_alerts(driver_url, session, "accept")
+    except Exception as error:
+        raise WebDriverError(f"Failed to accept the alert.") from error
+
+
+def dismiss_alert(driver_url, session):
+    """Dismiss an alert"""
+    try:
+        return __handle_alerts(driver_url, session, "dismiss")
+    except Exception as error:
+        raise WebDriverError(f"Failed to dismiss the alert.") from error
 
 
 def take_screenshot_element(

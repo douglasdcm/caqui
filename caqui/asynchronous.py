@@ -47,6 +47,44 @@ async def __get(url):
         raise WebDriverError("'GET' request failed.") from error
 
 
+async def __handle_alert(driver_url, session, command):
+    url = f"{driver_url}/session/{session}/alert/{command}"
+    payload = {
+        "value": command,
+    }
+    await __post(url, payload)
+    return True
+
+
+async def send_alert_text(driver_url, session, text):
+    """Fill the alert text area and send the text"""
+    try:
+        url = f"{driver_url}/session/{session}/alert/text"
+        payload = {
+            "text": text,
+        }
+        await __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to sent text to alert.") from error
+
+
+async def accept_alert(driver_url, session):
+    """Accept alert"""
+    try:
+        return await __handle_alert(driver_url, session, "accept")
+    except Exception as error:
+        raise WebDriverError(f"Failed to accept alert.") from error
+
+
+async def dismiss_alert(driver_url, session):
+    """Dismiss alert"""
+    try:
+        return await __handle_alert(driver_url, session, "dismiss")
+    except Exception as error:
+        raise WebDriverError(f"Failed to dismiss alert.") from error
+
+
 async def take_screenshot_element(
     driver_url, session, element, path="/tmp", file_name="caqui"
 ):
