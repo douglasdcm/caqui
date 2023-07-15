@@ -7,6 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support import expected_conditions, wait
+from selenium.webdriver.common.alert import Alert
 import os
 
 
@@ -42,6 +44,31 @@ def setup_binary():
     browser.get(PAGE_URL)
     yield browser
     # browser.quit()
+
+
+@mark.skip("used just to discover request data")
+def test_send_text_to_alert(setup):
+    driver = setup
+    # Click the link to activate the alert
+    driver.find_element(By.CSS_SELECTOR, "#alert-button-prompt").click()
+    import time
+
+    time.sleep(3)
+
+    # Wait for the alert to be displayed
+    # wait.until(expected_conditions.alert_is_present())
+
+    # Store the alert in a variable for reuse
+    alert = Alert(driver)
+    print("alert ", alert.text)
+
+    # Type your message
+    alert.send_keys("Selenium")
+    time.sleep(3)
+
+    # Press the OK button
+    alert.accept()
+    time.sleep(3)
 
 
 @mark.skip("used just to discover request data")
