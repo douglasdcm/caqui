@@ -65,6 +65,28 @@ def __handle_alerts(driver_url, session, command):
 #         raise WebDriverError(f"Failed to add cookie '{name}'.") from error
 
 
+def switch_to_parent_frame(driver_url, session, element_frame):
+    """Switch to parent frame of 'element_frame'"""
+    try:
+        url = f"{driver_url}/session/{session}/frame/parent"
+        payload = {"id": {"ELEMENT": element_frame}}
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to switch to parent frame.") from error
+
+
+def switch_to_frame(driver_url, session, element_frame):
+    """Switch to frame 'element_frame'"""
+    try:
+        url = f"{driver_url}/session/{session}/frame"
+        payload = {"id": {"ELEMENT": element_frame}}
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to switch to frame.") from error
+
+
 def delete_all_cookies(driver_url, session):
     """Delete all cookies"""
     try:
