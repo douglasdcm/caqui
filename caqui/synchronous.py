@@ -66,7 +66,7 @@ def __handle_alerts(driver_url, session, command):
 
 
 def switch_to_parent_frame(driver_url, session, element_frame):
-    """Switch to parent frame of 'element_iframe'"""
+    """Switch to parent frame of 'element_frame'"""
     try:
         url = f"{driver_url}/session/{session}/frame/parent"
         payload = {"id": {"ELEMENT": element_frame}}
@@ -77,7 +77,7 @@ def switch_to_parent_frame(driver_url, session, element_frame):
 
 
 def switch_to_frame(driver_url, session, element_frame):
-    """Switch to frame 'element_iframe'"""
+    """Switch to frame 'element_frame'"""
     try:
         url = f"{driver_url}/session/{session}/frame"
         payload = {"id": {"ELEMENT": element_frame}}
