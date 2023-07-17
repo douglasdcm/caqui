@@ -42,8 +42,24 @@ def setup_binary():
     options.add_argument("window-size=1920,1080")
     browser = webdriver.Chrome(service=service, options=options)
     browser.get(PAGE_URL)
+
     yield browser
     # browser.quit()
+
+
+@mark.skip("used just to discover request data")
+def test_switch_to_frame_sniffer(setup):
+    driver = setup
+    # Click the link to activate the alert
+    import time
+
+    time.sleep(3)
+    element = driver.find_element(By.ID, "my-iframe")
+    driver.switch_to.frame(element)
+
+    element_alert = driver.find_element(By.ID, "alert-button-iframe")
+    element_alert.click()
+    time.sleep(3)
 
 
 @mark.skip("used just to discover request data")

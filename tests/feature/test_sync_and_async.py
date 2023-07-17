@@ -27,6 +27,59 @@ def __setup():
 
 
 @mark.asyncio
+async def test_switch_to_parent_frame_asynchronous(__setup):
+    driver_url, session = __setup
+    locator_type = "id"
+    locator_value = "my-iframe"
+
+    element_frame = synchronous.find_element(
+        driver_url, session, locator_type, locator_value
+    )
+    assert (
+        await asynchronous.switch_to_parent_frame(driver_url, session, element_frame)
+        is True
+    )
+
+
+def test_switch_to_parent_frame_synchronous(__setup):
+    driver_url, session = __setup
+    locator_type = "id"
+    locator_value = "my-iframe"
+
+    element_frame = synchronous.find_element(
+        driver_url, session, locator_type, locator_value
+    )
+    assert (
+        synchronous.switch_to_parent_frame(driver_url, session, element_frame) is True
+    )
+
+
+@mark.asyncio
+async def test_switch_to_frame_asynchronous(__setup):
+    driver_url, session = __setup
+    locator_type = "id"
+    locator_value = "my-iframe"
+
+    element_frame = synchronous.find_element(
+        driver_url, session, locator_type, locator_value
+    )
+    assert (
+        await asynchronous.switch_to_frame(driver_url, session, element_frame) is True
+    )
+
+
+def test_switch_to_frame_synchronous(__setup):
+    driver_url, session = __setup
+    locator_type = "id"
+    locator_value = "my-iframe"
+
+    element_frame = synchronous.find_element(
+        driver_url, session, locator_type, locator_value
+    )
+    assert synchronous.switch_to_frame(driver_url, session, element_frame) is True
+
+
+@mark.asyncio
 async def test_send_alert_text(__setup):
     driver_url, session = __setup
     locator_type = "css selector"
