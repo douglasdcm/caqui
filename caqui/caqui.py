@@ -11,6 +11,11 @@ class Element:
     def element(self):
         return self.__element
 
+    async def find_elements(self, locator, value):
+        return await asynchronous.find_children_elements(
+            self.__remote, self.__session, self.__element, locator, value
+        )
+
     async def find_element(self, locator, value):
         return await asynchronous.find_child_element(
             self.__remote, self.__session, self.__element, locator, value
@@ -38,10 +43,13 @@ class AsyncDriver:
         )
 
     async def find_elements(self, locator, value):
-        element = await asynchronous.find_elements(
+        elements = await asynchronous.find_elements(
             self.__remote, self.__session, locator, value
         )
-        return Element(element, self.__remote, self.__session)
+        result = []
+        for element in elements:
+            result.append(Element(element, self.__remote, self.__session))
+        return result
 
     async def find_element(self, locator, value):
         element = await asynchronous.find_element(

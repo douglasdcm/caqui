@@ -23,17 +23,25 @@ class TestObject:
         driver.quit()
 
     @mark.asyncio
+    async def test_find_elements_from_element(self, setup: AsyncDriver):
+        driver = setup
+        expected = 1
+        element = await driver.find_element(locator=by.XPATH, value="//body")
+        actual = await element.find_elements(by.XPATH, "//button")
+        assert len(actual) >= expected
+
+    @mark.asyncio
     async def test_find_element_from_element(self, setup: AsyncDriver):
         driver = setup
         element = await driver.find_element(locator=by.XPATH, value="//body")
-        assert element.find_element(by.XPATH, "//button") is not None
+        assert await element.find_element(by.XPATH, "//button") is not None
 
     @mark.asyncio
     async def test_find_elements(self, setup: AsyncDriver):
         driver = setup
-        assert (
-            await driver.find_elements(locator=by.XPATH, value="//button") is not None
-        )
+        expected = 1
+        actual = await driver.find_elements(locator=by.XPATH, value="//button")
+        assert len(actual) >= expected
 
     @mark.asyncio
     async def test_find_element(self, setup: AsyncDriver):
