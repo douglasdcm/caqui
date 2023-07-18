@@ -13,7 +13,7 @@ def __setup():
             "browserName": "chrome",
             "marionette": False,
             "acceptInsecureCerts": True,
-            # "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
+            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
         }
     }
     session = synchronous.get_session(driver_url, capabilities)
@@ -24,6 +24,164 @@ def __setup():
     )
     yield driver_url, session
     synchronous.close_session(driver_url, session)
+
+
+@mark.asyncio
+async def test_refresh_page(__setup):
+    driver_url, session = __setup
+
+    element_before = synchronous.find_element(driver_url, session, "xpath", "//input")
+    assert (
+        synchronous.refresh_page(
+            driver_url,
+            session,
+        )
+        is True
+    )
+
+    element_after = synchronous.find_element(driver_url, session, "xpath", "//input")
+    assert element_before != element_after
+
+    element_before = element_after
+    assert await asynchronous.refresh_page(driver_url, session) is True
+
+    element_after = synchronous.find_element(driver_url, session, "xpath", "//input")
+    assert element_before != element_after
+
+
+@mark.asyncio
+async def test_go_forward(__setup):
+    driver_url, session = __setup
+    title = "Sample page"
+
+    synchronous.go_back(driver_url, session)
+    assert (
+        synchronous.go_forward(
+            driver_url,
+            session,
+        )
+        is True
+    )
+    assert synchronous.get_title(driver_url, session) == title
+
+    synchronous.go_back(driver_url, session)
+    assert await asynchronous.go_forward(driver_url, session) is True
+    assert synchronous.get_title(driver_url, session) == title
+
+
+@mark.asyncio
+async def test_set_window_rectangle(__setup):
+    driver_url, session = __setup
+    width = 500
+    height = 300
+    x = 10
+    y = 20
+    window_rectangle_before = synchronous.get_window_rectangle(driver_url, session)
+
+    assert (
+        synchronous.set_window_rectangle(driver_url, session, width, height, x, y)
+        is True
+    )
+
+    window_rectangle_after = synchronous.get_window_rectangle(driver_url, session)
+    assert window_rectangle_after != window_rectangle_before
+    assert window_rectangle_after.get("height") != window_rectangle_before.get("height")
+    assert window_rectangle_after.get("width") != window_rectangle_before.get("width")
+    assert window_rectangle_after.get("x") != window_rectangle_before.get("x")
+    assert window_rectangle_after.get("y") != window_rectangle_before.get("y")
+
+    synchronous.maximize_window(driver_url, session)
+
+    assert (
+        await asynchronous.set_window_rectangle(
+            driver_url, session, width, height, x, y
+        )
+        is True
+    )
+
+    window_rectangle_after = None
+    window_rectangle_after = synchronous.get_window_rectangle(driver_url, session)
+    assert window_rectangle_after != window_rectangle_before
+    assert window_rectangle_after.get("height") != window_rectangle_before.get("height")
+    assert window_rectangle_after.get("width") != window_rectangle_before.get("width")
+    assert window_rectangle_after.get("x") != window_rectangle_before.get("x")
+    assert window_rectangle_after.get("y") != window_rectangle_before.get("y")
+
+
+@mark.skip(reason="does not work in headless mode")
+@mark.asyncio
+async def test_fullscreen_window(__setup):
+    driver_url, session = __setup
+    window_rectangle_before = synchronous.get_window_rectangle(driver_url, session)
+
+    assert synchronous.fullscreen_window(driver_url, session) is True
+
+    window_rectangle_after = synchronous.get_window_rectangle(driver_url, session)
+    assert window_rectangle_after != window_rectangle_before
+    assert window_rectangle_after.get("height") > window_rectangle_before.get("height")
+    assert window_rectangle_after.get("width") > window_rectangle_before.get("width")
+
+    synchronous.maximize_window(driver_url, session)
+
+    assert await asynchronous.fullscreen_window(driver_url, session) is True
+
+    window_rectangle_after = None
+    window_rectangle_after = synchronous.get_window_rectangle(driver_url, session)
+    assert window_rectangle_after != window_rectangle_before
+    assert window_rectangle_after.get("height") > window_rectangle_before.get("height")
+    assert window_rectangle_after.get("width") > window_rectangle_before.get("width")
+
+
+@mark.skip(reason="does not work in headless mode")
+@mark.asyncio
+async def test_minimize_window(__setup):
+    driver_url, session = __setup
+    window_rectangle_before = synchronous.get_window_rectangle(driver_url, session)
+
+    assert synchronous.minimize_window(driver_url, session) is True
+
+    window_rectangle_after = synchronous.get_window_rectangle(driver_url, session)
+    assert window_rectangle_after != window_rectangle_before
+    assert window_rectangle_after.get("height") < window_rectangle_before.get("height")
+    assert window_rectangle_after.get("width") < window_rectangle_before.get("width")
+
+    synchronous.maximize_window(driver_url, session)
+
+    assert await asynchronous.minimize_window(driver_url, session) is True
+
+    window_rectangle_after = None
+    window_rectangle_after = synchronous.get_window_rectangle(driver_url, session)
+    assert window_rectangle_after != window_rectangle_before
+    assert window_rectangle_after.get("height") < window_rectangle_before.get("height")
+    assert window_rectangle_after.get("width") < window_rectangle_before.get("width")
+
+
+@mark.skip(reason="does not work in headless mode")
+@mark.asyncio
+async def test_maximize_window_asynchronous(__setup):
+    driver_url, session = __setup
+    window_rectangle_before = synchronous.get_window_rectangle(driver_url, session)
+
+    assert await asynchronous.maximize_window(driver_url, session) is True
+
+    window_rectangle_after = synchronous.get_window_rectangle(driver_url, session)
+    assert window_rectangle_after != window_rectangle_before
+    assert window_rectangle_after.get("height") > window_rectangle_before.get("height")
+    assert window_rectangle_after.get("width") > window_rectangle_before.get("width")
+
+
+@mark.skip(reason="does not work in headless mode")
+@mark.asyncio
+def test_maximize_window_synchronous(__setup):
+    driver_url, session = __setup
+    window_rectangle_before = synchronous.get_window_rectangle(driver_url, session)
+
+    assert synchronous.maximize_window(driver_url, session) is True
+
+    window_rectangle_after = synchronous.get_window_rectangle(driver_url, session)
+    assert window_rectangle_after != window_rectangle_before
+    assert window_rectangle_after.get("height") > window_rectangle_before.get("height")
+    assert window_rectangle_after.get("width") > window_rectangle_before.get("width")
 
 
 @mark.parametrize("window_type", ("tab", "window"))
@@ -610,9 +768,14 @@ async def test_get_cookies(__setup):
 @mark.asyncio
 async def test_go_back(__setup):
     driver_url, session = __setup
+    title = ""
 
     assert synchronous.go_back(driver_url, session) is True
+    assert synchronous.get_title(driver_url, session) == title
+
+    synchronous.go_forward(driver_url, session)
     assert await asynchronous.go_back(driver_url, session) is True
+    assert synchronous.get_title(driver_url, session) == title
 
 
 @mark.asyncio
