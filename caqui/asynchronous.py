@@ -56,6 +56,32 @@ async def __handle_alert(driver_url, session, command):
     return True
 
 
+async def switch_to_window(driver_url, session, handle):
+    """Switch to window"""
+    try:
+        url = f"{driver_url}/session/{session}/window"
+        payload = {"name": handle}
+        await __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to switch to window.") from error
+
+
+async def new_window(driver_url, session, window_type="tab"):
+    """Open a new window
+    :param window_type (str): tab or window
+
+    return (str): window handle
+    """
+    try:
+        url = f"{driver_url}/session/{session}/window/new"
+        payload = {"type": window_type}
+        result = await __post(url, payload)
+        return result.get("value", {}).get("handle")
+    except Exception as error:
+        raise WebDriverError(f"Failed to open window.") from error
+
+
 async def switch_to_parent_frame(driver_url, session, element_frame):
     """Switch to parent frame of 'element_frame'"""
     try:

@@ -65,6 +65,31 @@ def __handle_alerts(driver_url, session, command):
 #         raise WebDriverError(f"Failed to add cookie '{name}'.") from error
 
 
+def switch_to_window(driver_url, session, handle):
+    """Switch to window"""
+    try:
+        url = f"{driver_url}/session/{session}/window"
+        payload = {"name": handle}
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to switch to window.") from error
+
+
+def new_window(driver_url, session, window_type="tab"):
+    """Open a new window
+    :param window_type (str): tab or window
+
+    return (str): window handle
+    """
+    try:
+        url = f"{driver_url}/session/{session}/window/new"
+        payload = {"type": window_type}
+        return __post(url, payload).get("value", {}).get("handle")
+    except Exception as error:
+        raise WebDriverError(f"Failed to open a new window.") from error
+
+
 def switch_to_parent_frame(driver_url, session, element_frame):
     """Switch to parent frame of 'element_frame'"""
     try:

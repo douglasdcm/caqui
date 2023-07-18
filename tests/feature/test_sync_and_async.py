@@ -13,7 +13,7 @@ def __setup():
             "browserName": "chrome",
             "marionette": False,
             "acceptInsecureCerts": True,
-            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
+            # "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
         }
     }
     session = synchronous.get_session(driver_url, capabilities)
@@ -24,6 +24,39 @@ def __setup():
     )
     yield driver_url, session
     synchronous.close_session(driver_url, session)
+
+
+@mark.parametrize("window_type", ("tab", "window"))
+@mark.asyncio
+async def test_switch_to_window(__setup, window_type):
+    driver_url, session = __setup
+
+    synchronous.new_window(driver_url, session, window_type)
+    handles = synchronous.get_window_handles(driver_url, session)
+    sample_page = handles[0]
+    new_page = handles[1]
+
+    assert synchronous.switch_to_window(driver_url, session, handle=new_page) is True
+    assert synchronous.get_title(driver_url, session) == ""
+    synchronous.switch_to_window(driver_url, session, handle=sample_page) is True
+
+    assert (
+        await asynchronous.switch_to_window(driver_url, session, handle=new_page)
+        is True
+    )
+    assert synchronous.get_title(driver_url, session) == ""
+
+
+@mark.parametrize("window_type", ("tab", "window"))
+@mark.asyncio
+async def test_new_window(__setup, window_type):
+    driver_url, session = __setup
+
+    assert synchronous.new_window(driver_url, session, window_type) is not None
+    import time
+
+    time.sleep(3)
+    assert await asynchronous.new_window(driver_url, session, window_type) is not None
 
 
 @mark.asyncio
