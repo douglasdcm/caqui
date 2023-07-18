@@ -1,7 +1,6 @@
 from caqui.caqui import AsyncDriver
 from caqui import by
 from pytest import mark, fixture
-from caqui import synchronous
 from tests.constants import PAGE_URL
 
 
