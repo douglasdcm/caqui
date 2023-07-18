@@ -56,6 +56,96 @@ async def __handle_alert(driver_url, session, command):
     return True
 
 
+async def __handle_window(driver_url, session, command):
+    url = f"{driver_url}/session/{session}/window/{command}"
+    payload = {}
+    await __post(url, payload)
+    return True
+
+
+async def refresh_page(driver_url, session):
+    """Refresh page"""
+    try:
+        url = f"{driver_url}/session/{session}/refresh"
+        payload = {}
+        await __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to refresh page.") from error
+
+
+async def go_forward(driver_url, session):
+    """Go to page forward"""
+    try:
+        url = f"{driver_url}/session/{session}/forward"
+        payload = {}
+        await __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to go to page forward.") from error
+
+
+async def set_window_rectangle(driver_url, session, width, height, x, y):
+    """Set window rectangle"""
+    try:
+        url = f"{driver_url}/session/{session}/window/rect"
+        payload = {"width": width, "height": height, "x": x, "y": y}
+        await __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to set window rectangle.") from error
+
+
+async def fullscreen_window(driver_url, session):
+    """Fullscreen window"""
+    try:
+        return await __handle_window(driver_url, session, command="fullscreen")
+    except Exception as error:
+        raise WebDriverError(f"Failed to fullscreen window.") from error
+
+
+async def minimize_window(driver_url, session):
+    """Minimize window"""
+    try:
+        return await __handle_window(driver_url, session, command="minimize")
+    except Exception as error:
+        raise WebDriverError(f"Failed to minimize window.") from error
+
+
+async def maximize_window(driver_url, session):
+    """Maximize window"""
+    try:
+        return await __handle_window(driver_url, session, command="maximize")
+    except Exception as error:
+        raise WebDriverError(f"Failed to maximize window.") from error
+
+
+async def switch_to_window(driver_url, session, handle):
+    """Switch to window"""
+    try:
+        url = f"{driver_url}/session/{session}/window"
+        payload = {"name": handle}
+        await __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to switch to window.") from error
+
+
+async def new_window(driver_url, session, window_type="tab"):
+    """Open a new window
+    :param window_type (str): tab or window
+
+    return (str): window handle
+    """
+    try:
+        url = f"{driver_url}/session/{session}/window/new"
+        payload = {"type": window_type}
+        result = await __post(url, payload)
+        return result.get("value", {}).get("handle")
+    except Exception as error:
+        raise WebDriverError(f"Failed to open window.") from error
+
+
 async def switch_to_parent_frame(driver_url, session, element_frame):
     """Switch to parent frame of 'element_frame'"""
     try:

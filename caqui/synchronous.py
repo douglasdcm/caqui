@@ -65,6 +65,95 @@ def __handle_alerts(driver_url, session, command):
 #         raise WebDriverError(f"Failed to add cookie '{name}'.") from error
 
 
+def __handle_window(driver_url, session, command):
+    url = f"{driver_url}/session/{session}/window/{command}"
+    payload = {}
+    __post(url, payload)
+    return True
+
+
+def refresh_page(driver_url, session):
+    """Refresh page"""
+    try:
+        url = f"{driver_url}/session/{session}/refresh"
+        payload = {}
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to refresh page.") from error
+
+
+def go_forward(driver_url, session):
+    """Go to page forward"""
+    try:
+        url = f"{driver_url}/session/{session}/forward"
+        payload = {}
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to go page forward.") from error
+
+
+def set_window_rectangle(driver_url, session, width, height, x, y):
+    """Set window rectangle"""
+    try:
+        url = f"{driver_url}/session/{session}/window/rect"
+        payload = {"width": width, "height": height, "x": x, "y": y}
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to set window rectangle.") from error
+
+
+def fullscreen_window(driver_url, session):
+    """Fullscreen window"""
+    try:
+        return __handle_window(driver_url, session, command="fullscreen")
+    except Exception as error:
+        raise WebDriverError(f"Failed to fullscreen window.") from error
+
+
+def minimize_window(driver_url, session):
+    """Minimize window"""
+    try:
+        return __handle_window(driver_url, session, command="minimize")
+    except Exception as error:
+        raise WebDriverError(f"Failed to minimize window.") from error
+
+
+def maximize_window(driver_url, session):
+    """Maximize window"""
+    try:
+        return __handle_window(driver_url, session, command="maximize")
+    except Exception as error:
+        raise WebDriverError(f"Failed to maximize window.") from error
+
+
+def switch_to_window(driver_url, session, handle):
+    """Switch to window"""
+    try:
+        url = f"{driver_url}/session/{session}/window"
+        payload = {"name": handle}
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to switch to window.") from error
+
+
+def new_window(driver_url, session, window_type="tab"):
+    """Open a new window
+    :param window_type (str): tab or window
+
+    return (str): window handle
+    """
+    try:
+        url = f"{driver_url}/session/{session}/window/new"
+        payload = {"type": window_type}
+        return __post(url, payload).get("value", {}).get("handle")
+    except Exception as error:
+        raise WebDriverError(f"Failed to open a new window.") from error
+
+
 def switch_to_parent_frame(driver_url, session, element_frame):
     """Switch to parent frame of 'element_frame'"""
     try:
