@@ -27,6 +27,60 @@ def __setup():
 
 
 @mark.asyncio
+async def test_add_cookie(__setup):
+    driver_url, session = __setup
+    # Need to navigate to a web page. If use 'playgound.html' the error
+    # 'Document is cookie-averse' happens
+    synchronous.go_to_page(
+        driver_url,
+        session,
+        "http://www.google.com",
+    )
+    cookies_before = synchronous.get_cookies(driver_url, session)
+
+    cookie = cookies_before[0]
+    cookie["name"] = "other"
+
+    assert synchronous.add_cookie(driver_url, session, cookie) is True
+    cookies_after = synchronous.get_cookies(driver_url, session)
+    assert len(cookies_after) > len(cookies_before)
+
+    cookies_before = cookies_after
+    cookie = cookies_before[0]
+    cookie["name"] = "another"
+
+    assert await asynchronous.add_cookie(driver_url, session, cookie) is True
+    cookies_after = synchronous.get_cookies(driver_url, session)
+    assert len(cookies_after) > len(cookies_before)
+
+
+@mark.skip(reason="works just in firefox")
+@mark.asyncio
+async def test_delete_cookie_asynchronous(__setup):
+    driver_url, session = __setup
+    cookies = synchronous.get_cookies(driver_url, session)
+    name = cookies[0].get("name")
+    zero = 0
+
+    assert await asynchronous.delete_cookie(driver_url, session, name) is True
+    cookies = synchronous.get_cookies(driver_url, session)
+    assert len(cookies) == zero
+
+
+@mark.skip(reason="works just in firefox")
+@mark.asyncio
+def test_delete_cookie_synchronous(__setup):
+    driver_url, session = __setup
+    cookies = synchronous.get_cookies(driver_url, session)
+    name = cookies[0].get("name")
+    zero = 0
+
+    assert synchronous.delete_cookie(driver_url, session, name) is True
+    cookies = synchronous.get_cookies(driver_url, session)
+    assert len(cookies) == zero
+
+
+@mark.asyncio
 async def test_refresh_page(__setup):
     driver_url, session = __setup
 
@@ -339,19 +393,31 @@ async def test_take_screenshot(__setup):
     assert await asynchronous.take_screenshot(driver_url, session) is True
 
 
+@mark.skip(reason="works just in firefox")
 @mark.asyncio
 async def test_delete_cookies_asynchronous(__setup):
     driver_url, session = __setup
 
+    cookies_before = synchronous.get_cookies(driver_url, session)
+
     response = await asynchronous.delete_all_cookies(driver_url, session)
     assert response is True
 
+    cookies_after = synchronous.get_cookies(driver_url, session)
+    assert len(cookies_before) != len(cookies_after)
 
+
+@mark.skip(reason="works just in firefox")
 @mark.asyncio
 async def test_delete_cookies_synchronous(__setup):
     driver_url, session = __setup
 
+    cookies_before = synchronous.get_cookies(driver_url, session)
+
     assert synchronous.delete_all_cookies(driver_url, session) is True
+
+    cookies_after = synchronous.get_cookies(driver_url, session)
+    assert len(cookies_before) != len(cookies_after)
 
 
 @mark.skip(reason="works just with Firefox")
@@ -414,22 +480,71 @@ async def test_get_tag_name(__setup):
     assert await asynchronous.get_tag_name(driver_url, session, element) == expected
 
 
+@mark.parametrize(
+    "locator, value", [("id", "shadow-button"), ("css selector", "button")]
+)
+@mark.asyncio
+async def test_find_element_from_shadow_root(__setup, locator, value):
+    driver_url, session = __setup
+    locator_type = "id"
+    locator_value = "shadow-root"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    shadow_root = synchronous.get_shadow_root(driver_url, session, element)
+
+    actual = synchronous.find_child_element(
+        driver_url, session, shadow_root, locator, value
+    )
+
+    assert actual is not None
+
+    actual = await asynchronous.find_child_element(
+        driver_url, session, shadow_root, locator, value
+    )
+
+    assert actual is not None
+
+
+@mark.parametrize(
+    "locator, value", [("id", "shadow-button"), ("css selector", "button")]
+)
+@mark.asyncio
+async def test_find_elements_from_shadow_root(__setup, locator, value):
+    driver_url, session = __setup
+    locator_type = "id"
+    locator_value = "shadow-root"
+    one = 1
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+
+    shadow_root = synchronous.get_shadow_root(driver_url, session, element)
+
+    actual = synchronous.find_children_elements(
+        driver_url, session, shadow_root, locator, value
+    )
+
+    assert len(actual) == one
+
+    actual = await asynchronous.find_children_elements(
+        driver_url, session, shadow_root, locator, value
+    )
+
+    assert len(actual) == one
+
+
 @mark.asyncio
 async def test_get_shadow_root(__setup):
     driver_url, session = __setup
     locator_type = "id"
     locator_value = "shadow-root"
-    root_element = "shadow-6066-11e4-a52e-4f735466cecf"
 
     element = synchronous.find_element(driver_url, session, locator_type, locator_value)
 
-    assert (
-        synchronous.get_shadow_root(driver_url, session, element).get(root_element)
-        is not None
-    )
+    assert synchronous.get_shadow_root(driver_url, session, element) is not None
 
     response = await asynchronous.get_shadow_root(driver_url, session, element)
-    assert response.get(root_element) is not None
+    assert response is not None
 
 
 @mark.asyncio

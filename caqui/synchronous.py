@@ -72,6 +72,27 @@ def __handle_window(driver_url, session, command):
     return True
 
 
+def add_cookie(driver_url, session, cookie):
+    """Add cookie"""
+    try:
+        url = f"{driver_url}/session/{session}/cookie"
+        payload = {"cookie": cookie}
+        __post(url, payload)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to add cookie.") from error
+
+
+def delete_cookie(driver_url, session, name):
+    """Delete cookie by name"""
+    try:
+        url = f"{driver_url}/session/{session}/cookie/{name}"
+        __delete(url)
+        return True
+    except Exception as error:
+        raise WebDriverError(f"Failed to delete cookie '{name}'.") from error
+
+
 def refresh_page(driver_url, session):
     """Refresh page"""
     try:
@@ -276,8 +297,9 @@ def get_tag_name(driver_url, session, element):
 def get_shadow_root(driver_url, session, element):
     """Get the shadow root element"""
     try:
+        root_element = "shadow-6066-11e4-a52e-4f735466cecf"
         url = f"{driver_url}/session/{session}/element/{element}/shadow"
-        return __get(url).get("value")
+        return __get(url).get("value",{}).get(root_element)
     except Exception as error:
         raise WebDriverError(f"Failed to get the element shadow.") from error
 
@@ -394,7 +416,11 @@ def set_timeouts(driver_url, session, timeouts):
 def find_children_elements(
     driver_url, session, parent_element, locator_type, locator_value
 ):
-    """Find the children elements by 'locator_type'"""
+    """Find the children elements by 'locator_type'
+
+    If the 'parent_element' is a shadow element, set the 'locator_type' as 'id' or
+    'css selector'
+    """
     try:
         url = f"{driver_url}/session/{session}/element/{parent_element}/elements"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
