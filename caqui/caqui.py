@@ -11,6 +11,29 @@ class Element:
     def element(self):
         return self.__element
 
+    async def get_computed_label(self):
+        return await asynchronous.get_computed_label(
+            self.__remote, self.__session, self.__element
+        )
+
+    async def get_attribute(self, attribute):
+        return await asynchronous.get_attribute(
+            self.__remote, self.__session, self.__element, attribute
+        )
+
+    async def clear(self):
+        return await asynchronous.clear_element(
+            self.__remote, self.__session, self.__element
+        )
+
+    async def send_keys(self, text):
+        return await asynchronous.send_keys(
+            self.__remote, self.__session, self.__element, text
+        )
+
+    async def click(self):
+        return await asynchronous.click(self.__remote, self.__session, self.__element)
+
     async def find_elements(self, locator, value):
         return await asynchronous.find_children_elements(
             self.__remote, self.__session, self.__element, locator, value
