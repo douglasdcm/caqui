@@ -1,8 +1,7 @@
-from caqui import by
-from pytest import fixture, mark, raises
-from caqui import asynchronous, synchronous
+from caqui.by import By
+from caqui import synchronous
 from tests.constants import PAGE_URL
-from caqui.exceptions import WebDriverError
+from pytest import fixture, mark
 
 
 @fixture
@@ -30,14 +29,14 @@ def __setup():
 @mark.parametrize(
     "locator, value",
     [
-        (by.CLASS_NAME, "my-class"),
-        (by.CSS_SELECTOR, ".my-class"),
-        (by.ID, "button"),
-        (by.LINK_TEXT, "any2.com"),
-        (by.NAME, "fname"),
-        (by.PARTIAL_LINK_TEXT, "any3"),
-        (by.TAG_NAME, "input"),
-        (by.XPATH, "//button"),
+        (By.CLASS_NAME, "my-class"),
+        (By.CSS_SELECTOR, ".my-class"),
+        (By.ID, "button"),
+        (By.LINK_TEXT, "any2.com"),
+        (By.NAME, "fname"),
+        (By.PARTIAL_LINK_TEXT, "any3"),
+        (By.TAG_NAME, "input"),
+        (By.XPATH, "//button"),
     ],
 )
 def test_locators(__setup, locator, value):
