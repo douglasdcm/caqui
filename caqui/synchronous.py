@@ -299,7 +299,7 @@ def get_shadow_root(driver_url, session, element):
     try:
         root_element = "shadow-6066-11e4-a52e-4f735466cecf"
         url = f"{driver_url}/session/{session}/element/{element}/shadow"
-        return __get(url).get("value",{}).get(root_element)
+        return __get(url).get("value", {}).get(root_element)
     except Exception as error:
         raise WebDriverError(f"Failed to get the element shadow.") from error
 
@@ -311,6 +311,37 @@ def get_rect(driver_url, session, element):
         return __get(url).get("value")
     except Exception as error:
         raise WebDriverError(f"Failed to get the element rect.") from error
+
+
+def actions_move_to_element(driver_url, session, element):
+    """Move to an element simulating a mouse movement"""
+    try:
+        payload = {
+            "actions": [
+                {
+                    "type": "pointer",
+                    "parameters": {"pointerType": "mouse"},
+                    "id": "mouse",
+                    "actions": [
+                        {
+                            "type": "pointerMove",
+                            "duration": 250,
+                            "x": 0,
+                            "y": 0,
+                            "origin": {"ELEMENT": element},
+                        }
+                    ],
+                },
+                {
+                    "type": "key",
+                    "id": "key",
+                    "actions": [{"type": "pause", "duration": 0}],
+                },
+            ]
+        }
+        return actions(driver_url, session, payload)
+    except Exception as error:
+        raise WebDriverError(f"Failed to move to element.") from error
 
 
 def actions_scroll_to_element(driver_url, session, element):

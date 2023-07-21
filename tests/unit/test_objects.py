@@ -1,4 +1,4 @@
-from caqui.caqui import AsyncDriver
+from caqui.caqui import AsyncDriver, Element, ActionChains
 from caqui.by import By
 from pytest import mark, fixture
 from tests.constants import PAGE_URL
@@ -21,6 +21,34 @@ class TestObject:
         driver = AsyncDriver(remote, capabilities, PAGE_URL)
         yield driver
         driver.quit()
+
+    @mark.asyncio
+    async def test_action_chains(self, setup: AsyncDriver):
+        driver = setup
+        element = await driver.find_element(By.XPATH, "//button")
+        actions = (
+            await driver.actions()
+            .move_to_element(element)
+            .scroll_to_element(element)
+            .click()
+            .perform()
+        )
+        assert actions is True
+
+        actions = (
+            await ActionChains(driver)
+            .move_to_element(element)
+            .scroll_to_element(element)
+            .click()
+            .perform()
+        )
+        assert actions is True
+
+    @mark.asyncio
+    async def test_save_screenshot(self, setup: AsyncDriver):
+        driver = setup
+
+        assert await driver.save_screenshot("/tmp/test.png") is True
 
     @mark.asyncio
     async def test_object_to_string(self, setup: AsyncDriver):
@@ -81,12 +109,15 @@ class TestObject:
         element = await driver.find_element(locator=By.XPATH, value="//body")
         actual = await element.find_elements(By.XPATH, "//button")
         assert len(actual) >= expected
+        assert isinstance(actual[0], Element)
 
     @mark.asyncio
     async def test_find_element_from_element(self, setup: AsyncDriver):
         driver = setup
         element = await driver.find_element(locator=By.XPATH, value="//body")
-        assert await element.find_element(By.XPATH, "//button") is not None
+        actual = await element.find_element(By.XPATH, "//button")
+        assert actual is not None
+        assert isinstance(actual, Element)
 
     @mark.asyncio
     async def test_find_elements(self, setup: AsyncDriver):
