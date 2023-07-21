@@ -563,6 +563,19 @@ async def test_get_rect(__setup):
 
 
 @mark.asyncio
+async def test_move_to_element(__setup):
+    driver_url, session = __setup
+    locator_type = By.XPATH
+    locator_value = "//button"
+
+    element = synchronous.find_element(driver_url, session, locator_type, locator_value)
+    assert synchronous.actions_move_to_element(driver_url, session, element) is True
+    assert (
+        await asynchronous.actions_move_to_element(driver_url, session, element) is True
+    )
+
+
+@mark.asyncio
 async def test_actions_scroll_to_element(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH

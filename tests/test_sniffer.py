@@ -10,6 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions, wait
 from selenium.webdriver.common.alert import Alert
 import os
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 @fixture
@@ -43,8 +44,36 @@ def setup_binary():
     browser = webdriver.Chrome(service=service, options=options)
     browser.get(PAGE_URL)
 
+    browser._shadowroot_cls
+
     yield browser
     # browser.quit()
+
+
+@mark.skip("used just to discover request data")
+def test_action_chains(setup):
+    driver = setup
+
+    resource = driver.find_element("xpath", "//button")
+
+    action = ActionChains(driver)
+    action.move_to_element(resource)
+    action.perform()
+
+
+@mark.skip("used just to discover request data")
+def test_switch_to_frame_sniffer(setup):
+    driver = setup
+    # Click the link to activate the alert
+    import time
+
+    time.sleep(3)
+    element = driver.find_element(By.ID, "my-iframe")
+    driver.switch_to.frame(element)
+
+    element_alert = driver.find_element(By.ID, "alert-button-iframe")
+    element_alert.click()
+    time.sleep(3)
 
 
 @mark.skip("used just to discover request data")

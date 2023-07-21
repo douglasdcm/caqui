@@ -321,6 +321,37 @@ async def actions(driver_url, session, payload):
     return True
 
 
+async def actions_move_to_element(driver_url, session, element):
+    """Move to an element simulating a mouse movement"""
+    try:
+        payload = {
+            "actions": [
+                {
+                    "type": "pointer",
+                    "parameters": {"pointerType": "mouse"},
+                    "id": "mouse",
+                    "actions": [
+                        {
+                            "type": "pointerMove",
+                            "duration": 250,
+                            "x": 0,
+                            "y": 0,
+                            "origin": {"ELEMENT": element},
+                        }
+                    ],
+                },
+                {
+                    "type": "key",
+                    "id": "key",
+                    "actions": [{"type": "pause", "duration": 0}],
+                },
+            ]
+        }
+        return await actions(driver_url, session, payload)
+    except Exception as error:
+        raise WebDriverError(f"Failed to move to element.") from error
+
+
 async def actions_scroll_to_element(driver_url, session, element):
     """Scroll to an element simulating a mouse movement"""
     try:
