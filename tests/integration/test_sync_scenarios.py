@@ -102,13 +102,14 @@ def test_add_text__click_button_and_get_properties(__setup):
 
     input = find_element(driver_url, session, locator_type, locator_value="//input")
     send_keys(driver_url, session, input, "any")
-    assert get_property(driver_url, session, input, property="value") == "any"
+    assert get_property(driver_url, session, input, property_name="value") == "any"
     clear_element(driver_url, session, input)
-    assert get_property(driver_url, session, input, property="value") == ""
+    assert get_property(driver_url, session, input, property_name="value") == ""
 
     anchor = find_element(driver_url, session, locator_type, locator_value="//a")
     assert (
-        get_property(driver_url, session, anchor, property="href") == "http://any1.com/"
+        get_property(driver_url, session, anchor, property_name="href")
+        == "http://any1.com/"
     )
 
     button = find_element(driver_url, session, locator_type, locator_value="//button")

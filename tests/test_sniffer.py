@@ -29,7 +29,7 @@ def setup():
         desired_capabilities=desired_capabilities,
     )
     driver.get(PAGE_URL)
-    driver
+    # driver.find_element().value_of_css_property()
     yield driver
     driver.quit()
 

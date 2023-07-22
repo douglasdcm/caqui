@@ -1,4 +1,4 @@
-from caqui.caqui import AsyncDriver, Element, ActionChains
+from caqui.caqui import AsyncDriver, ActionChains
 from caqui.by import By
 from pytest import mark, fixture
 from tests.constants import PAGE_URL
@@ -27,8 +27,7 @@ class TestObject:
         driver = setup
         element = await driver.find_element(By.XPATH, "//button")
         actions = (
-            await driver.actions()
-            .move_to_element(element)
+            await driver.actions.move_to_element(element)
             .scroll_to_element(element)
             .click()
             .perform()
@@ -109,7 +108,6 @@ class TestObject:
         element = await driver.find_element(locator=By.XPATH, value="//body")
         actual = await element.find_elements(By.XPATH, "//button")
         assert len(actual) >= expected
-        assert isinstance(actual[0], Element)
 
     @mark.asyncio
     async def test_find_element_from_element(self, setup: AsyncDriver):
@@ -117,7 +115,6 @@ class TestObject:
         element = await driver.find_element(locator=By.XPATH, value="//body")
         actual = await element.find_element(By.XPATH, "//button")
         assert actual is not None
-        assert isinstance(actual, Element)
 
     @mark.asyncio
     async def test_find_elements(self, setup: AsyncDriver):

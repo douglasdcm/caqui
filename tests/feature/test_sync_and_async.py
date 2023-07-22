@@ -40,7 +40,7 @@ async def test_add_cookie(__setup):
     cookies_before = synchronous.get_cookies(driver_url, session)
 
     cookie = cookies_before[0]
-    cookie[By.NAME] = "other"
+    cookie["name"] = "other"
 
     assert synchronous.add_cookie(driver_url, session, cookie) is True
     cookies_after = synchronous.get_cookies(driver_url, session)
