@@ -1,14 +1,8 @@
-import requests
-import json
-from caqui.exceptions import WebDriverError
-from caqui import helper
-
-HEADERS = {
-    "Accept-Encoding": "identity",
-    "Accept": "application/json",
-    "Content-Type": "application/json;charset=UTF-8",
-    "Connection": "keep-alive",
-}
+import requests as __requests
+import json as __json
+from caqui.exceptions import WebDriverError as __WebDriverError
+from caqui import helper as __helper
+from caqui.constants import HEADERS as __HEADERS
 
 
 def __handle_response(response):
@@ -16,35 +10,37 @@ def __handle_response(response):
     if response.status_code in range(200, 399):
         result = response.json()
     else:
-        raise WebDriverError(f"Status: {response.status_code}, {response.text}")
+        raise __WebDriverError(f"Status: {response.status_code}, {response.text}")
 
     if int(result.get("status", 0)) > 0:
-        raise WebDriverError(f"Status: {response.status_code}, {response.text}")
+        raise __WebDriverError(f"Status: {response.status_code}, {response.text}")
     return result
 
 
 def __get(url):
     try:
-        response = requests.request("GET", url, headers=HEADERS, data={})
+        response = __requests.request("GET", url, headers=__HEADERS, data={})
         return __handle_response(response)
     except Exception as error:
-        raise WebDriverError("'GET' request failed.") from error
+        raise __WebDriverError("'GET' request failed.") from error
 
 
 def __post(url, payload):
-    response = requests.request("POST", url, headers=HEADERS, data=json.dumps(payload))
+    response = __requests.request(
+        "POST", url, headers=__HEADERS, data=__json.dumps(payload)
+    )
     try:
         return __handle_response(response)
     except Exception as error:
-        raise WebDriverError("'POST' request failed.") from error
+        raise __WebDriverError("'POST' request failed.") from error
 
 
 def __delete(url):
     try:
-        response = requests.request("DELETE", url, headers={}, data={})
+        response = __requests.request("DELETE", url, headers={}, data={})
         return __handle_response(response)
     except Exception as error:
-        raise WebDriverError("'DELETE' request failed.") from error
+        raise __WebDriverError("'DELETE' request failed.") from error
 
 
 def __handle_alerts(driver_url, session, command):
@@ -52,17 +48,6 @@ def __handle_alerts(driver_url, session, command):
     payload = {"value": command}
     __post(url, payload)
     return True
-
-
-# def add_cookie(driver_url, session, name, value):
-#     """Add cookie by name"""
-#     try:
-#         url = f"{driver_url}/session/{session}/cookie"
-#         payload = {"cookie": {"name": name, "value": value}}
-#         __post(url, payload)
-#         return True
-#     except Exception as error:
-#         raise WebDriverError(f"Failed to add cookie '{name}'.") from error
 
 
 def __handle_window(driver_url, session, command):
@@ -80,7 +65,7 @@ def add_cookie(driver_url, session, cookie):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to add cookie.") from error
+        raise __WebDriverError("Failed to add cookie.") from error
 
 
 def delete_cookie(driver_url, session, name):
@@ -90,7 +75,7 @@ def delete_cookie(driver_url, session, name):
         __delete(url)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to delete cookie '{name}'.") from error
+        raise __WebDriverError("Failed to delete cookie '{name}'.") from error
 
 
 def refresh_page(driver_url, session):
@@ -101,7 +86,7 @@ def refresh_page(driver_url, session):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to refresh page.") from error
+        raise __WebDriverError("Failed to refresh page.") from error
 
 
 def go_forward(driver_url, session):
@@ -112,7 +97,7 @@ def go_forward(driver_url, session):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to go page forward.") from error
+        raise __WebDriverError("Failed to go page forward.") from error
 
 
 def set_window_rectangle(driver_url, session, width, height, x, y):
@@ -123,7 +108,7 @@ def set_window_rectangle(driver_url, session, width, height, x, y):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to set window rectangle.") from error
+        raise __WebDriverError("Failed to set window rectangle.") from error
 
 
 def fullscreen_window(driver_url, session):
@@ -131,7 +116,7 @@ def fullscreen_window(driver_url, session):
     try:
         return __handle_window(driver_url, session, command="fullscreen")
     except Exception as error:
-        raise WebDriverError(f"Failed to fullscreen window.") from error
+        raise __WebDriverError("Failed to fullscreen window.") from error
 
 
 def minimize_window(driver_url, session):
@@ -139,7 +124,7 @@ def minimize_window(driver_url, session):
     try:
         return __handle_window(driver_url, session, command="minimize")
     except Exception as error:
-        raise WebDriverError(f"Failed to minimize window.") from error
+        raise __WebDriverError("Failed to minimize window.") from error
 
 
 def maximize_window(driver_url, session):
@@ -147,7 +132,7 @@ def maximize_window(driver_url, session):
     try:
         return __handle_window(driver_url, session, command="maximize")
     except Exception as error:
-        raise WebDriverError(f"Failed to maximize window.") from error
+        raise __WebDriverError("Failed to maximize window.") from error
 
 
 def switch_to_window(driver_url, session, handle):
@@ -158,7 +143,7 @@ def switch_to_window(driver_url, session, handle):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to switch to window.") from error
+        raise __WebDriverError("Failed to switch to window.") from error
 
 
 def new_window(driver_url, session, window_type="tab"):
@@ -172,7 +157,7 @@ def new_window(driver_url, session, window_type="tab"):
         payload = {"type": window_type}
         return __post(url, payload).get("value", {}).get("handle")
     except Exception as error:
-        raise WebDriverError(f"Failed to open a new window.") from error
+        raise __WebDriverError("Failed to open a new window.") from error
 
 
 def switch_to_parent_frame(driver_url, session, element_frame):
@@ -183,7 +168,7 @@ def switch_to_parent_frame(driver_url, session, element_frame):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to switch to parent frame.") from error
+        raise __WebDriverError("Failed to switch to parent frame.") from error
 
 
 def switch_to_frame(driver_url, session, element_frame):
@@ -194,7 +179,7 @@ def switch_to_frame(driver_url, session, element_frame):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to switch to frame.") from error
+        raise __WebDriverError("Failed to switch to frame.") from error
 
 
 def delete_all_cookies(driver_url, session):
@@ -204,7 +189,7 @@ def delete_all_cookies(driver_url, session):
         __delete(url)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to delete cookies.") from error
+        raise __WebDriverError("Failed to delete cookies.") from error
 
 
 def send_alert_text(driver_url, session, text):
@@ -215,7 +200,7 @@ def send_alert_text(driver_url, session, text):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to sent text to alert.") from error
+        raise __WebDriverError("Failed to sent text to alert.") from error
 
 
 def accept_alert(driver_url, session):
@@ -223,7 +208,7 @@ def accept_alert(driver_url, session):
     try:
         return __handle_alerts(driver_url, session, "accept")
     except Exception as error:
-        raise WebDriverError(f"Failed to accept the alert.") from error
+        raise __WebDriverError("Failed to accept the alert.") from error
 
 
 def dismiss_alert(driver_url, session):
@@ -231,7 +216,7 @@ def dismiss_alert(driver_url, session):
     try:
         return __handle_alerts(driver_url, session, "dismiss")
     except Exception as error:
-        raise WebDriverError(f"Failed to dismiss the alert.") from error
+        raise __WebDriverError("Failed to dismiss the alert.") from error
 
 
 def take_screenshot_element(
@@ -241,10 +226,10 @@ def take_screenshot_element(
     try:
         url = f"{driver_url}/session/{session}/element/{element}/screenshot"
         response = __get(url).get("value")
-        helper.save_picture(session, path, file_name, response)
+        __helper.save_picture(session, path, file_name, response)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to take screeshot.") from error
+        raise __WebDriverError("Failed to take screeshot.") from error
 
 
 def take_screenshot(driver_url, session, path="/tmp", file_name="caqui"):
@@ -252,10 +237,10 @@ def take_screenshot(driver_url, session, path="/tmp", file_name="caqui"):
     try:
         url = f"{driver_url}/session/{session}/screenshot"
         response = __get(url).get("value")
-        helper.save_picture(session, path, file_name, response)
+        __helper.save_picture(session, path, file_name, response)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to take screeshot.") from error
+        raise __WebDriverError("Failed to take screeshot.") from error
 
 
 def get_named_cookie(driver_url, session, name):
@@ -264,7 +249,7 @@ def get_named_cookie(driver_url, session, name):
         url = f"{driver_url}/session/{session}/cookie/{name}"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get the cookie '{name}'.") from error
+        raise __WebDriverError(f"Failed to get the cookie '{name}'.") from error
 
 
 def get_computed_label(driver_url, session, element):
@@ -273,7 +258,7 @@ def get_computed_label(driver_url, session, element):
         url = f"{driver_url}/session/{session}/element/{element}/computedlabel"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get the element computed label.") from error
+        raise __WebDriverError("Failed to get the element computed label.") from error
 
 
 def get_computed_role(driver_url, session, element):
@@ -282,7 +267,7 @@ def get_computed_role(driver_url, session, element):
         url = f"{driver_url}/session/{session}/element/{element}/computedrole"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get the element computed role.") from error
+        raise __WebDriverError("Failed to get the element computed role.") from error
 
 
 def get_tag_name(driver_url, session, element):
@@ -291,7 +276,7 @@ def get_tag_name(driver_url, session, element):
         url = f"{driver_url}/session/{session}/element/{element}/name"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get the element name.") from error
+        raise __WebDriverError("Failed to get the element name.") from error
 
 
 def get_shadow_root(driver_url, session, element):
@@ -301,7 +286,7 @@ def get_shadow_root(driver_url, session, element):
         url = f"{driver_url}/session/{session}/element/{element}/shadow"
         return __get(url).get("value", {}).get(root_element)
     except Exception as error:
-        raise WebDriverError(f"Failed to get the element shadow.") from error
+        raise __WebDriverError("Failed to get the element shadow.") from error
 
 
 def get_rect(driver_url, session, element):
@@ -310,7 +295,7 @@ def get_rect(driver_url, session, element):
         url = f"{driver_url}/session/{session}/element/{element}/rect"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get the element rect.") from error
+        raise __WebDriverError("Failed to get the element rect.") from error
 
 
 def actions_move_to_element(driver_url, session, element):
@@ -341,7 +326,7 @@ def actions_move_to_element(driver_url, session, element):
         }
         return actions(driver_url, session, payload)
     except Exception as error:
-        raise WebDriverError(f"Failed to move to element.") from error
+        raise __WebDriverError("Failed to move to element.") from error
 
 
 def actions_scroll_to_element(driver_url, session, element):
@@ -368,7 +353,7 @@ def actions_scroll_to_element(driver_url, session, element):
         }
         return actions(driver_url, session, payload)
     except Exception as error:
-        raise WebDriverError(f"Failed to scroll to element.") from error
+        raise __WebDriverError("Failed to scroll to element.") from error
 
 
 def actions(driver_url, session, payload):
@@ -391,7 +376,7 @@ def submit(driver_url, session, element):
         )
         return click(driver_url, session, submit_element)
     except Exception as error:
-        raise WebDriverError(f"Failed to submit form.") from error
+        raise __WebDriverError("Failed to submit form.") from error
 
 
 def actions_click(driver_url, session, element):
@@ -428,7 +413,7 @@ def actions_click(driver_url, session, element):
         }
         return actions(driver_url, session, payload)
     except Exception as error:
-        raise WebDriverError(f"Failed to click the element.") from error
+        raise __WebDriverError("Failed to click the element.") from error
 
 
 def set_timeouts(driver_url, session, timeouts):
@@ -441,7 +426,7 @@ def set_timeouts(driver_url, session, timeouts):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to set timeouts.") from error
+        raise __WebDriverError("Failed to set timeouts.") from error
 
 
 def find_children_elements(
@@ -456,9 +441,9 @@ def find_children_elements(
         url = f"{driver_url}/session/{session}/element/{parent_element}/elements"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
         response = __post(url, payload)
-        return helper.get_elements(response)
+        return __helper.get_elements(response)
     except Exception as error:
-        raise WebDriverError(
+        raise __WebDriverError(
             f"Failed to find the children elements from '{parent_element}'."
         ) from error
 
@@ -471,9 +456,9 @@ def find_child_element(
         url = f"{driver_url}/session/{session}/element/{parent_element}/element"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
         response = __post(url, payload)
-        return helper.get_element(response)
+        return __helper.get_element(response)
     except Exception as error:
-        raise WebDriverError(
+        raise __WebDriverError(
             f"Failed to find the child element from '{parent_element}'."
         ) from error
 
@@ -484,7 +469,7 @@ def get_page_source(driver_url, session):
         url = f"{driver_url}/session/{session}/source"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get the page source.") from error
+        raise __WebDriverError("Failed to get the page source.") from error
 
 
 def execute_script(driver_url, session, script, args=[]):
@@ -495,7 +480,7 @@ def execute_script(driver_url, session, script, args=[]):
         response = __post(url, payload)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to run the script.") from error
+        raise __WebDriverError("Failed to run the script.") from error
 
 
 def get_alert_text(driver_url, session):
@@ -504,7 +489,7 @@ def get_alert_text(driver_url, session):
         url = f"{driver_url}/session/{session}/alert/text"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get the alert text.") from error
+        raise __WebDriverError("Failed to get the alert text.") from error
 
 
 def get_active_element(driver_url, session):
@@ -512,9 +497,9 @@ def get_active_element(driver_url, session):
     try:
         url = f"{driver_url}/session/{session}/element/active"
         response = __get(url)
-        return helper.get_element(response)
+        return __helper.get_element(response)
     except Exception as error:
-        raise WebDriverError(f"Failed to get the active element.") from error
+        raise __WebDriverError("Failed to get the active element.") from error
 
 
 def clear_element(driver_url, session, element):
@@ -525,7 +510,7 @@ def clear_element(driver_url, session, element):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to clear the element text.") from error
+        raise __WebDriverError("Failed to clear the element text.") from error
 
 
 def is_element_enabled(driver_url, session, element):
@@ -534,7 +519,7 @@ def is_element_enabled(driver_url, session, element):
         url = f"{driver_url}/session/{session}/element/{element}/enabled"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to check if element is enabled.") from error
+        raise __WebDriverError("Failed to check if element is enabled.") from error
 
 
 def get_css_value(driver_url, session, element, property_name):
@@ -543,7 +528,7 @@ def get_css_value(driver_url, session, element, property_name):
         url = f"{driver_url}/session/{session}/element/{element}/css/{property_name}"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get the css property value.") from error
+        raise __WebDriverError("Failed to get the css property value.") from error
 
 
 def is_element_selected(driver_url, session, element):
@@ -552,7 +537,7 @@ def is_element_selected(driver_url, session, element):
         url = f"{driver_url}/session/{session}/element/{element}/selected"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to check if element is selected.") from error
+        raise __WebDriverError("Failed to check if element is selected.") from error
 
 
 def get_window_rectangle(driver_url, session):
@@ -561,7 +546,7 @@ def get_window_rectangle(driver_url, session):
         url = f"{driver_url}/session/{session}/window/rect"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get window rectangle.") from error
+        raise __WebDriverError("Failed to get window rectangle.") from error
 
 
 def get_window_handles(driver_url, session):
@@ -570,7 +555,7 @@ def get_window_handles(driver_url, session):
         url = f"{driver_url}/session/{session}/window/handles"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get window handles.") from error
+        raise __WebDriverError("Failed to get window handles.") from error
 
 
 def close_window(driver_url, session):
@@ -579,7 +564,7 @@ def close_window(driver_url, session):
         url = f"{driver_url}/session/{session}/window"
         return __delete(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to close active window.") from error
+        raise __WebDriverError("Failed to close active window.") from error
 
 
 def get_window(driver_url, session):
@@ -588,7 +573,7 @@ def get_window(driver_url, session):
         url = f"{driver_url}/session/{session}/window"
         return __get(url).get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get window.") from error
+        raise __WebDriverError("Failed to get window.") from error
 
 
 def go_back(driver_url, session):
@@ -601,7 +586,7 @@ def go_back(driver_url, session):
         __post(url, {})
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to go back to page.") from error
+        raise __WebDriverError("Failed to go back to page.") from error
 
 
 def get_url(driver_url, session):
@@ -611,7 +596,7 @@ def get_url(driver_url, session):
         response = __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get page url.") from error
+        raise __WebDriverError("Failed to get page url.") from error
 
 
 def get_timeouts(driver_url, session):
@@ -624,7 +609,7 @@ def get_timeouts(driver_url, session):
         response = __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get timeouts.") from error
+        raise __WebDriverError("Failed to get timeouts.") from error
 
 
 def get_status(driver_url):
@@ -642,7 +627,7 @@ def get_status(driver_url):
         url = f"{driver_url}/status"
         return __get(url)
     except Exception as error:
-        raise WebDriverError(f"Failed to get status.") from error
+        raise __WebDriverError("Failed to get status.") from error
 
 
 def get_title(driver_url, session):
@@ -652,7 +637,7 @@ def get_title(driver_url, session):
         response = __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get page title.") from error
+        raise __WebDriverError("Failed to get page title.") from error
 
 
 def find_elements(driver_url, session, locator_type, locator_value):
@@ -663,19 +648,21 @@ def find_elements(driver_url, session, locator_type, locator_value):
         response = __post(url, payload)
         return [x.get("ELEMENT") for x in response.get("value")]
     except Exception as error:
-        raise WebDriverError(
+        raise __WebDriverError(
             f"Failed to find elements by '{locator_type}'-'{locator_value}'."
         ) from error
 
 
-def get_property(driver_url, session, element, property):
+def get_property(driver_url, session, element, property_name):
     """Get the given HTML property of an element, for example, 'href'"""
     try:
-        url = f"{driver_url}/session/{session}/element/{element}/property/{property}"
+        url = (
+            f"{driver_url}/session/{session}/element/{element}/property/{property_name}"
+        )
         response = __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get value from element.") from error
+        raise __WebDriverError("Failed to get value from element.") from error
 
 
 def get_attribute(driver_url, session, element, attribute):
@@ -685,7 +672,7 @@ def get_attribute(driver_url, session, element, attribute):
         response = __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get value from element.") from error
+        raise __WebDriverError("Failed to get value from element.") from error
 
 
 def get_cookies(driver_url, session):
@@ -695,7 +682,7 @@ def get_cookies(driver_url, session):
         response = __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get page cookies.") from error
+        raise __WebDriverError("Failed to get page cookies.") from error
 
 
 def get(driver_url, session, page_url):
@@ -711,7 +698,7 @@ def go_to_page(driver_url, session, page_url):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to navigate to '{page_url}'") from error
+        raise __WebDriverError(f"Failed to navigate to '{page_url}'") from error
 
 
 def close_session(driver_url, session):
@@ -721,7 +708,7 @@ def close_session(driver_url, session):
         __delete(url)
         return True
     except Exception as error:
-        raise WebDriverError("Failed to close session.") from error
+        raise __WebDriverError("Failed to close session.") from error
 
 
 def get_text(driver_url, session, element):
@@ -731,7 +718,7 @@ def get_text(driver_url, session, element):
         response = __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get text from element.") from error
+        raise __WebDriverError("Failed to get text from element.") from error
 
 
 def send_keys(driver_url, session, element, text):
@@ -742,7 +729,7 @@ def send_keys(driver_url, session, element, text):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to send key '{text}'.") from error
+        raise __WebDriverError(f"Failed to send key '{text}'.") from error
 
 
 def click(driver_url, session, element):
@@ -753,7 +740,7 @@ def click(driver_url, session, element):
         __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError("Failed to click on element.") from error
+        raise __WebDriverError("Failed to click on element.") from error
 
 
 def __get_session(response):
@@ -775,7 +762,7 @@ def get_session(driver_url, capabilities):
         response = __post(url, payload=data)
         return __get_session(response)
     except Exception as error:
-        raise WebDriverError("Failed to open session.") from error
+        raise __WebDriverError("Failed to open session.") from error
 
 
 def find_element(driver_url, session, locator_type, locator_value):
@@ -788,10 +775,10 @@ def find_element(driver_url, session, locator_type, locator_value):
         # Firefox does not support id locator, so it prints the error message to the user
         # It helps on debug
         if response.get("value").get("error"):
-            raise WebDriverError(f"Failed to find element. {response}")
+            raise __WebDriverError(f"Failed to find element. {response}")
 
-        return helper.get_element(response)
+        return __helper.get_element(response)
     except Exception as error:
-        raise WebDriverError(
+        raise __WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."
         ) from error

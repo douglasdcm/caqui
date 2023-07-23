@@ -1,8 +1,8 @@
-import aiohttp
-import json
-from caqui.constants import HEADERS
-from caqui.exceptions import WebDriverError
-from caqui import helper
+import aiohttp as __aiohttp
+import json as __json
+from caqui.constants import HEADERS as __HEADERS
+from caqui.exceptions import WebDriverError as __WebDriverError
+from caqui import helper as __helper
 
 
 async def __handle_response(resp):
@@ -10,41 +10,41 @@ async def __handle_response(resp):
     if resp.status in range(200, 399):
         result = await resp.json()
     else:
-        raise WebDriverError(f"Status code: {resp.status}, Body: {resp.text}")
+        raise __WebDriverError(f"Status code: {resp.status}, Body: {resp.text}")
 
     if int(result.get("status", 0)) > 0:
-        raise WebDriverError(f"Status code: {resp.status}, Body: {resp.text}")
+        raise __WebDriverError(f"Status code: {resp.status}, Body: {resp.text}")
 
     return result
 
 
 async def __delete(url):
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.delete(url, headers=HEADERS) as resp:
+        async with __aiohttp.ClientSession() as session:
+            async with session.delete(url, headers=__HEADERS) as resp:
                 return await __handle_response(resp)
     except Exception as error:
-        raise WebDriverError("'DELETE' request failed.") from error
+        raise __WebDriverError("'DELETE' request failed.") from error
 
 
 async def __post(url, payload):
     try:
-        async with aiohttp.ClientSession() as session:
+        async with __aiohttp.ClientSession() as session:
             async with session.post(
-                url, data=json.dumps(payload), headers=HEADERS
+                url, data=__json.dumps(payload), headers=__HEADERS
             ) as resp:
                 return await __handle_response(resp)
     except Exception as error:
-        raise WebDriverError("'POST' request failed.") from error
+        raise __WebDriverError("'POST' request failed.") from error
 
 
 async def __get(url):
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers=HEADERS) as resp:
+        async with __aiohttp.ClientSession() as session:
+            async with session.get(url, headers=__HEADERS) as resp:
                 return await __handle_response(resp)
     except Exception as error:
-        raise WebDriverError("'GET' request failed.") from error
+        raise __WebDriverError("'GET' request failed.") from error
 
 
 async def __handle_alert(driver_url, session, command):
@@ -64,14 +64,14 @@ async def __handle_window(driver_url, session, command):
 
 
 async def add_cookie(driver_url, session, cookie):
-    """Refresh page"""
+    """Add cookie"""
     try:
         url = f"{driver_url}/session/{session}/cookie"
         payload = {"cookie": cookie}
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to add cookie.") from error
+        raise __WebDriverError("Failed to add cookie.") from error
 
 
 async def delete_cookie(driver_url, session, name):
@@ -81,7 +81,7 @@ async def delete_cookie(driver_url, session, name):
         await __delete(url)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to delete cookie '{name}'.") from error
+        raise __WebDriverError(f"Failed to delete cookie '{name}'.") from error
 
 
 async def refresh_page(driver_url, session):
@@ -92,7 +92,7 @@ async def refresh_page(driver_url, session):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to refresh page.") from error
+        raise __WebDriverError("Failed to refresh page.") from error
 
 
 async def go_forward(driver_url, session):
@@ -103,7 +103,7 @@ async def go_forward(driver_url, session):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to go to page forward.") from error
+        raise __WebDriverError("Failed to go to page forward.") from error
 
 
 async def set_window_rectangle(driver_url, session, width, height, x, y):
@@ -114,7 +114,7 @@ async def set_window_rectangle(driver_url, session, width, height, x, y):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to set window rectangle.") from error
+        raise __WebDriverError("Failed to set window rectangle.") from error
 
 
 async def fullscreen_window(driver_url, session):
@@ -122,7 +122,7 @@ async def fullscreen_window(driver_url, session):
     try:
         return await __handle_window(driver_url, session, command="fullscreen")
     except Exception as error:
-        raise WebDriverError(f"Failed to fullscreen window.") from error
+        raise __WebDriverError("Failed to fullscreen window.") from error
 
 
 async def minimize_window(driver_url, session):
@@ -130,7 +130,7 @@ async def minimize_window(driver_url, session):
     try:
         return await __handle_window(driver_url, session, command="minimize")
     except Exception as error:
-        raise WebDriverError(f"Failed to minimize window.") from error
+        raise __WebDriverError("Failed to minimize window.") from error
 
 
 async def maximize_window(driver_url, session):
@@ -138,7 +138,7 @@ async def maximize_window(driver_url, session):
     try:
         return await __handle_window(driver_url, session, command="maximize")
     except Exception as error:
-        raise WebDriverError(f"Failed to maximize window.") from error
+        raise __WebDriverError("Failed to maximize window.") from error
 
 
 async def switch_to_window(driver_url, session, handle):
@@ -149,7 +149,7 @@ async def switch_to_window(driver_url, session, handle):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to switch to window.") from error
+        raise __WebDriverError("Failed to switch to window.") from error
 
 
 async def new_window(driver_url, session, window_type="tab"):
@@ -164,7 +164,7 @@ async def new_window(driver_url, session, window_type="tab"):
         result = await __post(url, payload)
         return result.get("value", {}).get("handle")
     except Exception as error:
-        raise WebDriverError(f"Failed to open window.") from error
+        raise __WebDriverError("Failed to open window.") from error
 
 
 async def switch_to_parent_frame(driver_url, session, element_frame):
@@ -175,7 +175,7 @@ async def switch_to_parent_frame(driver_url, session, element_frame):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to switch to parent frame.") from error
+        raise __WebDriverError("Failed to switch to parent frame.") from error
 
 
 async def switch_to_frame(driver_url, session, element_frame):
@@ -186,7 +186,7 @@ async def switch_to_frame(driver_url, session, element_frame):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to switch to frame.") from error
+        raise __WebDriverError("Failed to switch to frame.") from error
 
 
 async def delete_all_cookies(driver_url, session):
@@ -196,7 +196,7 @@ async def delete_all_cookies(driver_url, session):
         await __delete(url)
         return True
     except Exception as error:
-        raise WebDriverError("Failed to delete cookies.") from error
+        raise __WebDriverError("Failed to delete cookies.") from error
 
 
 async def send_alert_text(driver_url, session, text):
@@ -209,7 +209,7 @@ async def send_alert_text(driver_url, session, text):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to sent text to alert.") from error
+        raise __WebDriverError("Failed to sent text to alert.") from error
 
 
 async def accept_alert(driver_url, session):
@@ -217,7 +217,7 @@ async def accept_alert(driver_url, session):
     try:
         return await __handle_alert(driver_url, session, "accept")
     except Exception as error:
-        raise WebDriverError(f"Failed to accept alert.") from error
+        raise __WebDriverError("Failed to accept alert.") from error
 
 
 async def dismiss_alert(driver_url, session):
@@ -225,7 +225,7 @@ async def dismiss_alert(driver_url, session):
     try:
         return await __handle_alert(driver_url, session, "dismiss")
     except Exception as error:
-        raise WebDriverError(f"Failed to dismiss alert.") from error
+        raise __WebDriverError("Failed to dismiss alert.") from error
 
 
 async def take_screenshot_element(
@@ -236,10 +236,10 @@ async def take_screenshot_element(
         url = f"{driver_url}/session/{session}/element/{element}/screenshot"
         response = await __get(url)
         picture = response.get("value")
-        helper.save_picture(session, path, file_name, picture)
+        __helper.save_picture(session, path, file_name, picture)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to take screenshot.") from error
+        raise __WebDriverError("Failed to take screenshot from element.") from error
 
 
 async def take_screenshot(driver_url, session, path="/tmp", file_name="caqui"):
@@ -248,10 +248,10 @@ async def take_screenshot(driver_url, session, path="/tmp", file_name="caqui"):
         url = f"{driver_url}/session/{session}/screenshot"
         response = await __get(url)
         picture = response.get("value")
-        helper.save_picture(session, path, file_name, picture)
+        __helper.save_picture(session, path, file_name, picture)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to take screenshot.") from error
+        raise __WebDriverError("Failed to take screenshot.") from error
 
 
 async def get_named_cookie(driver_url, session, name):
@@ -261,7 +261,7 @@ async def get_named_cookie(driver_url, session, name):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError(f"Failed to get cookie '{name}'.") from error
+        raise __WebDriverError(f"Failed to get cookie '{name}'.") from error
 
 
 async def get_computed_label(driver_url, session, element):
@@ -271,7 +271,7 @@ async def get_computed_label(driver_url, session, element):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get element computed label.") from error
+        raise __WebDriverError("Failed to get element computed label.") from error
 
 
 async def get_computed_role(driver_url, session, element):
@@ -281,7 +281,7 @@ async def get_computed_role(driver_url, session, element):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get element computed role.") from error
+        raise __WebDriverError("Failed to get element computed role.") from error
 
 
 async def get_tag_name(driver_url, session, element):
@@ -291,7 +291,7 @@ async def get_tag_name(driver_url, session, element):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get element name.") from error
+        raise __WebDriverError("Failed to get element name.") from error
 
 
 async def get_shadow_root(driver_url, session, element):
@@ -302,7 +302,7 @@ async def get_shadow_root(driver_url, session, element):
         response = await __get(url)
         return response.get("value", {}).get(root_element)
     except Exception as error:
-        raise WebDriverError("Failed to get element shadow.") from error
+        raise __WebDriverError("Failed to get element shadow.") from error
 
 
 async def get_rect(driver_url, session, element):
@@ -312,7 +312,7 @@ async def get_rect(driver_url, session, element):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get element rect.") from error
+        raise __WebDriverError("Failed to get element rect.") from error
 
 
 async def actions(driver_url, session, payload):
@@ -349,7 +349,7 @@ async def actions_move_to_element(driver_url, session, element):
         }
         return await actions(driver_url, session, payload)
     except Exception as error:
-        raise WebDriverError(f"Failed to move to element.") from error
+        raise __WebDriverError("Failed to move to element.") from error
 
 
 async def actions_scroll_to_element(driver_url, session, element):
@@ -376,7 +376,7 @@ async def actions_scroll_to_element(driver_url, session, element):
         }
         return await actions(driver_url, session, payload)
     except Exception as error:
-        raise WebDriverError(f"Failed to scroll to element.") from error
+        raise __WebDriverError("Failed to scroll to element.") from error
 
 
 async def submit(driver_url, session, element):
@@ -393,7 +393,7 @@ async def submit(driver_url, session, element):
         )
         return await click(driver_url, session, submit_element)
     except Exception as error:
-        raise WebDriverError(f"Failed to submit form.") from error
+        raise __WebDriverError("Failed to submit form.") from error
 
 
 async def actions_click(driver_url, session, element):
@@ -430,7 +430,7 @@ async def actions_click(driver_url, session, element):
         }
         return await actions(driver_url, session, payload)
     except Exception as error:
-        raise WebDriverError(f"Failed to click the element.") from error
+        raise __WebDriverError("Failed to click the element.") from error
 
 
 async def set_timeouts(driver_url, session, timeouts):
@@ -443,7 +443,7 @@ async def set_timeouts(driver_url, session, timeouts):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to set timeouts.") from error
+        raise __WebDriverError("Failed to set timeouts.") from error
 
 
 async def find_children_elements(
@@ -458,9 +458,9 @@ async def find_children_elements(
         url = f"{driver_url}/session/{session}/element/{parent_element}/elements"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
         response = await __post(url, payload)
-        return helper.get_elements(response)
+        return __helper.get_elements(response)
     except Exception as error:
-        raise WebDriverError(
+        raise __WebDriverError(
             f"Failed to find the children elements from '{parent_element}'."
         ) from error
 
@@ -473,9 +473,9 @@ async def find_child_element(
         url = f"{driver_url}/session/{session}/element/{parent_element}/element"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
         response = await __post(url, payload)
-        return helper.get_element(response)
+        return __helper.get_element(response)
     except Exception as error:
-        raise WebDriverError(
+        raise __WebDriverError(
             f"Failed to find the child element from '{parent_element}'."
         ) from error
 
@@ -487,7 +487,7 @@ async def get_page_source(driver_url, session):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get the page source.") from error
+        raise __WebDriverError("Failed to get the page source.") from error
 
 
 async def execute_script(driver_url, session, script, args=[]):
@@ -498,7 +498,7 @@ async def execute_script(driver_url, session, script, args=[]):
         response = await __post(url, payload)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to open session.") from error
+        raise __WebDriverError("Failed to execute script.") from error
 
 
 async def get_alert_text(driver_url, session):
@@ -508,7 +508,7 @@ async def get_alert_text(driver_url, session):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get the alert text.") from error
+        raise __WebDriverError("Failed to get the alert text.") from error
 
 
 async def get_active_element(driver_url, session):
@@ -516,9 +516,9 @@ async def get_active_element(driver_url, session):
     try:
         url = f"{driver_url}/session/{session}/element/active"
         response = await __get(url)
-        return helper.get_element(response)
+        return __helper.get_element(response)
     except Exception as error:
-        raise WebDriverError("Failed to check if element is selected.") from error
+        raise __WebDriverError("Failed to check if element is selected.") from error
 
 
 async def clear_element(driver_url, session, element):
@@ -529,7 +529,7 @@ async def clear_element(driver_url, session, element):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError("Failed to clear the element text.") from error
+        raise __WebDriverError("Failed to clear the element text.") from error
 
 
 async def is_element_enabled(driver_url, session, element):
@@ -539,7 +539,7 @@ async def is_element_enabled(driver_url, session, element):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to check if element is enabled.") from error
+        raise __WebDriverError("Failed to check if element is enabled.") from error
 
 
 async def get_css_value(driver_url, session, element, property_name):
@@ -549,7 +549,7 @@ async def get_css_value(driver_url, session, element, property_name):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to check if element is selected.") from error
+        raise __WebDriverError("Failed to check if element is selected.") from error
 
 
 async def is_element_selected(driver_url, session, element):
@@ -559,7 +559,7 @@ async def is_element_selected(driver_url, session, element):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to check if element is selected.") from error
+        raise __WebDriverError("Failed to check if element is selected.") from error
 
 
 async def get_window_rectangle(driver_url, session):
@@ -569,7 +569,7 @@ async def get_window_rectangle(driver_url, session):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get window rectangle.") from error
+        raise __WebDriverError("Failed to get window rectangle.") from error
 
 
 async def get_window_handles(driver_url, session):
@@ -579,7 +579,7 @@ async def get_window_handles(driver_url, session):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get window handles.") from error
+        raise __WebDriverError("Failed to get window handles.") from error
 
 
 async def close_window(driver_url, session):
@@ -589,7 +589,7 @@ async def close_window(driver_url, session):
         response = await __delete(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to close active window.") from error
+        raise __WebDriverError("Failed to close active window.") from error
 
 
 async def get_window(driver_url, session):
@@ -599,7 +599,7 @@ async def get_window(driver_url, session):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get window.") from error
+        raise __WebDriverError("Failed to get window.") from error
 
 
 async def go_back(driver_url, session):
@@ -612,7 +612,7 @@ async def go_back(driver_url, session):
         await __post(url, {})
         return True
     except Exception as error:
-        raise WebDriverError("Failed to go back to page.") from error
+        raise __WebDriverError("Failed to go back to page.") from error
 
 
 async def get_url(driver_url, session):
@@ -622,7 +622,7 @@ async def get_url(driver_url, session):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get page url.") from error
+        raise __WebDriverError("Failed to get page url.") from error
 
 
 async def get_timeouts(driver_url, session):
@@ -635,7 +635,7 @@ async def get_timeouts(driver_url, session):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get timeouts.") from error
+        raise __WebDriverError("Failed to get timeouts.") from error
 
 
 async def get_status(driver_url):
@@ -654,7 +654,7 @@ async def get_status(driver_url):
         response = await __get(url)
         return response
     except Exception as error:
-        raise WebDriverError("Failed to get status.") from error
+        raise __WebDriverError("Failed to get status.") from error
 
 
 async def get_title(driver_url, session):
@@ -664,7 +664,7 @@ async def get_title(driver_url, session):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get page title.") from error
+        raise __WebDriverError("Failed to get page title.") from error
 
 
 async def find_elements(driver_url, session, locator_type, locator_value):
@@ -675,7 +675,7 @@ async def find_elements(driver_url, session, locator_type, locator_value):
         response = await __post(url, payload)
         return [x.get("ELEMENT") for x in response.get("value")]
     except Exception as error:
-        raise WebDriverError(
+        raise __WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."
         ) from error
 
@@ -687,7 +687,7 @@ async def get_property(driver_url, session, element, property):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get value from element.") from error
+        raise __WebDriverError("Failed to get value from element.") from error
 
 
 async def get_attribute(driver_url, session, element, attribute):
@@ -697,7 +697,7 @@ async def get_attribute(driver_url, session, element, attribute):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get value from element.") from error
+        raise __WebDriverError("Failed to get value from element.") from error
 
 
 async def get_text(driver_url, session, element):
@@ -707,7 +707,7 @@ async def get_text(driver_url, session, element):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get text from element.") from error
+        raise __WebDriverError("Failed to get text from element.") from error
 
 
 async def get_cookies(driver_url, session):
@@ -717,7 +717,7 @@ async def get_cookies(driver_url, session):
         response = await __get(url)
         return response.get("value")
     except Exception as error:
-        raise WebDriverError("Failed to get page cookies.") from error
+        raise __WebDriverError("Failed to get page cookies.") from error
 
 
 async def close_session(driver_url, session):
@@ -727,7 +727,7 @@ async def close_session(driver_url, session):
         await __delete(url)
         return True
     except Exception as error:
-        raise WebDriverError("Failed to close session.") from error
+        raise __WebDriverError("Failed to close session.") from error
 
 
 async def get(driver_url, session, page_url):
@@ -743,7 +743,7 @@ async def go_to_page(driver_url, session, page_url):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to navigate to page '{page_url}'.") from error
+        raise __WebDriverError(f"Failed to navigate to page '{page_url}'.") from error
 
 
 async def send_keys(driver_url, session, element, text):
@@ -754,7 +754,7 @@ async def send_keys(driver_url, session, element, text):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError(f"Failed to send key '{text}'.") from error
+        raise __WebDriverError(f"Failed to send key '{text}'.") from error
 
 
 async def click(driver_url, session, element):
@@ -765,7 +765,7 @@ async def click(driver_url, session, element):
         await __post(url, payload)
         return True
     except Exception as error:
-        raise WebDriverError("Failed to click on element.") from error
+        raise __WebDriverError("Failed to click on element.") from error
 
 
 async def find_element(driver_url, session, locator_type, locator_value):
@@ -779,10 +779,10 @@ async def find_element(driver_url, session, locator_type, locator_value):
         # Firefox does not support id locator, so it prints the error message to the user
         # It helps on debug
         if response.get("value").get("error"):
-            raise WebDriverError(f"Failed to find element. {response}")
-        return helper.get_element(response)
+            raise __WebDriverError(f"Failed to find element. {response}")
+        return __helper.get_element(response)
     except Exception as error:
-        raise WebDriverError(
+        raise __WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."
         ) from error
 
@@ -795,4 +795,4 @@ async def get_session(driver_url, capabilities):
         response = await __post(url, payload)
         return response.get("sessionId")
     except Exception as error:
-        raise WebDriverError("Failed to open session.") from error
+        raise __WebDriverError("Failed to open session.") from error
