@@ -1,4 +1,4 @@
-from caqui.caqui import AsyncDriver, ActionChains
+from caqui.easy import AsyncDriver, ActionChains
 from caqui.by import By
 from pytest import mark, fixture
 from tests.constants import PAGE_URL
