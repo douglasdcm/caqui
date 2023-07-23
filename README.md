@@ -197,6 +197,65 @@ Link found 'http://any4.com/'
 Time: 5.01 sec
 
 ```
+# Version 2.0.0
+In version 2 it is possible to use Python objects similarly to Selenium. Example:
+
+```
+from caqui.easy import AsyncDriver
+from caqui.by import By
+from caqui import synchronous
+from tests.constants import PAGE_URL
+from pytest import mark, fixture
+
+
+@fixture
+def __setup():
+    remote = "http://127.0.0.1:9999"
+    capabilities = {
+        "desiredCapabilities": {
+            "name": "webdriver",
+            "browserName": "chrome",
+            "acceptInsecureCerts": True,
+            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
+        }
+    }
+    driver = AsyncDriver(remote, capabilities, PAGE_URL)
+    yield driver
+    driver.quit()
+
+
+@mark.asyncio
+async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
+    driver = __setup
+    await driver.get(PAGE_URL)
+
+    locator_type = "id"
+    locator_value = "my-iframe"
+    locator_value_alert_parent = "alert-button"
+    locator_value_alert_frame = "alert-button-iframe"
+
+    element_frame = await driver.find_element(locator_type, locator_value)
+    assert await driver.switch_to.frame(element_frame) is True
+
+    alert_button_frame = await driver.find_element(
+        locator_type, locator_value_alert_frame
+    )
+    assert await alert_button_frame.click() is True
+    assert await driver.switch_to.alert.dismiss() is True
+
+    assert await driver.switch_to.default_content() is True
+    alert_button_parent = await driver.find_element(
+        locator_type, locator_value_alert_parent
+    )
+    assert await alert_button_parent.get_attribute("any") == "any"
+    assert await alert_button_parent.click() is True
+
+
+("style")
+    assert "display: none;" == await hidden_button.get_attribute("style")
+
+```
+
 
 # Driver as server
 To illustrate what I mean by "Driver as server", lets get [chromedriver](https://chromedriver.chromium.org/home) and execute it as an ordinary shell script file.
