@@ -27,6 +27,28 @@ async def test_big_scenario(setup: AsyncDriver):
     driver = setup
     remote, session = driver.remote, driver.session
     await driver.implicitly_wait(10)
+
+    # Need to navigate to a web page. If use 'playgound.html' the error
+    # 'Document is cookie-averse' happens
+    await driver.get(
+        "http://www.google.com",
+    )
+    cookies = await driver.get_cookies()
+    assert cookies == synchronous.get_cookies(remote, session)
+    cookie = (await driver.get_cookies())[0]
+    cookie["name"] = "other"
+    await driver.add_cookie(cookie)
+    assert await driver.get_cookies() == synchronous.get_cookies(remote, session)
+    assert await driver.get_cookie("other") == synchronous.get_named_cookie(
+        remote, session, "other"
+    )
+    await driver.delete_cookie("other")
+    await driver.delete_all_cookies()
+    assert await driver.get_cookies() == synchronous.get_cookies(remote, session)
+    await driver.get(
+        PAGE_URL,
+    )
+
     await driver.switch_to.active_element.get_attribute("value")
     element = await driver.find_element(By.XPATH, "//button")
     # Returns and base64 encoded string into image
@@ -61,19 +83,6 @@ async def test_big_scenario(setup: AsyncDriver):
     await alert_element.click()
     await alert_object.send_keys("Caqui")
     await alert_object.dismiss()
-
-    # cookie = (await driver.get_cookies())[0]
-    # # Need to navigate to a web page. If use 'playgound.html' the error
-    # # 'Document is cookie-averse' happens
-    # driver.get(
-    #     "http://www.google.com",
-    # )
-    # cookie["name"] = "other"
-    # await driver.add_cookie(cookie)
-    # assert await driver.get_cookies() >= 1
-    # assert await driver.get_cookie("foo") == 54
-    # await driver.delete_cookie("test1")
-    # await driver.delete_all_cookies()
 
     iframe = await driver.find_element(By.ID, "my-iframe")
     # switch to selected iframe
