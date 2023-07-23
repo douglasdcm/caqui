@@ -257,7 +257,6 @@ class AsyncDriver:
         self.__remote = remote
         self.__session = _synchronous.get_session(remote, capabilities)
         if url:
-            self.__url = url
             _synchronous.get(
                 remote,
                 self.__session,
@@ -383,7 +382,6 @@ class AsyncDriver:
         return await _asynchronous.maximize_window(self.__remote, self.__session)
 
     async def get(self, url):
-        self.__url = url
         await _asynchronous.go_to_page(
             self.__remote,
             self.__session,

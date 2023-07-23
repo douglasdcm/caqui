@@ -116,6 +116,5 @@ def test_add_text__click_button_and_get_properties(__setup):
     click(driver_url, session, button)
 
     p = find_element(driver_url, session, locator_type, locator_value="//p[@id='end']")
-    get_text(driver_url, session, p)
 
     assert get_text(driver_url, session, p) == expected

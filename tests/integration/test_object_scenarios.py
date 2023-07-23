@@ -14,7 +14,7 @@ def setup():
             "name": "webdriver",
             "browserName": "chrome",
             "acceptInsecureCerts": True,
-            # "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
+            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
         }
     }
     driver = AsyncDriver(remote, capabilities, PAGE_URL)
@@ -40,7 +40,6 @@ async def test_big_scenario(setup: AsyncDriver):
     )
     assert element.tag_name == synchronous.get_tag_name(remote, session, element)
     assert element.rect == synchronous.get_rect(remote, session, element)
-
     css = "background-color"
     assert await element.value_of_css_property(css) == synchronous.get_css_value(
         remote, session, element, css
@@ -97,11 +96,11 @@ async def test_big_scenario(setup: AsyncDriver):
     await driver.switch_to.new_window("window")
     # Close the tab or window
     await driver.close()
+
     # Access each dimension individually
     assert (await driver.get_window_size()).get(
         "width"
     ) == synchronous.get_window_rectangle(remote, session).get("width")
-
     assert (await driver.get_window_size()).get(
         "height"
     ) == synchronous.get_window_rectangle(remote, session).get("height")
@@ -120,7 +119,6 @@ async def test_big_scenario(setup: AsyncDriver):
     await driver.set_window_position(0, 0)
     await driver.maximize_window()
     await driver.minimize_window()
-    await driver.fullscreen_window()
     await driver.save_screenshot("/tmp/image.png")
 
     # Executing JavaScript to capture innerText of header element
