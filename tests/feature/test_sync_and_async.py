@@ -3,20 +3,20 @@ from caqui import asynchronous, synchronous
 from tests.constants import PAGE_URL
 from caqui.exceptions import WebDriverError
 from caqui.by import By
+from caqui.easy.capabilities import CapabilitiesBuilder
 
 
 @fixture
 def __setup():
     driver_url = "http://127.0.0.1:9999"
-    capabilities = {
-        "desiredCapabilities": {
-            By.NAME: "webdriver",
-            "browserName": "chrome",
-            "marionette": False,
-            "acceptInsecureCerts": True,
-            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
-        }
-    }
+    capabilities = (
+        CapabilitiesBuilder()
+        .browser_name("webdriver")
+        .accept_insecure_certs(True)
+        .additional_capability(
+            {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
+        )
+    ).build()
     session = synchronous.get_session(driver_url, capabilities)
     synchronous.go_to_page(
         driver_url,

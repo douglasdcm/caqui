@@ -3,19 +3,21 @@ from caqui.by import By
 from caqui import synchronous
 from tests.constants import PAGE_URL
 from pytest import mark, fixture
+from caqui.easy.capabilities import CapabilitiesBuilder
 
 
 @fixture
 def __setup():
     remote = "http://127.0.0.1:9999"
-    capabilities = {
-        "desiredCapabilities": {
-            "name": "webdriver",
-            "browserName": "chrome",
-            "acceptInsecureCerts": True,
-            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
-        }
-    }
+    capabilities = (
+        CapabilitiesBuilder()
+        .browser_name("webdriver")
+        .accept_insecure_certs(True)
+        .additional_capability(
+            {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
+        )
+    ).build()
+
     driver = AsyncDriver(remote, capabilities, PAGE_URL)
     yield driver
     driver.quit()

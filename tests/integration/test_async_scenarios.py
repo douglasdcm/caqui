@@ -1,19 +1,20 @@
 from caqui import synchronous, asynchronous
 from tests.constants import PAGE_URL
 from pytest import fixture, mark
+from caqui.easy.capabilities import CapabilitiesBuilder
 
 
 @fixture
 def __setup():
     driver_url = "http://127.0.0.1:9999"
-    capabilities = {
-        "desiredCapabilities": {
-            "browserName": "firefox",
-            "marionette": True,
-            "acceptInsecureCerts": True,
-            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
-        }
-    }
+    capabilities = (
+        CapabilitiesBuilder()
+        .browser_name("webdriver")
+        .accept_insecure_certs(True)
+        .additional_capability(
+            {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
+        )
+    ).build()
     session = synchronous.get_session(driver_url, capabilities)
     synchronous.go_to_page(
         driver_url,
