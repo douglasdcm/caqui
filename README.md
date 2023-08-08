@@ -14,7 +14,7 @@ The process **Caqui** follows is similar of the one described in this [article](
 | ----------------------- | ------------- | ------- |-------- |
 | Appium                  | 2.0.0         | Y       | Accepts remote calls by default. Tested with Appium in Docker container |
 | Firefox (geckodriver)   | 113           | Y       | Need to add the host ip, e.g. "--host 123.45.6.78" |
-| Google Chrome           | 113, 114      | Y       | Need to inform allowed ips to connect, e.g "--allowed-ips=123.45.6.78" |
+| Google Chrome           | 113+          | Y       | Need to inform allowed ips to connect, e.g "--allowed-ips=123.45.6.78" |
 | Opera                   | 99            | Y       | Need to inform allowed ips to connect, e.g "--allowed-ips=123.45.6.78". Similar to Google Chrome |
 | WinAppDriver            | 1.2.1         | Y       | Need to define the host ip, e.g. "WinAppDriver.exe 10.0.0.10 4723" |
 | Winium Desktop          | 1.6.0         | Y       | Accepts remote calls by default |
@@ -75,6 +75,7 @@ import time
 from caqui import synchronous, asynchronous
 from os import getcwd
 from tests.constants import PAGE_URL
+from caqui.easy.capabilities import CapabilitiesBuilder
 
 BASE_DIR = getcwd()
 
@@ -85,13 +86,14 @@ sem = asyncio.Semaphore(MAX_CONCURRENCY)
 async def get_all_links():
     async with sem:
         driver_url = "http://127.0.0.1:9999"
-        capabilities = {
-            "desiredCapabilities": {
-                "browserName": "firefox",
-                "marionette": True,
-                "acceptInsecureCerts": True,
-            }
-        }
+        capabilities = (
+            CapabilitiesBuilder()
+            .browser_name("webdriver")
+            .accept_insecure_certs(True)
+            .additional_capability(
+                {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
+            )
+        ).build()
 
         session = await asynchronous.get_session(driver_url, capabilities)
         await asynchronous.go_to_page(
@@ -206,19 +208,21 @@ from caqui.by import By
 from caqui import synchronous
 from tests.constants import PAGE_URL
 from pytest import mark, fixture
+from caqui.easy.capabilities import CapabilitiesBuilder
 
 
 @fixture
 def __setup():
     remote = "http://127.0.0.1:9999"
-    capabilities = {
-        "desiredCapabilities": {
-            "name": "webdriver",
-            "browserName": "chrome",
-            "acceptInsecureCerts": True,
-            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
-        }
-    }
+    capabilities = (
+        CapabilitiesBuilder()
+        .browser_name("webdriver")
+        .accept_insecure_certs(True)
+        .page_load_strategy("normal")
+        .addtional_capability(
+            {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
+        )
+    ).build()
     driver = AsyncDriver(remote, capabilities, PAGE_URL)
     yield driver
     driver.quit()

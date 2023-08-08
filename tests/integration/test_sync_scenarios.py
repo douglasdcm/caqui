@@ -17,19 +17,20 @@ from caqui.synchronous import (
 )
 from tests.constants import PAGE_URL
 from pytest import fixture
+from caqui.easy.capabilities import CapabilitiesBuilder
 
 
 @fixture
 def __setup():
     driver_url = "http://127.0.0.1:9999"
-    capabilities = {
-        "desiredCapabilities": {
-            "browserName": "chrome",
-            "marionette": True,
-            "acceptInsecureCerts": True,
-            "goog:chromeOptions": {"extensions": [], "args": ["--headless"]},
-        }
-    }
+    capabilities = (
+        CapabilitiesBuilder()
+        .browser_name("webdriver")
+        .accept_insecure_certs(True)
+        .additional_capability(
+            {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
+        )
+    ).build()
     session = get_session(driver_url, capabilities)
     go_to_page(
         driver_url,
