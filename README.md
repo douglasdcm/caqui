@@ -228,7 +228,7 @@ def __setup():
     driver.quit()
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
     driver = __setup
     await driver.get(PAGE_URL)

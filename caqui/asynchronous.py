@@ -13,7 +13,9 @@ async def __handle_response(resp):
         raise __WebDriverError(f"Status code: {resp.status}, Body: {resp.text}")
 
     if int(result.get("status", 0)) > 0:
-        raise __WebDriverError(f"Status code: {resp.status}, Body: {resp.text}")
+        raise __WebDriverError(
+            f"Status code: {resp.status}, Body: {resp.text}, Details: {result.get('value')}"
+        )
 
     return result
 

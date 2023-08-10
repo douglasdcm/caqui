@@ -27,7 +27,7 @@ def __setup():
     synchronous.close_session(driver_url, session)
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_add_cookie(__setup):
     driver_url, session = __setup
     # Need to navigate to a web page. If use 'playgound.html' the error
@@ -56,7 +56,7 @@ async def test_add_cookie(__setup):
 
 
 @mark.skip(reason="works just in firefox")
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_delete_cookie_asynchronous(__setup):
     driver_url, session = __setup
     cookies = synchronous.get_cookies(driver_url, session)
@@ -69,7 +69,7 @@ async def test_delete_cookie_asynchronous(__setup):
 
 
 @mark.skip(reason="works just in firefox")
-@mark.asyncio
+@mark.asyncio_cooperative
 def test_delete_cookie_synchronous(__setup):
     driver_url, session = __setup
     cookies = synchronous.get_cookies(driver_url, session)
@@ -81,7 +81,7 @@ def test_delete_cookie_synchronous(__setup):
     assert len(cookies) == zero
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_refresh_page(__setup):
     driver_url, session = __setup
 
@@ -104,7 +104,7 @@ async def test_refresh_page(__setup):
     assert element_before != element_after
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_go_forward(__setup):
     driver_url, session = __setup
     title = "Sample page"
@@ -124,7 +124,7 @@ async def test_go_forward(__setup):
     assert synchronous.get_title(driver_url, session) == title
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_set_window_rectangle(__setup):
     driver_url, session = __setup
     width = 500
@@ -164,7 +164,7 @@ async def test_set_window_rectangle(__setup):
 
 
 @mark.skip(reason="does not work in headless mode")
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_fullscreen_window(__setup):
     driver_url, session = __setup
     window_rectangle_before = synchronous.get_window_rectangle(driver_url, session)
@@ -188,7 +188,7 @@ async def test_fullscreen_window(__setup):
 
 
 @mark.skip(reason="does not work in headless mode")
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_minimize_window(__setup):
     driver_url, session = __setup
     window_rectangle_before = synchronous.get_window_rectangle(driver_url, session)
@@ -212,7 +212,7 @@ async def test_minimize_window(__setup):
 
 
 @mark.skip(reason="does not work in headless mode")
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_maximize_window_asynchronous(__setup):
     driver_url, session = __setup
     window_rectangle_before = synchronous.get_window_rectangle(driver_url, session)
@@ -226,7 +226,7 @@ async def test_maximize_window_asynchronous(__setup):
 
 
 @mark.skip(reason="does not work in headless mode")
-@mark.asyncio
+@mark.asyncio_cooperative
 def test_maximize_window_synchronous(__setup):
     driver_url, session = __setup
     window_rectangle_before = synchronous.get_window_rectangle(driver_url, session)
@@ -240,7 +240,7 @@ def test_maximize_window_synchronous(__setup):
 
 
 @mark.parametrize("window_type", ("tab", "window"))
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_switch_to_window(__setup, window_type):
     driver_url, session = __setup
 
@@ -261,7 +261,7 @@ async def test_switch_to_window(__setup, window_type):
 
 
 @mark.parametrize("window_type", ("tab", "window"))
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_new_window(__setup, window_type):
     driver_url, session = __setup
 
@@ -272,7 +272,7 @@ async def test_new_window(__setup, window_type):
     assert await asynchronous.new_window(driver_url, session, window_type) is not None
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_switch_to_parent_frame_asynchronous(__setup):
     driver_url, session = __setup
     locator_type = By.ID
@@ -300,7 +300,7 @@ def test_switch_to_parent_frame_synchronous(__setup):
     )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_switch_to_frame_asynchronous(__setup):
     driver_url, session = __setup
     locator_type = By.ID
@@ -325,7 +325,7 @@ def test_switch_to_frame_synchronous(__setup):
     assert synchronous.switch_to_frame(driver_url, session, element_frame) is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_send_alert_text(__setup):
     driver_url, session = __setup
     locator_type = By.CSS_SELECTOR
@@ -342,7 +342,7 @@ async def test_send_alert_text(__setup):
     synchronous.accept_alert(driver_url, session) is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_accept_alert(__setup):
     driver_url, session = __setup
     locator_type = By.CSS_SELECTOR
@@ -357,7 +357,7 @@ async def test_accept_alert(__setup):
     assert await asynchronous.accept_alert(driver_url, session) is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_dismiss_alert(__setup):
     driver_url, session = __setup
     locator_type = By.CSS_SELECTOR
@@ -372,7 +372,7 @@ async def test_dismiss_alert(__setup):
     assert await asynchronous.dismiss_alert(driver_url, session) is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_take_screenshot_element(__setup):
     driver_url, session = __setup
     locator_type = By.CSS_SELECTOR
@@ -386,7 +386,7 @@ async def test_take_screenshot_element(__setup):
     )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_take_screenshot(__setup):
     driver_url, session = __setup
 
@@ -395,7 +395,7 @@ async def test_take_screenshot(__setup):
 
 
 @mark.skip(reason="works just in firefox")
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_delete_cookies_asynchronous(__setup):
     driver_url, session = __setup
 
@@ -409,7 +409,7 @@ async def test_delete_cookies_asynchronous(__setup):
 
 
 @mark.skip(reason="works just in firefox")
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_delete_cookies_synchronous(__setup):
     driver_url, session = __setup
 
@@ -422,7 +422,7 @@ async def test_delete_cookies_synchronous(__setup):
 
 
 @mark.skip(reason="works just with Firefox")
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_named_cookie(__setup):
     driver_url, session = __setup
     name = "username"  # cookie created on page load
@@ -435,7 +435,7 @@ async def test_get_named_cookie(__setup):
     assert response.get("value") == expected
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_computed_label(__setup):
     driver_url, session = __setup
     locator_type = By.CSS_SELECTOR
@@ -451,7 +451,7 @@ async def test_get_computed_label(__setup):
     )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_computed_role(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -467,7 +467,7 @@ async def test_get_computed_role(__setup):
     )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_tag_name(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -484,7 +484,7 @@ async def test_get_tag_name(__setup):
 @mark.parametrize(
     "locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")]
 )
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_find_element_from_shadow_root(__setup, locator, value):
     driver_url, session = __setup
     locator_type = By.ID
@@ -510,7 +510,7 @@ async def test_find_element_from_shadow_root(__setup, locator, value):
 @mark.parametrize(
     "locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")]
 )
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_find_elements_from_shadow_root(__setup, locator, value):
     driver_url, session = __setup
     locator_type = By.ID
@@ -534,7 +534,7 @@ async def test_find_elements_from_shadow_root(__setup, locator, value):
     assert len(actual) == one
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_shadow_root(__setup):
     driver_url, session = __setup
     locator_type = By.ID
@@ -548,7 +548,7 @@ async def test_get_shadow_root(__setup):
     assert response is not None
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_rect(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -562,7 +562,7 @@ async def test_get_rect(__setup):
     assert await asynchronous.get_rect(driver_url, session, element) == expected
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_move_to_element(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -575,7 +575,7 @@ async def test_move_to_element(__setup):
     )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_actions_scroll_to_element(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -589,7 +589,7 @@ async def test_actions_scroll_to_element(__setup):
     )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_submit(__setup):
     driver_url, session = __setup
     locator_type = By.NAME
@@ -602,7 +602,7 @@ async def test_submit(__setup):
     assert await asynchronous.submit(driver_url, session, element) is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_actions_click(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -613,7 +613,7 @@ async def test_actions_click(__setup):
     assert await asynchronous.actions_click(driver_url, session, element) is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_raise_exception_when_element_not_found(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -628,7 +628,7 @@ async def test_raise_exception_when_element_not_found(__setup):
         )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_set_timeouts(__setup):
     driver_url, session = __setup
     timeouts_1 = 5000  # milliseconds
@@ -643,7 +643,7 @@ async def test_set_timeouts(__setup):
     assert synchronous.get_timeouts(driver_url, session).get("implicit") == timeouts_2
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_find_children_elements(__setup):
     driver_url, session = __setup
     expected = 1  # parent inclusive
@@ -667,7 +667,7 @@ async def test_find_children_elements(__setup):
     assert len(children_elements) > expected
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_find_child_element(__setup):
     driver_url, session = __setup
     expected = "any4"
@@ -692,7 +692,7 @@ async def test_find_child_element(__setup):
     assert text == expected
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_page_source(__setup):
     driver_url, session = __setup
     expected = "Sample page"
@@ -701,7 +701,7 @@ async def test_get_page_source(__setup):
     assert expected in await asynchronous.get_page_source(driver_url, session)
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_execute_script_asynchronous(__setup):
     driver_url, session = __setup
     script = "alert('any warn')"
@@ -716,7 +716,7 @@ def test_execute_script_synchronous(__setup):
     assert synchronous.execute_script(driver_url, session, script) == None
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_alert_text(__setup):
     driver_url, session = __setup
     locator_type = By.CSS_SELECTOR
@@ -732,7 +732,7 @@ async def test_get_alert_text(__setup):
     assert await asynchronous.get_alert_text(driver_url, session) == expected
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_active_element(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -745,7 +745,7 @@ async def test_get_active_element(__setup):
     assert await asynchronous.get_active_element(driver_url, session) == element
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_clear_element_fails_when_invalid_inputs(__setup):
     driver_url, session = __setup
     text = "any"
@@ -758,7 +758,7 @@ async def test_clear_element_fails_when_invalid_inputs(__setup):
         await asynchronous.clear_element(driver_url, session, element)
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_clear_element(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -773,7 +773,7 @@ async def test_clear_element(__setup):
     assert await asynchronous.clear_element(driver_url, session, element) is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_is_element_enabled(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -785,7 +785,7 @@ async def test_is_element_enabled(__setup):
     assert await asynchronous.is_element_enabled(driver_url, session, element) is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_css_value(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -805,7 +805,7 @@ async def test_get_css_value(__setup):
     )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_is_element_selected(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -817,7 +817,7 @@ async def test_is_element_selected(__setup):
     assert await asynchronous.is_element_selected(driver_url, session, element) is False
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_window_rectangle(__setup):
     driver_url, session = __setup
     expected = "height"
@@ -827,7 +827,7 @@ async def test_get_window_rectangle(__setup):
     assert expected in rectangle
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_window_handles(__setup):
     driver_url, session = __setup
 
@@ -841,7 +841,7 @@ def test_close_window_sync(__setup):
     assert isinstance(synchronous.close_window(driver_url, session), list)
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_close_window_async(__setup):
     driver_url, session = __setup
 
@@ -849,7 +849,7 @@ async def test_close_window_async(__setup):
     assert isinstance(response, list)
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_window(__setup):
     driver_url, session = __setup
 
@@ -857,7 +857,7 @@ async def test_get_window(__setup):
     assert await asynchronous.get_window(driver_url, session) is not None
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_attribute_fails_when_invalid_attribute(__setup):
     driver_url, session = __setup
     attribute = "href"
@@ -870,7 +870,7 @@ async def test_get_attribute_fails_when_invalid_attribute(__setup):
         await asynchronous.get_attribute(driver_url, session, element, attribute)
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_attribute(__setup):
     driver_url, session = __setup
     attribute = "href"
@@ -886,7 +886,7 @@ async def test_get_attribute(__setup):
     )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_cookies(__setup):
     driver_url, session = __setup
     assert isinstance(synchronous.get_cookies(driver_url, session), list)
@@ -894,7 +894,7 @@ async def test_get_cookies(__setup):
     assert isinstance(cookies, list)
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_go_back(__setup):
     driver_url, session = __setup
     title = ""
@@ -907,7 +907,7 @@ async def test_go_back(__setup):
     assert synchronous.get_title(driver_url, session) == title
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_url(__setup):
     driver_url, session = __setup
     expected = "playground.html"
@@ -916,7 +916,7 @@ async def test_get_url(__setup):
     assert expected in await asynchronous.get_url(driver_url, session)
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_timeouts(__setup):
     driver_url, session = __setup
     expected = "implicit"
@@ -925,7 +925,7 @@ async def test_get_timeouts(__setup):
     assert expected in await asynchronous.get_timeouts(driver_url, session)
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_status(__setup):
     driver_url, _ = __setup
     expected = "ready"
@@ -934,7 +934,7 @@ async def test_get_status(__setup):
     assert expected in response.get("value")
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_title(__setup):
     driver_url, session = __setup
     expected = "Sample page"
@@ -943,7 +943,7 @@ async def test_get_title(__setup):
     assert await asynchronous.get_title(driver_url, session) == expected
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_find_elements_fails_when_invalid_data_input(__setup):
     driver_url, session = __setup
     locator_type = "invalid"
@@ -958,7 +958,7 @@ async def test_find_elements_fails_when_invalid_data_input(__setup):
         )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_find_elements(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -975,7 +975,7 @@ async def test_find_elements(__setup):
     assert len(async_elements) > 0
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_find_element_fails_when_invalid_data_input(__setup):
     driver_url, session = __setup
     locator_type = "invalid"
@@ -990,7 +990,7 @@ async def test_find_element_fails_when_invalid_data_input(__setup):
         )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_find_element(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
@@ -1008,7 +1008,7 @@ async def test_find_element(__setup):
     )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_property(__setup):
     driver_url, session = __setup
     text = "any_value"
@@ -1025,7 +1025,7 @@ async def test_get_property(__setup):
     )
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_text(__setup):
     driver_url, session = __setup
     expected = "end"
@@ -1038,7 +1038,7 @@ async def test_get_text(__setup):
     assert synchronous.get_text(driver_url, session, element) == expected
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_send_keys(__setup):
     driver_url, session = __setup
     text_async = "any_async"
@@ -1054,7 +1054,7 @@ async def test_send_keys(__setup):
     assert synchronous.send_keys(driver_url, session, element, text_sync) is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_click(__setup):
     driver_url, session = __setup
     locator_type = By.XPATH
