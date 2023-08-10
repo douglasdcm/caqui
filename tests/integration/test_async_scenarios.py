@@ -25,7 +25,7 @@ def __setup():
     synchronous.close_session(driver_url, session)
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_all_links(__setup):
     driver_url, session = __setup
     locator_type = "xpath"

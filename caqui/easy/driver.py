@@ -62,7 +62,7 @@ class AsyncDriver:
         synchronous.close_session(self.__remote, self.__session)
 
     async def close(self):
-        return asynchronous.close_window(self.__remote, self.__session)
+        return await asynchronous.close_window(self.__remote, self.__session)
 
     async def execute_script(self, script, args=[]):
         return await asynchronous.execute_script(

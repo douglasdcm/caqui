@@ -23,7 +23,7 @@ def __setup():
     driver.quit()
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
     driver = __setup
     await driver.get(PAGE_URL)
@@ -50,7 +50,7 @@ async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
     assert await alert_button_parent.click() is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_switch_to_frame_and_click_alert(__setup: AsyncDriver):
     driver = __setup
     await driver.get(PAGE_URL)
@@ -66,7 +66,7 @@ async def test_switch_to_frame_and_click_alert(__setup: AsyncDriver):
     assert await alert_button.click() is True
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_get_data_from_hidden_button(__setup: AsyncDriver):
     driver = __setup
     locator_type = "xpath"
@@ -81,7 +81,7 @@ async def test_get_data_from_hidden_button(__setup: AsyncDriver):
     assert "display: none;" == await hidden_button.get_attribute("style")
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_add_text__click_button_and_get_properties(__setup: AsyncDriver):
     driver = __setup
     expected = "end"
@@ -105,7 +105,7 @@ async def test_add_text__click_button_and_get_properties(__setup: AsyncDriver):
     assert await p.get_text() == expected
 
 
-@mark.asyncio
+@mark.asyncio_cooperative
 async def test_big_scenario(__setup: AsyncDriver):
     driver = __setup
     remote, session = driver.remote, driver.session
@@ -181,13 +181,11 @@ async def test_big_scenario(__setup: AsyncDriver):
 
     window_handle = driver.current_window_handle
     assert len(driver.window_handles) >= 1
-    driver.switch_to.window(window_handle)
+    await driver.switch_to.window(window_handle)
     # Opens a new tab and switches to new tab
     await driver.switch_to.new_window("tab")
     # Opens a new window and switches to new window
     await driver.switch_to.new_window("window")
-    # Close the tab or window
-    await driver.close()
 
     # Access each dimension individually
     assert (await driver.get_window_size()).get(
@@ -215,3 +213,7 @@ async def test_big_scenario(__setup: AsyncDriver):
 
     # Executing JavaScript to capture innerText of header element
     await driver.execute_script('alert("any warn")')
+    await driver.alert.dismiss()
+
+    # Close the tab or window
+    await driver.close()
