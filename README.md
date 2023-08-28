@@ -228,7 +228,7 @@ def __setup():
     driver.quit()
 
 
-@mark.asyncio_cooperative
+@mark.asyncio
 async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
     driver = __setup
     await driver.get(PAGE_URL)
@@ -260,6 +260,99 @@ async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
 
 ```
 
+## Running as multitasking
+
+To execute the test in multiple tasks, use [pytest-async-cooperative](https://github.com/willemt/pytest-asyncio-cooperative). It will speed up the execution considerably.
+
+```
+from caqui.easy import AsyncDriver, ActionChains
+from caqui.by import By
+from pytest import mark, fixture
+from tests.constants import PAGE_URL
+from caqui import synchronous
+from caqui.easy.capabilities import CapabilitiesBuilder
+
+
+class TestObject:
+    @fixture
+    def setup(self):
+        remote = "http://127.0.0.1:9999"
+        capabilities = (
+            CapabilitiesBuilder()
+            .browser_name("webdriver")
+            .accept_insecure_certs(True)
+            .additional_capability(
+                {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
+            )
+        ).build()
+        driver = AsyncDriver(remote, capabilities, PAGE_URL)
+        yield driver
+        driver.quit()
+
+    @mark.asyncio_cooperative
+    async def test_save_screenshot(self, setup: AsyncDriver):
+        driver = setup
+
+        assert await driver.save_screenshot("/tmp/test.png") is True
+
+    @mark.asyncio_cooperative
+    async def test_object_to_string(self, setup: AsyncDriver):
+        driver = setup
+
+        element_string = synchronous.find_element(
+            driver.remote, driver.session, By.XPATH, "//button"
+        )
+        element = await driver.find_element(locator=By.XPATH, value="//button")
+        assert str(element) == element_string
+
+```
+
+## Running as multiprocessing
+To run the tests in multiple processes use [pytest-xdist](https://github.com/pytest-dev/pytest-xdist). The execution is even faster than running in multiple tasks
+
+```
+from caqui.easy import AsyncDriver, ActionChains
+from caqui.by import By
+from pytest import mark, fixture
+from tests.constants import PAGE_URL
+from caqui import synchronous
+from caqui.easy.capabilities import CapabilitiesBuilder
+import asyncio
+
+
+class TestObject:
+    @fixture
+    def setup(self):
+        remote = "http://127.0.0.1:9999"
+        capabilities = (
+            CapabilitiesBuilder()
+            .browser_name("webdriver")
+            .accept_insecure_certs(True)
+            .additional_capability(
+                {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
+            )
+        ).build()
+        driver = AsyncDriver(remote, capabilities, PAGE_URL)
+        yield driver
+        driver.quit()
+
+    @mark.asyncio
+    async def test_save_screenshot(self, setup: AsyncDriver):
+        driver = setup
+
+        assert await driver.save_screenshot("/tmp/test.png") is True
+
+    @mark.asyncio
+    async def test_object_to_string(self, setup: AsyncDriver):
+        driver = setup
+
+        element_string = synchronous.find_element(
+            driver.remote, driver.session, By.XPATH, "//button"
+        )
+        element = await driver.find_element(locator=By.XPATH, value="//button")
+        assert str(element) == element_string
+
+```
 
 # Driver as server
 To illustrate what I mean by "Driver as server", lets get [chromedriver](https://chromedriver.chromium.org/home) and execute it as an ordinary shell script file.

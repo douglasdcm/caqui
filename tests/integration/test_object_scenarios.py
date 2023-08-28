@@ -23,7 +23,7 @@ def __setup():
     driver.quit()
 
 
-@mark.asyncio_cooperative
+@mark.asyncio
 async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
     driver = __setup
     await driver.get(PAGE_URL)
@@ -50,7 +50,7 @@ async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
     assert await alert_button_parent.click() is True
 
 
-@mark.asyncio_cooperative
+@mark.asyncio
 async def test_switch_to_frame_and_click_alert(__setup: AsyncDriver):
     driver = __setup
     await driver.get(PAGE_URL)
@@ -66,7 +66,7 @@ async def test_switch_to_frame_and_click_alert(__setup: AsyncDriver):
     assert await alert_button.click() is True
 
 
-@mark.asyncio_cooperative
+@mark.asyncio
 async def test_get_data_from_hidden_button(__setup: AsyncDriver):
     driver = __setup
     locator_type = "xpath"
@@ -81,7 +81,7 @@ async def test_get_data_from_hidden_button(__setup: AsyncDriver):
     assert "display: none;" == await hidden_button.get_attribute("style")
 
 
-@mark.asyncio_cooperative
+@mark.asyncio
 async def test_add_text__click_button_and_get_properties(__setup: AsyncDriver):
     driver = __setup
     expected = "end"
@@ -105,7 +105,7 @@ async def test_add_text__click_button_and_get_properties(__setup: AsyncDriver):
     assert await p.get_text() == expected
 
 
-@mark.asyncio_cooperative
+@mark.asyncio
 async def test_big_scenario(__setup: AsyncDriver):
     driver = __setup
     remote, session = driver.remote, driver.session
