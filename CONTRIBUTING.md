@@ -13,5 +13,5 @@ To run the tests, start a new Driver as server on port `9999`, for example:
 ```
 And execute the tests
 ```
-python -m pytest
+python -m pytest -n auto
 ```

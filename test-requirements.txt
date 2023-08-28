@@ -1,5 +1,5 @@
 pytest
-pytest-asyncio-cooperative
+pytest-xdist
 selenium
 coverage
 tox
