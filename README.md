@@ -308,7 +308,7 @@ class TestObject:
 ```
 
 ## Running as multiprocessing
-To run the tests in multiple processes use [pytest-xdist](https://github.com/pytest-dev/pytest-xdist). The execution is even faster than running in multiple tasks
+To run the tests in multiple processes use [pytest-xdist](https://github.com/pytest-dev/pytest-xdist). The execution is even faster than running in multiple tasks. Check this article [Supercharge Your Web Crawlers with Caqui: Boosting Speed with Multi-Processing](https://medium.com/@douglas.dcm/speed-up-your-web-crawlers-at-90-148f3ca97b6) to know how to increase the velocity of the executions in 90%.
 
 ```
 from caqui.easy import AsyncDriver, ActionChains
