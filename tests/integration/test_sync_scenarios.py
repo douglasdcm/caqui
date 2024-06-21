@@ -25,7 +25,7 @@ def __setup():
     driver_url = "http://127.0.0.1:9999"
     capabilities = (
         CapabilitiesBuilder()
-        .browser_name("webdriver")
+        .browser_name("chrome")
         .accept_insecure_certs(True)
         .additional_capability(
             {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
