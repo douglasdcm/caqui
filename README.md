@@ -88,7 +88,7 @@ async def get_all_links():
         driver_url = "http://127.0.0.1:9999"
         capabilities = (
             CapabilitiesBuilder()
-            .browser_name("webdriver")
+            .browser_name("chrome")
             .accept_insecure_certs(True)
             .additional_capability(
                 {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
@@ -216,7 +216,7 @@ def __setup():
     remote = "http://127.0.0.1:9999"
     capabilities = (
         CapabilitiesBuilder()
-        .browser_name("webdriver")
+        .browser_name("chrome")
         .accept_insecure_certs(True)
         .page_load_strategy("normal")
         .addtional_capability(
@@ -279,7 +279,7 @@ class TestObject:
         remote = "http://127.0.0.1:9999"
         capabilities = (
             CapabilitiesBuilder()
-            .browser_name("webdriver")
+            .browser_name("chrome")
             .accept_insecure_certs(True)
             .additional_capability(
                 {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
@@ -326,7 +326,7 @@ class TestObject:
         remote = "http://127.0.0.1:9999"
         capabilities = (
             CapabilitiesBuilder()
-            .browser_name("webdriver")
+            .browser_name("chrome")
             .accept_insecure_certs(True)
             .additional_capability(
                 {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
