@@ -1,3 +1,6 @@
+import math
+
+
 class ProxyConfigurationBuilder:
     """
     Reference: https://www.w3.org/TR/webdriver/#dfn-proxy-configuration
@@ -115,6 +118,8 @@ class TimeoutsBuilder:
         self.__timeouts = {}
 
     def implicit(self, timeout: int):
+        """Notice: if the number is a float, converts it to an integer"""
+        timeout = math.ceil(timeout)
         self.__timeouts = {
             **self.__timeouts,
             "implicit": timeout,
@@ -122,6 +127,8 @@ class TimeoutsBuilder:
         return self
 
     def page_load(self, timeout: int):
+        """Notice: if the number is a float, converts it to an integer"""
+        timeout = math.ceil(timeout)
         self.__timeouts = {
             **self.__timeouts,
             "pageLoad": timeout,
@@ -129,6 +136,8 @@ class TimeoutsBuilder:
         return self
 
     def script(self, timeout: int):
+        """Notice: if the number is a float, converts it to an integer"""
+        timeout = math.ceil(timeout)
         self.__timeouts = {
             **self.__timeouts,
             "script": timeout,
