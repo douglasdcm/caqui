@@ -26,13 +26,13 @@ The process **Caqui** follows is similar of the one described in this [article](
 # Simple start
 Install the lastest version of **Caqui**
 
-```
+```bash
 pip install caqui
 ```
 
 Download the same [ChromeDriver](https://chromedriver.chromium.org/downloads) version as your installed Chrome and start the Driver as a server using the port "9999"
 
-```
+```bash
 $ ./chromedriver --port=9999
 Starting ChromeDriver 94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}) on port 9999
 Only local connections are allowed.
@@ -42,7 +42,7 @@ ChromeDriver was started successfully.
 
 Given the HTML content in `playground.html`
 
-```
+```html
 <html>
 
 <head>
@@ -71,7 +71,7 @@ Given the HTML content in `playground.html`
 ```
 
 And the code in `sample.py` file
-```
+```python
 import asyncio
 import time
 from caqui import synchronous, asynchronous
@@ -143,11 +143,11 @@ if __name__ == "__main__":
 ```
 
 Run the file
-```
+```bash
 python sample.py
 ```
 Output
-```
+```bash
 Found 1 links
 Found 1 links
 Found 1 links
@@ -204,7 +204,7 @@ Time: 5.01 sec
 # Version 2.0.0
 In version 2 it is possible to use Python objects similarly to Selenium. Example:
 
-```
+```python
 from caqui.easy import AsyncDriver
 from caqui.by import By
 from caqui import synchronous
@@ -266,7 +266,7 @@ async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
 
 To execute the test in multiple tasks, use [pytest-async-cooperative](https://github.com/willemt/pytest-asyncio-cooperative). It will speed up the execution considerably.
 
-```
+```python
 from caqui.easy import AsyncDriver, ActionChains
 from caqui.by import By
 from pytest import mark, fixture
@@ -312,7 +312,7 @@ class TestObject:
 ## Running as multiprocessing
 To run the tests in multiple processes use [pytest-xdist](https://github.com/pytest-dev/pytest-xdist). The execution is even faster than running in multiple tasks. Check this article [Supercharge Your Web Crawlers with Caqui: Boosting Speed with Multi-Processing](https://medium.com/@douglas.dcm/speed-up-your-web-crawlers-at-90-148f3ca97b6) to know how to increase the velocity of the executions in 90%.
 
-```
+```python
 from caqui.easy import AsyncDriver, ActionChains
 from caqui.by import By
 from pytest import mark, fixture
@@ -359,7 +359,7 @@ class TestObject:
 # Driver as server
 To illustrate what I mean by "Driver as server", lets get [chromedriver](https://chromedriver.chromium.org/home) and execute it as an ordinary shell script file.
 
-```
+```bash
 ./chromedriver --port=9999
 Starting ChromeDriver 94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}) on port 9999
 Only local connections are allowed.
@@ -370,7 +370,7 @@ ChromeDriver was started successfully.
 Notice the Driver is running and waiting for HTTP requests.
 
 Lets open a new session against it
-```
+```bash
 curl --location '127.0.0.1:9999/session' \
 --header 'Content-Type: application/json' \
 --data '{
@@ -382,7 +382,7 @@ curl --location '127.0.0.1:9999/session' \
 }'
 ```
 Here is the response returned
-```
+```json
 {
     "sessionId": "b6654121c4ba1e8395ded73a27b7d8f5",
     "status": 0,
@@ -432,7 +432,7 @@ Here is the response returned
 ```
 The *sessionId* value can be used to perform further actions like *find element*, *send keys* or *click* buttons. More details can be found in [Json Wire Protocol Specification](https://www.selenium.dev/documentation/legacy/json_wire_protocol/).
 Also with the *-h* parameter in Drivers, for example: 
-```
+```bash
 ./chromedriver -h
 
 Usage: ./chromedriver [OPTIONS]
@@ -454,5 +454,5 @@ Options
   --allowed-ips                   comma-separated allowlist of remote IP addresses which are allowed to connect to ChromeDriver
 ```
 # Contributing
-Read the [Code of Conduct](https://github.com/douglasdcm/caqui/blob/main/CODE_OF_CONDUCT.md) before push new Merge Requests.
-Now, follow the steps in [Contributing](https://github.com/douglasdcm/caqui/blob/main/CONTRIBUTING.md) session.
+Read the [Code of Conduct](https://github.com/douglasdcm/caqui/blob/main/docs/CODE_OF_CONDUCT.md) before push new Merge Requests.
+Now, follow the steps in [Contributing](https://github.com/douglasdcm/caqui/blob/main/docs/CONTRIBUTING.md) session.
