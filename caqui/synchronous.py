@@ -28,10 +28,10 @@ def __get(url):
 
 
 def __post(url, payload):
-    response = __requests.request(
-        "POST", url, headers=__HEADERS, data=__json.dumps(payload)
-    )
     try:
+        response = __requests.request(
+            "POST", url, headers=__HEADERS, data=__json.dumps(payload), timeout=60
+        )
         return __handle_response(response)
     except Exception as error:
         raise __WebDriverError("'POST' request failed.") from error
@@ -756,11 +756,11 @@ def __get_session(response):
     return response.get("sessionId")
 
 
-def get_session(driver_url, capabilities):
+def get_session(capabilities):
     """Opens a browser and a session. This session is used for all functions to perform events in the page"""
     try:
-        url = f"{driver_url}/session"
-        data = capabilities
+        url = f"{capabilities.driver_url}/session"
+        data = capabilities.to_dict
         response = __post(url, payload=data)
         return __get_session(response)
     except Exception as error:

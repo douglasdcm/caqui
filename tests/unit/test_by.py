@@ -7,7 +7,6 @@ from caqui.easy.capabilities import CapabilitiesBuilder
 
 @fixture
 def __setup():
-    driver_url = "http://127.0.0.1:9999"
     capabilities = (
         CapabilitiesBuilder()
         .browser_name("chrome")
@@ -16,7 +15,8 @@ def __setup():
             {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
         )
     ).build()
-    session = synchronous.get_session(driver_url, capabilities)
+    driver_url = capabilities.driver_url
+    session = synchronous.get_session(capabilities)
     synchronous.go_to_page(
         driver_url,
         session,

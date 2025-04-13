@@ -1,4 +1,7 @@
 import math
+import time
+import requests
+from requests.exceptions import ConnectionError
 
 
 class ProxyConfigurationBuilder:
@@ -153,6 +156,32 @@ class CapabilitiesBuilder:
 
     def __init__(self) -> None:
         self.__desired_capabilities = {}
+        self.__result = {}
+        self.__driver_ip = "localhost"
+        self.__driver_port = "9999"
+        self.__process = None
+
+    @property
+    def driver_url(self):
+        """
+        Returns the driver URL.
+        """
+        return f"http://{self.__driver_ip}:{self.__driver_port}"
+
+    @property
+    def to_dict(self):
+        """
+        Returns the capabilities.
+        """
+        return self.__result
+
+    def driver_ip(self, ip: str):
+        self.__driver_ip = ip
+        return self
+
+    def driver_port(self, port: str):
+        self.__driver_port = port
+        return self
 
     def browser_name(self, name: str):
         self.__desired_capabilities = {
@@ -202,7 +231,6 @@ class CapabilitiesBuilder:
         return self
 
     def proxy(self, proxy_configuration: dict):
-        ProxyConfigurationBuilder
         """
         Defines the current session’s proxy configuration.
         Use the ProxyConfigurationBuilder class for simplicity.
@@ -272,4 +300,37 @@ class CapabilitiesBuilder:
         return self
 
     def build(self):
-        return {"desiredCapabilities": self.__desired_capabilities}
+        MAX_RETIES = 10
+        import subprocess
+        from webdriver_manager.chrome import ChromeDriverManager
+
+        driver_manager = ChromeDriverManager().install()
+        self.__process = subprocess.Popen(
+            [driver_manager, f"--port={self.__driver_port}"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        self.__wait_server(MAX_RETIES)
+
+        self.__result = {"desiredCapabilities": self.__desired_capabilities}
+        return self
+
+    def __wait_server(self, MAX_RETIES):
+        for i in range(MAX_RETIES):
+            try:
+                requests.get(self.driver_url)
+                break
+            except ConnectionError:
+                time.sleep(1)
+                if i == MAX_RETIES - 1:
+                    self.__process.kill()
+                    self.__process.wait()
+                    raise Exception("Driver not started")
+
+    def dispose(self):
+        """
+        Dispose the driver process.
+        """
+        if self.__process:
+            self.__process.kill()
+            self.__process.wait()

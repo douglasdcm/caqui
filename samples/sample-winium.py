@@ -13,7 +13,7 @@ def main():
             "app": "C:/windows/system32/calc.exe",
         },
     }
-    session = synchronous.get_session(driver_url, capabilities)
+    session = synchronous.get_session(capabilities)
     element = synchronous.find_element(
         driver_url, session, locator_type="name", locator_value="Eight"
     )

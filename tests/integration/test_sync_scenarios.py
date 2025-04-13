@@ -31,7 +31,7 @@ def __setup():
             {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
         )
     ).build()
-    session = get_session(driver_url, capabilities)
+    session = get_session(capabilities)
     go_to_page(
         driver_url,
         session,

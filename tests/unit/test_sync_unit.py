@@ -1,6 +1,7 @@
 from unittest.mock import patch
 from caqui import synchronous
 from tests import fake_responses
+from caqui.easy.capabilities import CapabilitiesBuilder
 
 
 @patch("requests.request", return_value=fake_responses.GET_RECT)
@@ -208,7 +209,7 @@ def test_click(*args):
 def test_get_session(*args):
     expected = "4358a5b53794586af59678fc1653dc40"
 
-    assert synchronous.get_session("", "") == expected
+    assert synchronous.get_session(CapabilitiesBuilder()) == expected
 
 
 @patch("requests.request", return_value=fake_responses.FIND_ELEMENT)

@@ -13,9 +13,9 @@ def __setup():
         CapabilitiesBuilder()
         .browser_name("chrome")
         .accept_insecure_certs(True)
-        .additional_capability(
-            {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
-        )
+        # .additional_capability(
+        #     {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
+        # )
     ).build()
 
     driver = AsyncDriver(remote, capabilities, PAGE_URL)

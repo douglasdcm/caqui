@@ -72,6 +72,7 @@ Given the HTML content in `playground.html`
 
 And the code in `sample.py` file
 ```python
+# It opens the WebDriver, navigate to a page and get all links
 import asyncio
 import time
 from caqui import synchronous, asynchronous
@@ -82,28 +83,32 @@ from caqui.easy.capabilities import CapabilitiesBuilder
 BASE_DIR = getcwd()
 
 MAX_CONCURRENCY = 5  # number of webdriver instances running
-sem = asyncio.Semaphore(MAX_CONCURRENCY)
+all_anchors = []
+semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 
 
 async def get_all_links():
-    async with sem:
-        driver_url = "http://127.0.0.1:9999"
-        capabilities = (
+    async with semaphore:
+        capabilities: CapabilitiesBuilder = (
             CapabilitiesBuilder()
+            .driver_ip("localhost")
+            .driver_port("9999")
             .browser_name("chrome")
             .accept_insecure_certs(True)
+            .page_load_strategy("normal")
             .additional_capability(
                 {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
             )
         ).build()
-
-        session = await asynchronous.get_session(driver_url, capabilities)
+        driver_url = capabilities.driver_url
+        session = await asynchronous.get_session(capabilities)
         await asynchronous.go_to_page(
             driver_url,
             session,
             PAGE_URL,
         )
 
+        all_anchors = []
         for i in range(4):
             i += 1
             locator_value = f"//a[@id='a{i}']"
@@ -113,10 +118,14 @@ async def get_all_links():
             anchors = await asynchronous.find_elements(
                 driver_url, session, locator_type, locator_value
             )
-            print(f"Found {len(anchors)} links")
+            all_anchors.extend(anchors)
 
-        for anchor in anchors:
+        texts = []
+        for anchor in all_anchors:
             text = await asynchronous.get_property(driver_url, session, anchor, "href")
+            texts.append(text)
+
+        for text in texts:
             print(f"Link found '{text}'")
 
         synchronous.close_session(driver_url, session)
@@ -130,14 +139,13 @@ async def main():
 
 
 if __name__ == "__main__":
+    # Python 3.10+
     start = time.time()
-    loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(main())
+        asyncio.run(main())
     finally:
-        loop.run_until_complete(loop.shutdown_asyncgens())
-        loop.close()
         end = time.time()
+        print(f"Found 40 links")  # 10 websites with 4 links each
         print(f"Time: {end-start:.2f} sec")
 
 ```

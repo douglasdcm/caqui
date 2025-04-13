@@ -15,9 +15,10 @@ semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 
 async def get_all_links():
     async with semaphore:
-        driver_url = "http://127.0.0.1:9999"
-        capabilities = (
+        capabilities: CapabilitiesBuilder = (
             CapabilitiesBuilder()
+            .driver_ip("localhost")
+            .driver_port("9999")
             .browser_name("chrome")
             .accept_insecure_certs(True)
             .page_load_strategy("normal")
@@ -25,7 +26,8 @@ async def get_all_links():
                 {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
             )
         ).build()
-        session = await asynchronous.get_session(driver_url, capabilities)
+        driver_url = capabilities.driver_url
+        session = await asynchronous.get_session(capabilities)
         await asynchronous.go_to_page(
             driver_url,
             session,
@@ -63,13 +65,11 @@ async def main():
 
 
 if __name__ == "__main__":
+    # Python 3.10+
     start = time.time()
-    loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(main())
+        asyncio.run(main())
     finally:
-        loop.run_until_complete(loop.shutdown_asyncgens())
-        loop.close()
         end = time.time()
         print(f"Found 40 links")  # 10 websites with 4 links each
         print(f"Time: {end-start:.2f} sec")

@@ -16,7 +16,7 @@ def main():
             "app": "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App",
         },
     }
-    session = synchronous.get_session(driver_url, capabilities)
+    session = synchronous.get_session(capabilities)
     element = synchronous.find_element(
         driver_url, session, locator_type="name", locator_value="Eight"
     )

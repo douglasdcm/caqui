@@ -20,7 +20,7 @@ def main():
         }
     }
 
-    session = synchronous.get_session(driver_url, capabilities)
+    session = synchronous.get_session(capabilities)
     print("session: ", session)
 
     source = synchronous.get_page_source(driver_url, session)

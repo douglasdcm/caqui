@@ -789,10 +789,11 @@ async def find_element(driver_url, session, locator_type, locator_value):
         ) from error
 
 
-async def get_session(driver_url, capabilities):
+async def get_session(capabilities):
     """Opens a browser and a session. This session is used for all functions to perform events in the page"""
     try:
-        payload = capabilities
+        payload = capabilities.to_dict
+        driver_url = capabilities.driver_url
         url = f"{driver_url}/session"
         response = await __post(url, payload)
         return response.get("sessionId")

@@ -17,7 +17,7 @@ def __setup():
             {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
         )
     ).build()
-    session = synchronous.get_session(driver_url, capabilities)
+    session = synchronous.get_session(capabilities)
     synchronous.go_to_page(
         driver_url,
         session,

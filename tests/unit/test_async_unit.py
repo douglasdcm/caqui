@@ -3,6 +3,7 @@ import caqui
 
 from pytest import mark
 from caqui import asynchronous
+from caqui.easy.capabilities import CapabilitiesBuilder
 from tests import fake_responses
 from unittest.mock import patch
 
@@ -355,4 +356,4 @@ async def test_get_session():
         return fake_responses.GET_SESSION
 
     with patch("caqui.asynchronous.__post", mock_request):
-        assert await asynchronous.get_session("", {}) == expected
+        assert await asynchronous.get_session(CapabilitiesBuilder()) == expected
