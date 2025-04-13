@@ -22,6 +22,7 @@ class TestObject:
         driver = AsyncDriver(remote, capabilities, PAGE_URL)
         yield driver
         driver.quit()
+        capabilities.dispose()
 
     @mark.asyncio
     async def test_action_chains(self, setup: AsyncDriver):

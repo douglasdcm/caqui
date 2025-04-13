@@ -11,9 +11,7 @@ def __setup():
         CapabilitiesBuilder()
         .browser_name("chrome")
         .accept_insecure_certs(True)
-        .additional_capability(
-            {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
-        )
+        .additional_capability({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
     ).build()
     session = synchronous.get_session(capabilities)
     synchronous.go_to_page(
@@ -23,6 +21,7 @@ def __setup():
     )
     yield driver_url, session
     synchronous.close_session(driver_url, session)
+    capabilities.dispose()
 
 
 @mark.asyncio
@@ -34,11 +33,6 @@ async def test_get_all_links(__setup):
     for i in range(4):
         i += 1
         locator_value = f"//a[@id='a{i}']"
-        anchor = synchronous.find_element(
-            driver_url, session, locator_type, locator_value
-        )
+        anchor = synchronous.find_element(driver_url, session, locator_type, locator_value)
         anchors.append(anchor)
-        assert (
-            await asynchronous.get_text(driver_url, session, anchors[i - 1])
-            == f"any{i}.com"
-        )
+        assert await asynchronous.get_text(driver_url, session, anchors[i - 1]) == f"any{i}.com"

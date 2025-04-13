@@ -65,9 +65,7 @@ class AsyncDriver:
         return await asynchronous.close_window(self.__remote, self.__session)
 
     async def execute_script(self, script, args=[]):
-        return await asynchronous.execute_script(
-            self.__remote, self.__session, script, args
-        )
+        return await asynchronous.execute_script(self.__remote, self.__session, script, args)
 
     async def set_window_position(self, x, y):
         rect = await asynchronous.get_window_rectangle(self.__remote, self.__session)
@@ -92,25 +90,19 @@ class AsyncDriver:
         if not path:
             path = "./"
         file_name = os.path.basename(file)
-        return await asynchronous.take_screenshot(
-            self.__remote, self.__session, path, file_name
-        )
+        return await asynchronous.take_screenshot(self.__remote, self.__session, path, file_name)
 
     async def delete_all_cookies(self):
         return await asynchronous.delete_all_cookies(self.__remote, self.__session)
 
     async def delete_cookie(self, cookie_name):
-        return await asynchronous.delete_cookie(
-            self.__remote, self.__session, cookie_name
-        )
+        return await asynchronous.delete_cookie(self.__remote, self.__session, cookie_name)
 
     async def get_cookies(self):
         return await asynchronous.get_cookies(self.__remote, self.__session)
 
     async def get_cookie(self, cookie_name):
-        return await asynchronous.get_named_cookie(
-            self.__remote, self.__session, cookie_name
-        )
+        return await asynchronous.get_named_cookie(self.__remote, self.__session, cookie_name)
 
     async def add_cookie(self, cookie):
         return await asynchronous.add_cookie(self.__remote, self.__session, cookie)
@@ -144,16 +136,12 @@ class AsyncDriver:
         )
 
     async def find_elements(self, locator, value):
-        elements = await asynchronous.find_elements(
-            self.__remote, self.__session, locator, value
-        )
+        elements = await asynchronous.find_elements(self.__remote, self.__session, locator, value)
         result = []
         for element in elements:
             result.append(Element(element, self))
         return result
 
     async def find_element(self, locator, value):
-        element = await asynchronous.find_element(
-            self.__remote, self.__session, locator, value
-        )
+        element = await asynchronous.find_element(self.__remote, self.__session, locator, value)
         return Element(element, self)

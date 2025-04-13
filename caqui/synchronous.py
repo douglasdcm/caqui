@@ -221,9 +221,7 @@ def dismiss_alert(driver_url, session):
         raise __WebDriverError("Failed to dismiss the alert.") from error
 
 
-def take_screenshot_element(
-    driver_url, session, element, path="/tmp", file_name="caqui"
-):
+def take_screenshot_element(driver_url, session, element, path="/tmp", file_name="caqui"):
     """Take screenshot of element."""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/screenshot"
@@ -431,9 +429,7 @@ def set_timeouts(driver_url, session, timeouts):
         raise __WebDriverError("Failed to set timeouts.") from error
 
 
-def find_children_elements(
-    driver_url, session, parent_element, locator_type, locator_value
-):
+def find_children_elements(driver_url, session, parent_element, locator_type, locator_value):
     """Find the children elements by 'locator_type'
 
     If the 'parent_element' is a shadow element, set the 'locator_type' as 'id' or
@@ -450,9 +446,7 @@ def find_children_elements(
         ) from error
 
 
-def find_child_element(
-    driver_url, session, parent_element, locator_type, locator_value
-):
+def find_child_element(driver_url, session, parent_element, locator_type, locator_value):
     """Find the child element by 'locator_type'"""
     try:
         url = f"{driver_url}/session/{session}/element/{parent_element}/element"
@@ -658,9 +652,7 @@ def find_elements(driver_url, session, locator_type, locator_value):
 def get_property(driver_url, session, element, property_name):
     """Get the given HTML property of an element, for example, 'href'"""
     try:
-        url = (
-            f"{driver_url}/session/{session}/element/{element}/property/{property_name}"
-        )
+        url = f"{driver_url}/session/{session}/element/{element}/property/{property_name}"
         response = __get(url)
         return response.get("value")
     except Exception as error:

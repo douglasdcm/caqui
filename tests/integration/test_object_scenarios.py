@@ -3,7 +3,7 @@ from caqui.by import By
 from caqui import synchronous
 from tests.constants import PAGE_URL
 from pytest import mark, fixture
-from caqui.easy.capabilities import CapabilitiesBuilder
+from caqui.easy.capabilities import CapabilitiesBuilder, Brosers
 
 
 @fixture
@@ -11,16 +11,15 @@ def __setup():
     remote = "http://127.0.0.1:9999"
     capabilities = (
         CapabilitiesBuilder()
-        .browser_name("chrome")
+        .browser_name(Brosers.CHROME)
         .accept_insecure_certs(True)
-        # .additional_capability(
-        #     {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
-        # )
+        .additional_capability({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
     ).build()
 
     driver = AsyncDriver(remote, capabilities, PAGE_URL)
     yield driver
     driver.quit()
+    capabilities.dispose()
 
 
 @mark.asyncio
@@ -36,16 +35,12 @@ async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
     element_frame = await driver.find_element(locator_type, locator_value)
     assert await driver.switch_to.frame(element_frame) is True
 
-    alert_button_frame = await driver.find_element(
-        locator_type, locator_value_alert_frame
-    )
+    alert_button_frame = await driver.find_element(locator_type, locator_value_alert_frame)
     assert await alert_button_frame.click() is True
     assert await driver.switch_to.alert.dismiss() is True
 
     assert await driver.switch_to.default_content() is True
-    alert_button_parent = await driver.find_element(
-        locator_type, locator_value_alert_parent
-    )
+    alert_button_parent = await driver.find_element(locator_type, locator_value_alert_parent)
     assert await alert_button_parent.get_attribute("any") == "any"
     assert await alert_button_parent.click() is True
 
@@ -137,12 +132,8 @@ async def test_big_scenario(__setup: AsyncDriver):
     # Returns and base64 encoded string into image
     await element.screenshot("/tmp/image.png")
 
-    assert await element.is_enabled() == synchronous.is_element_enabled(
-        remote, session, element
-    )
-    assert await element.is_selected() == synchronous.is_element_selected(
-        remote, session, element
-    )
+    assert await element.is_enabled() == synchronous.is_element_enabled(remote, session, element)
+    assert await element.is_selected() == synchronous.is_element_selected(remote, session, element)
     assert element.tag_name == synchronous.get_tag_name(remote, session, element)
     assert element.rect == synchronous.get_rect(remote, session, element)
     css = "background-color"
@@ -188,18 +179,18 @@ async def test_big_scenario(__setup: AsyncDriver):
     await driver.switch_to.new_window("window")
 
     # Access each dimension individually
-    assert (await driver.get_window_size()).get(
-        "width"
-    ) == synchronous.get_window_rectangle(remote, session).get("width")
-    assert (await driver.get_window_size()).get(
-        "height"
-    ) == synchronous.get_window_rectangle(remote, session).get("height")
+    assert (await driver.get_window_size()).get("width") == synchronous.get_window_rectangle(
+        remote, session
+    ).get("width")
+    assert (await driver.get_window_size()).get("height") == synchronous.get_window_rectangle(
+        remote, session
+    ).get("height")
 
     await driver.set_window_size(1024, 768)
     # Access each dimension individually
-    assert (await driver.get_window_position()).get(
-        "x"
-    ) == synchronous.get_window_rectangle(remote, session).get("x")
+    assert (await driver.get_window_position()).get("x") == synchronous.get_window_rectangle(
+        remote, session
+    ).get("x")
 
     assert (await driver.get_window_position()).get("y") == (
         synchronous.get_window_rectangle(remote, session)
@@ -208,7 +199,7 @@ async def test_big_scenario(__setup: AsyncDriver):
     # Move the window to the top left of the primary monitor
     await driver.set_window_position(0, 0)
     await driver.maximize_window()
-    await driver.minimize_window()
+    # await driver.minimize_window()  # does not work on headless mode
     await driver.save_screenshot("/tmp/image.png")
 
     # Executing JavaScript to capture innerText of header element

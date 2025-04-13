@@ -32,9 +32,7 @@ async def __delete(url):
 async def __post(url, payload):
     try:
         async with __aiohttp.ClientSession() as session:
-            async with session.post(
-                url, data=__json.dumps(payload), headers=__HEADERS
-            ) as resp:
+            async with session.post(url, data=__json.dumps(payload), headers=__HEADERS) as resp:
                 return await __handle_response(resp)
     except Exception as error:
         raise __WebDriverError("'POST' request failed.") from error
@@ -230,9 +228,7 @@ async def dismiss_alert(driver_url, session):
         raise __WebDriverError("Failed to dismiss alert.") from error
 
 
-async def take_screenshot_element(
-    driver_url, session, element, path="/tmp", file_name="caqui"
-):
+async def take_screenshot_element(driver_url, session, element, path="/tmp", file_name="caqui"):
     """Take screenshot of element"""
     try:
         url = f"{driver_url}/session/{session}/element/{element}/screenshot"
@@ -448,9 +444,7 @@ async def set_timeouts(driver_url, session, timeouts):
         raise __WebDriverError("Failed to set timeouts.") from error
 
 
-async def find_children_elements(
-    driver_url, session, parent_element, locator_type, locator_value
-):
+async def find_children_elements(driver_url, session, parent_element, locator_type, locator_value):
     """Find the children elements by 'locator_type'
 
     If the 'parent_element' is a shadow element, set the 'locator_type' as 'id' or
@@ -467,9 +461,7 @@ async def find_children_elements(
         ) from error
 
 
-async def find_child_element(
-    driver_url, session, parent_element, locator_type, locator_value
-):
+async def find_child_element(driver_url, session, parent_element, locator_type, locator_value):
     """Find the child element by 'locator_type'"""
     try:
         url = f"{driver_url}/session/{session}/element/{parent_element}/element"

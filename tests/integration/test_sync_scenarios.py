@@ -27,9 +27,7 @@ def __setup():
         CapabilitiesBuilder()
         .browser_name("chrome")
         .accept_insecure_certs(True)
-        .additional_capability(
-            {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
-        )
+        .additional_capability({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
     ).build()
     session = get_session(capabilities)
     go_to_page(
@@ -39,6 +37,7 @@ def __setup():
     )
     yield driver_url, session
     close_session(driver_url, session)
+    capabilities.dispose()
 
 
 def test_switch_to_parent_frame_and_click_alert(__setup):
@@ -51,9 +50,7 @@ def test_switch_to_parent_frame_and_click_alert(__setup):
     element_frame = find_element(driver_url, session, locator_type, locator_value)
     assert switch_to_frame(driver_url, session, element_frame) is True
 
-    alert_button_frame = find_element(
-        driver_url, session, locator_type, locator_value_alert_frame
-    )
+    alert_button_frame = find_element(driver_url, session, locator_type, locator_value_alert_frame)
     assert click(driver_url, session, alert_button_frame) is True
     assert dismiss_alert(driver_url, session) is True
 
@@ -91,9 +88,7 @@ def test_get_data_from_hidden_button(__setup):
     assert "visible" == get_css_value(driver_url, session, hidden_button, "visibility")
     assert True == get_property(driver_url, session, hidden_button, "hidden")
     assert ["display"] == get_property(driver_url, session, hidden_button, "style")
-    assert "display: none;" == get_attribute(
-        driver_url, session, hidden_button, "style"
-    )
+    assert "display: none;" == get_attribute(driver_url, session, hidden_button, "style")
 
 
 def test_add_text__click_button_and_get_properties(__setup):
@@ -108,10 +103,7 @@ def test_add_text__click_button_and_get_properties(__setup):
     assert get_property(driver_url, session, input, property_name="value") == ""
 
     anchor = find_element(driver_url, session, locator_type, locator_value="//a")
-    assert (
-        get_property(driver_url, session, anchor, property_name="href")
-        == "http://any1.com/"
-    )
+    assert get_property(driver_url, session, anchor, property_name="href") == "http://any1.com/"
 
     button = find_element(driver_url, session, locator_type, locator_value="//button")
     click(driver_url, session, button)

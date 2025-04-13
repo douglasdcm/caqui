@@ -11,9 +11,7 @@ class SwitchTo:
 
     @property
     def active_element(self):
-        element = synchronous.get_active_element(
-            self.__driver.remote, self.__driver.session
-        )
+        element = synchronous.get_active_element(self.__driver.remote, self.__driver.session)
         return Element(element, self.__driver)
 
     @property

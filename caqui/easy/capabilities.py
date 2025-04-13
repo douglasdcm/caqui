@@ -1,7 +1,20 @@
 import math
 import time
 import requests
+import subprocess
 from requests.exceptions import ConnectionError
+
+
+class Brosers:
+    """
+    https://pypi.org/project/webdriver-manager/
+    """
+
+    CHROME = "chrome"
+    FIREFOX = "firefox"
+    EDGE = "edge"
+    OPERA = "opera"
+    IE = "internet explorer"
 
 
 class ProxyConfigurationBuilder:
@@ -161,6 +174,44 @@ class CapabilitiesBuilder:
         self.__driver_port = "9999"
         self.__process = None
 
+    def __broser_factory(self):
+        if Brosers.CHROME in self.__desired_capabilities.get("browserName", ""):
+            from webdriver_manager.chrome import ChromeDriverManager
+
+            driver_manager = ChromeDriverManager().install()
+        elif Brosers.FIREFOX in self.__desired_capabilities.get("browserName", ""):
+            from webdriver_manager.firefox import GeckoDriverManager
+
+            driver_manager = GeckoDriverManager().install()
+        elif Brosers.EDGE in self.__desired_capabilities.get("browserName", ""):
+            from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
+            driver_manager = EdgeChromiumDriverManager().install()
+        elif Brosers.OPERA in self.__desired_capabilities.get("browserName", ""):
+            from webdriver_manager.opera import OperaDriverManager
+
+            driver_manager = OperaDriverManager().install()
+        elif Brosers.IE in self.__desired_capabilities.get("browserName", ""):
+            from webdriver_manager.microsoft import IEDriverManager
+
+            driver_manager = IEDriverManager().install()
+        else:
+            raise Exception("Browser not supported")
+        return driver_manager
+
+    def __wait_server(self):
+        MAX_RETIES = 10
+        for i in range(MAX_RETIES):
+            try:
+                requests.get(self.driver_url)
+                break
+            except ConnectionError:
+                time.sleep(1)
+                if i == (MAX_RETIES - 1):
+                    self.__process.kill()
+                    self.__process.wait()
+                    raise Exception("Driver not started")
+
     @property
     def driver_url(self):
         """
@@ -299,33 +350,24 @@ class CapabilitiesBuilder:
         self.__desired_capabilities = {**self.__desired_capabilities, **capabilitiy}
         return self
 
-    def build(self):
-        MAX_RETIES = 10
-        import subprocess
-        from webdriver_manager.chrome import ChromeDriverManager
+    def build(self, start_server: bool = True):
+        """
+        Build the capabilities and start the driver process."""
+        self.__result = {"desiredCapabilities": self.__desired_capabilities}
 
-        driver_manager = ChromeDriverManager().install()
+        if not start_server:
+            return self
+
+        driver_manager = self.__broser_factory()
+
         self.__process = subprocess.Popen(
             [driver_manager, f"--port={self.__driver_port}"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
-        self.__wait_server(MAX_RETIES)
 
-        self.__result = {"desiredCapabilities": self.__desired_capabilities}
+        self.__wait_server()
         return self
-
-    def __wait_server(self, MAX_RETIES):
-        for i in range(MAX_RETIES):
-            try:
-                requests.get(self.driver_url)
-                break
-            except ConnectionError:
-                time.sleep(1)
-                if i == MAX_RETIES - 1:
-                    self.__process.kill()
-                    self.__process.wait()
-                    raise Exception("Driver not started")
 
     def dispose(self):
         """

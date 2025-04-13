@@ -11,9 +11,7 @@ def __setup():
         CapabilitiesBuilder()
         .browser_name("chrome")
         .accept_insecure_certs(True)
-        .additional_capability(
-            {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
-        )
+        .additional_capability({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
     ).build()
     driver_url = capabilities.driver_url
     session = synchronous.get_session(capabilities)
@@ -24,6 +22,7 @@ def __setup():
     )
     yield driver_url, session
     synchronous.close_session(driver_url, session)
+    capabilities.dispose()
 
 
 @mark.parametrize(

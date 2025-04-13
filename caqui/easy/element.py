@@ -44,19 +44,13 @@ class Element:
         )
 
     async def is_selected(self):
-        return await asynchronous.is_element_selected(
-            self.__remote, self.__session, self.__element
-        )
+        return await asynchronous.is_element_selected(self.__remote, self.__session, self.__element)
 
     async def is_enabled(self):
-        return await asynchronous.is_element_enabled(
-            self.__remote, self.__session, self.__element
-        )
+        return await asynchronous.is_element_enabled(self.__remote, self.__session, self.__element)
 
     async def get_text(self):
-        return await asynchronous.get_text(
-            self.__remote, self.__session, self.__element
-        )
+        return await asynchronous.get_text(self.__remote, self.__session, self.__element)
 
     async def get_css_value(self, property_name):
         return await asynchronous.get_css_value(
@@ -64,37 +58,25 @@ class Element:
         )
 
     async def is_element_selected(self):
-        return await asynchronous.is_element_selected(
-            self.__remote, self.__session, self.__element
-        )
+        return await asynchronous.is_element_selected(self.__remote, self.__session, self.__element)
 
     async def is_element_enabled(self):
-        return await asynchronous.is_element_enabled(
-            self.__remote, self.__session, self.__element
-        )
+        return await asynchronous.is_element_enabled(self.__remote, self.__session, self.__element)
 
     async def submit(self):
         return await asynchronous.submit(self.__remote, self.__session, self.__element)
 
     async def get_rect(self):
-        return await asynchronous.get_rect(
-            self.__remote, self.__session, self.__element
-        )
+        return await asynchronous.get_rect(self.__remote, self.__session, self.__element)
 
     async def get_tag_name(self):
-        return await asynchronous.get_tag_name(
-            self.__remote, self.__session, self.__element
-        )
+        return await asynchronous.get_tag_name(self.__remote, self.__session, self.__element)
 
     async def get_computed_label(self):
-        return await asynchronous.get_computed_label(
-            self.__remote, self.__session, self.__element
-        )
+        return await asynchronous.get_computed_label(self.__remote, self.__session, self.__element)
 
     async def get_computed_role(self):
-        return await asynchronous.get_computed_role(
-            self.__remote, self.__session, self.__element
-        )
+        return await asynchronous.get_computed_role(self.__remote, self.__session, self.__element)
 
     async def get_property(self, property):
         return await asynchronous.get_property(
@@ -107,14 +89,10 @@ class Element:
         )
 
     async def clear(self):
-        return await asynchronous.clear_element(
-            self.__remote, self.__session, self.__element
-        )
+        return await asynchronous.clear_element(self.__remote, self.__session, self.__element)
 
     async def send_keys(self, text):
-        return await asynchronous.send_keys(
-            self.__remote, self.__session, self.__element, text
-        )
+        return await asynchronous.send_keys(self.__remote, self.__session, self.__element, text)
 
     async def click(self):
         return await asynchronous.click(self.__remote, self.__session, self.__element)

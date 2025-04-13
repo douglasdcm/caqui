@@ -4,7 +4,7 @@ import time
 from caqui import synchronous, asynchronous
 from os import getcwd
 from tests.constants import PAGE_URL
-from caqui.easy.capabilities import CapabilitiesBuilder
+from caqui.easy.capabilities import CapabilitiesBuilder, Brosers
 
 BASE_DIR = getcwd()
 
@@ -19,9 +19,10 @@ async def get_all_links():
             CapabilitiesBuilder()
             .driver_ip("localhost")
             .driver_port("9999")
-            .browser_name("chrome")
+            .browser_name(Brosers.CHROME)
             .accept_insecure_certs(True)
             .page_load_strategy("normal")
+            # Reference: https://webdriver.io/docs/capabilities/
             .additional_capability(
                 {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
             )
