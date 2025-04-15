@@ -22,7 +22,8 @@ async def get_all_links():
             .browser_name(Browser.CHROME)
             .accept_insecure_certs(True)
             .page_load_strategy("normal")
-            # Reference: https://webdriver.io/docs/capabilities/
+            # Reference: https://developer.chrome.com/docs/chromedriver/capabilities
+            # https://developer.mozilla.org/en-US/docs/Web/WebDriver/Reference/Capabilities#list_of_capabilities
             .additional_capability(
                 {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
             )

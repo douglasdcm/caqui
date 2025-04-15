@@ -5,6 +5,7 @@ import requests
 import subprocess
 from requests.exceptions import ConnectionError
 from webdriver_manager.core.manager import DriverManager
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 class Browser:
@@ -314,9 +315,9 @@ class Server:
 
     def __browser_factory(self):
         if not self.__browser:
-            from webdriver_manager.chrome import ChromeDriverManager
-
             driver_manager = ChromeDriverManager().install()
+        else:
+            driver_manager = self.__browser.install()
         return driver_manager
 
     def __wait_server(self):
@@ -352,6 +353,9 @@ class Server:
         return f"http://localhost:{self.__port}"
 
 
+    @property
+    def process(self):
+        return self.__process
 
     def dispose(self):
         """
@@ -360,3 +364,4 @@ class Server:
         if self.__process:
             self.__process.kill()
             self.__process.wait()
+            self.__process = None
