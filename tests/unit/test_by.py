@@ -2,19 +2,20 @@ from caqui.by import By
 from caqui import synchronous
 from tests.constants import PAGE_URL
 from pytest import fixture, mark
-from caqui.easy.capabilities import CapabilitiesBuilder
+from caqui.easy.capabilities import Capabilities, Browser, Server
 
 
 @fixture
 def __setup():
     capabilities = (
-        CapabilitiesBuilder()
-        .browser_name("chrome")
+        Capabilities()
+        .browser_name(Browser.CHROME)
         .accept_insecure_certs(True)
         .additional_capability({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
-    ).build()
-    driver_url = capabilities.driver_url
-    session = synchronous.get_session(capabilities)
+    ).to_dict()
+    server = Server(Browser.CHROME)
+    driver_url = server.url
+    session = synchronous.get_session(driver_url, capabilities)
     synchronous.go_to_page(
         driver_url,
         session,
@@ -22,7 +23,7 @@ def __setup():
     )
     yield driver_url, session
     synchronous.close_session(driver_url, session)
-    capabilities.dispose()
+    server.dispose()
 
 
 @mark.parametrize(

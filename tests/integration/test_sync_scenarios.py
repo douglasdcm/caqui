@@ -17,19 +17,22 @@ from caqui.synchronous import (
 )
 from tests.constants import PAGE_URL
 from pytest import fixture
-from caqui.easy.capabilities import CapabilitiesBuilder
+from caqui.easy.capabilities import Capabilities, Browser, Server
 
 
 @fixture
 def __setup():
-    driver_url = "http://127.0.0.1:9999"
+    server = Server(Browser.CHROME)
+    driver_url = server.url
+
     capabilities = (
-        CapabilitiesBuilder()
-        .browser_name("chrome")
+        Capabilities()
+        .browser_name(Browser.CHROME)
         .accept_insecure_certs(True)
         .additional_capability({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
-    ).build()
-    session = get_session(capabilities)
+    ).to_dict()
+
+    session = get_session(driver_url, capabilities)
     go_to_page(
         driver_url,
         session,
@@ -37,7 +40,7 @@ def __setup():
     )
     yield driver_url, session
     close_session(driver_url, session)
-    capabilities.dispose()
+    server.dispose()
 
 
 def test_switch_to_parent_frame_and_click_alert(__setup):

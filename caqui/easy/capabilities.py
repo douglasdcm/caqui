@@ -5,7 +5,7 @@ import subprocess
 from requests.exceptions import ConnectionError
 
 
-class Brosers:
+class Browser:
     """
     https://pypi.org/project/webdriver-manager/
     """
@@ -164,75 +164,18 @@ class TimeoutsBuilder:
         return {"timeouts": self.__timeouts}
 
 
-class CapabilitiesBuilder:
+class Capabilities:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
-
     def __init__(self) -> None:
         self.__desired_capabilities = {}
-        self.__result = {}
-        self.__driver_ip = "localhost"
-        self.__driver_port = "9999"
-        self.__process = None
 
-    def __broser_factory(self):
-        if Brosers.CHROME in self.__desired_capabilities.get("browserName", ""):
-            from webdriver_manager.chrome import ChromeDriverManager
 
-            driver_manager = ChromeDriverManager().install()
-        elif Brosers.FIREFOX in self.__desired_capabilities.get("browserName", ""):
-            from webdriver_manager.firefox import GeckoDriverManager
-
-            driver_manager = GeckoDriverManager().install()
-        elif Brosers.EDGE in self.__desired_capabilities.get("browserName", ""):
-            from webdriver_manager.microsoft import EdgeChromiumDriverManager
-
-            driver_manager = EdgeChromiumDriverManager().install()
-        elif Brosers.OPERA in self.__desired_capabilities.get("browserName", ""):
-            from webdriver_manager.opera import OperaDriverManager
-
-            driver_manager = OperaDriverManager().install()
-        elif Brosers.IE in self.__desired_capabilities.get("browserName", ""):
-            from webdriver_manager.microsoft import IEDriverManager
-
-            driver_manager = IEDriverManager().install()
-        else:
-            raise Exception("Browser not supported")
-        return driver_manager
-
-    def __wait_server(self):
-        MAX_RETIES = 10
-        for i in range(MAX_RETIES):
-            try:
-                requests.get(self.driver_url)
-                break
-            except ConnectionError:
-                time.sleep(1)
-                if i == (MAX_RETIES - 1):
-                    self.__process.kill()
-                    self.__process.wait()
-                    raise Exception("Driver not started")
-
-    @property
-    def driver_url(self):
-        """
-        Returns the driver URL.
-        """
-        return f"http://{self.__driver_ip}:{self.__driver_port}"
-
-    @property
     def to_dict(self):
         """
         Returns the capabilities.
         """
-        return self.__result
+        return {"desiredCapabilities": self.__desired_capabilities}
 
-    def driver_ip(self, ip: str):
-        self.__driver_ip = ip
-        return self
-
-    def driver_port(self, port: str):
-        self.__driver_port = port
-        return self
 
     def browser_name(self, name: str):
         self.__desired_capabilities = {
@@ -350,14 +293,54 @@ class CapabilitiesBuilder:
         self.__desired_capabilities = {**self.__desired_capabilities, **capabilitiy}
         return self
 
-    def build(self, start_server: bool = True):
-        """
-        Build the capabilities and start the driver process."""
-        self.__result = {"desiredCapabilities": self.__desired_capabilities}
 
-        if not start_server:
-            return self
+class Server:
+    """Starts and stops the local server. Cannot be used with remote servers"""
+    def __init__(self, browser: Browser, port=9999):
+        self.__browser = browser
+        self.__driver_port = port
+        self.__process = None
+        self.__start()
 
+    def __broser_factory(self):
+        if Browser.CHROME == self.__browser:
+            from webdriver_manager.chrome import ChromeDriverManager
+
+            driver_manager = ChromeDriverManager().install()
+        elif Browser.FIREFOX == self.__browser:
+            from webdriver_manager.firefox import GeckoDriverManager
+
+            driver_manager = GeckoDriverManager().install()
+        elif Browser.EDGE == self.__browser:
+            from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
+            driver_manager = EdgeChromiumDriverManager().install()
+        elif Browser.OPERA == self.__browser:
+            from webdriver_manager.opera import OperaDriverManager
+
+            driver_manager = OperaDriverManager().install()
+        elif Browser.IE == self.__browser:
+            from webdriver_manager.microsoft import IEDriverManager
+
+            driver_manager = IEDriverManager().install()
+        else:
+            raise Exception("Browser not supported")
+        return driver_manager
+
+    def __wait_server(self):
+        MAX_RETIES = 10
+        for i in range(MAX_RETIES):
+            try:
+                requests.get(self.url)
+                break
+            except ConnectionError:
+                time.sleep(1)
+                if i == (MAX_RETIES - 1):
+                    self.__process.kill()
+                    self.__process.wait()
+                    raise Exception("Driver not started")
+
+    def __start(self):
         driver_manager = self.__broser_factory()
 
         self.__process = subprocess.Popen(
@@ -367,7 +350,16 @@ class CapabilitiesBuilder:
         )
 
         self.__wait_server()
-        return self
+
+
+    @property
+    def url(self):
+        """
+        Returns the driver URL.
+        """
+        return f"http://localhost:{self.__driver_port}"
+
+
 
     def dispose(self):
         """

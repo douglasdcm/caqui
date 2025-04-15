@@ -748,11 +748,11 @@ def __get_session(response):
     return response.get("sessionId")
 
 
-def get_session(capabilities):
+def get_session(driver_url: str, capabilities: dict):
     """Opens a browser and a session. This session is used for all functions to perform events in the page"""
     try:
-        url = f"{capabilities.driver_url}/session"
-        data = capabilities.to_dict
+        url = f"{driver_url}/session"
+        data = capabilities
         response = __post(url, payload=data)
         return __get_session(response)
     except Exception as error:

@@ -99,7 +99,7 @@ async def get_all_links():
             .additional_capability(
                 {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
             )
-        ).build()
+        )
         driver_url = capabilities.driver_url
         session = await asynchronous.get_session(capabilities)
         await asynchronous.go_to_page(

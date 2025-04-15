@@ -8,9 +8,9 @@ from caqui.easy.alert import Alert
 
 
 class AsyncDriver:
-    def __init__(self, remote, capabilities, url=None) -> None:
-        self.__remote = capabilities.driver_url
-        self.__session = synchronous.get_session(capabilities)
+    def __init__(self, driver_url: str, capabilities: dict, url=[str | None]) -> None:
+        self.__remote = driver_url
+        self.__session = synchronous.get_session(driver_url, capabilities)
         if url:
             synchronous.get(
                 self.__remote,
