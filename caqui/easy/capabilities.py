@@ -123,7 +123,7 @@ class ProxyConfigurationBuilder:
         }
         return self
 
-    def build(self):
+    def to_dict(self):
         return {"proxy": self.__proxy}
 
 
@@ -162,11 +162,11 @@ class TimeoutsBuilder:
         }
         return self
 
-    def build(self):
+    def to_dict(self):
         return {"timeouts": self.__timeouts}
 
 
-class Capabilities:
+class WebCapabilities:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
     def __init__(self) -> None:
         self.__desired_capabilities = {}
@@ -303,7 +303,7 @@ class Server:
     Args:
         browser: if is `None`, then a simple `ChromeDriverManager` is used
         Reference: https://pypi.org/project/webdriver-manager/#use-with-chrome
-        
+
         port: the port to start the local server    
     """
     def __init__(self, browser: Union[DriverManager | None] = None, port=9999):

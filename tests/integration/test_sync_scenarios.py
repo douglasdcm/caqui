@@ -17,100 +17,100 @@ from caqui.synchronous import (
 )
 from tests.constants import PAGE_URL
 from pytest import fixture
-from caqui.easy.capabilities import Capabilities, Browser, Server
+from caqui.easy.capabilities import WebCapabilities, Browser, Server
 
 
 @fixture
 def __setup():
     server = Server()
-    driver_url = server.url
+    server_url = server.url
 
     capabilities = (
-        Capabilities()
+        WebCapabilities()
         .browser_name(Browser.CHROME)
         .accept_insecure_certs(True)
         .additional_capability({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
     ).to_dict()
 
-    session = get_session(driver_url, capabilities)
+    session = get_session(server_url, capabilities)
     go_to_page(
-        driver_url,
+        server_url,
         session,
         PAGE_URL,
     )
-    yield driver_url, session
-    close_session(driver_url, session)
+    yield server_url, session
+    close_session(server_url, session)
     server.dispose()
 
 
 def test_switch_to_parent_frame_and_click_alert(__setup):
-    driver_url, session = __setup
+    server_url, session = __setup
     locator_type = "id"
     locator_value = "my-iframe"
     locator_value_alert_parent = "alert-button"
     locator_value_alert_frame = "alert-button-iframe"
 
-    element_frame = find_element(driver_url, session, locator_type, locator_value)
-    assert switch_to_frame(driver_url, session, element_frame) is True
+    element_frame = find_element(server_url, session, locator_type, locator_value)
+    assert switch_to_frame(server_url, session, element_frame) is True
 
-    alert_button_frame = find_element(driver_url, session, locator_type, locator_value_alert_frame)
-    assert click(driver_url, session, alert_button_frame) is True
-    assert dismiss_alert(driver_url, session) is True
+    alert_button_frame = find_element(server_url, session, locator_type, locator_value_alert_frame)
+    assert click(server_url, session, alert_button_frame) is True
+    assert dismiss_alert(server_url, session) is True
 
-    assert switch_to_parent_frame(driver_url, session, element_frame) is True
+    assert switch_to_parent_frame(server_url, session, element_frame) is True
     alert_button_parent = find_element(
-        driver_url, session, locator_type, locator_value_alert_parent
+        server_url, session, locator_type, locator_value_alert_parent
     )
-    assert get_attribute(driver_url, session, alert_button_parent, "any") == "any"
-    assert click(driver_url, session, alert_button_parent) is True
+    assert get_attribute(server_url, session, alert_button_parent, "any") == "any"
+    assert click(server_url, session, alert_button_parent) is True
 
 
 def test_switch_to_frame_and_click_alert(__setup):
-    driver_url, session = __setup
+    server_url, session = __setup
     locator_type = "id"
     locator_value = "my-iframe"
     locator_value_alert = "alert-button-iframe"
 
-    element_frame = find_element(driver_url, session, locator_type, locator_value)
-    assert switch_to_frame(driver_url, session, element_frame) is True
+    element_frame = find_element(server_url, session, locator_type, locator_value)
+    assert switch_to_frame(server_url, session, element_frame) is True
 
-    alert_button = find_element(driver_url, session, locator_type, locator_value_alert)
-    assert get_attribute(driver_url, session, alert_button, "any") == "any"
-    assert click(driver_url, session, alert_button) is True
+    alert_button = find_element(server_url, session, locator_type, locator_value_alert)
+    assert get_attribute(server_url, session, alert_button, "any") == "any"
+    assert click(server_url, session, alert_button) is True
 
 
 def test_get_data_from_hidden_button(__setup):
-    driver_url, session = __setup
+    server_url, session = __setup
     locator_type = "xpath"
 
     hidden_button = find_element(
-        driver_url, session, locator_type, locator_value="//*[@id='hidden-button']"
+        server_url, session, locator_type, locator_value="//*[@id='hidden-button']"
     )
 
-    assert "width" in get_rect(driver_url, session, hidden_button)
-    assert "visible" == get_css_value(driver_url, session, hidden_button, "visibility")
-    assert True == get_property(driver_url, session, hidden_button, "hidden")
-    assert ["display"] == get_property(driver_url, session, hidden_button, "style")
-    assert "display: none;" == get_attribute(driver_url, session, hidden_button, "style")
+    assert "width" in get_rect(server_url, session, hidden_button)
+    assert "visible" == get_css_value(server_url, session, hidden_button, "visibility")
+    assert True == get_property(server_url, session, hidden_button, "hidden")
+    assert ["display"] == get_property(server_url, session, hidden_button, "style")
+    assert "display: none;" == get_attribute(server_url, session, hidden_button, "style")
 
 
 def test_add_text__click_button_and_get_properties(__setup):
-    driver_url, session = __setup
+    server_url, session = __setup
     expected = "end"
     locator_type = "xpath"
 
-    input = find_element(driver_url, session, locator_type, locator_value="//input")
-    send_keys(driver_url, session, input, "any")
-    assert get_property(driver_url, session, input, property_name="value") == "any"
-    clear_element(driver_url, session, input)
-    assert get_property(driver_url, session, input, property_name="value") == ""
+    input = find_element(server_url, session, locator_type, locator_value="//input")
+    send_keys(server_url, session, input, "any")
+    assert get_property(server_url, session, input, property_name="value") == "any"
+    clear_element(server_url, session, input)
+    assert get_property(server_url, session, input, property_name="value") == ""
 
-    anchor = find_element(driver_url, session, locator_type, locator_value="//a")
-    assert get_property(driver_url, session, anchor, property_name="href") == "http://any1.com/"
+    anchor = find_element(server_url, session, locator_type, locator_value="//a")
+    assert get_property(server_url, session, anchor, property_name="href") == "http://any1.com/"
 
-    button = find_element(driver_url, session, locator_type, locator_value="//button")
-    click(driver_url, session, button)
+    button = find_element(server_url, session, locator_type, locator_value="//button")
+    click(server_url, session, button)
 
-    p = find_element(driver_url, session, locator_type, locator_value="//p[@id='end']")
+    p = find_element(server_url, session, locator_type, locator_value="//p[@id='end']")
 
-    assert get_text(driver_url, session, p) == expected
+    assert get_text(server_url, session, p) == expected

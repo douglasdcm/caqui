@@ -355,4 +355,4 @@ async def test_get_session():
         return fake_responses.GET_SESSION
 
     with patch("caqui.asynchronous.__post", mock_request):
-        assert await asynchronous.get_session(driver_url="", capabilities={}) == expected
+        assert await asynchronous.get_session(server_url="", capabilities={}) == expected

@@ -7,7 +7,7 @@ from caqui import synchronous
 
 
 def main():
-    driver_url = "http://127.0.0.1:4723"
+    server_url = "http://127.0.0.1:4723"
     capabilities = {
         "capabilities": {
             "firstMatch": [{}],
@@ -20,13 +20,13 @@ def main():
         }
     }
 
-    session = synchronous.get_session(capabilities)
+    session = synchronous.get_session(server_url, capabilities)
     print("session: ", session)
 
-    source = synchronous.get_page_source(driver_url, session)
+    source = synchronous.get_page_source(server_url, session)
     print("source: ", source)
 
-    synchronous.close_session(driver_url, session)
+    synchronous.close_session(server_url, session)
 
 
 if __name__ == "__main__":

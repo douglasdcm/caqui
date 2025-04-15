@@ -3,7 +3,7 @@ from caqui.by import By
 from pytest import mark, fixture
 from tests.constants import PAGE_URL
 from caqui import synchronous
-from caqui.easy.capabilities import Capabilities, Browser, Server
+from caqui.easy.capabilities import WebCapabilities, Browser, Server
 
 
 class TestObject:
@@ -12,7 +12,7 @@ class TestObject:
         server = Server()
         remote = server.url
         capabilities = (
-            Capabilities()
+            WebCapabilities()
             .browser_name(Browser.CHROME)
             .accept_insecure_certs(True)
             .additional_capability(

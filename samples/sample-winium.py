@@ -5,7 +5,7 @@ from caqui import synchronous
 
 
 def main():
-    driver_url = "http://127.0.0.1:9999"
+    server_url = "http://127.0.0.1:9999"
     capabilities = {
         "capabilities": {"firstMatch": [{}], "alwaysMatch": {}},
         "desiredCapabilities": {
@@ -13,13 +13,13 @@ def main():
             "app": "C:/windows/system32/calc.exe",
         },
     }
-    session = synchronous.get_session(capabilities)
+    session = synchronous.get_session(server_url, capabilities)
     element = synchronous.find_element(
-        driver_url, session, locator_type="name", locator_value="Eight"
+        server_url, session, locator_type="name", locator_value="Eight"
     )
 
-    synchronous.click(driver_url, session, element)
-    synchronous.close_session(driver_url, session)
+    synchronous.click(server_url, session, element)
+    synchronous.close_session(server_url, session)
 
 
 if __name__ == "__main__":

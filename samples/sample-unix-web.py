@@ -4,7 +4,7 @@ import time
 from caqui import synchronous, asynchronous
 from os import getcwd
 from tests.constants import PAGE_URL
-from caqui.easy.capabilities import Capabilities, Browser, Server
+from caqui.easy.capabilities import WebCapabilities, Browser, Server
 
 BASE_DIR = getcwd()
 
@@ -15,8 +15,10 @@ semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 
 async def get_all_links():
     async with semaphore:
-        capabilities: Capabilities = (
-            Capabilities()
+        server = Server(port=9998)
+        server_url = server.url
+        capabilities: WebCapabilities = (
+            WebCapabilities()
             .browser_name(Browser.CHROME)
             .accept_insecure_certs(True)
             .page_load_strategy("normal")
@@ -24,13 +26,11 @@ async def get_all_links():
             .additional_capability(
                 {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
             )
-        )
-        server = Server(port=9998)
-        driver_url = server.url
+        ).to_dict()
         
-        session = await asynchronous.get_session(driver_url, capabilities)
+        session = await asynchronous.get_session(server_url, capabilities)
         await asynchronous.go_to_page(
-            driver_url,
+            server_url,
             session,
             PAGE_URL,
         )
@@ -43,19 +43,19 @@ async def get_all_links():
             anchors = []
 
             anchors = await asynchronous.find_elements(
-                driver_url, session, locator_type, locator_value
+                server_url, session, locator_type, locator_value
             )
             all_anchors.extend(anchors)
 
         texts = []
         for anchor in all_anchors:
-            text = await asynchronous.get_property(driver_url, session, anchor, "href")
+            text = await asynchronous.get_property(server_url, session, anchor, "href")
             texts.append(text)
 
         for text in texts:
             print(f"Link found '{text}'")
 
-        synchronous.close_session(driver_url, session)
+        synchronous.close_session(server_url, session)
 
 
 # Reference: https://stackoverflow.com/questions/48483348/how-to-limit-concurrency-with-python-asyncio
