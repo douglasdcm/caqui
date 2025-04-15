@@ -8,6 +8,9 @@ from webdriver_manager.core.manager import DriverManager
 from webdriver_manager.chrome import ChromeDriverManager
 
 
+class CapabilityNotSupported(Exception):
+    pass
+
 class Browser:
     """
     https://pypi.org/project/webdriver-manager/
@@ -170,26 +173,30 @@ class TimeoutsBuilder:
 class WebCapabilities:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
     def __init__(self) -> None:
-        self.__desired_capabilities = {}
+        self.desired_capabilities = {}
+        # Used by subclasses
+        self._driver_name = None
 
 
     def to_dict(self):
         """
         Returns the capabilities.
         """
-        return {"desiredCapabilities": self.__desired_capabilities}
+        return {"desiredCapabilities": self.desired_capabilities}
 
 
     def browser_name(self, name: str):
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        if not self._driver_name:
+            self._driver_name = name
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "browserName": name,
         }
         return self
 
     def browser_version(self, version: str):
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "browserVersion": version,
         }
         return self
@@ -198,8 +205,8 @@ class WebCapabilities:
         """
         Identifies the operating system of the endpoint node.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "platformName": name,
         }
         return self
@@ -209,8 +216,8 @@ class WebCapabilities:
         Indicates whether untrusted and self-signed TLS certificates are
         implicitly trusted on navigation for the duration of the session.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "acceptInsecureCerts": insecure,
         }
         return self
@@ -221,8 +228,8 @@ class WebCapabilities:
 
         Reference: https://www.w3.org/TR/webdriver/#dfn-table-of-page-load-strategies
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "pageLoadStrategy": strategy,
         }
         return self
@@ -232,8 +239,8 @@ class WebCapabilities:
         Defines the current session’s proxy configuration.
         Use the ProxyConfigurationBuilder class for simplicity.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             **proxy_configuration,
         }
         return self
@@ -242,8 +249,8 @@ class WebCapabilities:
         """
         Indicates whether the remote end supports all of the resizing and repositioning commands.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "setWindowRect": decison,
         }
         return self
@@ -253,8 +260,8 @@ class WebCapabilities:
         Describes the timeouts imposed on certain session operations.
         Use the TimeoutsBuilder class for simplicity.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "timeouts": session_timeouts,
         }
         return self
@@ -263,8 +270,8 @@ class WebCapabilities:
         """
         Defines the current session’s strict file interactability.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "strictFileInteractability": interactibility,
         }
         return self
@@ -282,20 +289,57 @@ class WebCapabilities:
 
         Reference: https://www.w3.org/TR/webdriver/#dfn-user-prompt-handler
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "unhandledPromptBehavior": behavior,
         }
         return self
+
+    def user_agent(self, agent: str):
+        """
+        Identifies the default User-Agent value of the endpoint node.
+
+        Reference: https://w3c.github.io/webdriver/#dfn-default-user-agent-value
+        """
+        self.desired_capabilities = {
+            **self.desired_capabilities,
+            "userAgent": agent,
+        }
+        return self
+
+
+    def headless(self):
+        raise CapabilityNotSupported()
 
     def additional_capability(self, capabilitiy: dict):
         """Add any capability, for example
         {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}} or
         {"moz:experimental-webdriver": true}
         """
-        self.__desired_capabilities = {**self.__desired_capabilities, **capabilitiy}
+        self.desired_capabilities = {**self.desired_capabilities, **capabilitiy}
         return self
 
+
+class ChromeCapabilities(WebCapabilities):
+    def __init__(self):
+        super().__init__()
+        self._driver_name = Browser.CHROME
+
+    def headless(self):
+        capabilitiy = {"goog:chromeOptions": {"args": ["--headless"]}}
+        self.desired_capabilities = {**self.desired_capabilities, **capabilitiy}
+        return self
+
+
+class FirefoxCapabilities(WebCapabilities):
+    def __init__(self):
+        super().__init__()
+        self._driver_name = Browser.FIREFOX
+
+    def headless(self):
+        capabilitiy = {"moz:firefoxOptions": {"args": ["--headless"]}}
+        self.desired_capabilities = {**self.desired_capabilities, **capabilitiy}
+        return self
 
 class Server:
     """

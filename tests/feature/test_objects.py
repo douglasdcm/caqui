@@ -3,8 +3,8 @@ from caqui.by import By
 from pytest import mark, fixture
 from tests.constants import PAGE_URL
 from caqui import synchronous
-from caqui.easy.capabilities import WebCapabilities, Browser, Server
-
+from caqui.easy.capabilities import ChromeCapabilities, Browser, Server
+from selenium import webdriver
 
 class TestObject:
     @fixture
@@ -12,12 +12,9 @@ class TestObject:
         server = Server()
         remote = server.url
         capabilities = (
-            WebCapabilities()
-            .browser_name(Browser.CHROME)
+            ChromeCapabilities()
             .accept_insecure_certs(True)
-            .additional_capability(
-                {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
-            )
+            .headless()
         ).to_dict()
         driver = AsyncPage(remote, capabilities, PAGE_URL)
         yield driver

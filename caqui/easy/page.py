@@ -10,6 +10,7 @@ from caqui.easy.alert import Alert
 
 class AsyncPage:
     def __init__(self, server_url: str, capabilities: dict, url: Union[str | None]=None) -> None:
+        """Mimics Selenium methods"""
         self.__remote = server_url
         self.__session = synchronous.get_session(server_url, capabilities)
         if url:
