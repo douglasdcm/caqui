@@ -25,7 +25,7 @@ async def get_all_links():
                 {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
             )
         )
-        server = Server(Browser.CHROME, port=9998)
+        server = Server(port=9998)
         driver_url = server.url
         
         session = await asynchronous.get_session(driver_url, capabilities)

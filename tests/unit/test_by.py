@@ -7,14 +7,14 @@ from caqui.easy.capabilities import Capabilities, Browser, Server
 
 @fixture
 def __setup():
+    server = Server()
+    driver_url = server.url
     capabilities = (
         Capabilities()
         .browser_name(Browser.CHROME)
         .accept_insecure_certs(True)
         .additional_capability({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
     ).to_dict()
-    server = Server(Browser.CHROME)
-    driver_url = server.url
     session = synchronous.get_session(driver_url, capabilities)
     synchronous.go_to_page(
         driver_url,

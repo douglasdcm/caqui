@@ -1,4 +1,4 @@
-from caqui.easy import AsyncDriver
+from caqui.easy import AsyncPage
 from caqui.by import By
 from caqui import synchronous
 from tests.constants import PAGE_URL
@@ -8,7 +8,7 @@ from caqui.easy.capabilities import Capabilities, Browser, Server
 
 @fixture
 def __setup():
-    server = Server(Browser.CHROME)
+    server = Server()
     remote = server.url
     capabilities = (
         Capabilities()
@@ -16,14 +16,14 @@ def __setup():
         .accept_insecure_certs(True)
         .additional_capability({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
     ).to_dict()
-    driver = AsyncDriver(remote, capabilities, PAGE_URL)
-    yield driver
-    driver.quit()
+    page = AsyncPage(remote, capabilities, PAGE_URL)
+    yield page
+    page.quit()
     server.dispose()
 
 
 @mark.asyncio
-async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
+async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncPage):
     driver = __setup
     await driver.get(PAGE_URL)
 
@@ -46,7 +46,7 @@ async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncDriver):
 
 
 @mark.asyncio
-async def test_switch_to_frame_and_click_alert(__setup: AsyncDriver):
+async def test_switch_to_frame_and_click_alert(__setup: AsyncPage):
     driver = __setup
     await driver.get(PAGE_URL)
     locator_type = "id"
@@ -62,7 +62,7 @@ async def test_switch_to_frame_and_click_alert(__setup: AsyncDriver):
 
 
 @mark.asyncio
-async def test_get_data_from_hidden_button(__setup: AsyncDriver):
+async def test_get_data_from_hidden_button(__setup: AsyncPage):
     driver = __setup
     locator_type = "xpath"
     await driver.get(PAGE_URL)
@@ -77,7 +77,7 @@ async def test_get_data_from_hidden_button(__setup: AsyncDriver):
 
 
 @mark.asyncio
-async def test_add_text__click_button_and_get_properties(__setup: AsyncDriver):
+async def test_add_text__click_button_and_get_properties(__setup: AsyncPage):
     driver = __setup
     expected = "end"
     locator_type = "xpath"
@@ -101,7 +101,7 @@ async def test_add_text__click_button_and_get_properties(__setup: AsyncDriver):
 
 
 @mark.asyncio
-async def test_big_scenario(__setup: AsyncDriver):
+async def test_big_scenario(__setup: AsyncPage):
     driver = __setup
     remote, session = driver.remote, driver.session
     await driver.implicitly_wait(10)

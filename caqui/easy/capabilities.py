@@ -1,8 +1,10 @@
 import math
 import time
+from typing import Union
 import requests
 import subprocess
 from requests.exceptions import ConnectionError
+from webdriver_manager.core.manager import DriverManager
 
 
 class Browser:
@@ -295,36 +297,26 @@ class Capabilities:
 
 
 class Server:
-    """Starts and stops the local server. Cannot be used with remote servers"""
-    def __init__(self, browser: Browser, port=9999):
+    """
+    Starts and stops the local server. Cannot be used with remote servers
+    
+    Args:
+        browser: if is `None`, then a simple `ChromeDriverManager` is used
+        Reference: https://pypi.org/project/webdriver-manager/#use-with-chrome
+        
+        port: the port to start the local server    
+    """
+    def __init__(self, browser: Union[DriverManager | None] = None, port=9999):
         self.__browser = browser
-        self.__driver_port = port
+        self.__port = port
         self.__process = None
         self.__start()
 
-    def __broser_factory(self):
-        if Browser.CHROME == self.__browser:
+    def __browser_factory(self):
+        if not self.__browser:
             from webdriver_manager.chrome import ChromeDriverManager
 
             driver_manager = ChromeDriverManager().install()
-        elif Browser.FIREFOX == self.__browser:
-            from webdriver_manager.firefox import GeckoDriverManager
-
-            driver_manager = GeckoDriverManager().install()
-        elif Browser.EDGE == self.__browser:
-            from webdriver_manager.microsoft import EdgeChromiumDriverManager
-
-            driver_manager = EdgeChromiumDriverManager().install()
-        elif Browser.OPERA == self.__browser:
-            from webdriver_manager.opera import OperaDriverManager
-
-            driver_manager = OperaDriverManager().install()
-        elif Browser.IE == self.__browser:
-            from webdriver_manager.microsoft import IEDriverManager
-
-            driver_manager = IEDriverManager().install()
-        else:
-            raise Exception("Browser not supported")
         return driver_manager
 
     def __wait_server(self):
@@ -341,10 +333,10 @@ class Server:
                     raise Exception("Driver not started")
 
     def __start(self):
-        driver_manager = self.__broser_factory()
+        driver_manager = self.__browser_factory()
 
         self.__process = subprocess.Popen(
-            [driver_manager, f"--port={self.__driver_port}"],
+            [driver_manager, f"--port={self.__port}"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
@@ -357,7 +349,7 @@ class Server:
         """
         Returns the driver URL.
         """
-        return f"http://localhost:{self.__driver_port}"
+        return f"http://localhost:{self.__port}"
 
 
 

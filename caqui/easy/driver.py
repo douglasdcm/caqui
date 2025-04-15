@@ -1,4 +1,5 @@
 import os
+from typing import Union
 from caqui import asynchronous, synchronous
 from caqui.easy.action_chains import ActionChains
 from caqui.easy.window import Window
@@ -7,8 +8,8 @@ from caqui.easy.switch_to import SwitchTo
 from caqui.easy.alert import Alert
 
 
-class AsyncDriver:
-    def __init__(self, driver_url: str, capabilities: dict, url=[str | None]) -> None:
+class AsyncPage:
+    def __init__(self, driver_url: str, capabilities: dict, url: Union[str | None]=None) -> None:
         self.__remote = driver_url
         self.__session = synchronous.get_session(driver_url, capabilities)
         if url:

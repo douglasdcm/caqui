@@ -6,7 +6,7 @@ from caqui.easy.capabilities import Capabilities, Browser, Server
 
 @fixture
 def __setup():
-    server = Server(Browser.CHROME)
+    server = Server()
     driver_url = server.url
     capabilities = (
         Capabilities()
