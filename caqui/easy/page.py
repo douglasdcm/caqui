@@ -6,23 +6,26 @@ from caqui.easy.window import Window
 from caqui.easy.element import Element
 from caqui.easy.switch_to import SwitchTo
 from caqui.easy.alert import Alert
+from caqui.exceptions import CapabilityNotSupported
 
 
 class AsyncPage:
-    def __init__(self, server_url: str, capabilities: dict, url: Union[str | None]=None) -> None:
+    def __init__(self, server_url: str, capabilities: dict, url: Union[str | None] = None) -> None:
         """Mimics Selenium methods"""
-        self.__remote = server_url
+        if not isinstance(capabilities, dict):
+            raise CapabilityNotSupported("Expected dictionary")
+        self.__server_url = server_url
         self.__session = synchronous.get_session(server_url, capabilities)
         if url:
             synchronous.get(
-                self.__remote,
+                self.__server_url,
                 self.__session,
                 url,
             )
 
     @property
     def remote(self):
-        return self.__remote
+        return self.__server_url
 
     @property
     def session(self):
@@ -30,11 +33,11 @@ class AsyncPage:
 
     @property
     def title(self):
-        return synchronous.get_title(self.__remote, self.__session)
+        return synchronous.get_title(self.__server_url, self.__session)
 
     @property
     def current_url(self):
-        return synchronous.get_url(self.__remote, self.__session)
+        return synchronous.get_url(self.__server_url, self.__session)
 
     @property
     def window(self):
@@ -54,96 +57,100 @@ class AsyncPage:
 
     @property
     def window_handles(self):
-        return synchronous.get_window_handles(self.__remote, self.__session)
+        return synchronous.get_window_handles(self.__server_url, self.__session)
 
     @property
     def current_window_handle(self):
-        return synchronous.get_window(self.__remote, self.__session)
+        return synchronous.get_window(self.__server_url, self.__session)
 
     def quit(self):
-        synchronous.close_session(self.__remote, self.__session)
+        synchronous.close_session(self.__server_url, self.__session)
 
     async def close(self):
-        return await asynchronous.close_window(self.__remote, self.__session)
+        return await asynchronous.close_window(self.__server_url, self.__session)
 
     async def execute_script(self, script, args=[]):
-        return await asynchronous.execute_script(self.__remote, self.__session, script, args)
+        return await asynchronous.execute_script(self.__server_url, self.__session, script, args)
 
     async def set_window_position(self, x, y):
-        rect = await asynchronous.get_window_rectangle(self.__remote, self.__session)
+        rect = await asynchronous.get_window_rectangle(self.__server_url, self.__session)
         return await asynchronous.set_window_rectangle(
-            self.__remote, self.__session, rect.get("width"), rect.get("height"), x, y
+            self.__server_url, self.__session, rect.get("width"), rect.get("height"), x, y
         )
 
     async def set_window_size(self, width, height):
-        rect = await asynchronous.get_window_rectangle(self.__remote, self.__session)
+        rect = await asynchronous.get_window_rectangle(self.__server_url, self.__session)
         return await asynchronous.set_window_rectangle(
-            self.__remote, self.__session, width, height, rect.get("x"), rect.get("y")
+            self.__server_url, self.__session, width, height, rect.get("x"), rect.get("y")
         )
 
     async def get_window_position(self):
-        return await asynchronous.get_window_rectangle(self.__remote, self.__session)
+        return await asynchronous.get_window_rectangle(self.__server_url, self.__session)
 
     async def get_window_size(self):
-        return await asynchronous.get_window_rectangle(self.__remote, self.__session)
+        return await asynchronous.get_window_rectangle(self.__server_url, self.__session)
 
     async def save_screenshot(self, file):
         path = os.path.dirname(file)
         if not path:
             path = "./"
         file_name = os.path.basename(file)
-        return await asynchronous.take_screenshot(self.__remote, self.__session, path, file_name)
+        return await asynchronous.take_screenshot(
+            self.__server_url, self.__session, path, file_name
+        )
 
     async def delete_all_cookies(self):
-        return await asynchronous.delete_all_cookies(self.__remote, self.__session)
+        return await asynchronous.delete_all_cookies(self.__server_url, self.__session)
 
     async def delete_cookie(self, cookie_name):
-        return await asynchronous.delete_cookie(self.__remote, self.__session, cookie_name)
+        return await asynchronous.delete_cookie(self.__server_url, self.__session, cookie_name)
 
     async def get_cookies(self):
-        return await asynchronous.get_cookies(self.__remote, self.__session)
+        return await asynchronous.get_cookies(self.__server_url, self.__session)
 
     async def get_cookie(self, cookie_name):
-        return await asynchronous.get_named_cookie(self.__remote, self.__session, cookie_name)
+        return await asynchronous.get_named_cookie(self.__server_url, self.__session, cookie_name)
 
     async def add_cookie(self, cookie):
-        return await asynchronous.add_cookie(self.__remote, self.__session, cookie)
+        return await asynchronous.add_cookie(self.__server_url, self.__session, cookie)
 
     async def implicitly_wait(self, timeouts: int):
-        return await asynchronous.set_timeouts(self.__remote, self.__session, timeouts)
+        return await asynchronous.set_timeouts(self.__server_url, self.__session, timeouts)
 
     async def back(self):
-        return await asynchronous.go_back(self.__remote, self.__session)
+        return await asynchronous.go_back(self.__server_url, self.__session)
 
     async def forward(self):
-        return await asynchronous.go_forward(self.__remote, self.__session)
+        return await asynchronous.go_forward(self.__server_url, self.__session)
 
     async def refresh(self):
-        return await asynchronous.refresh_page(self.__remote, self.__session)
+        return await asynchronous.refresh_page(self.__server_url, self.__session)
 
     async def fullscreen_window(self):
-        return await asynchronous.fullscreen_window(self.__remote, self.__session)
+        return await asynchronous.fullscreen_window(self.__server_url, self.__session)
 
     async def minimize_window(self):
-        return await asynchronous.minimize_window(self.__remote, self.__session)
+        return await asynchronous.minimize_window(self.__server_url, self.__session)
 
     async def maximize_window(self):
-        return await asynchronous.maximize_window(self.__remote, self.__session)
+        return await asynchronous.maximize_window(self.__server_url, self.__session)
 
     async def get(self, url):
         await asynchronous.go_to_page(
-            self.__remote,
+            self.__server_url,
             self.__session,
             url,
         )
 
     async def find_elements(self, locator, value):
-        elements = await asynchronous.find_elements(self.__remote, self.__session, locator, value)
+        elements = await asynchronous.find_elements(
+            self.__server_url, self.__session, locator, value
+        )
         result = []
         for element in elements:
             result.append(Element(element, self))
         return result
 
     async def find_element(self, locator, value):
-        element = await asynchronous.find_element(self.__remote, self.__session, locator, value)
+        element = await asynchronous.find_element(self.__server_url, self.__session, locator, value)
         return Element(element, self)

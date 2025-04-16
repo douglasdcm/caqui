@@ -3,7 +3,7 @@ from caqui.by import By
 from caqui import synchronous
 from tests.constants import PAGE_URL
 from pytest import mark, fixture
-from caqui.easy.capabilities import WebCapabilities, Browser, Server
+from caqui.easy.capabilities import Capabilities, Browser, Server
 
 
 @fixture
@@ -11,10 +11,10 @@ def __setup():
     server = Server()
     remote = server.url
     capabilities = (
-        WebCapabilities()
+        Capabilities()
         .browser_name(Browser.CHROME)
         .accept_insecure_certs(True)
-        .additional_capability({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
+        .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
     ).to_dict()
     page = AsyncPage(remote, capabilities, PAGE_URL)
     yield page
@@ -117,9 +117,7 @@ async def test_big_scenario_of_functions(__setup: AsyncPage):
     cookie["name"] = "other"
     await page.add_cookie(cookie)
     assert await page.get_cookies() == synchronous.get_cookies(remote, session)
-    assert await page.get_cookie("other") == synchronous.get_named_cookie(
-        remote, session, "other"
-    )
+    assert await page.get_cookie("other") == synchronous.get_named_cookie(remote, session, "other")
     await page.delete_cookie("other")
     await page.delete_all_cookies()
     assert await page.get_cookies() == synchronous.get_cookies(remote, session)
@@ -208,5 +206,3 @@ async def test_big_scenario_of_functions(__setup: AsyncPage):
 
     # Close the tab or window
     await page.close()
-
-

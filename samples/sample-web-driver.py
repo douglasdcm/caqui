@@ -4,7 +4,7 @@ import time
 from caqui import synchronous, asynchronous
 from os import getcwd
 from tests.constants import PAGE_URL
-from caqui.easy.capabilities import WebCapabilities, Browser, Server
+from caqui.easy.capabilities import Capabilities, Browser, Server
 
 BASE_DIR = getcwd()
 
@@ -17,18 +17,16 @@ async def get_all_links():
     async with semaphore:
         server = Server(port=9998)
         server_url = server.url
-        capabilities: WebCapabilities = (
-            WebCapabilities()
+        capabilities: Capabilities = (
+            Capabilities()
             .browser_name(Browser.CHROME)
             .accept_insecure_certs(True)
             .page_load_strategy("normal")
             # Reference: https://developer.chrome.com/docs/chromedriver/capabilities
             # https://developer.mozilla.org/en-US/docs/Web/WebDriver/Reference/Capabilities#list_of_capabilities
-            .additional_capability(
-                {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}}
-            )
+            .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
         ).to_dict()
-        
+
         session = await asynchronous.get_session(server_url, capabilities)
         await asynchronous.go_to_page(
             server_url,

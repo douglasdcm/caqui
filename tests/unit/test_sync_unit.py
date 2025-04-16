@@ -1,7 +1,7 @@
 from unittest.mock import patch
 from caqui import synchronous
 from tests import fake_responses
-from caqui.easy.capabilities import WebCapabilities
+from caqui.easy.capabilities import Capabilities
 
 
 @patch("requests.request", return_value=fake_responses.GET_RECT)
