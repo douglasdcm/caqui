@@ -36,7 +36,6 @@ def setup():
 
 @fixture
 def setup_binary():
-    homedir = os.path.expanduser("~")
     service = Service(f"/home/douglas/web_drivers/chromedriver.113")
     options = Options()
     # options.add_argument('--headless')

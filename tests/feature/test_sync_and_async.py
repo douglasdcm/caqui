@@ -3,34 +3,35 @@ from caqui import asynchronous, synchronous
 from tests.constants import PAGE_URL
 from caqui.exceptions import WebDriverError
 from caqui.by import By
-from caqui.easy.capabilities import CapabilitiesBuilder, Browser
+from caqui.easy.capabilities import BaseCapabilities, Browser, ChromeCapabilitiesBuilder
 from caqui.easy.server import Server
 
 
-@fixture
-def __setup():
-    server = Server()
-    server_url = server.url
-    capabilities = (
-        CapabilitiesBuilder()
-        .browser_name(Browser.CHROME)
-        .accept_insecure_certs(True)
-        .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
-    ).to_dict()
-    session = synchronous.get_session(server_url, capabilities)
-    synchronous.go_to_page(
-        server_url,
-        session,
-        PAGE_URL,
-    )
-    yield server_url, session
-    synchronous.close_session(server_url, session)
-    server.dispose()
+# @fixture
+# def setup_functional_environment():
+#     server = Server()
+#     server.start()
+#     server_url = server.url
+#     capabilities = (
+#         ChromeCapabilitiesBuilder()
+#         .browser_name(Browser.CHROME)
+#         .accept_insecure_certs(True)
+#         .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
+#     ).to_dict()
+#     session = synchronous.get_session(server_url, capabilities)
+#     synchronous.go_to_page(
+#         server_url,
+#         session,
+#         PAGE_URL,
+#     )
+#     yield server_url, session
+#     synchronous.close_session(server_url, session)
+#     server.dispose()
 
 
 @mark.asyncio
-async def test_add_cookie(__setup):
-    server_url, session = __setup
+async def test_add_cookie(setup_functional_environment):
+    server_url, session = setup_functional_environment
     # Need to navigate to a web page. If use 'playgound.html' the error
     # 'Document is cookie-averse' happens
     synchronous.go_to_page(
@@ -58,8 +59,8 @@ async def test_add_cookie(__setup):
 
 @mark.skip(reason="works just in firefox")
 @mark.asyncio
-async def test_delete_cookie_asynchronous(__setup):
-    server_url, session = __setup
+async def test_delete_cookie_asynchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
     cookies = synchronous.get_cookies(server_url, session)
     name = cookies[0].get(By.NAME)
     zero = 0
@@ -71,8 +72,8 @@ async def test_delete_cookie_asynchronous(__setup):
 
 @mark.skip(reason="works just in firefox")
 @mark.asyncio
-def test_delete_cookie_synchronous(__setup):
-    server_url, session = __setup
+def test_delete_cookie_synchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
     cookies = synchronous.get_cookies(server_url, session)
     name = cookies[0].get(By.NAME)
     zero = 0
@@ -83,8 +84,8 @@ def test_delete_cookie_synchronous(__setup):
 
 
 @mark.asyncio
-async def test_refresh_page(__setup):
-    server_url, session = __setup
+async def test_refresh_page(setup_functional_environment):
+    server_url, session = setup_functional_environment
 
     element_before = synchronous.find_element(server_url, session, By.XPATH, "//input")
     assert (
@@ -106,8 +107,8 @@ async def test_refresh_page(__setup):
 
 
 @mark.asyncio
-async def test_go_forward(__setup):
-    server_url, session = __setup
+async def test_go_forward(setup_functional_environment):
+    server_url, session = setup_functional_environment
     title = "Sample page"
 
     synchronous.go_back(server_url, session)
@@ -126,8 +127,8 @@ async def test_go_forward(__setup):
 
 
 @mark.asyncio
-async def test_set_window_rectangle(__setup):
-    server_url, session = __setup
+async def test_set_window_rectangle(setup_functional_environment):
+    server_url, session = setup_functional_environment
     width = 500
     height = 300
     window_rectangle_before = synchronous.get_window_rectangle(server_url, session)
@@ -158,8 +159,8 @@ async def test_set_window_rectangle(__setup):
 
 @mark.skip(reason="does not work in headless mode")
 @mark.asyncio
-async def test_fullscreen_window(__setup):
-    server_url, session = __setup
+async def test_fullscreen_window(setup_functional_environment):
+    server_url, session = setup_functional_environment
     window_rectangle_before = synchronous.get_window_rectangle(server_url, session)
 
     assert synchronous.fullscreen_window(server_url, session) is True
@@ -182,8 +183,8 @@ async def test_fullscreen_window(__setup):
 
 @mark.skip(reason="does not work in headless mode")
 @mark.asyncio
-async def test_minimize_window(__setup):
-    server_url, session = __setup
+async def test_minimize_window(setup_functional_environment):
+    server_url, session = setup_functional_environment
     window_rectangle_before = synchronous.get_window_rectangle(server_url, session)
 
     assert synchronous.minimize_window(server_url, session) is True
@@ -206,8 +207,8 @@ async def test_minimize_window(__setup):
 
 @mark.skip(reason="does not work in headless mode")
 @mark.asyncio
-async def test_maximize_window_asynchronous(__setup):
-    server_url, session = __setup
+async def test_maximize_window_asynchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
     window_rectangle_before = synchronous.get_window_rectangle(server_url, session)
 
     assert await asynchronous.maximize_window(server_url, session) is True
@@ -220,8 +221,8 @@ async def test_maximize_window_asynchronous(__setup):
 
 @mark.skip(reason="does not work in headless mode")
 @mark.asyncio
-def test_maximize_window_synchronous(__setup):
-    server_url, session = __setup
+def test_maximize_window_synchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
     window_rectangle_before = synchronous.get_window_rectangle(server_url, session)
 
     assert synchronous.maximize_window(server_url, session) is True
@@ -234,8 +235,8 @@ def test_maximize_window_synchronous(__setup):
 
 @mark.parametrize("window_type", ("tab", "window"))
 @mark.asyncio
-async def test_switch_to_window(__setup, window_type):
-    server_url, session = __setup
+async def test_switch_to_window(setup_functional_environment, window_type):
+    server_url, session = setup_functional_environment
 
     synchronous.new_window(server_url, session, window_type)
     handles = synchronous.get_window_handles(server_url, session)
@@ -252,8 +253,8 @@ async def test_switch_to_window(__setup, window_type):
 
 @mark.parametrize("window_type", ("tab", "window"))
 @mark.asyncio
-async def test_new_window(__setup, window_type):
-    server_url, session = __setup
+async def test_new_window(setup_functional_environment, window_type):
+    server_url, session = setup_functional_environment
 
     assert synchronous.new_window(server_url, session, window_type) is not None
     import time
@@ -263,8 +264,8 @@ async def test_new_window(__setup, window_type):
 
 
 @mark.asyncio
-async def test_switch_to_parent_frame_asynchronous(__setup):
-    server_url, session = __setup
+async def test_switch_to_parent_frame_asynchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.ID
     locator_value = "my-iframe"
 
@@ -272,8 +273,8 @@ async def test_switch_to_parent_frame_asynchronous(__setup):
     assert await asynchronous.switch_to_parent_frame(server_url, session, element_frame) is True
 
 
-def test_switch_to_parent_frame_synchronous(__setup):
-    server_url, session = __setup
+def test_switch_to_parent_frame_synchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.ID
     locator_value = "my-iframe"
 
@@ -282,8 +283,8 @@ def test_switch_to_parent_frame_synchronous(__setup):
 
 
 @mark.asyncio
-async def test_switch_to_frame_asynchronous(__setup):
-    server_url, session = __setup
+async def test_switch_to_frame_asynchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.ID
     locator_value = "my-iframe"
 
@@ -291,8 +292,8 @@ async def test_switch_to_frame_asynchronous(__setup):
     assert await asynchronous.switch_to_frame(server_url, session, element_frame) is True
 
 
-def test_switch_to_frame_synchronous(__setup):
-    server_url, session = __setup
+def test_switch_to_frame_synchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.ID
     locator_value = "my-iframe"
 
@@ -301,8 +302,8 @@ def test_switch_to_frame_synchronous(__setup):
 
 
 @mark.asyncio
-async def test_send_alert_text(__setup):
-    server_url, session = __setup
+async def test_send_alert_text(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.CSS_SELECTOR
     locator_value = "#alert-button-prompt"
 
@@ -318,8 +319,8 @@ async def test_send_alert_text(__setup):
 
 
 @mark.asyncio
-async def test_accept_alert(__setup):
-    server_url, session = __setup
+async def test_accept_alert(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.CSS_SELECTOR
     locator_value = "#alert-button"
 
@@ -333,8 +334,8 @@ async def test_accept_alert(__setup):
 
 
 @mark.asyncio
-async def test_dismiss_alert(__setup):
-    server_url, session = __setup
+async def test_dismiss_alert(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.CSS_SELECTOR
     locator_value = "#alert-button"
 
@@ -348,8 +349,8 @@ async def test_dismiss_alert(__setup):
 
 
 @mark.asyncio
-async def test_take_screenshot_element(__setup):
-    server_url, session = __setup
+async def test_take_screenshot_element(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.CSS_SELECTOR
     locator_value = "#alert-button"
 
@@ -360,8 +361,8 @@ async def test_take_screenshot_element(__setup):
 
 
 @mark.asyncio
-async def test_take_screenshot(__setup):
-    server_url, session = __setup
+async def test_take_screenshot(setup_functional_environment):
+    server_url, session = setup_functional_environment
 
     assert synchronous.take_screenshot(server_url, session) is True
     assert await asynchronous.take_screenshot(server_url, session) is True
@@ -369,8 +370,8 @@ async def test_take_screenshot(__setup):
 
 @mark.skip(reason="works just in firefox")
 @mark.asyncio
-async def test_delete_cookies_asynchronous(__setup):
-    server_url, session = __setup
+async def test_delete_cookies_asynchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
 
     cookies_before = synchronous.get_cookies(server_url, session)
 
@@ -383,8 +384,8 @@ async def test_delete_cookies_asynchronous(__setup):
 
 @mark.skip(reason="works just in firefox")
 @mark.asyncio
-async def test_delete_cookies_synchronous(__setup):
-    server_url, session = __setup
+async def test_delete_cookies_synchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
 
     cookies_before = synchronous.get_cookies(server_url, session)
 
@@ -396,8 +397,8 @@ async def test_delete_cookies_synchronous(__setup):
 
 @mark.skip(reason="works just with Firefox")
 @mark.asyncio
-async def test_get_named_cookie(__setup):
-    server_url, session = __setup
+async def test_get_named_cookie(setup_functional_environment):
+    server_url, session = setup_functional_environment
     name = "username"  # cookie created on page load
     expected = "John Doe"
 
@@ -407,8 +408,8 @@ async def test_get_named_cookie(__setup):
 
 
 @mark.asyncio
-async def test_get_computed_label(__setup):
-    server_url, session = __setup
+async def test_get_computed_label(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.CSS_SELECTOR
     locator_value = "#alert-button"
     expected = "alert"
@@ -421,8 +422,8 @@ async def test_get_computed_label(__setup):
 
 
 @mark.asyncio
-async def test_get_computed_role(__setup):
-    server_url, session = __setup
+async def test_get_computed_role(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//input"
     expected = "textbox"
@@ -435,8 +436,8 @@ async def test_get_computed_role(__setup):
 
 
 @mark.asyncio
-async def test_get_tag_name(__setup):
-    server_url, session = __setup
+async def test_get_tag_name(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//input"
     expected = "input"
@@ -450,8 +451,8 @@ async def test_get_tag_name(__setup):
 
 @mark.parametrize("locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")])
 @mark.asyncio
-async def test_find_element_from_shadow_root(__setup, locator, value):
-    server_url, session = __setup
+async def test_find_element_from_shadow_root(setup_functional_environment, locator, value):
+    server_url, session = setup_functional_environment
     locator_type = By.ID
     locator_value = "shadow-root"
 
@@ -470,8 +471,8 @@ async def test_find_element_from_shadow_root(__setup, locator, value):
 
 @mark.parametrize("locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")])
 @mark.asyncio
-async def test_find_elements_from_shadow_root(__setup, locator, value):
-    server_url, session = __setup
+async def test_find_elements_from_shadow_root(setup_functional_environment, locator, value):
+    server_url, session = setup_functional_environment
     locator_type = By.ID
     locator_value = "shadow-root"
     one = 1
@@ -492,8 +493,8 @@ async def test_find_elements_from_shadow_root(__setup, locator, value):
 
 
 @mark.asyncio
-async def test_get_shadow_root(__setup):
-    server_url, session = __setup
+async def test_get_shadow_root(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.ID
     locator_value = "shadow-root"
 
@@ -506,8 +507,8 @@ async def test_get_shadow_root(__setup):
 
 
 @mark.asyncio
-async def test_get_rect(__setup):
-    server_url, session = __setup
+async def test_get_rect(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//input"
     expected = {"height": 21, "width": 185, "x": 8, "y": 100.4375}
@@ -520,8 +521,8 @@ async def test_get_rect(__setup):
 
 
 @mark.asyncio
-async def test_move_to_element(__setup):
-    server_url, session = __setup
+async def test_move_to_element(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//button"
 
@@ -531,8 +532,8 @@ async def test_move_to_element(__setup):
 
 
 @mark.asyncio
-async def test_actions_scroll_to_element(__setup):
-    server_url, session = __setup
+async def test_actions_scroll_to_element(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//button"
 
@@ -542,8 +543,8 @@ async def test_actions_scroll_to_element(__setup):
 
 
 @mark.asyncio
-async def test_submit(__setup):
-    server_url, session = __setup
+async def test_submit(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.NAME
     locator_value = "my-form"
 
@@ -555,8 +556,8 @@ async def test_submit(__setup):
 
 
 @mark.asyncio
-async def test_actions_click(__setup):
-    server_url, session = __setup
+async def test_actions_click(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//button"
 
@@ -566,8 +567,8 @@ async def test_actions_click(__setup):
 
 
 @mark.asyncio
-async def test_raise_exception_when_element_not_found(__setup):
-    server_url, session = __setup
+async def test_raise_exception_when_element_not_found(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//invalid-tag"
 
@@ -579,8 +580,8 @@ async def test_raise_exception_when_element_not_found(__setup):
 
 
 @mark.asyncio
-async def test_set_timeouts(__setup):
-    server_url, session = __setup
+async def test_set_timeouts(setup_functional_environment):
+    server_url, session = setup_functional_environment
     timeouts_1 = 5000  # milliseconds
     timeouts_2 = 3000  # milliseconds
 
@@ -594,8 +595,8 @@ async def test_set_timeouts(__setup):
 
 
 @mark.asyncio
-async def test_find_children_elements(__setup):
-    server_url, session = __setup
+async def test_find_children_elements(setup_functional_environment):
+    server_url, session = setup_functional_environment
     expected = 1  # parent inclusive
     locator_type = By.XPATH
     locator_value = "//div"
@@ -618,8 +619,8 @@ async def test_find_children_elements(__setup):
 
 
 @mark.asyncio
-async def test_find_child_element(__setup):
-    server_url, session = __setup
+async def test_find_child_element(setup_functional_environment):
+    server_url, session = setup_functional_environment
     expected = "any4"
     locator_type = By.XPATH
     locator_value = '//div[@class="child4"]'
@@ -643,8 +644,8 @@ async def test_find_child_element(__setup):
 
 
 @mark.asyncio
-async def test_get_page_source(__setup):
-    server_url, session = __setup
+async def test_get_page_source(setup_functional_environment):
+    server_url, session = setup_functional_environment
     expected = "Sample page"
 
     assert expected in synchronous.get_page_source(server_url, session)
@@ -652,23 +653,23 @@ async def test_get_page_source(__setup):
 
 
 @mark.asyncio
-async def test_execute_script_asynchronous(__setup):
-    server_url, session = __setup
+async def test_execute_script_asynchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
     script = "alert('any warn')"
 
     assert await asynchronous.execute_script(server_url, session, script) == None
 
 
-def test_execute_script_synchronous(__setup):
-    server_url, session = __setup
+def test_execute_script_synchronous(setup_functional_environment):
+    server_url, session = setup_functional_environment
     script = "alert('any warn')"
 
     assert synchronous.execute_script(server_url, session, script) == None
 
 
 @mark.asyncio
-async def test_get_alert_text(__setup):
-    server_url, session = __setup
+async def test_get_alert_text(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.CSS_SELECTOR
     locator_value = "#alert-button"
     expected = "any warn"
@@ -681,8 +682,8 @@ async def test_get_alert_text(__setup):
 
 
 @mark.asyncio
-async def test_get_active_element(__setup):
-    server_url, session = __setup
+async def test_get_active_element(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//input"
 
@@ -694,8 +695,8 @@ async def test_get_active_element(__setup):
 
 
 @mark.asyncio
-async def test_clear_element_fails_when_invalid_inputs(__setup):
-    server_url, session = __setup
+async def test_clear_element_fails_when_invalid_inputs(setup_functional_environment):
+    server_url, session = setup_functional_environment
     text = "any"
     element = "invalid"
 
@@ -707,8 +708,8 @@ async def test_clear_element_fails_when_invalid_inputs(__setup):
 
 
 @mark.asyncio
-async def test_clear_element(__setup):
-    server_url, session = __setup
+async def test_clear_element(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//input"
     text = "any"
@@ -722,8 +723,8 @@ async def test_clear_element(__setup):
 
 
 @mark.asyncio
-async def test_is_element_enabled(__setup):
-    server_url, session = __setup
+async def test_is_element_enabled(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//input"
 
@@ -734,8 +735,8 @@ async def test_is_element_enabled(__setup):
 
 
 @mark.asyncio
-async def test_get_css_value(__setup):
-    server_url, session = __setup
+async def test_get_css_value(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//input"
     property_name = "color"
@@ -748,8 +749,8 @@ async def test_get_css_value(__setup):
 
 
 @mark.asyncio
-async def test_is_element_selected(__setup):
-    server_url, session = __setup
+async def test_is_element_selected(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//input"
 
@@ -760,8 +761,8 @@ async def test_is_element_selected(__setup):
 
 
 @mark.asyncio
-async def test_get_window_rectangle(__setup):
-    server_url, session = __setup
+async def test_get_window_rectangle(setup_functional_environment):
+    server_url, session = setup_functional_environment
     expected = "height"
 
     assert expected in synchronous.get_window_rectangle(server_url, session)
@@ -770,38 +771,38 @@ async def test_get_window_rectangle(__setup):
 
 
 @mark.asyncio
-async def test_get_window_handles(__setup):
-    server_url, session = __setup
+async def test_get_window_handles(setup_functional_environment):
+    server_url, session = setup_functional_environment
 
     assert isinstance(synchronous.get_window_handles(server_url, session), list)
     handles = await asynchronous.get_window_handles(server_url, session)
     assert isinstance(handles, list)
 
 
-def test_close_window_sync(__setup):
-    server_url, session = __setup
+def test_close_window_sync(setup_functional_environment):
+    server_url, session = setup_functional_environment
     assert isinstance(synchronous.close_window(server_url, session), list)
 
 
 @mark.asyncio
-async def test_close_window_async(__setup):
-    server_url, session = __setup
+async def test_close_window_async(setup_functional_environment):
+    server_url, session = setup_functional_environment
 
     response = await asynchronous.close_window(server_url, session)
     assert isinstance(response, list)
 
 
 @mark.asyncio
-async def test_get_window(__setup):
-    server_url, session = __setup
+async def test_get_window(setup_functional_environment):
+    server_url, session = setup_functional_environment
 
     assert synchronous.get_window(server_url, session) is not None
     assert await asynchronous.get_window(server_url, session) is not None
 
 
 @mark.asyncio
-async def test_get_attribute_fails_when_invalid_attribute(__setup):
-    server_url, session = __setup
+async def test_get_attribute_fails_when_invalid_attribute(setup_functional_environment):
+    server_url, session = setup_functional_environment
     attribute = "href"
     element = "invalid"
 
@@ -813,8 +814,8 @@ async def test_get_attribute_fails_when_invalid_attribute(__setup):
 
 
 @mark.asyncio
-async def test_get_attribute(__setup):
-    server_url, session = __setup
+async def test_get_attribute(setup_functional_environment):
+    server_url, session = setup_functional_environment
     attribute = "href"
     element = synchronous.find_element(server_url, session, By.XPATH, "//a[@id='a1']")
 
@@ -826,16 +827,16 @@ async def test_get_attribute(__setup):
 
 
 @mark.asyncio
-async def test_get_cookies(__setup):
-    server_url, session = __setup
+async def test_get_cookies(setup_functional_environment):
+    server_url, session = setup_functional_environment
     assert isinstance(synchronous.get_cookies(server_url, session), list)
     cookies = await asynchronous.get_cookies(server_url, session)
     assert isinstance(cookies, list)
 
 
 @mark.asyncio
-async def test_go_back(__setup):
-    server_url, session = __setup
+async def test_go_back(setup_functional_environment):
+    server_url, session = setup_functional_environment
     title = ""
 
     assert synchronous.go_back(server_url, session) is True
@@ -847,8 +848,8 @@ async def test_go_back(__setup):
 
 
 @mark.asyncio
-async def test_get_url(__setup):
-    server_url, session = __setup
+async def test_get_url(setup_functional_environment):
+    server_url, session = setup_functional_environment
     expected = "playground.html"
 
     assert expected in synchronous.get_url(server_url, session)
@@ -856,8 +857,8 @@ async def test_get_url(__setup):
 
 
 @mark.asyncio
-async def test_get_timeouts(__setup):
-    server_url, session = __setup
+async def test_get_timeouts(setup_functional_environment):
+    server_url, session = setup_functional_environment
     expected = "implicit"
 
     assert expected in synchronous.get_timeouts(server_url, session)
@@ -865,8 +866,8 @@ async def test_get_timeouts(__setup):
 
 
 @mark.asyncio
-async def test_get_status(__setup):
-    server_url, _ = __setup
+async def test_get_status(setup_functional_environment):
+    server_url, _ = setup_functional_environment
     expected = "ready"
     assert expected in synchronous.get_status(server_url).get("value")
     response = await asynchronous.get_status(server_url)
@@ -874,8 +875,8 @@ async def test_get_status(__setup):
 
 
 @mark.asyncio
-async def test_get_title(__setup):
-    server_url, session = __setup
+async def test_get_title(setup_functional_environment):
+    server_url, session = setup_functional_environment
     expected = "Sample page"
 
     assert synchronous.get_title(server_url, session) == expected
@@ -883,8 +884,8 @@ async def test_get_title(__setup):
 
 
 @mark.asyncio
-async def test_find_elements_fails_when_invalid_data_input(__setup):
-    server_url, session = __setup
+async def test_find_elements_fails_when_invalid_data_input(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = "invalid"
     locator_value = "//input"
 
@@ -896,8 +897,8 @@ async def test_find_elements_fails_when_invalid_data_input(__setup):
 
 
 @mark.asyncio
-async def test_find_elements(__setup):
-    server_url, session = __setup
+async def test_find_elements(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//input"
 
@@ -911,8 +912,8 @@ async def test_find_elements(__setup):
 
 
 @mark.asyncio
-async def test_find_element_fails_when_invalid_data_input(__setup):
-    server_url, session = __setup
+async def test_find_element_fails_when_invalid_data_input(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = "invalid"
     locator_value = "//input"
 
@@ -924,8 +925,8 @@ async def test_find_element_fails_when_invalid_data_input(__setup):
 
 
 @mark.asyncio
-async def test_find_element(__setup):
-    server_url, session = __setup
+async def test_find_element(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//input"
 
@@ -937,8 +938,8 @@ async def test_find_element(__setup):
 
 
 @mark.asyncio
-async def test_get_property(__setup):
-    server_url, session = __setup
+async def test_get_property(setup_functional_environment):
+    server_url, session = setup_functional_environment
     text = "any_value"
     locator_type = By.XPATH
     locator_value = "//input"
@@ -952,8 +953,8 @@ async def test_get_property(__setup):
 
 
 @mark.asyncio
-async def test_get_text(__setup):
-    server_url, session = __setup
+async def test_get_text(setup_functional_environment):
+    server_url, session = setup_functional_environment
     expected = "end"
     locator_type = By.XPATH
     locator_value = "//p[@id='end']"  # <p>end</p>
@@ -965,8 +966,8 @@ async def test_get_text(__setup):
 
 
 @mark.asyncio
-async def test_send_keys(__setup):
-    server_url, session = __setup
+async def test_send_keys(setup_functional_environment):
+    server_url, session = setup_functional_environment
     text_async = "any_async"
     text_sync = "any_sync"
     locator_type = By.XPATH
@@ -979,8 +980,8 @@ async def test_send_keys(__setup):
 
 
 @mark.asyncio
-async def test_click(__setup):
-    server_url, session = __setup
+async def test_click(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = By.XPATH
     locator_value = "//button"
 

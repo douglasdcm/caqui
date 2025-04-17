@@ -17,35 +17,36 @@ from caqui.synchronous import (
 )
 from tests.constants import PAGE_URL
 from pytest import fixture
-from caqui.easy.capabilities import CapabilitiesBuilder, Browser
+from caqui.easy.capabilities import BaseCapabilities, Browser, ChromeCapabilitiesBuilder
 from caqui.easy.server import Server
 
 
-@fixture
-def __setup():
-    server = Server()
-    server_url = server.url
+# @fixture
+# def setup_functional_environment():
+#     server = Server()
+#     server.start()
+#     server_url = server.url
 
-    capabilities = (
-        CapabilitiesBuilder()
-        .browser_name(Browser.CHROME)
-        .accept_insecure_certs(True)
-        .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
-    ).to_dict()
+#     capabilities = (
+#         ChromeCapabilitiesBuilder()
+#         .browser_name(Browser.CHROME)
+#         .accept_insecure_certs(True)
+#         .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
+#     ).to_dict()
 
-    session = get_session(server_url, capabilities)
-    go_to_page(
-        server_url,
-        session,
-        PAGE_URL,
-    )
-    yield server_url, session
-    close_session(server_url, session)
-    server.dispose()
+#     session = get_session(server_url, capabilities)
+#     go_to_page(
+#         server_url,
+#         session,
+#         PAGE_URL,
+#     )
+#     yield server_url, session
+#     close_session(server_url, session)
+#     server.dispose()
 
 
-def test_switch_to_parent_frame_and_click_alert(__setup):
-    server_url, session = __setup
+def test_switch_to_parent_frame_and_click_alert(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = "id"
     locator_value = "my-iframe"
     locator_value_alert_parent = "alert-button"
@@ -66,8 +67,8 @@ def test_switch_to_parent_frame_and_click_alert(__setup):
     assert click(server_url, session, alert_button_parent) is True
 
 
-def test_switch_to_frame_and_click_alert(__setup):
-    server_url, session = __setup
+def test_switch_to_frame_and_click_alert(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = "id"
     locator_value = "my-iframe"
     locator_value_alert = "alert-button-iframe"
@@ -80,8 +81,8 @@ def test_switch_to_frame_and_click_alert(__setup):
     assert click(server_url, session, alert_button) is True
 
 
-def test_get_data_from_hidden_button(__setup):
-    server_url, session = __setup
+def test_get_data_from_hidden_button(setup_functional_environment):
+    server_url, session = setup_functional_environment
     locator_type = "xpath"
 
     hidden_button = find_element(
@@ -95,8 +96,8 @@ def test_get_data_from_hidden_button(__setup):
     assert "display: none;" == get_attribute(server_url, session, hidden_button, "style")
 
 
-def test_add_text__click_button_and_get_properties(__setup):
-    server_url, session = __setup
+def test_add_text__click_button_and_get_properties(setup_functional_environment):
+    server_url, session = setup_functional_environment
     expected = "end"
     locator_type = "xpath"
 

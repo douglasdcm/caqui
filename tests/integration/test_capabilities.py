@@ -1,6 +1,6 @@
 from pytest import mark, fixture
 from caqui.easy.capabilities import (
-    CapabilitiesBuilder,
+    BaseCapabilities,
     FirefoxCapabilitiesBuilder,
     ChromeCapabilitiesBuilder,
     ProxyConfigurationBuilder,

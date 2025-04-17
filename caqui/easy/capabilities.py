@@ -169,7 +169,7 @@ class TimeoutsBuilder:
         return {"timeouts": self.__timeouts}
 
 
-class CapabilitiesBuilder:
+class BaseCapabilities:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
 
     def __init__(self) -> None:
@@ -308,7 +308,7 @@ class CapabilitiesBuilder:
         return self
 
 
-class ChromeCapabilitiesBuilder(CapabilitiesBuilder):
+class ChromeCapabilitiesBuilder(BaseCapabilities):
     def __init__(self):
         super().__init__()
 
@@ -321,7 +321,7 @@ class ChromeCapabilitiesBuilder(CapabilitiesBuilder):
         return {"desiredCapabilities": self.desired_capabilities}
 
 
-class FirefoxCapabilitiesBuilder(CapabilitiesBuilder):
+class FirefoxCapabilitiesBuilder(BaseCapabilities):
     def __init__(self):
         super().__init__()
 

@@ -58,7 +58,7 @@ class Server:
         self.__process = subprocess.Popen(
             [driver_manager, f"--port={self.__port}"],
             stdout=subprocess.PIPE,
-            # stderr=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             start_new_session=True,
         )
         if self.__process is None:

@@ -3,29 +3,30 @@ from caqui.by import By
 from caqui import synchronous
 from tests.constants import PAGE_URL
 from pytest import mark, fixture
-from caqui.easy.capabilities import CapabilitiesBuilder, Browser
+from caqui.easy.capabilities import BaseCapabilities, Browser, ChromeCapabilitiesBuilder
 from caqui.easy.server import Server
 
 
-@fixture
-def __setup():
-    server = Server()
-    remote = server.url
-    capabilities = (
-        CapabilitiesBuilder()
-        .browser_name(Browser.CHROME)
-        .accept_insecure_certs(True)
-        .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
-    ).to_dict()
-    page = AsyncPage(remote, capabilities, PAGE_URL)
-    yield page
-    page.quit()
-    server.dispose()
+# @fixture
+# def setup_environment():
+#     server = Server()
+#     server.start()
+#     remote = server.url
+#     capabilities = (
+#         ChromeCapabilitiesBuilder()
+#         .browser_name(Browser.CHROME)
+#         .accept_insecure_certs(True)
+#         .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
+#     ).to_dict()
+#     page = AsyncPage(remote, capabilities, PAGE_URL)
+#     yield page
+#     page.quit()
+#     server.dispose()
 
 
 @mark.asyncio
-async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncPage):
-    driver = __setup
+async def test_switch_to_parent_frame_and_click_alert(setup_environment: AsyncPage):
+    driver = setup_environment
     await driver.get(PAGE_URL)
 
     locator_type = "id"
@@ -47,8 +48,8 @@ async def test_switch_to_parent_frame_and_click_alert(__setup: AsyncPage):
 
 
 @mark.asyncio
-async def test_switch_to_frame_and_click_alert(__setup: AsyncPage):
-    driver = __setup
+async def test_switch_to_frame_and_click_alert(setup_environment: AsyncPage):
+    driver = setup_environment
     await driver.get(PAGE_URL)
     locator_type = "id"
     locator_value = "my-iframe"
@@ -63,8 +64,8 @@ async def test_switch_to_frame_and_click_alert(__setup: AsyncPage):
 
 
 @mark.asyncio
-async def test_get_data_from_hidden_button(__setup: AsyncPage):
-    driver = __setup
+async def test_get_data_from_hidden_button(setup_environment: AsyncPage):
+    driver = setup_environment
     locator_type = "xpath"
     await driver.get(PAGE_URL)
 
@@ -78,8 +79,8 @@ async def test_get_data_from_hidden_button(__setup: AsyncPage):
 
 
 @mark.asyncio
-async def test_add_text__click_button_and_get_properties(__setup: AsyncPage):
-    driver = __setup
+async def test_add_text__click_button_and_get_properties(setup_environment: AsyncPage):
+    driver = setup_environment
     expected = "end"
     locator_type = "xpath"
     await driver.get(PAGE_URL)
@@ -102,8 +103,8 @@ async def test_add_text__click_button_and_get_properties(__setup: AsyncPage):
 
 
 @mark.asyncio
-async def test_big_scenario_of_functions(__setup: AsyncPage):
-    page = __setup
+async def test_big_scenario_of_functions(setup_environment: AsyncPage):
+    page = setup_environment
     remote, session = page.remote, page.session
     await page.implicitly_wait(10)
 

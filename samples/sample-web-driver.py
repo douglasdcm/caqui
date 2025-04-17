@@ -4,7 +4,7 @@ import time
 from caqui import synchronous, asynchronous
 from os import getcwd
 from tests.constants import PAGE_URL
-from caqui.easy.capabilities import CapabilitiesBuilder, Browser
+from caqui.easy.capabilities import BaseCapabilities, Browser, ChromeCapabilitiesBuilder
 from caqui.easy.server import Server
 
 BASE_DIR = getcwd()
@@ -17,9 +17,10 @@ semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 async def get_all_links():
     async with semaphore:
         server = Server(port=9998)
+        server.start()
         server_url = server.url
-        capabilities: CapabilitiesBuilder = (
-            CapabilitiesBuilder()
+        capabilities: BaseCapabilities = (
+            ChromeCapabilitiesBuilder()
             .browser_name(Browser.CHROME)
             .accept_insecure_certs(True)
             .page_load_strategy("normal")
