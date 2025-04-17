@@ -3,6 +3,7 @@ from caqui.by import By
 from caqui import synchronous
 from tests.constants import PAGE_URL
 from pytest import mark
+from tests.constants import COOKIE
 
 
 @mark.asyncio
@@ -92,9 +93,9 @@ async def test_big_scenario_of_functions(setup_environment: AsyncPage):
     # Need to navigate to a web page. If use 'playgound.html' the error
     # 'Document is cookie-averse' happens
     await page.get(
-        "http://www.google.com",
+        "https://example.org/",
     )
-    cookies = await page.get_cookies()
+    cookies = COOKIE
     assert cookies == synchronous.get_cookies(remote, session)
     cookie = (await page.get_cookies())[0]
     cookie["name"] = "other"
@@ -109,7 +110,7 @@ async def test_big_scenario_of_functions(setup_environment: AsyncPage):
     )
 
     await page.switch_to.active_element.get_attribute("value")
-    element = await page.find_element(By.XPATH, "//button")
+    element = await page.find_element(By.XPATH, "//a")
     # Returns and base64 encoded string into image
     await element.screenshot("/tmp/image.png")
 

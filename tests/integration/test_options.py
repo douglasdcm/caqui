@@ -3,7 +3,7 @@ from caqui.easy.capabilities import FirefoxCapabilitiesBuilder, ChromeCapabiliti
 from caqui.easy.page import AsyncPage
 from webdriver_manager.firefox import GeckoDriverManager
 from caqui.easy.server import Server
-from caqui.easy.options import ChromeOptions, FirefoxOptions
+from caqui.easy.options import ChromeOptionsBuilder, FirefoxOptions
 
 
 def test_firefox_options():
@@ -76,7 +76,7 @@ def test_chrome_options():
         }
     }
     options = options = (
-        ChromeOptions()
+        ChromeOptionsBuilder()
         .args(["headless"])
         .prefs({"javascript.options.showInConsole": False})
         .detach(True)

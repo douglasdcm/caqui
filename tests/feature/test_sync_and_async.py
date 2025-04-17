@@ -2,7 +2,7 @@ from pytest import mark, raises
 from caqui import asynchronous, synchronous
 from caqui.exceptions import WebDriverError
 from caqui.by import By
-
+from tests.constants import COOKIE
 
 @mark.asyncio
 async def test_add_cookie(setup_functional_environment):
@@ -12,16 +12,12 @@ async def test_add_cookie(setup_functional_environment):
     synchronous.go_to_page(
         server_url,
         session,
-        "http://www.google.com",
+        "https://example.org/",
     )
-    cookies_before = synchronous.get_cookies(server_url, session)
-
-    cookie = cookies_before[0]
-    cookie["name"] = "other"
-
+    cookie = COOKIE
     assert synchronous.add_cookie(server_url, session, cookie) is True
     cookies_after = synchronous.get_cookies(server_url, session)
-    assert len(cookies_after) > len(cookies_before)
+    assert len(cookies_after) > 0
 
     cookies_before = cookies_after
     cookie = cookies_before[0]

@@ -3,8 +3,8 @@ from caqui.by import By
 from pytest import mark
 from caqui import synchronous
 
-class TestObject:
 
+class TestObject:
     @mark.asyncio
     async def test_action_chains(self, setup_environment: AsyncPage):
         driver = setup_environment

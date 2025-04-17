@@ -1,6 +1,3 @@
-from caqui.exceptions import CapabilityNotSupported
-
-
 class BaseOptions:
     def __init__(self):
         """Builds the Chrome options
@@ -87,28 +84,35 @@ class BaseOptions:
         return {"goog:chromeOptions": self.options}
 
 
-class ChromeOptions(BaseOptions):
+class ChromeOptionsBuilder(BaseOptions):
     pass
 
-class EdgeOptions(BaseOptions):
+
+class EdgeOptionsBuilder(BaseOptions):
     def wdp_address(self, value: str):
         self.options = {**self.options, **{"wdpAddress": value}}
         return self
+
     def wdp_password(self, value: str):
         self.options = {**self.options, **{"wdpPassword": value}}
         return self
+
     def wdp_username(self, value: str):
         self.options = {**self.options, **{"wdpUsername": value}}
         return self
+
     def wdp_processId(self, value: str):
         self.options = {**self.options, **{"wdpProcessId": value}}
         return self
+
     def webview_options(self, value: str):
         self.options = {**self.options, **{"webviewOptions": value}}
         return self
+
     def windows_app(self, value: str):
         self.options = {**self.options, **{"windowsApp": value}}
         return self
+
     def wdp_password(self, value: str):
         self.options = {**self.options, **{"wdpPassword": value}}
         return self

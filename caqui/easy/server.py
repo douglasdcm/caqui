@@ -20,12 +20,10 @@ class Server:
 
         port: the port to start the local server
     """
+
     _instance = None
-    _browser = None
-    _port = None
+
     def __init__(self, browser: Union[DriverManager | None] = None, port=9999):
-        Server._browser = browser
-        Server._port = port
         self.__browser = browser
         self.__port = port
         self.__process = None
@@ -52,6 +50,7 @@ class Server:
 
     @staticmethod
     def get_instance(browser: Union[DriverManager | None] = None, port=9999):
+        """(Singleton) Returns the current instance of the server"""
         if Server._instance is None:
             Server._instance = Server(browser, port)
         return Server._instance

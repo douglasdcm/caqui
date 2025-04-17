@@ -13,6 +13,7 @@ from caqui.synchronous import (
     dismiss_alert,
 )
 
+
 def test_switch_to_parent_frame_and_click_alert(setup_functional_environment):
     server_url, session = setup_functional_environment
     locator_type = "id"
