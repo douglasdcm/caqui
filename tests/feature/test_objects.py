@@ -1,27 +1,9 @@
 from caqui.easy import AsyncPage, ActionChains
 from caqui.by import By
-from pytest import mark, fixture
-from tests.constants import PAGE_URL
+from pytest import mark
 from caqui import synchronous
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder
-from caqui.easy.options import ChromeOptions
-from caqui.easy.server import Server
-
 
 class TestObject:
-    # @fixture
-    # def setup_environment(self):
-    #     server = Server()
-    #     server.start()
-    #     remote = server.url
-    #     options = ChromeOptions().args("headless").to_dict()
-    #     capabilities = (
-    #         ChromeCapabilitiesBuilder().accept_insecure_certs(True).add_options(options)
-    #     ).to_dict()
-    #     driver = AsyncPage(remote, capabilities, PAGE_URL)
-    #     yield driver
-    #     driver.quit()
-    #     server.dispose()
 
     @mark.asyncio
     async def test_action_chains(self, setup_environment: AsyncPage):

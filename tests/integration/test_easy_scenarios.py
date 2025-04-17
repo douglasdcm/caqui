@@ -2,26 +2,7 @@ from caqui.easy import AsyncPage
 from caqui.by import By
 from caqui import synchronous
 from tests.constants import PAGE_URL
-from pytest import mark, fixture
-from caqui.easy.capabilities import BaseCapabilities, Browser, ChromeCapabilitiesBuilder
-from caqui.easy.server import Server
-
-
-# @fixture
-# def setup_environment():
-#     server = Server()
-#     server.start()
-#     remote = server.url
-#     capabilities = (
-#         ChromeCapabilitiesBuilder()
-#         .browser_name(Browser.CHROME)
-#         .accept_insecure_certs(True)
-#         .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
-#     ).to_dict()
-#     page = AsyncPage(remote, capabilities, PAGE_URL)
-#     yield page
-#     page.quit()
-#     server.dispose()
+from pytest import mark
 
 
 @mark.asyncio

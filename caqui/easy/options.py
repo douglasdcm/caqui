@@ -1,12 +1,3 @@
-import json
-import math
-import time
-from typing import Union
-import requests
-import subprocess
-from requests.exceptions import ConnectionError
-from webdriver_manager.core.manager import DriverManager
-from webdriver_manager.chrome import ChromeDriverManager
 from caqui.exceptions import CapabilityNotSupported
 
 
@@ -84,7 +75,7 @@ class BaseOptions:
         self.options = {**self.options, **{"mobileEmulation": value}}
         return self
 
-    def perflogging_prefs(self, value: dict):
+    def perf_logging_prefs(self, value: dict):
         self.options = {**self.options, **{"perfLoggingPrefs": value}}
         return self
 
@@ -98,6 +89,29 @@ class BaseOptions:
 
 class ChromeOptions(BaseOptions):
     pass
+
+class EdgeOptions(BaseOptions):
+    def wdp_address(self, value: str):
+        self.options = {**self.options, **{"wdpAddress": value}}
+        return self
+    def wdp_password(self, value: str):
+        self.options = {**self.options, **{"wdpPassword": value}}
+        return self
+    def wdp_username(self, value: str):
+        self.options = {**self.options, **{"wdpUsername": value}}
+        return self
+    def wdp_processId(self, value: str):
+        self.options = {**self.options, **{"wdpProcessId": value}}
+        return self
+    def webview_options(self, value: str):
+        self.options = {**self.options, **{"webviewOptions": value}}
+        return self
+    def windows_app(self, value: str):
+        self.options = {**self.options, **{"windowsApp": value}}
+        return self
+    def wdp_password(self, value: str):
+        self.options = {**self.options, **{"wdpPassword": value}}
+        return self
 
 
 class FirefoxOptions(BaseOptions):

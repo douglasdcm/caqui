@@ -1,11 +1,8 @@
 from caqui.synchronous import (
     find_element,
-    get_session,
     click,
     send_keys,
     get_text,
-    close_session,
-    go_to_page,
     get_property,
     clear_element,
     get_rect,
@@ -15,35 +12,6 @@ from caqui.synchronous import (
     switch_to_parent_frame,
     dismiss_alert,
 )
-from tests.constants import PAGE_URL
-from pytest import fixture
-from caqui.easy.capabilities import BaseCapabilities, Browser, ChromeCapabilitiesBuilder
-from caqui.easy.server import Server
-
-
-# @fixture
-# def setup_functional_environment():
-#     server = Server()
-#     server.start()
-#     server_url = server.url
-
-#     capabilities = (
-#         ChromeCapabilitiesBuilder()
-#         .browser_name(Browser.CHROME)
-#         .accept_insecure_certs(True)
-#         .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})
-#     ).to_dict()
-
-#     session = get_session(server_url, capabilities)
-#     go_to_page(
-#         server_url,
-#         session,
-#         PAGE_URL,
-#     )
-#     yield server_url, session
-#     close_session(server_url, session)
-#     server.dispose()
-
 
 def test_switch_to_parent_frame_and_click_alert(setup_functional_environment):
     server_url, session = setup_functional_environment

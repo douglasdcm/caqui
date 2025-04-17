@@ -1,13 +1,4 @@
-import json
-import math
-import time
-from typing import Union
-import requests
-import subprocess
-from requests.exceptions import ConnectionError
-from webdriver_manager.core.manager import DriverManager
-from webdriver_manager.chrome import ChromeDriverManager
-from caqui.exceptions import CapabilityNotSupported
+from math import ceil
 
 
 class Browser:
@@ -140,7 +131,7 @@ class TimeoutsBuilder:
 
     def implicit(self, timeout: int):
         """Notice: if the number is a float, converts it to an integer"""
-        timeout = math.ceil(timeout)
+        timeout = ceil(timeout)
         self.__timeouts = {
             **self.__timeouts,
             "implicit": timeout,
@@ -149,7 +140,7 @@ class TimeoutsBuilder:
 
     def page_load(self, timeout: int):
         """Notice: if the number is a float, converts it to an integer"""
-        timeout = math.ceil(timeout)
+        timeout = ceil(timeout)
         self.__timeouts = {
             **self.__timeouts,
             "pageLoad": timeout,
@@ -158,7 +149,7 @@ class TimeoutsBuilder:
 
     def script(self, timeout: int):
         """Notice: if the number is a float, converts it to an integer"""
-        timeout = math.ceil(timeout)
+        timeout = ceil(timeout)
         self.__timeouts = {
             **self.__timeouts,
             "script": timeout,

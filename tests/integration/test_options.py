@@ -88,7 +88,7 @@ def test_chrome_options():
         .minidump_path("any")
         .mobile_emulation({"any": "any"})
         .windows_types("any")
-        .perflogging_prefs(
+        .perf_logging_prefs(
             {
                 "enableNetwork": False,
                 "enablePage": False,
