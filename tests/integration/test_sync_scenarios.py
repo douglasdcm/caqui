@@ -17,7 +17,8 @@ from caqui.synchronous import (
 )
 from tests.constants import PAGE_URL
 from pytest import fixture
-from caqui.easy.capabilities import Capabilities, Browser, Server
+from caqui.easy.capabilities import CapabilitiesBuilder, Browser
+from caqui.easy.server import Server
 
 
 @fixture
@@ -26,7 +27,7 @@ def __setup():
     server_url = server.url
 
     capabilities = (
-        Capabilities()
+        CapabilitiesBuilder()
         .browser_name(Browser.CHROME)
         .accept_insecure_certs(True)
         .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})

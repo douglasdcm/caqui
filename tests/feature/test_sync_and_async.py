@@ -3,7 +3,8 @@ from caqui import asynchronous, synchronous
 from tests.constants import PAGE_URL
 from caqui.exceptions import WebDriverError
 from caqui.by import By
-from caqui.easy.capabilities import Capabilities, Browser, Server
+from caqui.easy.capabilities import CapabilitiesBuilder, Browser
+from caqui.easy.server import Server
 
 
 @fixture
@@ -11,7 +12,7 @@ def __setup():
     server = Server()
     server_url = server.url
     capabilities = (
-        Capabilities()
+        CapabilitiesBuilder()
         .browser_name(Browser.CHROME)
         .accept_insecure_certs(True)
         .add_options({"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}})

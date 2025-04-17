@@ -4,3 +4,7 @@ class WebDriverError(Exception):
 
 class CapabilityNotSupported(Exception):
     pass
+
+
+class ServerError(Exception):
+    pass
