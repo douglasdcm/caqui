@@ -522,6 +522,7 @@ async def test_submit(setup_functional_environment):
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
     assert synchronous.submit(server_url, session, element) is True
 
+    synchronous.refresh_page(server_url, session)
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
     assert await asynchronous.submit(server_url, session, element) is True
 

@@ -96,7 +96,8 @@ async def test_big_scenario_of_functions(setup_environment: AsyncPage):
         "https://example.org/",
     )
     cookies = COOKIE
-    assert cookies == synchronous.get_cookies(remote, session)
+    await page.add_cookie(cookies)
+    assert cookies == synchronous.get_cookies(remote, session)[0]
     cookie = (await page.get_cookies())[0]
     cookie["name"] = "other"
     await page.add_cookie(cookie)
@@ -188,5 +189,3 @@ async def test_big_scenario_of_functions(setup_environment: AsyncPage):
     await page.execute_script('alert("any warn")')
     await page.alert.dismiss()
 
-    # Close the tab or window
-    await page.close()
