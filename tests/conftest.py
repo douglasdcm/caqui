@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from caqui.easy import AsyncPage
 from pytest import fixture
@@ -44,12 +45,6 @@ def setup_functional_environment():
     yield server_url, session
     try:
         synchronous.dismiss_alert(server_url, session)
-    except Exception:
-        pass
-    try:
-        # It is ignored, bacause there are tests theat validate of the windows was closed properlly
-        # Hence, the session is closed previouslly in thise tests
-        synchronous.take_screenshot(SERVER_URL, session, CAPTURES)
     except Exception:
         pass
     try:
