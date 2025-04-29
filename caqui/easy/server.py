@@ -22,7 +22,7 @@ class Server:
 
     _instance = None
 
-    def __init__(self, browser: Union[DriverManager | None] = None, port=9999):
+    def __init__(self, browser: Union[DriverManager, None] = None, port=9999):
         self.__browser = browser
         self.__port = port
         self.__process = None
@@ -48,7 +48,7 @@ class Server:
                     raise Exception("Driver not started")
 
     @staticmethod
-    def get_instance(browser: Union[DriverManager | None] = None, port=9999):
+    def get_instance(browser: Union[DriverManager, None] = None, port=9999):
         """(Singleton) Returns the current instance of the server"""
         if Server._instance is None:
             Server._instance = Server(browser, port)

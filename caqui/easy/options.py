@@ -28,7 +28,7 @@ class BaseOptions:
         self.options = {**self.options, **{"binary": value}}
         return self
 
-    def extensions(self, values: list[str]):
+    def extensions(self, values: list):
         """
         A list of Chrome extensions to install on startup. Each item in the list should be a base-64
         encoded packed Chrome extension (.crx)
@@ -65,7 +65,7 @@ class BaseOptions:
         self.options = {**self.options, **{"debuggerAddress": value}}
         return self
 
-    def exclude_switches(self, values: list[str]):
+    def exclude_switches(self, values: list):
         """List of command line switches to exclude that the Driver by default passes
         when starting Chrome."""
         self.options = {**self.options, **{"excludeSwitches": values}}
@@ -88,7 +88,7 @@ class BaseOptions:
         self.options = {**self.options, **{"perfLoggingPrefs": value}}
         return self
 
-    def windows_types(self, values: list[str]):
+    def windows_types(self, values: list):
         """A list of window types that appear in the list of window handles."""
         self.options = {**self.options, **{"windowsTypes": values}}
         return self
@@ -186,7 +186,7 @@ class FirefoxOptions(BaseOptions):
         self.options = {**self.options, **{"androidDeviceSerial": value}}
         return self
 
-    def android_intent_arguments(self, value: list[str]):
+    def android_intent_arguments(self, value: list):
         """Arguments to launch the intent with. Under the hood, geckodriver
         uses `Android am` to start the Android application under test."""
         self.options = {**self.options, **{"androidIntentArguments": value}}
