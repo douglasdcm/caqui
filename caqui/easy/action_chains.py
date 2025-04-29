@@ -1,6 +1,7 @@
 from caqui import asynchronous
 from caqui.easy.element import Element
 
+
 class ActionChains:
     def __init__(self, driver) -> None:
         self.__remote = driver.remote

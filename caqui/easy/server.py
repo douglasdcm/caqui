@@ -55,6 +55,7 @@ class Server:
         return Server._instance
 
     def start(self):
+        """Starts the local server"""
         try:
             head(self.url)
         except ConnectionError:
@@ -83,11 +84,12 @@ class Server:
 
     @property
     def process(self):
+        """Returns the process (PID)"""
         return self.__process
 
     def dispose(self):
         """
-        Dispose the driver process.
+        Disposes the driver process.
         """
         if self.__process:
             self.__process.kill()

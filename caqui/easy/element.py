@@ -52,61 +52,74 @@ class Element:
         )
 
     async def is_selected(self) -> bool:
-        """Returns True if the element is selected. Oterwise returns False"""
+        """Returns True if the element is selected. Otherwise returns False"""
         return await asynchronous.is_element_selected(self.__remote, self.__session, self.__element)
 
     async def is_enabled(self):
+        """Returns True if the element is enabled. Otherwise returns False"""
         return await asynchronous.is_element_enabled(self.__remote, self.__session, self.__element)
 
     async def get_text(self):
+        """Returns the text of the element"""
         return await asynchronous.get_text(self.__remote, self.__session, self.__element)
 
     async def get_css_value(self, property_name):
+        """Returns the desired CSS property of the element"""
         return await asynchronous.get_css_value(
             self.__remote, self.__session, self.__element, property_name
         )
 
-    async def is_element_selected(self):
-        return await asynchronous.is_element_selected(self.__remote, self.__session, self.__element)
-
-    async def is_element_enabled(self):
-        return await asynchronous.is_element_enabled(self.__remote, self.__session, self.__element)
-
     async def submit(self):
+        """Submits a form"""
         return await asynchronous.submit(self.__remote, self.__session, self.__element)
 
     async def get_rect(self):
+        """Returns the rectangle that enclosed the element"""
         return await asynchronous.get_rect(self.__remote, self.__session, self.__element)
 
     async def get_tag_name(self):
+        """Returns the element tag name"""
         return await asynchronous.get_tag_name(self.__remote, self.__session, self.__element)
 
     async def get_computed_label(self):
+        """Get the element tag computed label. Get the accessibility name"""
         return await asynchronous.get_computed_label(self.__remote, self.__session, self.__element)
 
     async def get_computed_role(self):
+        """Get the element tag computed role (the element role)"""
         return await asynchronous.get_computed_role(self.__remote, self.__session, self.__element)
 
     async def get_property(self, property):
+        """Get the given HTML property of an element, for example, 'href'"""
         return await asynchronous.get_property(
             self.__remote, self.__session, self.__element, property
         )
 
     async def get_attribute(self, attribute):
+        """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
         return await asynchronous.get_attribute(
             self.__remote, self.__session, self.__element, attribute
         )
 
     async def clear(self):
+        """Clear the element text"""
         return await asynchronous.clear_element(self.__remote, self.__session, self.__element)
 
     async def send_keys(self, text):
+        """Fill the element with a text"""
         return await asynchronous.send_keys(self.__remote, self.__session, self.__element, text)
 
     async def click(self):
+        """Click on the element"""
         return await asynchronous.click(self.__remote, self.__session, self.__element)
 
     async def find_elements(self, locator, value):
+        """
+        Find the children elements by 'locator_type'
+
+        If the 'parent_element' is a shadow element,
+         set the 'locator_type' as 'id' or 'css selector'
+        """
         result = []
         elements = await asynchronous.find_children_elements(
             self.__remote, self.__session, self.__element, locator, value
@@ -116,6 +129,7 @@ class Element:
         return result
 
     async def find_element(self, locator, value):
+        """Find the element by `locator_type`"""
         element = await asynchronous.find_child_element(
             self.__remote, self.__session, self.__element, locator, value
         )
