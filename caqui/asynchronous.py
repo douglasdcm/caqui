@@ -705,7 +705,7 @@ async def get_text(server_url, session, element) -> str:
         raise __WebDriverError("Failed to get text from element.") from error
 
 
-async def get_cookies(server_url, session) -> list[dict]:
+async def get_cookies(server_url, session) -> list:
     """Get the page cookies"""
     try:
         url = f"{server_url}/session/{session}/cookie"

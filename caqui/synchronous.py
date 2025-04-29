@@ -637,7 +637,7 @@ def get_title(server_url, session) -> str:
         raise __WebDriverError("Failed to get page title.") from error
 
 
-def find_elements(server_url, session, locator_type, locator_value) -> list[dict]:
+def find_elements(server_url, session, locator_type, locator_value) -> list:
     """Search the DOM elements by 'locator', for example, 'xpath'"""
     try:
         url = f"{server_url}/session/{session}/elements"
@@ -670,7 +670,7 @@ def get_attribute(server_url, session, element, attribute) -> str:
         raise __WebDriverError("Failed to get value from element.") from error
 
 
-def get_cookies(server_url, session) -> list[dict]:
+def get_cookies(server_url, session) -> list:
     """Get the page cookies"""
     try:
         url = f"{server_url}/session/{session}/cookie"
