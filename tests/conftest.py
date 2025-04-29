@@ -62,5 +62,4 @@ def setup_environment():
         synchronous.dismiss_alert(server_url, page.session)
     except Exception:
         pass
-    synchronous.take_screenshot(SERVER_URL, page.session, CAPTURES)
     page.quit()
