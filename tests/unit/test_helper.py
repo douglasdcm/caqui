@@ -30,12 +30,8 @@ def test_get_element(response, expected):
         (
             {
                 "value": [
-                    {
-                        "element-6066-11e4-a52e-4f735466cecf": "c4cab128-a0a4-4355-93a5-ffd6c7a8b042"
-                    },
-                    {
-                        "element-6066-11e4-a52e-4f735466cecf": "12345678-a0a4-4355-93a5-ffd6c7a8b042"
-                    },
+                    {"element-6066-11e4-a52e-4f735466cecf": "c4cab128-a0a4-4355-93a5-ffd6c7a8b042"},
+                    {"element-6066-11e4-a52e-4f735466cecf": "12345678-a0a4-4355-93a5-ffd6c7a8b042"},
                 ]
             },
             [

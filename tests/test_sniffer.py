@@ -1,4 +1,4 @@
-#### File used to figure out requests format and parameters ####
+# File used to figure out requests format and parameters ####
 
 from selenium import webdriver
 from pytest import fixture, mark
@@ -7,10 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support import expected_conditions, wait
 from selenium.webdriver.common.alert import Alert
-import os
-from selenium.webdriver.common.action_chains import ActionChains
 
 
 @fixture
@@ -36,8 +33,7 @@ def setup():
 
 @fixture
 def setup_binary():
-    homedir = os.path.expanduser("~")
-    service = Service(f"/home/douglas/web_drivers/chromedriver.113")
+    service = Service("/home/douglas/web_drivers/chromedriver.113")
     options = Options()
     # options.add_argument('--headless')
     options.add_argument("window-size=1920,1080")
@@ -77,7 +73,7 @@ def test_switch_to_frame_sniffer(setup):
 
 
 @mark.skip("used just to discover request data")
-def test_switch_to_frame_sniffer(setup):
+def test_switch_to_frame_sniffer_v2(setup):
     driver = setup
     # Click the link to activate the alert
     import time

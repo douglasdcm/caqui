@@ -4,3 +4,4 @@ selenium
 coverage
 tox
 pytest-asyncio
+build

@@ -1,5 +1,5 @@
 # necessary import for mokcs
-import caqui
+import caqui  # noqa F401
 
 from pytest import mark
 from caqui import asynchronous
@@ -28,7 +28,7 @@ async def test_actions_scroll_to_element():
         return fake_responses.ACTIONS
 
     with patch("caqui.asynchronous.__post", mock_request):
-        assert await asynchronous.actions_scroll_to_element("", "", "") == True
+        assert await asynchronous.actions_scroll_to_element("", "", "") is True
 
 
 @mark.asyncio
@@ -37,7 +37,7 @@ async def test_submit():
         return fake_responses.CLICK
 
     with patch("caqui.asynchronous.__post", mock_request):
-        assert await asynchronous.submit("", "", "") == True
+        assert await asynchronous.submit("", "", "") is True
 
 
 @mark.asyncio
@@ -46,7 +46,7 @@ async def test_actions_click():
         return fake_responses.ACTIONS
 
     with patch("caqui.asynchronous.__post", mock_request):
-        assert await asynchronous.actions_click("", "", "") == True
+        assert await asynchronous.actions_click("", "", "") is True
 
 
 @mark.asyncio
@@ -55,7 +55,7 @@ async def test_set_timeouts():
         return fake_responses.GET_TIMEOUTS
 
     with patch("caqui.asynchronous.__post", mock_request):
-        assert await asynchronous.set_timeouts("", "", "") == True
+        assert await asynchronous.set_timeouts("", "", "") is True
 
 
 @mark.asyncio
@@ -355,4 +355,4 @@ async def test_get_session():
         return fake_responses.GET_SESSION
 
     with patch("caqui.asynchronous.__post", mock_request):
-        assert await asynchronous.get_session("", {}) == expected
+        assert await asynchronous.get_session(server_url="", capabilities={}) == expected

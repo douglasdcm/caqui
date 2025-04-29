@@ -1,4 +1,16 @@
-import math
+from math import ceil
+
+
+class Browser:
+    """
+    https://pypi.org/project/webdriver-manager/
+    """
+
+    CHROME = "chrome"
+    FIREFOX = "firefox"
+    EDGE = "edge"
+    OPERA = "opera"
+    IE = "internet explorer"
 
 
 class ProxyConfigurationBuilder:
@@ -105,7 +117,7 @@ class ProxyConfigurationBuilder:
         }
         return self
 
-    def build(self):
+    def to_dict(self):
         return {"proxy": self.__proxy}
 
 
@@ -119,7 +131,7 @@ class TimeoutsBuilder:
 
     def implicit(self, timeout: int):
         """Notice: if the number is a float, converts it to an integer"""
-        timeout = math.ceil(timeout)
+        timeout = ceil(timeout)
         self.__timeouts = {
             **self.__timeouts,
             "implicit": timeout,
@@ -128,7 +140,7 @@ class TimeoutsBuilder:
 
     def page_load(self, timeout: int):
         """Notice: if the number is a float, converts it to an integer"""
-        timeout = math.ceil(timeout)
+        timeout = ceil(timeout)
         self.__timeouts = {
             **self.__timeouts,
             "pageLoad": timeout,
@@ -137,33 +149,37 @@ class TimeoutsBuilder:
 
     def script(self, timeout: int):
         """Notice: if the number is a float, converts it to an integer"""
-        timeout = math.ceil(timeout)
+        timeout = ceil(timeout)
         self.__timeouts = {
             **self.__timeouts,
             "script": timeout,
         }
         return self
 
-    def build(self):
+    def to_dict(self):
         return {"timeouts": self.__timeouts}
 
 
-class CapabilitiesBuilder:
+class BaseCapabilities:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
 
     def __init__(self) -> None:
-        self.__desired_capabilities = {}
+        self.desired_capabilities = {}
+        self.options = {}
+
+    def to_dict(self):
+        raise NotImplementedError
 
     def browser_name(self, name: str):
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "browserName": name,
         }
         return self
 
     def browser_version(self, version: str):
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "browserVersion": version,
         }
         return self
@@ -172,8 +188,8 @@ class CapabilitiesBuilder:
         """
         Identifies the operating system of the endpoint node.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "platformName": name,
         }
         return self
@@ -183,8 +199,8 @@ class CapabilitiesBuilder:
         Indicates whether untrusted and self-signed TLS certificates are
         implicitly trusted on navigation for the duration of the session.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "acceptInsecureCerts": insecure,
         }
         return self
@@ -195,20 +211,19 @@ class CapabilitiesBuilder:
 
         Reference: https://www.w3.org/TR/webdriver/#dfn-table-of-page-load-strategies
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "pageLoadStrategy": strategy,
         }
         return self
 
     def proxy(self, proxy_configuration: dict):
-        ProxyConfigurationBuilder
         """
         Defines the current session’s proxy configuration.
         Use the ProxyConfigurationBuilder class for simplicity.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             **proxy_configuration,
         }
         return self
@@ -217,8 +232,8 @@ class CapabilitiesBuilder:
         """
         Indicates whether the remote end supports all of the resizing and repositioning commands.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "setWindowRect": decison,
         }
         return self
@@ -228,9 +243,9 @@ class CapabilitiesBuilder:
         Describes the timeouts imposed on certain session operations.
         Use the TimeoutsBuilder class for simplicity.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
-            "timeouts": session_timeouts,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
+            **session_timeouts,
         }
         return self
 
@@ -238,38 +253,81 @@ class CapabilitiesBuilder:
         """
         Defines the current session’s strict file interactability.
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "strictFileInteractability": interactibility,
         }
         return self
 
     def unhandled_prompt_behavior(self, behavior: str):
         """
-        Describes the current session’s user prompt handler. Defaults to the 'dismiss and notify state'.
+        Describes the current session’s user prompt handler.
+        Defaults to the 'dismiss and notify state'.
 
         behavior:
             "dismiss" All simple dialogs encountered should be dismissed.
             "accept" All simple dialogs encountered should be accepted.
-            "dismiss and notify" All simple dialogs encountered should be dismissed, and an error returned that the dialog was handled.
-            "accept and notify" All simple dialogs encountered should be accepted, and an error returned that the dialog was handled.
+            "dismiss and notify" All simple dialogs encountered should be dismissed,
+              and an error returned that the dialog was handled.
+            "accept and notify" All simple dialogs encountered should be accepted,
+              and an error returned that the dialog was handled.
             "ignore" All simple dialogs encountered should be left to the user to handle.
 
         Reference: https://www.w3.org/TR/webdriver/#dfn-user-prompt-handler
         """
-        self.__desired_capabilities = {
-            **self.__desired_capabilities,
+        self.desired_capabilities = {
+            **self.desired_capabilities,
             "unhandledPromptBehavior": behavior,
         }
         return self
 
-    def additional_capability(self, capabilitiy: dict):
-        """Add any capability, for example
+    def user_agent(self, agent: str):
+        """
+        Identifies the default User-Agent value of the endpoint node.
+
+        Reference: https://w3c.github.io/webdriver/#dfn-default-user-agent-value
+        """
+        self.desired_capabilities = {
+            **self.desired_capabilities,
+            "userAgent": agent,
+        }
+        return self
+
+    def add_options(self, options: dict):
+        """Add vendor options, for example
         {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}} or
         {"moz:experimental-webdriver": true}
         """
-        self.__desired_capabilities = {**self.__desired_capabilities, **capabilitiy}
+        self.options = options
         return self
 
-    def build(self):
-        return {"desiredCapabilities": self.__desired_capabilities}
+
+class ChromeCapabilitiesBuilder(BaseCapabilities):
+    def __init__(self):
+        super().__init__()
+
+    def to_dict(self):
+        """
+        Returns the capabilities.
+        """
+        self.desired_capabilities = {**self.desired_capabilities, **self.options}
+
+        return {"desiredCapabilities": self.desired_capabilities}
+
+
+class OperaCapabilitiesBuilder(ChromeCapabilitiesBuilder):
+    pass
+
+
+class FirefoxCapabilitiesBuilder(BaseCapabilities):
+    def __init__(self):
+        super().__init__()
+
+    def to_dict(self):
+        """
+        Returns the capabilities.
+        """
+        result = {"capabilities": self.desired_capabilities}
+        if self.options:
+            result["capabilities"] = {**result["capabilities"], **{"firstMatch": self.options}}
+        return result

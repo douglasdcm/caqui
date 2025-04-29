@@ -77,7 +77,7 @@ GET_PAGE_SOURCE = dict_to_json(
     {
         "sessionId": "e34234d1445ed6d4833370d1d8019282",
         "status": 0,
-        "value": "<html><head><title>Sample page</title></head><body><h1>Basic page</h1></body></html>",
+        "value": "<html><head><title>Sample page</title></head><body><h1>Basic page</h1></body></html>",  # noqa E501
     }
 )
 
@@ -154,9 +154,7 @@ GET_TIMEOUTS = dict_to_json(
 GET_STATUS = dict_to_json(
     {
         "value": {
-            "build": {
-                "version": "113.0.5672.63 (0e1a4471d5ae5bf128b1bd8f4d627c8cbd55f70c-refs/branch-heads/5672@{#912})"
-            },
+            "build": {"version": "113.0.5672.63 (1a2b3c-refs/branch-heads/5672@{#912})"},
             "message": "ChromeDriver ready for new sessions.",
             "os": {"arch": "x86_64", "name": "Linux", "version": "5.4.0-150-generic"},
             "ready": True,
@@ -225,7 +223,7 @@ GET_SESSION = dict_to_json(
             "browserConnectionEnabled": False,
             "browserName": "chrome",
             "chrome": {
-                "chromedriverVersion": "94.0.4606.41 (333e85df3c9b656b518b5f1add5ff246365b6c24-refs/branch-heads/4606@{#845})",
+                "chromedriverVersion": "94.0.4606.41 (1a2b3c-refs/branch-heads/4606@{#845})",
                 "userDataDir": "/tmp/.com.google.Chrome.4zKpeQ",
             },
             "cssSelectorsEnabled": True,
