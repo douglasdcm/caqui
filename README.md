@@ -36,6 +36,19 @@ from caqui import synchronous
 from caqui.easy.capabilities import ChromeOptionsBuilder
 from caqui.easy.options import ChromeOptionsBuilder
 from caqui.easy.server import Server
+from time import sleep
+
+SERVER_PORT = 9999
+SERVER_URL = f"http://localhost:{SERVER_PORT}"
+PAGE_URL = "file:///sample.html"
+
+@fixture(autouse=True, scope="session")
+def setup_server():
+    server = Server.get_instance(port=SERVER_PORT)
+    server.start()
+    yield
+    sleep(3)
+    server.dispose()
 
 @fixture
 def setup_environment():
@@ -45,7 +58,6 @@ def setup_environment():
     page = AsyncPage(server_url, capabilities, PAGE_URL)
     yield page
     page.quit()
-
 
 @mark.asyncio
 async def test_switch_to_parent_frame_and_click_alert(setup_environment: AsyncPage):
