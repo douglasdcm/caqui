@@ -243,7 +243,7 @@ def take_screenshot(server_url, session, path="/tmp", file_name="caqui"):
         raise __WebDriverError("Failed to take screeshot.") from error
 
 
-def get_named_cookie(server_url, session, name):
+def get_named_cookie(server_url, session, name) -> str:
     """Get cookie by name."""
     try:
         url = f"{server_url}/session/{session}/cookie/{name}"
@@ -252,7 +252,7 @@ def get_named_cookie(server_url, session, name):
         raise __WebDriverError(f"Failed to get the cookie '{name}'.") from error
 
 
-def get_computed_label(server_url, session, element):
+def get_computed_label(server_url, session, element) -> str:
     """Get the element computed label. Get the accessibility name."""
     try:
         url = f"{server_url}/session/{session}/element/{element}/computedlabel"
@@ -261,7 +261,7 @@ def get_computed_label(server_url, session, element):
         raise __WebDriverError("Failed to get the element computed label.") from error
 
 
-def get_computed_role(server_url, session, element):
+def get_computed_role(server_url, session, element) -> str:
     """Get the element computed role (the element role)"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/computedrole"
@@ -270,7 +270,7 @@ def get_computed_role(server_url, session, element):
         raise __WebDriverError("Failed to get the element computed role.") from error
 
 
-def get_tag_name(server_url, session, element):
+def get_tag_name(server_url, session, element) -> str:
     """Get the element tag name"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/name"
@@ -279,7 +279,7 @@ def get_tag_name(server_url, session, element):
         raise __WebDriverError("Failed to get the element name.") from error
 
 
-def get_shadow_root(server_url, session, element):
+def get_shadow_root(server_url, session, element) -> dict:
     """Get the shadow root element"""
     try:
         root_element = "shadow-6066-11e4-a52e-4f735466cecf"
@@ -289,7 +289,7 @@ def get_shadow_root(server_url, session, element):
         raise __WebDriverError("Failed to get the element shadow.") from error
 
 
-def get_rect(server_url, session, element):
+def get_rect(server_url, session, element) -> dict:
     """Get the element rectangle"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/rect"
@@ -459,7 +459,7 @@ def find_child_element(server_url, session, parent_element, locator_type, locato
         ) from error
 
 
-def get_page_source(server_url, session):
+def get_page_source(server_url, session) -> str:
     """Get the page source (all content)"""
     try:
         url = f"{server_url}/session/{session}/source"
@@ -479,7 +479,7 @@ def execute_script(server_url, session, script, args=[]):
         raise __WebDriverError("Failed to run the script.") from error
 
 
-def get_alert_text(server_url, session):
+def get_alert_text(server_url, session) -> str:
     """Get the text from an alert"""
     try:
         url = f"{server_url}/session/{session}/alert/text"
@@ -509,7 +509,7 @@ def clear_element(server_url, session, element):
         raise __WebDriverError("Failed to clear the element text.") from error
 
 
-def is_element_enabled(server_url, session, element):
+def is_element_enabled(server_url, session, element) -> bool:
     """Check if element is enabled"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/enabled"
@@ -518,7 +518,7 @@ def is_element_enabled(server_url, session, element):
         raise __WebDriverError("Failed to check if element is enabled.") from error
 
 
-def get_css_value(server_url, session, element, property_name):
+def get_css_value(server_url, session, element, property_name) -> str:
     """Get the css property value"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/css/{property_name}"
@@ -527,7 +527,7 @@ def get_css_value(server_url, session, element, property_name):
         raise __WebDriverError("Failed to get the css property value.") from error
 
 
-def is_element_selected(server_url, session, element):
+def is_element_selected(server_url, session, element) -> bool:
     """Check if element is selected"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/selected"
@@ -536,7 +536,7 @@ def is_element_selected(server_url, session, element):
         raise __WebDriverError("Failed to check if element is selected.") from error
 
 
-def get_window_rectangle(server_url, session):
+def get_window_rectangle(server_url, session) -> dict:
     """Get window rectangle"""
     try:
         url = f"{server_url}/session/{session}/window/rect"
@@ -554,7 +554,7 @@ def get_window_handles(server_url, session):
         raise __WebDriverError("Failed to get window handles.") from error
 
 
-def close_window(server_url, session):
+def close_window(server_url, session) -> list:
     """Close active window"""
     try:
         url = f"{server_url}/session/{session}/window"
@@ -563,7 +563,7 @@ def close_window(server_url, session):
         raise __WebDriverError("Failed to close active window.") from error
 
 
-def get_window(server_url, session):
+def get_window(server_url, session) -> str:
     """Get window"""
     try:
         url = f"{server_url}/session/{session}/window"
@@ -586,7 +586,7 @@ def go_back(server_url, session):
         raise __WebDriverError("Failed to go back to page.") from error
 
 
-def get_url(server_url, session):
+def get_url(server_url, session) -> str:
     """Return the URL from web page:"""
     try:
         url = f"{server_url}/session/{session}/url"
@@ -596,7 +596,7 @@ def get_url(server_url, session):
         raise __WebDriverError("Failed to get page url.") from error
 
 
-def get_timeouts(server_url, session):
+def get_timeouts(server_url, session) -> dict:
     """
     Return the configured timeouts:
         {"implicit": 0, "pageLoad": 300000, "script": 30000}
@@ -609,7 +609,7 @@ def get_timeouts(server_url, session):
         raise __WebDriverError("Failed to get timeouts.") from error
 
 
-def get_status(server_url):
+def get_status(server_url) -> dict:
     """
     Return the status and details of the WebDriver:
         "build": {
@@ -627,7 +627,7 @@ def get_status(server_url):
         raise __WebDriverError("Failed to get status.") from error
 
 
-def get_title(server_url, session):
+def get_title(server_url, session) -> str:
     """Get the page title"""
     try:
         url = f"{server_url}/session/{session}/title"
@@ -637,7 +637,7 @@ def get_title(server_url, session):
         raise __WebDriverError("Failed to get page title.") from error
 
 
-def find_elements(server_url, session, locator_type, locator_value):
+def find_elements(server_url, session, locator_type, locator_value) -> list[dict]:
     """Search the DOM elements by 'locator', for example, 'xpath'"""
     try:
         url = f"{server_url}/session/{session}/elements"
@@ -650,7 +650,7 @@ def find_elements(server_url, session, locator_type, locator_value):
         ) from error
 
 
-def get_property(server_url, session, element, property_name):
+def get_property(server_url, session, element, property_name) -> str:
     """Get the given HTML property of an element, for example, 'href'"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/property/{property_name}"
@@ -660,7 +660,7 @@ def get_property(server_url, session, element, property_name):
         raise __WebDriverError("Failed to get value from element.") from error
 
 
-def get_attribute(server_url, session, element, attribute):
+def get_attribute(server_url, session, element, attribute) -> str:
     """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/attribute/{attribute}"
@@ -670,7 +670,7 @@ def get_attribute(server_url, session, element, attribute):
         raise __WebDriverError("Failed to get value from element.") from error
 
 
-def get_cookies(server_url, session):
+def get_cookies(server_url, session) -> list[dict]:
     """Get the page cookies"""
     try:
         url = f"{server_url}/session/{session}/cookie"
@@ -706,7 +706,7 @@ def close_session(server_url, session):
         raise __WebDriverError("Failed to close session.") from error
 
 
-def get_text(server_url, session, element):
+def get_text(server_url, session, element) -> str:
     """Get the text of an element"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/text"
@@ -738,7 +738,7 @@ def click(server_url, session, element):
         raise __WebDriverError("Failed to click on element.") from error
 
 
-def __get_session(response):
+def __get_session(response) -> str:
     # Firefox response
     value = response.get("value")
     session_id = value.get("sessionId")
@@ -763,7 +763,7 @@ def get_session(server_url: str, capabilities: dict):
         raise __WebDriverError("Failed to open session.") from error
 
 
-def find_element(server_url, session, locator_type, locator_value):
+def find_element(server_url, session, locator_type, locator_value) -> dict:
     """Find an element by a 'locator', for example 'xpath'"""
     try:
         url = f"{server_url}/session/{session}/element"

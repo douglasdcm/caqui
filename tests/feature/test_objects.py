@@ -12,7 +12,7 @@ class TestObject:
         actions = (
             await driver.actions.move_to_element(element)
             .scroll_to_element(element)
-            .click()
+            .click(element)
             .perform()
         )
         assert actions is True
@@ -21,7 +21,7 @@ class TestObject:
             await ActionChains(driver)
             .move_to_element(element)
             .scroll_to_element(element)
-            .click()
+            .click(element)
             .perform()
         )
         assert actions is True

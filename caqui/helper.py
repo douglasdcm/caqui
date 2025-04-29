@@ -11,7 +11,7 @@ def get_elements(response):
     return [list(value.values())[0] for value in values]
 
 
-def get_element(response):
+def get_element(response) -> dict:
     value = response.get("value")
     # Google Chrome
     element = value.get("ELEMENT")

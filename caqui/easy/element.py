@@ -14,27 +14,35 @@ class Element:
 
     @property
     def rect(self):
+        """Returns the rectangle that enclosed the element
+        For example: {"height": 23, "width": 183, "x": 10, "y": 9652.12}
+        """
         return synchronous.get_rect(self.__remote, self.__session, self.__element)
 
     @property
     def tag_name(self):
+        """Returns the tag name of the element"""
         return synchronous.get_tag_name(self.__remote, self.__session, self.__element)
 
     @property
     def text(self):
+        """Returns the text of the element"""
         return synchronous.get_text(self.__remote, self.__session, self.__element)
 
     @property
     def active_element(self):
+        """Returns the active element"""
         self.__element = synchronous.get_active_element(self.__driver, self.__session)
         return self.__element
 
     async def value_of_css_property(self, property_name):
+        """Returns the desired CSS property of the element"""
         return await asynchronous.get_css_value(
             self.__remote, self.__session, self.__element, property_name
         )
 
     async def screenshot(self, file):
+        """Takes a screenshot of the element"""
         path = os.path.dirname(file)
         if not path:
             path = "./"
@@ -43,7 +51,8 @@ class Element:
             self.__remote, self.__session, self.__element, path, file_name
         )
 
-    async def is_selected(self):
+    async def is_selected(self) -> bool:
+        """Returns True if the element is selected. Oterwise returns False"""
         return await asynchronous.is_element_selected(self.__remote, self.__session, self.__element)
 
     async def is_enabled(self):
