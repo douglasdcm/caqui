@@ -574,7 +574,8 @@ def get_window(server_url, session):
 
 def go_back(server_url, session):
     """
-    This command causes the browser to traverse one step backward in the joint session history of the
+    This command causes the browser to traverse one step backward
+     in the joint session history of the
     current browse. This is equivalent to pressing the back button in the browser.
     """
     try:
@@ -612,7 +613,7 @@ def get_status(server_url):
     """
     Return the status and details of the WebDriver:
         "build": {
-                "version": "113.0.5672.63 (0e1a4471d5ae5bf128b1bd8f4d627c8cbd55f70c-refs/branch-heads/5672@{#912})"
+                "version": "113.0.5672.63 (1a2b3c-refs/branch-heads/5672@{#912})"
             },
             "message": "ChromeDriver ready for new sessions.",
             "os": {"arch": "x86_64", "name": "Linux", "version": "5.4.0-150-generic"},
@@ -749,7 +750,10 @@ def __get_session(response):
 
 
 def get_session(server_url: str, capabilities: dict):
-    """Opens a browser and a session. This session is used for all functions to perform events in the page"""
+    """
+    Opens a browser and a session.
+     This session is used for all functions to perform events in the page
+    """
     try:
         url = f"{server_url}/session"
         data = capabilities

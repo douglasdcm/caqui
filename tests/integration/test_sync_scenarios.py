@@ -60,7 +60,7 @@ def test_get_data_from_hidden_button(setup_functional_environment):
 
     assert "width" in get_rect(server_url, session, hidden_button)
     assert "visible" == get_css_value(server_url, session, hidden_button, "visibility")
-    assert True == get_property(server_url, session, hidden_button, "hidden")
+    assert True is get_property(server_url, session, hidden_button, "hidden")
     assert ["display"] == get_property(server_url, session, hidden_button, "style")
     assert "display: none;" == get_attribute(server_url, session, hidden_button, "style")
 

@@ -11,22 +11,22 @@ def test_get_rect(*args):
 
 @patch("requests.request", return_value=fake_responses.ACTIONS)
 def test_actions_scroll_to_element(*args):
-    assert synchronous.actions_scroll_to_element("", "", "") == True
+    assert synchronous.actions_scroll_to_element("", "", "") is True
 
 
 @patch("requests.request", return_value=fake_responses.CLICK)
 def test_submit(*args):
-    assert synchronous.submit("", "", "") == True
+    assert synchronous.submit("", "", "") is True
 
 
 @patch("requests.request", return_value=fake_responses.ACTIONS)
 def test_actions_click(*args):
-    assert synchronous.actions_click("", "", "") == True
+    assert synchronous.actions_click("", "", "") is True
 
 
 @patch("requests.request", return_value=fake_responses.GET_TIMEOUTS)
 def test_set_timeouts(*args):
-    assert synchronous.set_timeouts("", "", "") == True
+    assert synchronous.set_timeouts("", "", "") is True
 
 
 @patch("requests.request", return_value=fake_responses.FIND_ELEMENTS)

@@ -1,4 +1,3 @@
-import os
 from time import sleep
 from caqui.easy import AsyncPage
 from pytest import fixture
@@ -7,22 +6,19 @@ from caqui.easy.capabilities import ChromeCapabilitiesBuilder
 from caqui.easy.options import ChromeOptionsBuilder
 from caqui.easy.server import Server
 from caqui import synchronous
-from tests.constants import PAGE_URL
-from caqui.easy.server import Server
 
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
-CAPTURES="captures"
+CAPTURES = "captures"
+
+
 def __build_capabilities():
-    options = (
-        ChromeOptionsBuilder()
-        .args(["headless"])
-        .to_dict()
-    )
+    options = ChromeOptionsBuilder().args(["headless"]).to_dict()
     capabilities = (
         ChromeCapabilitiesBuilder().accept_insecure_certs(True).add_options(options)
     ).to_dict()
     return capabilities
+
 
 @fixture(autouse=True, scope="session")
 def setup_server():
@@ -31,6 +27,7 @@ def setup_server():
     yield
     sleep(3)
     server.dispose()
+
 
 @fixture
 def setup_functional_environment():
@@ -48,14 +45,15 @@ def setup_functional_environment():
     except Exception:
         pass
     try:
-        synchronous.close_session(server_url, session)  
+        synchronous.close_session(server_url, session)
     except Exception:
         pass
+
 
 @fixture
 def setup_environment():
     server_url = SERVER_URL
-    capabilities =  __build_capabilities()
+    capabilities = __build_capabilities()
     page = AsyncPage(server_url, capabilities, PAGE_URL)
     yield page
     try:

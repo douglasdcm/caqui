@@ -4,6 +4,7 @@ from caqui.exceptions import WebDriverError
 from caqui.by import By
 from tests.constants import COOKIE
 
+
 @mark.asyncio
 async def test_add_cookie(setup_functional_environment):
     server_url, session = setup_functional_environment
@@ -629,14 +630,14 @@ async def test_execute_script_asynchronous(setup_functional_environment):
     server_url, session = setup_functional_environment
     script = "alert('any warn')"
 
-    assert await asynchronous.execute_script(server_url, session, script) == None
+    assert await asynchronous.execute_script(server_url, session, script) is None
 
 
 def test_execute_script_synchronous(setup_functional_environment):
     server_url, session = setup_functional_environment
     script = "alert('any warn')"
 
-    assert synchronous.execute_script(server_url, session, script) == None
+    assert synchronous.execute_script(server_url, session, script) is None
 
 
 @mark.asyncio
@@ -669,7 +670,6 @@ async def test_get_active_element(setup_functional_environment):
 @mark.asyncio
 async def test_clear_element_fails_when_invalid_inputs(setup_functional_environment):
     server_url, session = setup_functional_environment
-    text = "any"
     element = "invalid"
 
     with raises(WebDriverError):

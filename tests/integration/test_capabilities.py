@@ -1,14 +1,9 @@
-from pytest import mark, fixture
 from caqui.easy.capabilities import (
-    BaseCapabilities,
     FirefoxCapabilitiesBuilder,
     ChromeCapabilitiesBuilder,
     ProxyConfigurationBuilder,
     TimeoutsBuilder,
 )
-from caqui.easy.page import AsyncPage
-from webdriver_manager.firefox import GeckoDriverManager
-from caqui.easy.server import Server
 from caqui.easy.options import ChromeOptionsBuilder, FirefoxOptions
 
 

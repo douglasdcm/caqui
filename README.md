@@ -10,8 +10,8 @@
 | ----------------------- | ------------- | ------- |-------- |
 | Appium                  | 2.0.0+        | Y       | Accepts remote calls by default. Tested with Appium in Docker container |
 | Firefox (geckodriver)   | 113+          | Y       | Need to add the host ip, e.g. "--host 123.45.6.78" |
-| Google Chrome           | 113+          | Y       | Need to inform allowed ips to connect, e.g "--allowed-ips=123.45.6.78" |
-| Opera                   | 99+           | Y       | Need to inform allowed ips to connect, e.g "--allowed-ips=123.45.6.78". Similar to Google Chrome |
+| Google Chrome           | 113+          | Y       | Need to inform the allowed ips to connect, e.g "--allowed-ips=123.45.6.78" |
+| Opera                   | 99+           | Y       | Need to inform the allowed ips to connect, e.g "--allowed-ips=123.45.6.78". Similar to Google Chrome |
 | WinAppDriver            | 1.2.1+        | Y       | Need to define the host ip, e.g. "WinApppage.exe 10.0.0.10 4723" |
 | Winium Desktop          | 1.6.0+        | Y       | Accepts remote calls by default |
 
@@ -39,21 +39,19 @@ from caqui.easy.server import Server
 
 @fixture
 def setup_environment():
-    server = Server.get_instance()
-    server.start()
-    server_url = server.url
+    server_url = SERVER_URL
     options = ChromeOptionsBuilder().args(["headless"]).to_dict()
-    capabilities = (
-        ChromeCapabilitiesBuilder().accept_insecure_certs(True).add_options(options)
-    ).to_dict()
-    page =  AsyncPage(server_url, capabilities, PAGE_URL)
+    capabilities = ChromeCapabilitiesBuilder().accept_insecure_certs(True).add_options(options).to_dict()
+    page = AsyncPage(server_url, capabilities, PAGE_URL)
     yield page
     page.quit()
-    server.dispose()
+
 
 @mark.asyncio
 async def test_switch_to_parent_frame_and_click_alert(setup_environment: AsyncPage):
     page = setup_environment
+    await page.get(PAGE_URL)
+
     locator_type = "id"
     locator_value = "my-iframe"
     locator_value_alert_parent = "alert-button"
@@ -86,9 +84,7 @@ async def test_save_screenshot(setup_environment: AsyncPage):
 @mark.asyncio_cooperative
 async def test_object_to_string(setup_environment: AsyncPage):
     page = setup_environment
-    element_string = synchronous.find_element(
-        page.remote, page.session, By.XPATH, "//button"
-    )
+    element_string = synchronous.find_element(page.remote, page.session, By.XPATH, "//button")
     element = await page.find_element(locator=By.XPATH, value="//button")
     assert str(element) == element_string
 
@@ -106,16 +102,14 @@ async def test_save_screenshot(setup_environment: AsyncPage):
 @mark.asyncio
 async def test_object_to_string(setup_environment: AsyncPage):
     page = setup_environment
-    element_string = synchronous.find_element(
-        page.remote, page.session, By.XPATH, "//button"
-    )
+    element_string = synchronous.find_element(page.remote, page.session, By.XPATH, "//button")
     element = await page.find_element(locator=By.XPATH, value="//button")
     assert str(element) == element_string
 
 ```
 
 # Driver as a server
-In case you are using Appium, Winium or other driver not started by the library, just start the driver as server
+In case you are using Appium, Winium or other driver not started by the library, just start the driver as a server.
 
 For example. Download the same [ChromeDriver](https://chromepage.chromium.org/downloads) version as your installed Chrome and start the Driver as a server using the port "9999"
 
@@ -126,6 +120,9 @@ Only local connections are allowed.
 Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
 ChromeDriver was started successfully.
 ```
+# Webdriver Manager
+
+Caqui depends on [Webdriver Manager](https://pypi.org/project/webdriver-manager/) that can be configured independenly and has some limitations. Check the project documentation for more information.
 
 
 # Contributing

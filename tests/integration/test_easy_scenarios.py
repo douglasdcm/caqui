@@ -188,4 +188,3 @@ async def test_big_scenario_of_functions(setup_environment: AsyncPage):
     # Executing JavaScript to capture innerText of header element
     await page.execute_script('alert("any warn")')
     await page.alert.dismiss()
-

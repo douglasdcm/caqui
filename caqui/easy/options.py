@@ -2,7 +2,8 @@ class BaseOptions:
     def __init__(self):
         """Builds the Chrome options
 
-        Reference: https://developer.chrome.com/docs/chromedriver/capabilities#recognized_capabilities
+        Reference:
+        https://developer.chrome.com/docs/chromedriver/capabilities#recognized_capabilities
         """
         self.options = {}
 
@@ -111,10 +112,6 @@ class EdgeOptionsBuilder(BaseOptions):
 
     def windows_app(self, value: str):
         self.options = {**self.options, **{"windowsApp": value}}
-        return self
-
-    def wdp_password(self, value: str):
-        self.options = {**self.options, **{"wdpPassword": value}}
         return self
 
 

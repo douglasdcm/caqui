@@ -4,7 +4,6 @@ from requests import head
 from requests.exceptions import ConnectionError
 import requests
 import subprocess
-from requests.exceptions import ConnectionError
 from webdriver_manager.core.manager import DriverManager
 from webdriver_manager.chrome import ChromeDriverManager
 from caqui.exceptions import ServerError

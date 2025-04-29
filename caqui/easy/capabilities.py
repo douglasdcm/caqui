@@ -261,13 +261,16 @@ class BaseCapabilities:
 
     def unhandled_prompt_behavior(self, behavior: str):
         """
-        Describes the current session’s user prompt handler. Defaults to the 'dismiss and notify state'.
+        Describes the current session’s user prompt handler.
+        Defaults to the 'dismiss and notify state'.
 
         behavior:
             "dismiss" All simple dialogs encountered should be dismissed.
             "accept" All simple dialogs encountered should be accepted.
-            "dismiss and notify" All simple dialogs encountered should be dismissed, and an error returned that the dialog was handled.
-            "accept and notify" All simple dialogs encountered should be accepted, and an error returned that the dialog was handled.
+            "dismiss and notify" All simple dialogs encountered should be dismissed,
+              and an error returned that the dialog was handled.
+            "accept and notify" All simple dialogs encountered should be accepted,
+              and an error returned that the dialog was handled.
             "ignore" All simple dialogs encountered should be left to the user to handle.
 
         Reference: https://www.w3.org/TR/webdriver/#dfn-user-prompt-handler
@@ -310,6 +313,10 @@ class ChromeCapabilitiesBuilder(BaseCapabilities):
         self.desired_capabilities = {**self.desired_capabilities, **self.options}
 
         return {"desiredCapabilities": self.desired_capabilities}
+
+
+class OperaCapabilitiesBuilder(ChromeCapabilitiesBuilder):
+    pass
 
 
 class FirefoxCapabilitiesBuilder(BaseCapabilities):

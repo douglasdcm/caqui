@@ -1,8 +1,3 @@
-from pytest import mark, fixture
-from caqui.easy.capabilities import FirefoxCapabilitiesBuilder, ChromeCapabilitiesBuilder
-from caqui.easy.page import AsyncPage
-from webdriver_manager.firefox import GeckoDriverManager
-from caqui.easy.server import Server
 from caqui.easy.options import ChromeOptionsBuilder, FirefoxOptions
 
 
@@ -68,9 +63,6 @@ def test_chrome_options():
                 "enableNetwork": False,
                 "enablePage": False,
                 "traceCategories": "devtools.network",
-            },
-            "prefs": {
-                "javascript.options.showInConsole": False,
             },
             "windowsTypes": "any",
         }
