@@ -15,7 +15,10 @@ CAPTURES = "captures"
 def __build_capabilities():
     options = ChromeOptionsBuilder().args(["headless"]).to_dict()
     capabilities = (
-        ChromeCapabilitiesBuilder().accept_insecure_certs(True).add_options(options)
+        ChromeCapabilitiesBuilder()
+        .accept_insecure_certs(True)
+        .add_options(options)
+        .page_load_strategy("eager")
     ).to_dict()
     return capabilities
 

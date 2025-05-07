@@ -752,9 +752,7 @@ def get_session(server_url: str, capabilities: dict = None):
         response = __post(url, payload=capabilities)
         return __get_session(response)
     except Exception as error:
-        raise WebDriverError(
-            "Failed to open session. Check the browser capabilities."
-        ) from error
+        raise WebDriverError("Failed to open session. Check the browser capabilities.") from error
 
 
 def find_element(server_url, session, locator_type, locator_value) -> dict:

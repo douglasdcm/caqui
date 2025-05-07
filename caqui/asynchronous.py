@@ -785,6 +785,4 @@ async def get_session(server_url: str, capabilities: dict = None) -> str:
         response = await __post(url, capabilities)
         return response.get("sessionId")
     except Exception as error:
-        raise WebDriverError(
-            "Failed to open session. Check the browser capabilities."
-        ) from error
+        raise WebDriverError("Failed to open session. Check the browser capabilities.") from error
