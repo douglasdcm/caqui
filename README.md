@@ -25,7 +25,9 @@ pip install caqui
 ```
 
 # Version 2.0.0+
-In version 2.0.0+ it is possible to use Python objects similarly to Selenium. Example:
+In version 2.0.0+ it is possible to use Python objects similarly to Selenium. **Read the [API documentation](https://caqui.readthedocs.io/en/latest/caqui.html) for more information.**
+
+Example:
 
 ```python
 from pytest import mark, fixture
