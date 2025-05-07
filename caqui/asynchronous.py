@@ -599,7 +599,7 @@ async def get_window(server_url, session) -> str:
 async def go_back(server_url, session):
     """
     This command causes the browser to traverse one step backward
-     in the joint session history of the
+    in the joint session history of the
     current browse. This is equivalent to pressing the back button in the browser.
     """
     try:
@@ -634,16 +634,7 @@ async def get_timeouts(server_url, session) -> dict:
 
 
 async def get_status(server_url) -> dict:
-    """Returns the status and details of the WebDriver
-    ::
-        "build": {
-                "version": "113.0.5672.63 (1a2b3c-refs/branch-heads/5672@{#912})"
-            },
-            "message": "ChromeDriver ready for new sessions.",
-            "os": {"arch": "x86_64", "name": "Linux", "version": "5.4.0-150-generic"},
-            "ready": True,
-        }
-    """
+    """Returns the status and details of the WebDriver"""
     try:
         url = f"{server_url}/status"
         response = await __get(url)
