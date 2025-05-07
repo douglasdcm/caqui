@@ -9,7 +9,9 @@ class ActionChains:
         self.__coroutines = []
 
     def click(self, element: Element):
-        """Clicks on the element `element`"""
+        """
+        Clicks on the element `element`
+        """
         self.__element = element
         coroutine = asynchronous.click(self.__remote, self.__session, str(element))
         self.__coroutines.append(coroutine)

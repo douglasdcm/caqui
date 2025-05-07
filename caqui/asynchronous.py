@@ -611,7 +611,7 @@ async def go_back(server_url, session):
 
 
 async def get_url(server_url, session) -> str:
-    """Return the URL from web page:"""
+    """Returns the URL from web page:"""
     try:
         url = f"{server_url}/session/{session}/url"
         response = await __get(url)
@@ -622,7 +622,7 @@ async def get_url(server_url, session) -> str:
 
 async def get_timeouts(server_url, session) -> dict:
     """
-    Return the configured timeouts:
+    Returns the configured timeouts:
         {"implicit": 0, "pageLoad": 300000, "script": 30000}
     """
     try:
@@ -634,8 +634,8 @@ async def get_timeouts(server_url, session) -> dict:
 
 
 async def get_status(server_url) -> dict:
-    """
-    Return the status and details of the WebDriver:
+    """Returns the status and details of the WebDriver
+    ::
         "build": {
                 "version": "113.0.5672.63 (1a2b3c-refs/branch-heads/5672@{#912})"
             },
