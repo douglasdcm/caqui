@@ -10,8 +10,14 @@ from caqui.exceptions import CapabilityNotSupported
 
 
 class AsyncPage:
-    def __init__(self, server_url: str, capabilities: dict, url: Union[str, None] = None) -> None:
+    def __init__(
+            self, server_url: str,
+            capabilities: dict = None,
+            url: Union[str, None] = None
+        ) -> None:
         """Mimics Selenium methods"""
+        if not capabilities:
+            capabilities = {}
         if not isinstance(capabilities, dict):
             raise CapabilityNotSupported("Expected dictionary")
         self.__server_url = server_url
