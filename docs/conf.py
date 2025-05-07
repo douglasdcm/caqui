@@ -22,7 +22,7 @@ copyright = '2025, Douglas Cardoso'
 author = 'Douglas Cardoso'
 
 # The full version, including alpha/beta/rc tags
-release = '3.0.3'
+release = '3.0.4'
 
 
 # -- General configuration ---------------------------------------------------
