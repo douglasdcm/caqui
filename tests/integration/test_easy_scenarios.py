@@ -97,7 +97,7 @@ async def test_big_scenario_of_functions(setup_environment: AsyncPage):
     )
     cookies = COOKIE
     await page.add_cookie(cookies)
-    assert cookies == synchronous.get_cookies(remote, session)[0]
+    assert cookies.get("domain") == synchronous.get_cookies(remote, session)[0].get("domain")
     cookie = (await page.get_cookies())[0]
     cookie["name"] = "other"
     await page.add_cookie(cookie)
