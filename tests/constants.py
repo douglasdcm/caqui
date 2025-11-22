@@ -7,7 +7,6 @@ TEST_DIR = BASE_DIR + "/tests"
 PAGE_URL = f"file:///{TEST_DIR}/html/playground.html"
 COOKIE = {
     "domain": ".example.org",
-    "expiry": 1760687129,
     "httpOnly": True,
     "name": "NID",
     "path": "/",
