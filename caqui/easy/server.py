@@ -8,6 +8,7 @@ from webdriver_manager.core.manager import DriverManager
 from webdriver_manager.chrome import ChromeDriverManager
 from caqui.exceptions import ServerError
 
+TIMEOUT = 120 # seconds
 
 class Server:
     """
@@ -38,7 +39,7 @@ class Server:
         MAX_RETIES = 10
         for i in range(MAX_RETIES):
             try:
-                requests.get(self.url)
+                requests.get(self.url, timeout=TIMEOUT)
                 break
             except ConnectionError:
                 sleep(1)
@@ -57,7 +58,7 @@ class Server:
     def start(self):
         """Starts the local server"""
         try:
-            head(self.url)
+            head(self.url, timeout=TIMEOUT)
         except ConnectionError:
             pass
         except Exception:
