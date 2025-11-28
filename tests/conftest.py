@@ -1,3 +1,4 @@
+from aiohttp import ClientSession
 from pytest import fixture
 from tests.constants import PAGE_URL
 from caqui.easy import AsyncPage
@@ -5,6 +6,7 @@ from caqui.easy.capabilities import ChromeCapabilitiesBuilder
 from caqui.easy.options import ChromeOptionsBuilder
 from caqui.easy.server import Server
 from caqui import synchronous
+import pytest_asyncio
 
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
@@ -48,16 +50,16 @@ def setup_functional_environment():
     finally:
         synchronous.close_session(server_url, session)
 
-
-@fixture
-def setup_environment():
+@pytest_asyncio.fixture
+async def setup_environment():
     server_url = SERVER_URL
     capabilities = __build_capabilities()
-    page = AsyncPage(server_url, capabilities, PAGE_URL)
-    yield page
-    try:
-        synchronous.dismiss_alert(server_url, page.session)
-    except Exception:
-        pass
-    finally:
-        page.quit()
+    async with ClientSession() as session_http:
+        page = AsyncPage(server_url, capabilities, PAGE_URL, session_http=session_http)
+        yield page
+        try:
+            synchronous.dismiss_alert(server_url, page.session)
+        except Exception:
+            pass
+        finally:
+            page.quit()

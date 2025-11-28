@@ -1,9 +1,85 @@
-import aiohttp
+from aiohttp import ClientSession
 from pytest import mark, raises
 from caqui import asynchronous, synchronous
 from caqui.exceptions import WebDriverError
 from caqui.by import By
 from tests.constants import COOKIE
+from caqui.easy import AsyncPage
+from tests.constants import PAGE_URL
+from pytest import mark
+from tests.constants import COOKIE
+
+
+@mark.asyncio
+async def test_big_scenario_of_functions_with_session_http(setup_environment: AsyncPage):
+    page = setup_environment
+    await page.implicitly_wait(10)
+
+    # Need to navigate to a web page. If use 'playgound.html' the error
+    # 'Document is cookie-averse' happens
+    await page.get(
+        "https://example.org/",
+    )
+    cookies = COOKIE
+    await page.add_cookie(cookies)
+    cookie = (await page.get_cookies())[0]
+    cookie["name"] = "other"
+    await page.add_cookie(cookie)
+    await page.delete_cookie("other")
+    await page.delete_all_cookies()
+    await page.get(
+        PAGE_URL,
+    )
+
+    await page.switch_to.active_element.get_attribute("value")
+    element = await page.find_element(By.XPATH, "//a")
+    # Returns and base64 encoded string into image
+    await element.screenshot("/tmp/image.png")
+
+    await page.back()
+    await page.forward()
+    await page.refresh()
+
+    alert_element = await page.find_element(By.CSS_SELECTOR, "#alert-button-prompt")
+    await alert_element.click()
+    alert_object = page.switch_to.alert
+    await page.alert.accept()
+
+    await alert_element.click()
+    await alert_object.send_keys("Caqui")
+    await alert_object.dismiss()
+
+    iframe = await page.find_element(By.ID, "my-iframe")
+    # switch to selected iframe
+    await page.switch_to.frame(iframe)
+    await page.switch_to.default_content()
+    # switching to second iframe based on index
+    iframe = (await page.find_elements(By.ID, "my-iframe"))[0]
+
+    # switch to selected iframe
+    await page.switch_to.frame(iframe)
+    # switch back to default content
+    await page.switch_to.default_content()
+
+    window_handle = page.current_window_handle
+    assert len(page.window_handles) >= 1
+    await page.switch_to.window(window_handle)
+    # Opens a new tab and switches to new tab
+    await page.switch_to.new_window("tab")
+    # Opens a new window and switches to new window
+    await page.switch_to.new_window("window")
+
+    # Access each dimension individually
+    await page.set_window_size(1024, 768)
+    # Move the window to the top left of the primary monitor
+    await page.set_window_position(0, 0)
+    await page.maximize_window()
+    # await driver.minimize_window()  # does not work on headless mode
+    await page.save_screenshot("/tmp/image.png")
+
+    # Executing JavaScript to capture innerText of header element
+    await page.execute_script('alert("any warn")')
+
 
 
 @mark.asyncio
@@ -25,7 +101,13 @@ async def test_add_cookie(setup_functional_environment):
     cookie = cookies_before[0]
     cookie[By.NAME] = "another"
 
-    assert await asynchronous.add_cookie(server_url, session, cookie) is True
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.add_cookie(
+                server_url, session, cookie, session_http=session_http
+            )
+            is True
+        )
     cookies_after = synchronous.get_cookies(server_url, session)
     assert len(cookies_after) > len(cookies_before)
 
@@ -38,7 +120,13 @@ async def test_delete_cookie_asynchronous(setup_functional_environment):
     name = cookies[0].get(By.NAME)
     zero = 0
 
-    assert await asynchronous.delete_cookie(server_url, session, name) is True
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.delete_cookie(
+                server_url, session, name, session_http=session_http
+            )
+            is True
+        )
     cookies = synchronous.get_cookies(server_url, session)
     assert len(cookies) == zero
 
@@ -73,7 +161,13 @@ async def test_refresh_page(setup_functional_environment):
     assert element_before != element_after
 
     element_before = element_after
-    assert await asynchronous.refresh_page(server_url, session) is True
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.refresh_page(
+                server_url, session, session_http=session_http
+            )
+            is True
+        )
 
     element_after = synchronous.find_element(server_url, session, By.XPATH, "//input")
     assert element_before != element_after
@@ -95,7 +189,13 @@ async def test_go_forward(setup_functional_environment):
     assert synchronous.get_title(server_url, session) == title
 
     synchronous.go_back(server_url, session)
-    assert await asynchronous.go_forward(server_url, session) is True
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.go_forward(
+                server_url, session, session_http=session_http
+            )
+            is True
+        )
     assert synchronous.get_title(server_url, session) == title
 
 
@@ -122,12 +222,13 @@ async def test_set_window_rectangle(setup_functional_environment):
 
     synchronous.maximize_window(server_url, session)
 
-    assert (
-        await asynchronous.set_window_rectangle(
-            server_url, session, width, height, x, y
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.set_window_rectangle(
+                server_url, session, width, height, x, y, session_http=session_http
+            )
+            is True
         )
-        is True
-    )
 
     window_rectangle_after = None
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
@@ -153,7 +254,13 @@ async def test_fullscreen_window(setup_functional_environment):
 
     synchronous.maximize_window(server_url, session)
 
-    assert await asynchronous.fullscreen_window(server_url, session) is True
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.fullscreen_window(
+                server_url, session, session_http=session_http
+            )
+            is True
+        )
 
     window_rectangle_after = None
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
@@ -177,7 +284,13 @@ async def test_minimize_window(setup_functional_environment):
 
     synchronous.maximize_window(server_url, session)
 
-    assert await asynchronous.minimize_window(server_url, session) is True
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.minimize_window(
+                server_url, session, session_http=session_http
+            )
+            is True
+        )
 
     window_rectangle_after = None
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
@@ -192,7 +305,13 @@ async def test_maximize_window_asynchronous(setup_functional_environment):
     server_url, session = setup_functional_environment
     window_rectangle_before = synchronous.get_window_rectangle(server_url, session)
 
-    assert await asynchronous.maximize_window(server_url, session) is True
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.maximize_window(
+                server_url, session, session_http=session_http
+            )
+            is True
+        )
 
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
@@ -228,10 +347,13 @@ async def test_switch_to_window(setup_functional_environment, window_type):
     assert synchronous.get_title(server_url, session) == ""
     synchronous.switch_to_window(server_url, session, handle=sample_page) is True
 
-    assert (
-        await asynchronous.switch_to_window(server_url, session, handle=new_page)
-        is True
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.switch_to_window(
+                server_url, session, handle=new_page, session_http=session_http
+            )
+            is True
+        )
     assert synchronous.get_title(server_url, session) == ""
 
 
@@ -244,7 +366,13 @@ async def test_new_window(setup_functional_environment, window_type):
     import time
 
     time.sleep(3)
-    assert await asynchronous.new_window(server_url, session, window_type) is not None
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.new_window(
+                server_url, session, window_type, session_http=session_http
+            )
+            is not None
+        )
 
 
 @mark.asyncio
@@ -256,10 +384,13 @@ async def test_switch_to_parent_frame_asynchronous(setup_functional_environment)
     element_frame = synchronous.find_element(
         server_url, session, locator_type, locator_value
     )
-    assert (
-        await asynchronous.switch_to_parent_frame(server_url, session, element_frame)
-        is True
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.switch_to_parent_frame(
+                server_url, session, element_frame, session_http=session_http
+            )
+            is True
+        )
 
 
 def test_switch_to_parent_frame_synchronous(setup_functional_environment):
@@ -284,9 +415,10 @@ async def test_switch_to_frame_asynchronous(setup_functional_environment):
     element_frame = synchronous.find_element(
         server_url, session, locator_type, locator_value
     )
-    assert (
-        await asynchronous.switch_to_frame(server_url, session, element_frame) is True
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.switch_to_frame(server_url, session, element_frame, session_http=session_http) is True
+        )
 
 
 def test_switch_to_frame_synchronous(setup_functional_environment):
@@ -313,7 +445,8 @@ async def test_send_alert_text(setup_functional_environment):
     synchronous.accept_alert(server_url, session) is True
 
     synchronous.click(server_url, session, element)
-    assert await asynchronous.send_alert_text(server_url, session, "any2") is True
+    async with ClientSession() as session_http:
+        assert await asynchronous.send_alert_text(server_url, session, "any2", session_http=session_http) is True
     synchronous.accept_alert(server_url, session) is True
 
 
@@ -329,7 +462,8 @@ async def test_accept_alert(setup_functional_environment):
     assert synchronous.accept_alert(server_url, session) is True
 
     synchronous.click(server_url, session, element)
-    assert await asynchronous.accept_alert(server_url, session) is True
+    async with ClientSession() as session_http:
+        assert await asynchronous.accept_alert(server_url, session, session_http=session_http) is True
 
 
 @mark.asyncio
@@ -344,7 +478,8 @@ async def test_dismiss_alert(setup_functional_environment):
     assert synchronous.dismiss_alert(server_url, session) is True
 
     synchronous.click(server_url, session, element)
-    assert await asynchronous.dismiss_alert(server_url, session) is True
+    async with ClientSession() as session_http:
+        assert await asynchronous.dismiss_alert(server_url, session, session_http=session_http) is True
 
 
 @mark.asyncio
@@ -356,7 +491,7 @@ async def test_take_screenshot_element(setup_functional_environment):
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
 
     assert synchronous.take_screenshot_element(server_url, session, element) is True
-    async with aiohttp.ClientSession() as session_http:
+    async with ClientSession() as session_http:
         assert (
             await asynchronous.take_screenshot_element(
                 server_url, session, element, session_http=session_http
@@ -370,7 +505,13 @@ async def test_take_screenshot(setup_functional_environment):
     server_url, session = setup_functional_environment
 
     assert synchronous.take_screenshot(server_url, session) is True
-    assert await asynchronous.take_screenshot(server_url, session) is True
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.take_screenshot(
+                server_url, session, session_http=session_http
+            )
+            is True
+        )
 
 
 @mark.skip(reason="works just in firefox")
@@ -380,7 +521,8 @@ async def test_delete_cookies_asynchronous(setup_functional_environment):
 
     cookies_before = synchronous.get_cookies(server_url, session)
 
-    response = await asynchronous.delete_all_cookies(server_url, session)
+    async with ClientSession() as session_http:
+        response = await asynchronous.delete_all_cookies(server_url, session, session_http=session_http)
     assert response is True
 
     cookies_after = synchronous.get_cookies(server_url, session)
@@ -410,7 +552,8 @@ async def test_get_named_cookie(setup_functional_environment):
     assert (
         synchronous.get_named_cookie(server_url, session, name).get("value") == expected
     )
-    response = await asynchronous.get_named_cookie(server_url, session, name)
+    async with ClientSession() as session_http:
+        response = await asynchronous.get_named_cookie(server_url, session, name, session_http=session_http)
     assert response.get("value") == expected
 
 
@@ -425,9 +568,10 @@ async def test_get_computed_label(setup_functional_environment):
 
     assert synchronous.get_computed_label(server_url, session, element) == expected
 
-    assert (
-        await asynchronous.get_computed_label(server_url, session, element) == expected
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.get_computed_label(server_url, session, element, session_http=session_http) == expected
+        )
 
 
 @mark.asyncio
@@ -441,9 +585,10 @@ async def test_get_computed_role(setup_functional_environment):
 
     assert synchronous.get_computed_role(server_url, session, element) == expected
 
-    assert (
-        await asynchronous.get_computed_role(server_url, session, element) == expected
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.get_computed_role(server_url, session, element, session_http=session_http) == expected
+        )
 
 
 @mark.asyncio
@@ -456,8 +601,8 @@ async def test_get_tag_name(setup_functional_environment):
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
 
     assert synchronous.get_tag_name(server_url, session, element) == expected
-
-    assert await asynchronous.get_tag_name(server_url, session, element) == expected
+    async with ClientSession() as session_http:
+        assert await asynchronous.get_tag_name(server_url, session, element, session_http=session_http) == expected
 
 
 @mark.parametrize(
@@ -480,10 +625,10 @@ async def test_find_element_from_shadow_root(
     )
 
     assert actual is not None
-
-    actual = await asynchronous.find_child_element(
-        server_url, session, shadow_root, locator, value
-    )
+    async with ClientSession() as session_http:
+        actual = await asynchronous.find_child_element(
+            server_url, session, shadow_root, locator, value, session_http=session_http
+        )
 
     assert actual is not None
 
@@ -510,9 +655,10 @@ async def test_find_elements_from_shadow_root(
 
     assert len(actual) == one
 
-    actual = await asynchronous.find_children_elements(
-        server_url, session, shadow_root, locator, value
-    )
+    async with ClientSession() as session_http:
+        actual = await asynchronous.find_children_elements(
+            server_url, session, shadow_root, locator, value, session_http=session_http
+        )
 
     assert len(actual) == one
 
@@ -527,7 +673,8 @@ async def test_get_shadow_root(setup_functional_environment):
 
     assert synchronous.get_shadow_root(server_url, session, element) is not None
 
-    response = await asynchronous.get_shadow_root(server_url, session, element)
+    async with ClientSession() as session_http:
+        response = await asynchronous.get_shadow_root(server_url, session, element, session_http=session_http)
     assert response is not None
 
 
@@ -541,8 +688,8 @@ async def test_get_rect(setup_functional_environment):
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
 
     assert synchronous.get_rect(server_url, session, element) == expected
-
-    assert await asynchronous.get_rect(server_url, session, element) == expected
+    async with ClientSession() as session_http:
+        assert await asynchronous.get_rect(server_url, session, element, session_http=session_http) == expected
 
 
 @mark.asyncio
@@ -553,9 +700,10 @@ async def test_move_to_element(setup_functional_environment):
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
     assert synchronous.actions_move_to_element(server_url, session, element) is True
-    assert (
-        await asynchronous.actions_move_to_element(server_url, session, element) is True
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.actions_move_to_element(server_url, session, element, session_http=session_http) is True
+        )
 
 
 @mark.asyncio
@@ -566,10 +714,11 @@ async def test_actions_scroll_to_element(setup_functional_environment):
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
     assert synchronous.actions_scroll_to_element(server_url, session, element) is True
-    assert (
-        await asynchronous.actions_scroll_to_element(server_url, session, element)
-        is True
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.actions_scroll_to_element(server_url, session, element, session_http=session_http)
+            is True
+        )
 
 
 @mark.asyncio
@@ -583,7 +732,8 @@ async def test_submit(setup_functional_environment):
 
     synchronous.refresh_page(server_url, session)
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
-    assert await asynchronous.submit(server_url, session, element) is True
+    async with ClientSession() as session_http:
+        assert await asynchronous.submit(server_url, session, element, session_http=session_http) is True
 
 
 @mark.asyncio
@@ -594,7 +744,8 @@ async def test_actions_click(setup_functional_environment):
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
     assert synchronous.actions_click(server_url, session, element) is True
-    assert await asynchronous.actions_click(server_url, session, element) is True
+    async with ClientSession() as session_http:
+        assert await asynchronous.actions_click(server_url, session, element,session_http=session_http) is True
 
 
 @mark.asyncio
@@ -607,9 +758,10 @@ async def test_raise_exception_when_element_not_found(setup_functional_environme
         synchronous.find_element(server_url, session, locator_type, locator_value)
 
     with raises(WebDriverError):
-        await asynchronous.find_element(
-            server_url, session, locator_type, locator_value
-        )
+        async with ClientSession() as session_http:
+            await asynchronous.find_element(
+                server_url, session, locator_type, locator_value, session_http=session_http
+            )
 
 
 @mark.asyncio
@@ -621,8 +773,8 @@ async def test_set_timeouts(setup_functional_environment):
     synchronous.set_timeouts(server_url, session, timeouts_1)
 
     assert synchronous.get_timeouts(server_url, session).get("implicit") == timeouts_1
-
-    await asynchronous.set_timeouts(server_url, session, timeouts_2)
+    async with ClientSession() as session_http:
+        await asynchronous.set_timeouts(server_url, session, timeouts_2, session_http=session_http)
 
     assert synchronous.get_timeouts(server_url, session).get("implicit") == timeouts_2
 
@@ -643,10 +795,10 @@ async def test_find_children_elements(setup_functional_environment):
     )
 
     assert len(children_elements) > expected
-
-    children_elements = await asynchronous.find_children_elements(
-        server_url, session, parent_element, locator_type, locator_value
-    )
+    async with ClientSession() as session_http:
+        children_elements = await asynchronous.find_children_elements(
+            server_url, session, parent_element, locator_type, locator_value, session_http=session_http
+        )
 
     assert len(children_elements) > expected
 
@@ -669,9 +821,10 @@ async def test_find_child_element(setup_functional_environment):
     text = synchronous.get_text(server_url, session, child_element)
 
     assert text == expected
-    child_element = await asynchronous.find_child_element(
-        server_url, session, parent_element, locator_type, locator_value
-    )
+    async with ClientSession() as session_http:
+        child_element = await asynchronous.find_child_element(
+            server_url, session, parent_element, locator_type, locator_value, session_http=session_http
+        )
     text = synchronous.get_text(server_url, session, child_element)
     assert text == expected
 
@@ -682,21 +835,21 @@ async def test_get_page_source(setup_functional_environment):
     expected = "Sample page"
 
     assert expected in synchronous.get_page_source(server_url, session)
-    assert expected in await asynchronous.get_page_source(server_url, session)
+    async with ClientSession() as session_http:
+        assert expected in await asynchronous.get_page_source(server_url, session, session_http=session_http)
 
 
 @mark.asyncio
 async def test_execute_script_asynchronous(setup_functional_environment):
     server_url, session = setup_functional_environment
     script = "alert('any warn')"
-
-    assert await asynchronous.execute_script(server_url, session, script) is None
+    async with ClientSession() as session_http:
+        assert await asynchronous.execute_script(server_url, session, script, session_http=session_http) is None
 
 
 def test_execute_script_synchronous(setup_functional_environment):
     server_url, session = setup_functional_environment
     script = "alert('any warn')"
-
     assert synchronous.execute_script(server_url, session, script) is None
 
 
@@ -713,7 +866,8 @@ async def test_get_alert_text(setup_functional_environment):
     synchronous.click(server_url, session, alert_button)
 
     assert synchronous.get_alert_text(server_url, session) == expected
-    assert await asynchronous.get_alert_text(server_url, session) == expected
+    async with ClientSession() as session_http:
+        assert await asynchronous.get_alert_text(server_url, session, session_http=session_http) == expected
 
 
 @mark.asyncio
@@ -726,7 +880,8 @@ async def test_get_active_element(setup_functional_environment):
     synchronous.send_keys(server_url, session, element, "any")
 
     assert synchronous.get_active_element(server_url, session) == element
-    assert await asynchronous.get_active_element(server_url, session) == element
+    async with ClientSession() as session_http:
+        assert await asynchronous.get_active_element(server_url, session, session_http=session_http) == element
 
 
 @mark.asyncio
@@ -738,7 +893,8 @@ async def test_clear_element_fails_when_invalid_inputs(setup_functional_environm
         synchronous.clear_element(server_url, session, element) is True
 
     with raises(WebDriverError):
-        await asynchronous.clear_element(server_url, session, element)
+        async with ClientSession() as session_http:
+            await asynchronous.clear_element(server_url, session, element, session_http=session_http)
 
 
 @mark.asyncio
@@ -753,7 +909,8 @@ async def test_clear_element(setup_functional_environment):
     assert synchronous.clear_element(server_url, session, element) is True
 
     synchronous.send_keys(server_url, session, element, text)
-    assert await asynchronous.clear_element(server_url, session, element) is True
+    async with ClientSession() as session_http:
+        assert await asynchronous.clear_element(server_url, session, element, session_http=session_http) is True
 
 
 @mark.asyncio
@@ -765,7 +922,8 @@ async def test_is_element_enabled(setup_functional_environment):
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
 
     assert synchronous.is_element_enabled(server_url, session, element) is True
-    assert await asynchronous.is_element_enabled(server_url, session, element) is True
+    async with ClientSession() as session_http:
+        assert await asynchronous.is_element_enabled(server_url, session, element, session_http=session_http) is True
 
 
 @mark.asyncio
@@ -782,10 +940,11 @@ async def test_get_css_value(setup_functional_environment):
         synchronous.get_css_value(server_url, session, element, property_name)
         == expected
     )
-    assert (
-        await asynchronous.get_css_value(server_url, session, element, property_name)
-        == expected
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.get_css_value(server_url, session, element, property_name, session_http=session_http)
+            == expected
+        )
 
 
 @mark.asyncio
@@ -797,7 +956,9 @@ async def test_is_element_selected(setup_functional_environment):
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
 
     assert synchronous.is_element_selected(server_url, session, element) is False
-    assert await asynchronous.is_element_selected(server_url, session, element) is False
+    async with ClientSession() as session_http:
+        assert await asynchronous.is_element_selected(server_url, session, element, session_http=session_http) is False
+
 
 
 @mark.asyncio
@@ -806,7 +967,8 @@ async def test_get_window_rectangle(setup_functional_environment):
     expected = "height"
 
     assert expected in synchronous.get_window_rectangle(server_url, session)
-    rectangle = await asynchronous.get_window_rectangle(server_url, session)
+    async with ClientSession() as session_http:
+        rectangle = await asynchronous.get_window_rectangle(server_url, session, session_http=session_http)
     assert expected in rectangle
 
 
@@ -815,7 +977,8 @@ async def test_get_window_handles(setup_functional_environment):
     server_url, session = setup_functional_environment
 
     assert isinstance(synchronous.get_window_handles(server_url, session), list)
-    handles = await asynchronous.get_window_handles(server_url, session)
+    async with ClientSession() as session_http:
+        handles = await asynchronous.get_window_handles(server_url, session, session_http=session_http)
     assert isinstance(handles, list)
 
 
@@ -827,8 +990,8 @@ def test_close_window_sync(setup_functional_environment):
 @mark.asyncio
 async def test_close_window_async(setup_functional_environment):
     server_url, session = setup_functional_environment
-
-    response = await asynchronous.close_window(server_url, session)
+    async with ClientSession() as session_http:
+        response = await asynchronous.close_window(server_url, session, session_http=session_http)
     assert isinstance(response, list)
 
 
@@ -837,7 +1000,8 @@ async def test_get_window(setup_functional_environment):
     server_url, session = setup_functional_environment
 
     assert synchronous.get_window(server_url, session) is not None
-    assert await asynchronous.get_window(server_url, session) is not None
+    async with ClientSession() as session_http:
+        assert await asynchronous.get_window(server_url, session, session_http=session_http) is not None
 
 
 @mark.asyncio
@@ -850,7 +1014,8 @@ async def test_get_attribute_fails_when_invalid_attribute(setup_functional_envir
         synchronous.get_attribute(server_url, session, element, attribute)
 
     with raises(WebDriverError):
-        await asynchronous.get_attribute(server_url, session, element, attribute)
+        async with ClientSession() as session_http:
+            await asynchronous.get_attribute(server_url, session, element, attribute, session_http=session_http)
 
 
 @mark.asyncio
@@ -863,17 +1028,19 @@ async def test_get_attribute(setup_functional_environment):
         synchronous.get_attribute(server_url, session, element, attribute)
         == "http://any1.com/"
     )
-    assert (
-        await asynchronous.get_attribute(server_url, session, element, attribute)
-        == "http://any1.com/"
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.get_attribute(server_url, session, element, attribute, session_http=session_http)
+            == "http://any1.com/"
+        )
 
 
 @mark.asyncio
 async def test_get_cookies(setup_functional_environment):
     server_url, session = setup_functional_environment
     assert isinstance(synchronous.get_cookies(server_url, session), list)
-    cookies = await asynchronous.get_cookies(server_url, session)
+    async with ClientSession() as session_http:
+        cookies = await asynchronous.get_cookies(server_url, session, session_http=session_http)
     assert isinstance(cookies, list)
 
 
@@ -886,7 +1053,8 @@ async def test_go_back(setup_functional_environment):
     assert synchronous.get_title(server_url, session) == title
 
     synchronous.go_forward(server_url, session)
-    assert await asynchronous.go_back(server_url, session) is True
+    async with ClientSession() as session_http:
+        assert await asynchronous.go_back(server_url, session, session_http=session_http) is True
     assert synchronous.get_title(server_url, session) == title
 
 
@@ -896,7 +1064,8 @@ async def test_get_url(setup_functional_environment):
     expected = "playground.html"
 
     assert expected in synchronous.get_url(server_url, session)
-    assert expected in await asynchronous.get_url(server_url, session)
+    async with ClientSession() as session_http:
+        assert expected in await asynchronous.get_url(server_url, session, session_http=session_http)
 
 
 @mark.asyncio
@@ -905,7 +1074,8 @@ async def test_get_timeouts(setup_functional_environment):
     expected = "implicit"
 
     assert expected in synchronous.get_timeouts(server_url, session)
-    assert expected in await asynchronous.get_timeouts(server_url, session)
+    async with ClientSession() as session_http:
+        assert expected in await asynchronous.get_timeouts(server_url, session, session_http=session_http)
 
 
 @mark.asyncio
@@ -913,7 +1083,8 @@ async def test_get_status(setup_functional_environment):
     server_url, _ = setup_functional_environment
     expected = "ready"
     assert expected in synchronous.get_status(server_url).get("value")
-    response = await asynchronous.get_status(server_url)
+    async with ClientSession() as session_http:
+        response = await asynchronous.get_status(server_url, session_http=session_http)
     assert expected in response.get("value")
 
 
@@ -923,7 +1094,8 @@ async def test_get_title(setup_functional_environment):
     expected = "Sample page"
 
     assert synchronous.get_title(server_url, session) == expected
-    assert await asynchronous.get_title(server_url, session) == expected
+    async with ClientSession() as session_http:
+        assert await asynchronous.get_title(server_url, session, session_http=session_http) == expected
 
 
 @mark.asyncio
@@ -938,9 +1110,10 @@ async def test_find_elements_fails_when_invalid_data_input(
         synchronous.find_elements(server_url, session, locator_type, locator_value)
 
     with raises(WebDriverError):
-        await asynchronous.find_elements(
-            server_url, session, locator_type, locator_value
-        )
+        async with ClientSession() as session_http:
+            await asynchronous.find_elements(
+                server_url, session, locator_type, locator_value, session_http=session_http
+            )
 
 
 @mark.asyncio
@@ -952,9 +1125,10 @@ async def test_find_elements(setup_functional_environment):
     elements = synchronous.find_elements(
         server_url, session, locator_type, locator_value
     )
-    async_elements = await asynchronous.find_elements(
-        server_url, session, locator_type, locator_value
-    )
+    async with ClientSession() as session_http:
+        async_elements = await asynchronous.find_elements(
+            server_url, session, locator_type, locator_value, session_http=session_http
+        )
 
     assert len(elements) > 0
     assert len(async_elements) > 0
@@ -970,9 +1144,10 @@ async def test_find_element_fails_when_invalid_data_input(setup_functional_envir
         synchronous.find_element(server_url, session, locator_type, locator_value)
 
     with raises(WebDriverError):
-        await asynchronous.find_element(
-            server_url, session, locator_type, locator_value
-        )
+        async with ClientSession() as session_http:
+            await asynchronous.find_element(
+                server_url, session, locator_type, locator_value, session_http=session_http
+            )
 
 
 @mark.asyncio
@@ -985,12 +1160,13 @@ async def test_find_element(setup_functional_environment):
         synchronous.find_element(server_url, session, locator_type, locator_value)
         is not None
     )
-    assert (
-        await asynchronous.find_element(
-            server_url, session, locator_type, locator_value
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.find_element(
+                server_url, session, locator_type, locator_value, session_http=session_http
+            )
+            is not None
         )
-        is not None
-    )
 
 
 @mark.asyncio
@@ -1005,9 +1181,13 @@ async def test_get_property(setup_functional_environment):
     synchronous.send_keys(server_url, session, element, text)
 
     assert synchronous.get_property(server_url, session, element, property) == text
-    assert (
-        await asynchronous.get_property(server_url, session, element, property) == text
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.get_property(
+                server_url, session, element, property, session_http=session_http
+            )
+            == text
+        )
 
 
 @mark.asyncio
@@ -1018,8 +1198,13 @@ async def test_get_text(setup_functional_environment):
     locator_value = "//p[@id='end']"  # <p>end</p>
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
-
-    assert await asynchronous.get_text(server_url, session, element) == expected
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.get_text(
+                server_url, session, element, session_http=session_http
+            )
+            == expected
+        )
     assert synchronous.get_text(server_url, session, element) == expected
 
 
@@ -1033,9 +1218,13 @@ async def test_send_keys(setup_functional_environment):
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
 
-    assert (
-        await asynchronous.send_keys(server_url, session, element, text_async) is True
-    )
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.send_keys(
+                server_url, session, element, text_async, session_http=session_http
+            )
+            is True
+        )
     assert synchronous.send_keys(server_url, session, element, text_sync) is True
 
 
@@ -1046,6 +1235,11 @@ async def test_click(setup_functional_environment):
     locator_value = "//button"
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
-
-    assert await asynchronous.click(server_url, session, element) is True
+    async with ClientSession() as session_http:
+        assert (
+            await asynchronous.click(
+                server_url, session, element, session_http=session_http
+            )
+            is True
+        )
     assert synchronous.click(server_url, session, element) is True
