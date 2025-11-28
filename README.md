@@ -1,5 +1,5 @@
 # Caqui
-
+[![Python application](https://github.com/douglasdcm/caqui/actions/workflows/python-app.yml/badge.svg)](https://github.com/douglasdcm/caqui/actions/workflows/python-app.yml)
 [![PyPI Downloads](https://static.pepy.tech/badge/caqui)](https://pepy.tech/projects/caqui)
 
 **Caqui** executes commands against Drivers synchronously and asynchronously. The intention is that the user does not worry about which Driver they're using. It can be **Web**Drivers like [Selenium](https://www.selenium.dev/), **Mobile**Drivers like [Appium](http://appium.io/docs/en/2.0/), or **Desktop**Drivers like [Winium](https://github.com/2gis/Winium.Desktop). It can also be used in remote calls. The user can start the Driver as a server in any host and provide the URL to **Caqui** clients.
@@ -35,10 +35,8 @@ from tests.constants import PAGE_URL
 from caqui.easy import AsyncPage
 from caqui.by import By
 from caqui import synchronous
-from caqui.easy.capabilities import ChromeOptionsBuilder
 from caqui.easy.options import ChromeOptionsBuilder
 from caqui.easy.server import Server
-from time import sleep
 
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
@@ -49,13 +47,12 @@ def setup_server():
     server = Server.get_instance(port=SERVER_PORT)
     server.start()
     yield
-    sleep(3)
-    server.dispose()
+    server.dispose(delay=3)
 
 @fixture
 def setup_environment():
     server_url = SERVER_URL
-    options = ChromeOptionsBuilder().args(["headless"]).to_dict()
+    options = ChromeOptionsBuilder().args(["headless"])
     capabilities = ChromeCapabilitiesBuilder().accept_insecure_certs(True).add_options(options).to_dict()
     page = AsyncPage(server_url, capabilities, PAGE_URL)
     yield page

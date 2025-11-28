@@ -1,12 +1,13 @@
 from caqui import asynchronous
 from caqui.easy.element import Element
+from typing import Coroutine
 
 
 class ActionChains:
     def __init__(self, driver) -> None:
         self.__remote = driver.remote
         self.__session = driver.session
-        self.__coroutines = []
+        self.__coroutines: list[Coroutine] = []
 
     def click(self, element: Element):
         """
@@ -37,6 +38,5 @@ class ActionChains:
 
     async def perform(self):
         """Executes the chain of Coroutines"""
-        for coroutine in self.__coroutines:
-            await coroutine
+        [await coroutine for coroutine in self.__coroutines]
         return True

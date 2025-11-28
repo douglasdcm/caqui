@@ -1,5 +1,7 @@
 from math import ceil
 
+from caqui.easy.options import BaseOptions
+
 
 class Browser:
     """
@@ -19,7 +21,7 @@ class ProxyConfigurationBuilder:
     """
 
     def __init__(self) -> None:
-        self.__proxy = {}
+        self.__proxy: dict = {}
 
     def proxy_type(self, proxy: str):
         """
@@ -127,7 +129,7 @@ class TimeoutsBuilder:
     """
 
     def __init__(self) -> None:
-        self.__timeouts = {}
+        self.__timeouts: dict = {}
 
     def implicit(self, timeout: int):
         """Notice: if the number is a float, converts it to an integer"""
@@ -164,8 +166,8 @@ class BaseCapabilities:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
 
     def __init__(self) -> None:
-        self.desired_capabilities = {}
-        self.options = {}
+        self.desired_capabilities: dict = {}
+        self.options: dict = {}
 
     def to_dict(self):
         raise NotImplementedError
@@ -217,11 +219,13 @@ class BaseCapabilities:
         }
         return self
 
-    def proxy(self, proxy_configuration: dict):
+    def proxy(self, proxy_configuration: dict | ProxyConfigurationBuilder):
         """
         Defines the current session’s proxy configuration.
         Use the ProxyConfigurationBuilder class for simplicity.
         """
+        if isinstance(proxy_configuration, ProxyConfigurationBuilder):
+            proxy_configuration = proxy_configuration.to_dict()
         self.desired_capabilities = {
             **self.desired_capabilities,
             **proxy_configuration,
@@ -238,11 +242,13 @@ class BaseCapabilities:
         }
         return self
 
-    def timeouts(self, session_timeouts: dict):
+    def timeouts(self, session_timeouts: dict | TimeoutsBuilder):
         """
         Describes the timeouts imposed on certain session operations.
         Use the TimeoutsBuilder class for simplicity.
         """
+        if isinstance(session_timeouts, TimeoutsBuilder):
+            session_timeouts = session_timeouts.to_dict()
         self.desired_capabilities = {
             **self.desired_capabilities,
             **session_timeouts,
@@ -293,11 +299,13 @@ class BaseCapabilities:
         }
         return self
 
-    def add_options(self, options: dict):
+    def add_options(self, options: dict | BaseOptions):
         """Add vendor options, for example
         {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}} or
         {"moz:experimental-webdriver": true}
         """
+        if isinstance(options, BaseOptions):
+            options = options.to_dict()
         self.options = options
         return self
 
@@ -329,5 +337,8 @@ class FirefoxCapabilitiesBuilder(BaseCapabilities):
         """
         result = {"capabilities": self.desired_capabilities}
         if self.options:
-            result["capabilities"] = {**result["capabilities"], **{"firstMatch": self.options}}
+            result["capabilities"] = {
+                **result["capabilities"],
+                **{"firstMatch": self.options},
+            }
         return result

@@ -1,4 +1,3 @@
-from time import sleep
 from pytest import fixture
 from tests.constants import PAGE_URL
 from caqui.easy import AsyncPage
@@ -13,7 +12,7 @@ CAPTURES = "captures"
 
 
 def __build_capabilities():
-    options = ChromeOptionsBuilder().args(["headless"]).to_dict()
+    options = ChromeOptionsBuilder().args(["headless"])
     capabilities = (
         ChromeCapabilitiesBuilder()
         .accept_insecure_certs(True)
@@ -28,8 +27,7 @@ def setup_server():
     server = Server.get_instance(port=SERVER_PORT)
     server.start()
     yield
-    sleep(3)
-    server.dispose()
+    server.dispose(delay=3)
 
 
 @fixture
@@ -47,10 +45,8 @@ def setup_functional_environment():
         synchronous.dismiss_alert(server_url, session)
     except Exception:
         pass
-    try:
+    finally:
         synchronous.close_session(server_url, session)
-    except Exception:
-        pass
 
 
 @fixture
@@ -63,4 +59,5 @@ def setup_environment():
         synchronous.dismiss_alert(server_url, page.session)
     except Exception:
         pass
-    page.quit()
+    finally:
+        page.quit()

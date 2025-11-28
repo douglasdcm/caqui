@@ -1,14 +1,15 @@
+import requests
+import subprocess
 from time import sleep
 from typing import Union
 from requests import head
 from requests.exceptions import ConnectionError
-import requests
-import subprocess
 from webdriver_manager.core.manager import DriverManager
 from webdriver_manager.chrome import ChromeDriverManager
 from caqui.exceptions import ServerError
 
-TIMEOUT = 120 # seconds
+TIMEOUT = 120  # seconds
+
 
 class Server:
     """
@@ -42,7 +43,7 @@ class Server:
                 requests.get(self.url, timeout=TIMEOUT)
                 break
             except ConnectionError:
-                sleep(1)
+                sleep(0.5)
                 if i == (MAX_RETIES - 1):
                     self.__process.kill()
                     self.__process.wait()
@@ -88,10 +89,16 @@ class Server:
         """Returns the process (PID)"""
         return self.__process
 
-    def dispose(self):
+    def dispose(self, delay: float = 0):
         """
         Disposes the driver process.
+
+        Args:
+            delay: Delay execution for a given number of seconds.
+            The argument may be a floating point number for subsecond precision.
         """
+        if delay:
+            sleep(delay)
         if self.__process:
             self.__process.kill()
             self.__process.wait()

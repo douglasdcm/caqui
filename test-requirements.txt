@@ -5,3 +5,4 @@ coverage
 tox
 pytest-asyncio
 build
+mypy

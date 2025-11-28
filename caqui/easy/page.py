@@ -1,5 +1,5 @@
 import os
-from typing import Union
+from typing import Optional, Union
 from caqui import asynchronous, synchronous
 from caqui.easy.action_chains import ActionChains
 from caqui.easy.window import Window
@@ -11,7 +11,7 @@ from caqui.exceptions import CapabilityNotSupported
 
 class AsyncPage:
     def __init__(
-        self, server_url: str, capabilities: dict = None, url: Union[str, None] = None
+        self, server_url: str, capabilities: Optional[dict] = None, url: Union[str, None] = None
     ) -> None:
         """Mimics Selenium methods"""
         if not capabilities:

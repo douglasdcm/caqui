@@ -3,6 +3,7 @@ import json as __json
 from caqui.exceptions import WebDriverError as WebDriverError
 from caqui import helper as __helper
 from caqui.constants import HEADERS as __HEADERS
+from typing import Optional
 
 
 def __handle_response(response):
@@ -740,7 +741,7 @@ def __get_session(response) -> str:
     return response.get("sessionId")
 
 
-def get_session(server_url: str, capabilities: dict = None):
+def get_session(server_url: str, capabilities: Optional[dict] = None):
     """
     Opens a browser and a session.
      This session is used for all functions to perform events in the page

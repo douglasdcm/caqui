@@ -3,6 +3,7 @@ import json as __json
 from caqui.constants import HEADERS as __HEADERS
 from caqui.exceptions import WebDriverError as WebDriverError
 from caqui import helper as __helper
+from typing import Optional
 
 
 async def __handle_response(resp):
@@ -32,7 +33,9 @@ async def __delete(url):
 async def __post(url, payload):
     try:
         async with __aiohttp.ClientSession() as session:
-            async with session.post(url, data=__json.dumps(payload), headers=__HEADERS) as resp:
+            async with session.post(
+                url, data=__json.dumps(payload), headers=__HEADERS
+            ) as resp:
                 return await __handle_response(resp)
     except Exception as error:
         raise WebDriverError("'POST' request failed.") from error
@@ -228,7 +231,9 @@ async def dismiss_alert(server_url, session):
         raise WebDriverError("Failed to dismiss alert.") from error
 
 
-async def take_screenshot_element(server_url, session, element, path="/tmp", file_name="caqui"):
+async def take_screenshot_element(
+    server_url, session, element, path="/tmp", file_name="caqui"
+):
     """Take screenshot of element"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/screenshot"
@@ -444,7 +449,9 @@ async def set_timeouts(server_url, session, timeouts):
         raise WebDriverError("Failed to set timeouts.") from error
 
 
-async def find_children_elements(server_url, session, parent_element, locator_type, locator_value):
+async def find_children_elements(
+    server_url, session, parent_element, locator_type, locator_value
+):
     """Find the children elements by 'locator_type'
 
     If the 'parent_element' is a shadow element, set the 'locator_type' as 'id' or
@@ -461,7 +468,9 @@ async def find_children_elements(server_url, session, parent_element, locator_ty
         ) from error
 
 
-async def find_child_element(server_url, session, parent_element, locator_type, locator_value):
+async def find_child_element(
+    server_url, session, parent_element, locator_type, locator_value
+):
     """Find the child element by 'locator_type'"""
     try:
         url = f"{server_url}/session/{session}/element/{parent_element}/element"
@@ -773,7 +782,7 @@ async def find_element(server_url, session, locator_type, locator_value) -> dict
         ) from error
 
 
-async def get_session(server_url: str, capabilities: dict = None) -> str:
+async def get_session(server_url: str, capabilities: Optional[dict] = None) -> str:
     """
     Opens a browser and a session.
     This session is used for all functions to perform events in the page
@@ -785,4 +794,6 @@ async def get_session(server_url: str, capabilities: dict = None) -> str:
         response = await __post(url, capabilities)
         return response.get("sessionId")
     except Exception as error:
-        raise WebDriverError("Failed to open session. Check the browser capabilities.") from error
+        raise WebDriverError(
+            "Failed to open session. Check the browser capabilities."
+        ) from error
