@@ -30,9 +30,7 @@ def _get(url):
 
 def _post(url, payload):
     try:
-        response = request(
-            "POST", url, headers=HEADERS, data= dumps(payload), timeout=60
-        )
+        response = request("POST", url, headers=HEADERS, data=dumps(payload), timeout=60)
         return _handle_response(response)
     except Exception as e:
         raise WebDriverError("'POST' request failed.") from e
@@ -455,9 +453,7 @@ def find_child_element(server_url, session, parent_element, locator_type, locato
         response = _post(url, payload)
         return helper.get_element(response)
     except Exception as e:
-        raise WebDriverError(
-            f"Failed to find the child element from '{parent_element}'."
-        ) from e
+        raise WebDriverError(f"Failed to find the child element from '{parent_element}'.") from e
 
 
 def get_page_source(server_url, session) -> str:

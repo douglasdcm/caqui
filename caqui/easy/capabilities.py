@@ -242,7 +242,7 @@ class BaseCapabilities:
         }
         return self
 
-    def timeouts(self, session_timeouts: Union[dict , TimeoutsBuilder]):
+    def timeouts(self, session_timeouts: Union[dict, TimeoutsBuilder]):
         """
         Describes the timeouts imposed on certain session operations.
         Use the TimeoutsBuilder class for simplicity.
@@ -299,7 +299,7 @@ class BaseCapabilities:
         }
         return self
 
-    def add_options(self, options: Union[dict , BaseOptions]):
+    def add_options(self, options: Union[dict, BaseOptions]):
         """Add vendor options, for example
         {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}} or
         {"moz:experimental-webdriver": true}

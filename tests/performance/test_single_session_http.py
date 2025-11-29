@@ -14,16 +14,19 @@ SERVER_URL = f"http://localhost:{SERVER_PORT}"
 CAPTURES = "captures"
 LOAD = 10  # requests
 
+
 # @mark.skip(reason="Used for performance tests")
 class TestPerformance:
     def _build_capabilities(self):
-        options = ChromeOptionsBuilder().args([
-            "headless",
-            "blink-settings=imagesEnabled=false",
-            "disable-extensions", 
-            "disable-plugins", 
-            "disable-background-timer-throttling" 
-            ])
+        options = ChromeOptionsBuilder().args(
+            [
+                "headless",
+                "blink-settings=imagesEnabled=false",
+                "disable-extensions",
+                "disable-plugins",
+                "disable-background-timer-throttling",
+            ]
+        )
         capabilities = (
             ChromeCapabilitiesBuilder()
             .accept_insecure_certs(True)
@@ -32,7 +35,7 @@ class TestPerformance:
         ).to_dict()
         return capabilities
 
-    async def _body(self,page):
+    async def _body(self, page):
         await page.implicitly_wait(10)
         await page.get(
             PAGE_URL,

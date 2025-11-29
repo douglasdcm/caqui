@@ -1,0 +1,49 @@
+import os
+import shutil
+import subprocess
+
+
+def convert_python_to_pyx(root_folder: str):
+    """
+    Scans all subfolders of `root_folder` for .py files,
+    copies each next to the original file with a .pyx extension,
+    overwriting existing copies.
+    """
+    result = []
+    for current_path, _, files in os.walk(root_folder):
+        for filename in files:
+            if filename.endswith(".py"):
+                original_file = os.path.join(current_path, filename)
+                pyx_filename = filename[:-3] + ".pyx"  # change extension
+                pyx_path = os.path.join(current_path, pyx_filename)
+
+                # Copy and overwrite
+                shutil.copyfile(original_file, pyx_path)
+                result.append(pyx_path)
+
+    content = f"""
+from distutils.core import setup 
+from Cython.Build import cythonize
+setup(
+    ext_modules = cythonize(
+    {result}
+    )
+)
+"""
+    with open("setup.py", "w") as f:
+        f.write(content)
+
+
+def build_pyx():
+    # Run a simple command and capture output
+    result = subprocess.run(
+        ["python", "setup.py", "build_ext", "--inplace"], capture_output=True, text=True, check=True
+    )
+    print("Stdout:", result.stdout)
+    print("Stderr:", result.stderr)
+
+
+if __name__ == "__main__":
+    target_folder = "./caqui"
+    convert_python_to_pyx(target_folder)
+    build_pyx()

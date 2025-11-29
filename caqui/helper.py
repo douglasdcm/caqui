@@ -6,12 +6,12 @@ def save_picture(session, path, file_name, response):
         f.write(base64.b64decode((response)))
 
 
-def get_elements(response):
+def get_elements(response) -> list:
     values = response.get("value")
     return [list(value.values())[0] for value in values]
 
 
-def get_element(response) -> dict:
+def get_element(response) -> str:
     value = response.get("value")
     # Google Chrome
     element = value.get("ELEMENT")
