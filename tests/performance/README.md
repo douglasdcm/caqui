@@ -847,12 +847,17 @@ Executed with a fresh server instance
 
 ## Scenario 6 - using `orjson` module
 Executed with a fresh server instance
+Note: This was the choosen library as it has more starts in github, recent commits, a more liberative license and better/equal performance than `ujson`
 - Execution 1 (duration): 27.57s
 - Execution 3 (duration): 27.90s
 - Execution 2 (duration): 28.11s
 - mean: 27.86s
 
 ## Scenario 7 - using `urllib3` module instead of `requests`
-- Execution 1 (duration): 27.84s
-- Execution 2 (duration): 34.95s
-- Execution 3 (duration): 28.32s
+Not planned. Need many refactoring and has gain for specific scenarios
+
+## Scenario 8 - convert code to CPython
+- Execution 1 (duration): 27.57s
+- Execution 3 (duration): 27.90s
+- Execution 2 (duration): 28.11s
+- mean: 27.86s
