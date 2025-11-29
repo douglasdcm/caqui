@@ -8,6 +8,7 @@ from webdriver_manager.core.manager import DriverManager
 from webdriver_manager.chrome import ChromeDriverManager
 from caqui.exceptions import ServerError
 
+
 TIMEOUT = 120  # seconds
 
 
@@ -25,18 +26,18 @@ class Server:
     _instance = None
 
     def __init__(self, browser: Union[DriverManager, None] = None, port=9999):
-        self.__browser = browser
-        self.__port = port
-        self.__process = None
+        self._browser = browser
+        self._port = port
+        self._sprocess = None
 
-    def __browser_factory(self):
-        if not self.__browser:
+    def _browser_factory(self):
+        if not self._browser:
             driver_manager = ChromeDriverManager().install()
         else:
-            driver_manager = self.__browser.install()
+            driver_manager = self._browser.install()
         return driver_manager
 
-    def __wait_server(self):
+    def _wait_server(self):
         MAX_RETIES = 10
         for i in range(MAX_RETIES):
             try:
@@ -45,8 +46,8 @@ class Server:
             except ConnectionError:
                 sleep(0.5)
                 if i == (MAX_RETIES - 1):
-                    self.__process.kill()
-                    self.__process.wait()
+                    self._process.kill()
+                    self._process.wait()
                     raise Exception("Driver not started")
 
     @staticmethod
@@ -65,29 +66,29 @@ class Server:
         except Exception:
             raise
 
-        driver_manager = self.__browser_factory()
-        self.__process = subprocess.Popen(
-            [driver_manager, f"--port={self.__port}"],
+        driver_manager = self._browser_factory()
+        self._process = subprocess.Popen(
+            [driver_manager, f"--port={self._port}"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             start_new_session=True,
         )
-        if self.__process is None:
+        if self._process is None:
             raise ServerError("Not able to start the server.")
 
-        self.__wait_server()
+        self._wait_server()
 
     @property
     def url(self):
         """
         Returns the driver URL.
         """
-        return f"http://localhost:{self.__port}"
+        return f"http://localhost:{self._port}"
 
     @property
     def process(self):
         """Returns the process (PID)"""
-        return self.__process
+        return self._process
 
     def dispose(self, delay: float = 0):
         """
@@ -99,7 +100,7 @@ class Server:
         """
         if delay:
             sleep(delay)
-        if self.__process:
-            self.__process.kill()
-            self.__process.wait()
-            self.__process = None
+        if self._process:
+            self._process.kill()
+            self._process.wait()
+            self._process = None

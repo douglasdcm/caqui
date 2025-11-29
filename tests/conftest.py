@@ -13,7 +13,7 @@ SERVER_URL = f"http://localhost:{SERVER_PORT}"
 CAPTURES = "captures"
 
 
-def __build_capabilities():
+def _build_capabilities():
     options = ChromeOptionsBuilder().args(["headless"])
     capabilities = (
         ChromeCapabilitiesBuilder()
@@ -28,14 +28,14 @@ def __build_capabilities():
 def setup_server():
     server = Server.get_instance(port=SERVER_PORT)
     server.start()
-    yield
-    server.dispose(delay=3)
+    # yield
+    # server.dispose(delay=3)
 
 
 @fixture
 def setup_functional_environment():
     server_url = SERVER_URL
-    capabilities = __build_capabilities()
+    capabilities = _build_capabilities()
     session = synchronous.get_session(server_url, capabilities)
     synchronous.go_to_page(
         server_url,
@@ -50,10 +50,11 @@ def setup_functional_environment():
     finally:
         synchronous.close_session(server_url, session)
 
+
 @pytest_asyncio.fixture
 async def setup_environment():
     server_url = SERVER_URL
-    capabilities = __build_capabilities()
+    capabilities = _build_capabilities()
     async with ClientSession() as session_http:
         page = AsyncPage(server_url, capabilities, PAGE_URL, session_http=session_http)
         yield page

@@ -108,10 +108,7 @@ async def test_set_window_rectangle(setup_functional_environment):
     x = window_rectangle_before.get("x") + 1
     y = window_rectangle_before.get("y") + 1
 
-    assert (
-        synchronous.set_window_rectangle(server_url, session, width, height, x, y)
-        is True
-    )
+    assert synchronous.set_window_rectangle(server_url, session, width, height, x, y) is True
 
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
@@ -122,12 +119,7 @@ async def test_set_window_rectangle(setup_functional_environment):
 
     synchronous.maximize_window(server_url, session)
 
-    assert (
-        await asynchronous.set_window_rectangle(
-            server_url, session, width, height, x, y
-        )
-        is True
-    )
+    assert await asynchronous.set_window_rectangle(server_url, session, width, height, x, y) is True
 
     window_rectangle_after = None
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
@@ -228,10 +220,7 @@ async def test_switch_to_window(setup_functional_environment, window_type):
     assert synchronous.get_title(server_url, session) == ""
     synchronous.switch_to_window(server_url, session, handle=sample_page) is True
 
-    assert (
-        await asynchronous.switch_to_window(server_url, session, handle=new_page)
-        is True
-    )
+    assert await asynchronous.switch_to_window(server_url, session, handle=new_page) is True
     assert synchronous.get_title(server_url, session) == ""
 
 
@@ -253,13 +242,8 @@ async def test_switch_to_parent_frame_asynchronous(setup_functional_environment)
     locator_type = By.ID
     locator_value = "my-iframe"
 
-    element_frame = synchronous.find_element(
-        server_url, session, locator_type, locator_value
-    )
-    assert (
-        await asynchronous.switch_to_parent_frame(server_url, session, element_frame)
-        is True
-    )
+    element_frame = synchronous.find_element(server_url, session, locator_type, locator_value)
+    assert await asynchronous.switch_to_parent_frame(server_url, session, element_frame) is True
 
 
 def test_switch_to_parent_frame_synchronous(setup_functional_environment):
@@ -267,12 +251,8 @@ def test_switch_to_parent_frame_synchronous(setup_functional_environment):
     locator_type = By.ID
     locator_value = "my-iframe"
 
-    element_frame = synchronous.find_element(
-        server_url, session, locator_type, locator_value
-    )
-    assert (
-        synchronous.switch_to_parent_frame(server_url, session, element_frame) is True
-    )
+    element_frame = synchronous.find_element(server_url, session, locator_type, locator_value)
+    assert synchronous.switch_to_parent_frame(server_url, session, element_frame) is True
 
 
 @mark.asyncio
@@ -281,12 +261,8 @@ async def test_switch_to_frame_asynchronous(setup_functional_environment):
     locator_type = By.ID
     locator_value = "my-iframe"
 
-    element_frame = synchronous.find_element(
-        server_url, session, locator_type, locator_value
-    )
-    assert (
-        await asynchronous.switch_to_frame(server_url, session, element_frame) is True
-    )
+    element_frame = synchronous.find_element(server_url, session, locator_type, locator_value)
+    assert await asynchronous.switch_to_frame(server_url, session, element_frame) is True
 
 
 def test_switch_to_frame_synchronous(setup_functional_environment):
@@ -294,9 +270,7 @@ def test_switch_to_frame_synchronous(setup_functional_environment):
     locator_type = By.ID
     locator_value = "my-iframe"
 
-    element_frame = synchronous.find_element(
-        server_url, session, locator_type, locator_value
-    )
+    element_frame = synchronous.find_element(server_url, session, locator_type, locator_value)
     assert synchronous.switch_to_frame(server_url, session, element_frame) is True
 
 
@@ -407,9 +381,7 @@ async def test_get_named_cookie(setup_functional_environment):
     name = "username"  # cookie created on page load
     expected = "John Doe"
 
-    assert (
-        synchronous.get_named_cookie(server_url, session, name).get("value") == expected
-    )
+    assert synchronous.get_named_cookie(server_url, session, name).get("value") == expected
     response = await asynchronous.get_named_cookie(server_url, session, name)
     assert response.get("value") == expected
 
@@ -425,9 +397,7 @@ async def test_get_computed_label(setup_functional_environment):
 
     assert synchronous.get_computed_label(server_url, session, element) == expected
 
-    assert (
-        await asynchronous.get_computed_label(server_url, session, element) == expected
-    )
+    assert await asynchronous.get_computed_label(server_url, session, element) == expected
 
 
 @mark.asyncio
@@ -441,9 +411,7 @@ async def test_get_computed_role(setup_functional_environment):
 
     assert synchronous.get_computed_role(server_url, session, element) == expected
 
-    assert (
-        await asynchronous.get_computed_role(server_url, session, element) == expected
-    )
+    assert await asynchronous.get_computed_role(server_url, session, element) == expected
 
 
 @mark.asyncio
@@ -460,13 +428,9 @@ async def test_get_tag_name(setup_functional_environment):
     assert await asynchronous.get_tag_name(server_url, session, element) == expected
 
 
-@mark.parametrize(
-    "locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")]
-)
+@mark.parametrize("locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")])
 @mark.asyncio
-async def test_find_element_from_shadow_root(
-    setup_functional_environment, locator, value
-):
+async def test_find_element_from_shadow_root(setup_functional_environment, locator, value):
     server_url, session = setup_functional_environment
     locator_type = By.ID
     locator_value = "shadow-root"
@@ -475,26 +439,18 @@ async def test_find_element_from_shadow_root(
 
     shadow_root = synchronous.get_shadow_root(server_url, session, element)
 
-    actual = synchronous.find_child_element(
-        server_url, session, shadow_root, locator, value
-    )
+    actual = synchronous.find_child_element(server_url, session, shadow_root, locator, value)
 
     assert actual is not None
 
-    actual = await asynchronous.find_child_element(
-        server_url, session, shadow_root, locator, value
-    )
+    actual = await asynchronous.find_child_element(server_url, session, shadow_root, locator, value)
 
     assert actual is not None
 
 
-@mark.parametrize(
-    "locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")]
-)
+@mark.parametrize("locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")])
 @mark.asyncio
-async def test_find_elements_from_shadow_root(
-    setup_functional_environment, locator, value
-):
+async def test_find_elements_from_shadow_root(setup_functional_environment, locator, value):
     server_url, session = setup_functional_environment
     locator_type = By.ID
     locator_value = "shadow-root"
@@ -504,9 +460,7 @@ async def test_find_elements_from_shadow_root(
 
     shadow_root = synchronous.get_shadow_root(server_url, session, element)
 
-    actual = synchronous.find_children_elements(
-        server_url, session, shadow_root, locator, value
-    )
+    actual = synchronous.find_children_elements(server_url, session, shadow_root, locator, value)
 
     assert len(actual) == one
 
@@ -553,9 +507,7 @@ async def test_move_to_element(setup_functional_environment):
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
     assert synchronous.actions_move_to_element(server_url, session, element) is True
-    assert (
-        await asynchronous.actions_move_to_element(server_url, session, element) is True
-    )
+    assert await asynchronous.actions_move_to_element(server_url, session, element) is True
 
 
 @mark.asyncio
@@ -566,10 +518,7 @@ async def test_actions_scroll_to_element(setup_functional_environment):
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
     assert synchronous.actions_scroll_to_element(server_url, session, element) is True
-    assert (
-        await asynchronous.actions_scroll_to_element(server_url, session, element)
-        is True
-    )
+    assert await asynchronous.actions_scroll_to_element(server_url, session, element) is True
 
 
 @mark.asyncio
@@ -607,9 +556,7 @@ async def test_raise_exception_when_element_not_found(setup_functional_environme
         synchronous.find_element(server_url, session, locator_type, locator_value)
 
     with raises(WebDriverError):
-        await asynchronous.find_element(
-            server_url, session, locator_type, locator_value
-        )
+        await asynchronous.find_element(server_url, session, locator_type, locator_value)
 
 
 @mark.asyncio
@@ -707,9 +654,7 @@ async def test_get_alert_text(setup_functional_environment):
     locator_value = "#alert-button"
     expected = "any warn"
 
-    alert_button = synchronous.find_element(
-        server_url, session, locator_type, locator_value
-    )
+    alert_button = synchronous.find_element(server_url, session, locator_type, locator_value)
     synchronous.click(server_url, session, alert_button)
 
     assert synchronous.get_alert_text(server_url, session) == expected
@@ -778,14 +723,8 @@ async def test_get_css_value(setup_functional_environment):
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
 
-    assert (
-        synchronous.get_css_value(server_url, session, element, property_name)
-        == expected
-    )
-    assert (
-        await asynchronous.get_css_value(server_url, session, element, property_name)
-        == expected
-    )
+    assert synchronous.get_css_value(server_url, session, element, property_name) == expected
+    assert await asynchronous.get_css_value(server_url, session, element, property_name) == expected
 
 
 @mark.asyncio
@@ -859,10 +798,7 @@ async def test_get_attribute(setup_functional_environment):
     attribute = "href"
     element = synchronous.find_element(server_url, session, By.XPATH, "//a[@id='a1']")
 
-    assert (
-        synchronous.get_attribute(server_url, session, element, attribute)
-        == "http://any1.com/"
-    )
+    assert synchronous.get_attribute(server_url, session, element, attribute) == "http://any1.com/"
     assert (
         await asynchronous.get_attribute(server_url, session, element, attribute)
         == "http://any1.com/"
@@ -938,9 +874,7 @@ async def test_find_elements_fails_when_invalid_data_input(
         synchronous.find_elements(server_url, session, locator_type, locator_value)
 
     with raises(WebDriverError):
-        await asynchronous.find_elements(
-            server_url, session, locator_type, locator_value
-        )
+        await asynchronous.find_elements(server_url, session, locator_type, locator_value)
 
 
 @mark.asyncio
@@ -949,9 +883,7 @@ async def test_find_elements(setup_functional_environment):
     locator_type = By.XPATH
     locator_value = "//input"
 
-    elements = synchronous.find_elements(
-        server_url, session, locator_type, locator_value
-    )
+    elements = synchronous.find_elements(server_url, session, locator_type, locator_value)
     async_elements = await asynchronous.find_elements(
         server_url, session, locator_type, locator_value
     )
@@ -970,9 +902,7 @@ async def test_find_element_fails_when_invalid_data_input(setup_functional_envir
         synchronous.find_element(server_url, session, locator_type, locator_value)
 
     with raises(WebDriverError):
-        await asynchronous.find_element(
-            server_url, session, locator_type, locator_value
-        )
+        await asynchronous.find_element(server_url, session, locator_type, locator_value)
 
 
 @mark.asyncio
@@ -981,14 +911,9 @@ async def test_find_element(setup_functional_environment):
     locator_type = By.XPATH
     locator_value = "//input"
 
+    assert synchronous.find_element(server_url, session, locator_type, locator_value) is not None
     assert (
-        synchronous.find_element(server_url, session, locator_type, locator_value)
-        is not None
-    )
-    assert (
-        await asynchronous.find_element(
-            server_url, session, locator_type, locator_value
-        )
+        await asynchronous.find_element(server_url, session, locator_type, locator_value)
         is not None
     )
 
@@ -1005,9 +930,7 @@ async def test_get_property(setup_functional_environment):
     synchronous.send_keys(server_url, session, element, text)
 
     assert synchronous.get_property(server_url, session, element, property) == text
-    assert (
-        await asynchronous.get_property(server_url, session, element, property) == text
-    )
+    assert await asynchronous.get_property(server_url, session, element, property) == text
 
 
 @mark.asyncio
@@ -1033,9 +956,7 @@ async def test_send_keys(setup_functional_environment):
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
 
-    assert (
-        await asynchronous.send_keys(server_url, session, element, text_async) is True
-    )
+    assert await asynchronous.send_keys(server_url, session, element, text_async) is True
     assert synchronous.send_keys(server_url, session, element, text_sync) is True
 
 

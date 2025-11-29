@@ -1,7 +1,7 @@
 from aiohttp import ClientSession
-from json import dumps
-from caqui.constants import HEADERS as __HEADERS
-from caqui.exceptions import WebDriverError as WebDriverError
+from orjson import dumps
+from caqui.constants import HEADERS
+from caqui.exceptions import WebDriverError
 from caqui.helper import save_picture, get_elements, get_element
 from typing import Optional
 
@@ -24,7 +24,7 @@ async def _handle_response(resp):
 async def _delete(url, session_http: ClientSession = None):
     if session_http:
         try:
-            async with session_http.delete(url, headers=__HEADERS) as resp:
+            async with session_http.delete(url, headers=HEADERS) as resp:
                 return await _handle_response(resp)
         except Exception as e:
             raise WebDriverError("'DELETE' request failed.") from e
@@ -32,7 +32,7 @@ async def _delete(url, session_http: ClientSession = None):
     else:
         try:
             async with ClientSession() as session_http:
-                async with session_http.delete(url, headers=__HEADERS) as resp:
+                async with session_http.delete(url, headers=HEADERS) as resp:
                     return await _handle_response(resp)
         except Exception as e:
             raise WebDriverError("'DELETE' request failed.") from e
@@ -41,18 +41,14 @@ async def _delete(url, session_http: ClientSession = None):
 async def _post(url, payload, session_http: ClientSession = None):
     if session_http:
         try:
-            async with session_http.post(
-                url, data=dumps(payload), headers=__HEADERS
-            ) as resp:
+            async with session_http.post(url, data=dumps(payload), headers=HEADERS) as resp:
                 return await _handle_response(resp)
         except Exception as e:
             raise WebDriverError("'POST' request failed.") from e
     else:
         try:
             async with ClientSession() as session_http:
-                async with session_http.post(
-                    url, data=dumps(payload), headers=__HEADERS
-                ) as resp:
+                async with session_http.post(url, data=dumps(payload), headers=HEADERS) as resp:
                     return await _handle_response(resp)
         except Exception as e:
             raise WebDriverError("'POST' request failed.") from e
@@ -61,14 +57,14 @@ async def _post(url, payload, session_http: ClientSession = None):
 async def _get(url, session_http: ClientSession = None):
     if session_http:
         try:
-            async with session_http.get(url, headers=__HEADERS) as resp:
+            async with session_http.get(url, headers=HEADERS) as resp:
                 return await _handle_response(resp)
         except Exception as e:
             raise WebDriverError("'GET' request failed.") from e
     else:
         try:
             async with ClientSession() as session_http:
-                async with session_http.get(url, headers=__HEADERS) as resp:
+                async with session_http.get(url, headers=HEADERS) as resp:
                     return await _handle_response(resp)
         except Exception as e:
             raise WebDriverError("'GET' request failed.") from e
@@ -83,9 +79,7 @@ async def _handle_alert(server_url, session, command, session_http) -> bool:
     return True
 
 
-async def _handle_window(
-    server_url, session, command, session_http: ClientSession = None
-):
+async def _handle_window(server_url, session, command, session_http: ClientSession = None):
     url = f"{server_url}/session/{session}/window/{command}"
     payload = {}
     await _post(url, payload, session_http=session_http)
@@ -135,9 +129,7 @@ async def go_forward(server_url, session, session_http: ClientSession = None):
         raise WebDriverError("Failed to go to page forward.") from e
 
 
-async def set_window_rectangle(
-    server_url, session, width, height, x, y, session_http=None
-):
+async def set_window_rectangle(server_url, session, width, height, x, y, session_http=None):
     """Set window rectangle"""
     try:
         url = f"{server_url}/session/{session}/window/rect"
@@ -178,9 +170,7 @@ async def maximize_window(server_url, session, session_http: ClientSession = Non
         raise WebDriverError("Failed to maximize window.") from e
 
 
-async def switch_to_window(
-    server_url, session, handle, session_http: ClientSession = None
-):
+async def switch_to_window(server_url, session, handle, session_http: ClientSession = None):
     """Switch to window"""
     try:
         url = f"{server_url}/session/{session}/window"
@@ -221,9 +211,7 @@ async def switch_to_parent_frame(
         raise WebDriverError("Failed to switch to parent frame.") from e
 
 
-async def switch_to_frame(
-    server_url, session, element_frame, session_http: ClientSession = None
-):
+async def switch_to_frame(server_url, session, element_frame, session_http: ClientSession = None):
     """Switch to frame 'element_frame'"""
     try:
         url = f"{server_url}/session/{session}/frame"
@@ -244,9 +232,7 @@ async def delete_all_cookies(server_url, session, session_http: ClientSession = 
         raise WebDriverError("Failed to delete cookies.") from e
 
 
-async def send_alert_text(
-    server_url, session, text, session_http: ClientSession = None
-):
+async def send_alert_text(server_url, session, text, session_http: ClientSession = None):
     """Fill the alert text area and send the text"""
     try:
         url = f"{server_url}/session/{session}/alert/text"
@@ -262,9 +248,7 @@ async def send_alert_text(
 async def accept_alert(server_url, session, session_http: ClientSession = None):
     """Accept alert"""
     try:
-        return await _handle_alert(
-            server_url, session, "accept", session_http=session_http
-        )
+        return await _handle_alert(server_url, session, "accept", session_http=session_http)
     except Exception as e:
         raise WebDriverError("Failed to accept alert.") from e
 
@@ -272,9 +256,7 @@ async def accept_alert(server_url, session, session_http: ClientSession = None):
 async def dismiss_alert(server_url, session, session_http: ClientSession = None):
     """Dismiss alert"""
     try:
-        return await _handle_alert(
-            server_url, session, "dismiss", session_http=session_http
-        )
+        return await _handle_alert(server_url, session, "dismiss", session_http=session_http)
     except Exception as e:
         raise WebDriverError("Failed to dismiss alert.") from e
 
@@ -316,9 +298,7 @@ async def take_screenshot(
         raise WebDriverError("Failed to take screenshot.") from e
 
 
-async def get_named_cookie(
-    server_url, session, name, session_http: ClientSession = None
-) -> str:
+async def get_named_cookie(server_url, session, name, session_http: ClientSession = None) -> str:
     """Get cookie by name"""
     try:
         url = f"{server_url}/session/{session}/cookie/{name}"
@@ -352,9 +332,7 @@ async def get_computed_role(
         raise WebDriverError("Failed to get element computed role.") from e
 
 
-async def get_tag_name(
-    server_url, session, element, session_http: ClientSession = None
-) -> str:
+async def get_tag_name(server_url, session, element, session_http: ClientSession = None) -> str:
     """Get the element tag name"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/name"
@@ -364,9 +342,7 @@ async def get_tag_name(
         raise WebDriverError("Failed to get element name.") from e
 
 
-async def get_shadow_root(
-    server_url, session, element, session_http: ClientSession = None
-) -> dict:
+async def get_shadow_root(server_url, session, element, session_http: ClientSession = None) -> dict:
     """Get the shadow root element"""
     try:
         root_element = "shadow-6066-11e4-a52e-4f735466cecf"
@@ -377,9 +353,7 @@ async def get_shadow_root(
         raise WebDriverError("Failed to get element shadow.") from e
 
 
-async def get_rect(
-    server_url, session, element, session_http: ClientSession = None
-) -> dict:
+async def get_rect(server_url, session, element, session_http: ClientSession = None) -> dict:
     """Get the element rectangle"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/rect"
@@ -395,9 +369,7 @@ async def actions(server_url, session, payload, session_http: ClientSession = No
     return True
 
 
-async def actions_move_to_element(
-    server_url, session, element, session_http: ClientSession = None
-):
+async def actions_move_to_element(server_url, session, element, session_http: ClientSession = None):
     """Move to an element simulating a mouse movement"""
     try:
         payload = {
@@ -468,18 +440,14 @@ async def submit(server_url, session, element, session_http: ClientSession = Non
             element,
             locator_type="xpath",
             locator_value="*[@type='submit']",
-            session_http=session_http
+            session_http=session_http,
         )
-        return await click(
-            server_url, session, submit_element, session_http=session_http
-        )
+        return await click(server_url, session, submit_element, session_http=session_http)
     except Exception as e:
         raise WebDriverError("Failed to submit form.") from e
 
 
-async def actions_click(
-    server_url, session, element, session_http: ClientSession = None
-):
+async def actions_click(server_url, session, element, session_http: ClientSession = None):
     """Click an element simulating a mouse movement"""
     try:
         payload = {
@@ -516,9 +484,7 @@ async def actions_click(
         raise WebDriverError("Failed to click the element.") from e
 
 
-async def set_timeouts(
-    server_url, session, timeouts, session_http: ClientSession = None
-):
+async def set_timeouts(server_url, session, timeouts, session_http: ClientSession = None):
     """Set timeouts"""
     try:
         url = f"{server_url}/session/{session}/timeouts"
@@ -570,14 +536,10 @@ async def find_child_element(
         response = await _post(url, payload, session_http=session_http)
         return get_element(response)
     except Exception as e:
-        raise WebDriverError(
-            f"Failed to find the child element from '{parent_element}'."
-        ) from e
+        raise WebDriverError(f"Failed to find the child element from '{parent_element}'.") from e
 
 
-async def get_page_source(
-    server_url, session, session_http: ClientSession = None
-) -> str:
+async def get_page_source(server_url, session, session_http: ClientSession = None) -> str:
     """Get the page source (all content)"""
     try:
         url = f"{server_url}/session/{session}/source"
@@ -587,9 +549,7 @@ async def get_page_source(
         raise WebDriverError("Failed to get the page source.") from e
 
 
-async def execute_script(
-    server_url, session, script, args=[], session_http: ClientSession = None
-):
+async def execute_script(server_url, session, script, args=[], session_http: ClientSession = None):
     """Executes a script, like 'alert('something')' to open an alert window"""
     try:
         url = f"{server_url}/session/{session}/execute/sync"
@@ -600,9 +560,7 @@ async def execute_script(
         raise WebDriverError("Failed to execute script.") from e
 
 
-async def get_alert_text(
-    server_url, session, session_http: ClientSession = None
-) -> str:
+async def get_alert_text(server_url, session, session_http: ClientSession = None) -> str:
     """Get the text from an alert"""
     try:
         url = f"{server_url}/session/{session}/alert/text"
@@ -622,9 +580,7 @@ async def get_active_element(server_url, session, session_http: ClientSession = 
         raise WebDriverError("Failed to check if element is selected.") from e
 
 
-async def clear_element(
-    server_url, session, element, session_http: ClientSession = None
-):
+async def clear_element(server_url, session, element, session_http: ClientSession = None):
     """Clear the element text"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/clear"
@@ -671,9 +627,7 @@ async def is_element_selected(
         raise WebDriverError("Failed to check if element is selected.") from e
 
 
-async def get_window_rectangle(
-    server_url, session, session_http: ClientSession = None
-) -> dict:
+async def get_window_rectangle(server_url, session, session_http: ClientSession = None) -> dict:
     """Get window rectangle"""
     try:
         url = f"{server_url}/session/{session}/window/rect"
@@ -683,9 +637,7 @@ async def get_window_rectangle(
         raise WebDriverError("Failed to get window rectangle.") from e
 
 
-async def get_window_handles(
-    server_url, session, session_http: ClientSession = None
-) -> list:
+async def get_window_handles(server_url, session, session_http: ClientSession = None) -> list:
     """Get window handles"""
     try:
         url = f"{server_url}/session/{session}/window/handles"
@@ -811,9 +763,7 @@ async def get_attribute(
         raise WebDriverError("Failed to get value from element.") from e
 
 
-async def get_text(
-    server_url, session, element, session_http: ClientSession = None
-) -> str:
+async def get_text(server_url, session, element, session_http: ClientSession = None) -> str:
     """Get the text of an element"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/text"
@@ -848,7 +798,7 @@ async def get(server_url, session, page_url, session_http: ClientSession = None)
     return go_to_page(server_url, session, page_url, session_http=session_http)
 
 
-async def go_to_page(server_url, session, page_url, session_http:ClientSession=None):
+async def go_to_page(server_url, session, page_url, session_http: ClientSession = None):
     """Navigate to 'page_url'"""
     try:
         url = f"{server_url}/session/{session}/url"
@@ -859,9 +809,7 @@ async def go_to_page(server_url, session, page_url, session_http:ClientSession=N
         raise WebDriverError(f"Failed to navigate to page '{page_url}'.") from e
 
 
-async def send_keys(
-    server_url, session, element, text, session_http: ClientSession = None
-):
+async def send_keys(server_url, session, element, text, session_http: ClientSession = None):
     """Fill an editable element, for example a textarea, with a given text"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/value"
@@ -920,6 +868,4 @@ async def get_session(
         response = await _post(url, capabilities, session_http=session_http)
         return response.get("sessionId")
     except Exception as e:
-        raise WebDriverError(
-            "Failed to open session. Check the browser capabilities."
-        ) from e
+        raise WebDriverError("Failed to open session. Check the browser capabilities.") from e

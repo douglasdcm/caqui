@@ -28,7 +28,7 @@ async def get_all_links(server):
     all_anchors = []
     for i in range(4):
         i += 1
-        anchors = await __get_links(server_url, session, i)
+        anchors = await _get_links(server_url, session, i)
         all_anchors.extend(anchors)
 
     for anchor in all_anchors:
@@ -38,7 +38,7 @@ async def get_all_links(server):
     synchronous.close_session(server_url, session)
 
 
-async def __get_links(server_url, session, i):
+async def _get_links(server_url, session, i):
     locator_value = f"//a[@id='a{i}']"
     locator_type = "xpath"
     anchors = []

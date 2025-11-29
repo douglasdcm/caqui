@@ -16,7 +16,9 @@ class ActionChains:
         Clicks on the element `element`
         """
         self._element = element
-        coroutine = asynchronous.click(self._remote, self._session, str(element), session_http=self._session_http)
+        coroutine = asynchronous.click(
+            self._remote, self._session, str(element), session_http=self._session_http
+        )
         self._coroutines.append(coroutine)
         return self
 

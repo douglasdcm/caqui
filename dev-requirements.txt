@@ -2,3 +2,4 @@ requests
 aiohttp
 webdriver_manager
 types-requests
+orjson
