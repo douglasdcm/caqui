@@ -17,7 +17,7 @@ class AsyncPage:
         server_url: str,
         capabilities: Optional[dict] = None,
         url: Union[str, None] = None,
-        session_http: ClientSession = None,
+        session_http: Union[ClientSession, None] = None,
     ) -> None:
         """Mimics Selenium methods"""
         self.session_http = session_http
@@ -231,7 +231,7 @@ class AsyncPage:
             self._server_url, self._session, url, session_http=self.session_http
         )
 
-    async def find_elements(self, locator, value):
+    async def find_elements(self, locator, value) -> list:
         """Search the DOM elements by 'locator', for example, 'xpath'"""
         elements = await asynchronous.find_elements(
             self._server_url, self._session, locator, value, session_http=self.session_http
@@ -241,7 +241,7 @@ class AsyncPage:
             result.append(Element(element, self))
         return result
 
-    async def find_element(self, locator, value):
+    async def find_element(self, locator, value) -> Element:
         """Find an element by a 'locator', for example 'xpath'"""
         element = await asynchronous.find_element(
             self._server_url, self._session, locator, value, session_http=self.session_http

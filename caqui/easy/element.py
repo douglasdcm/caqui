@@ -149,7 +149,7 @@ class Element:
             self._remote, self._session, self._element, session_http=self._session_http
         )
 
-    async def find_elements(self, locator, value):
+    async def find_elements(self, locator, value) -> list:
         """
         Find the children elements by 'locator_type'
 
@@ -169,7 +169,7 @@ class Element:
             result.append(Element(element, self._driver))
         return result
 
-    async def find_element(self, locator, value):
+    async def find_element(self, locator, value) -> "Element":
         """Find the element by `locator_type`"""
         element = await asynchronous.find_child_element(
             self._remote,

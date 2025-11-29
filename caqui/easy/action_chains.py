@@ -1,6 +1,6 @@
 from caqui import asynchronous
 from caqui.easy.element import Element
-from typing import Coroutine
+from typing import Coroutine, Union, List
 
 
 class ActionChains:
@@ -8,8 +8,8 @@ class ActionChains:
         self._remote = driver.remote
         self._session = driver.session
         self._session_http = driver.session_http
-        self._coroutines: list[Coroutine] = []
-        self._element = None
+        self._coroutines: List[Coroutine] = []
+        self._element = Union[Element, None]
 
     def click(self, element: Element):
         """
@@ -31,7 +31,7 @@ class ActionChains:
         self._coroutines.append(coroutine)
         return self
 
-    def scroll_to_element(self, element: Element):
+    def scroll_to_element(self, element: Element) -> "ActionChains":
         """Scrolls the screen to the element `element`"""
         self._element = element
         coroutine = asynchronous.actions_scroll_to_element(

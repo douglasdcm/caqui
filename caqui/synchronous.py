@@ -752,7 +752,7 @@ def get_session(server_url: str, capabilities: Optional[dict] = None):
         raise WebDriverError("Failed to open session. Check the browser capabilities.") from e
 
 
-def find_element(server_url, session, locator_type, locator_value) -> dict:
+def find_element(server_url, session, locator_type, locator_value) -> str:
     """Find an element by a 'locator', for example 'xpath'"""
     try:
         url = f"{server_url}/session/{session}/element"

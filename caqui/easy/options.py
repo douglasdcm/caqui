@@ -93,7 +93,7 @@ class BaseOptions:
         self.options = {**self.options, **{"windowsTypes": values}}
         return self
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """Converts the options to a dict"""
         return {"goog:chromeOptions": self.options}
 

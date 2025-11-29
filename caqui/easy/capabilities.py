@@ -228,7 +228,7 @@ class BaseCapabilities:
             proxy_configuration = proxy_configuration.to_dict()
         self.desired_capabilities = {
             **self.desired_capabilities,
-            **proxy_configuration,
+            **proxy_configuration,  # type: ignore
         }
         return self
 
@@ -251,7 +251,7 @@ class BaseCapabilities:
             session_timeouts = session_timeouts.to_dict()
         self.desired_capabilities = {
             **self.desired_capabilities,
-            **session_timeouts,
+            **session_timeouts,  # type: ignore
         }
         return self
 

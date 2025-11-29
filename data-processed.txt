@@ -234,3 +234,16 @@ OrderedDict([('call', 31.25), ('duration', 61.18), ('teardown', 12.93), ('setup'
 OrderedDict([('call', 32.27), ('duration', 63.9), ('teardown', 13.08), ('setup', 18.55), ('title', '# Scenario 2 | With concurrence | Execution 3 | Shared session\n')])
 OrderedDict([('call', 31.81), ('duration', 61.67), ('teardown', 12.96), ('setup', 16.9), ('title', '# Scenario 2 | With concurrence | Execution 3 | No Shared session\n')])
 =====
+OrderedDict([('setup', 7.11), ('duration', 28.63), ('teardown', 3.66), ('call', 17.86), ('title', '# Scenario 1 | No concurrence | Execution 1 | No Shared session\n')])
+OrderedDict([('teardown', 3.68), ('duration', 24.41), ('call', 15.17), ('setup', 5.56), ('title', '# Scenario 1 | No concurrence | Execution 1 | Shared session\n')])
+OrderedDict([('teardown', 3.68), ('duration', 26.59), ('call', 17.19), ('setup', 5.72), ('title', '# Scenario 1 | No concurrence | Execution 2 | No Shared session\n')])
+OrderedDict([('teardown', 3.66), ('duration', 24.8), ('call', 15.62), ('setup', 5.52), ('title', '# Scenario 1 | No concurrence | Execution 2 | Shared session\n')])
+OrderedDict([('teardown', 3.67), ('duration', 25.35), ('call', 16.26), ('setup', 5.42), ('title', '# Scenario 1 | No concurrence | Execution 3 | No Shared session\n')])
+OrderedDict([('teardown', 3.67), ('duration', 23.94), ('call', 14.95), ('setup', 5.32), ('title', '# Scenario 1 | No concurrence | Execution 3 | Shared session\n')])
+OrderedDict([('call', 32.73), ('duration', 59.24), ('teardown', 12.81), ('setup', 13.7), ('title', '# Scenario 2 | With concurrence | Execution 1 | Shared session\n')])
+OrderedDict([('call', 31.9), ('duration', 62.89), ('teardown', 13.08), ('setup', 17.91), ('title', '# Scenario 2 | With concurrence | Execution 1 | No Shared session\n')])
+OrderedDict([('call', 32.1), ('duration', 62.52), ('teardown', 13.07), ('setup', 17.35), ('title', '# Scenario 2 | With concurrence | Execution 2 | Shared session\n')])
+OrderedDict([('call', 31.25), ('duration', 61.18), ('teardown', 12.93), ('setup', 17.0), ('title', '# Scenario 2 | With concurrence | Execution 2 | No Shared session\n')])
+OrderedDict([('call', 32.27), ('duration', 63.9), ('teardown', 13.08), ('setup', 18.55), ('title', '# Scenario 2 | With concurrence | Execution 3 | Shared session\n')])
+OrderedDict([('call', 31.81), ('duration', 61.67), ('teardown', 12.96), ('setup', 16.9), ('title', '# Scenario 2 | With concurrence | Execution 3 | No Shared session\n')])
+=====
