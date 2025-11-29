@@ -25,7 +25,9 @@ classifiers = [
 dependencies = [
   "requests",
   "aiohttp",
-  "webdriver_manager"
+  "webdriver_manager",
+  "types-requests",
+  "orjson",
 ]
 
 [project.urls]

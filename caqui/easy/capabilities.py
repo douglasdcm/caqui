@@ -1,5 +1,5 @@
 from math import ceil
-
+from typing import Union
 from caqui.easy.options import BaseOptions
 
 
@@ -21,7 +21,7 @@ class ProxyConfigurationBuilder:
     """
 
     def __init__(self) -> None:
-        self.__proxy: dict = {}
+        self._proxy: dict = {}
 
     def proxy_type(self, proxy: str):
         """
@@ -31,8 +31,8 @@ class ProxyConfigurationBuilder:
 
         Reference: https://www.w3.org/TR/webdriver/#dfn-proxy-configuration
         """
-        self.__proxy = {
-            **self.__proxy,
+        self._proxy = {
+            **self._proxy,
             "proxyType": proxy,
         }
         return self
@@ -41,8 +41,8 @@ class ProxyConfigurationBuilder:
         """
         Defines the URL for a proxy auto-config file if proxyType is equal to "pac".
         """
-        self.__proxy = {
-            **self.__proxy,
+        self._proxy = {
+            **self._proxy,
             "proxyAutoconfigUrl": url,
         }
         return self
@@ -53,8 +53,8 @@ class ProxyConfigurationBuilder:
 
         proxy: A host and optional port for scheme "ftp".
         """
-        self.__proxy = {
-            **self.__proxy,
+        self._proxy = {
+            **self._proxy,
             "ftpProxy": proxy,
         }
         return self
@@ -65,8 +65,8 @@ class ProxyConfigurationBuilder:
 
         proxy: A host and optional port for scheme "http".
         """
-        self.__proxy = {
-            **self.__proxy,
+        self._proxy = {
+            **self._proxy,
             "httpProxy": proxy,
         }
         return self
@@ -77,8 +77,8 @@ class ProxyConfigurationBuilder:
 
         proxies: A List containing any number of Strings.
         """
-        self.__proxy = {
-            **self.__proxy,
+        self._proxy = {
+            **self._proxy,
             "noProxy": proxies,
         }
         return self
@@ -89,8 +89,8 @@ class ProxyConfigurationBuilder:
 
         proxy: A host and optional port for scheme "https".
         """
-        self.__proxy = {
-            **self.__proxy,
+        self._proxy = {
+            **self._proxy,
             "sslProxy": proxy,
         }
         return self
@@ -101,8 +101,8 @@ class ProxyConfigurationBuilder:
 
         proxy: A host and optional port with an undefined scheme.
         """
-        self.__proxy = {
-            **self.__proxy,
+        self._proxy = {
+            **self._proxy,
             "socksProxy": proxy,
         }
         return self
@@ -113,14 +113,14 @@ class ProxyConfigurationBuilder:
 
         version: Any integer between 0 and 255 inclusive.
         """
-        self.__proxy = {
-            **self.__proxy,
+        self._proxy = {
+            **self._proxy,
             "socksVersion": version,
         }
         return self
 
     def to_dict(self):
-        return {"proxy": self.__proxy}
+        return {"proxy": self._proxy}
 
 
 class TimeoutsBuilder:
@@ -129,13 +129,13 @@ class TimeoutsBuilder:
     """
 
     def __init__(self) -> None:
-        self.__timeouts: dict = {}
+        self._timeouts: dict = {}
 
     def implicit(self, timeout: int):
         """Notice: if the number is a float, converts it to an integer"""
         timeout = ceil(timeout)
-        self.__timeouts = {
-            **self.__timeouts,
+        self._timeouts = {
+            **self._timeouts,
             "implicit": timeout,
         }
         return self
@@ -143,8 +143,8 @@ class TimeoutsBuilder:
     def page_load(self, timeout: int):
         """Notice: if the number is a float, converts it to an integer"""
         timeout = ceil(timeout)
-        self.__timeouts = {
-            **self.__timeouts,
+        self._timeouts = {
+            **self._timeouts,
             "pageLoad": timeout,
         }
         return self
@@ -152,14 +152,14 @@ class TimeoutsBuilder:
     def script(self, timeout: int):
         """Notice: if the number is a float, converts it to an integer"""
         timeout = ceil(timeout)
-        self.__timeouts = {
-            **self.__timeouts,
+        self._timeouts = {
+            **self._timeouts,
             "script": timeout,
         }
         return self
 
     def to_dict(self):
-        return {"timeouts": self.__timeouts}
+        return {"timeouts": self._timeouts}
 
 
 class BaseCapabilities:
@@ -219,7 +219,7 @@ class BaseCapabilities:
         }
         return self
 
-    def proxy(self, proxy_configuration: dict | ProxyConfigurationBuilder):
+    def proxy(self, proxy_configuration: Union[dict, ProxyConfigurationBuilder]):
         """
         Defines the current session’s proxy configuration.
         Use the ProxyConfigurationBuilder class for simplicity.
@@ -242,7 +242,7 @@ class BaseCapabilities:
         }
         return self
 
-    def timeouts(self, session_timeouts: dict | TimeoutsBuilder):
+    def timeouts(self, session_timeouts: Union[dict , TimeoutsBuilder]):
         """
         Describes the timeouts imposed on certain session operations.
         Use the TimeoutsBuilder class for simplicity.
@@ -299,7 +299,7 @@ class BaseCapabilities:
         }
         return self
 
-    def add_options(self, options: dict | BaseOptions):
+    def add_options(self, options: Union[dict , BaseOptions]):
         """Add vendor options, for example
         {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}} or
         {"moz:experimental-webdriver": true}
