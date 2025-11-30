@@ -857,7 +857,10 @@ Note: This was the choosen library as it has more starts in github, recent commi
 Not planned. Need many refactoring and has gain for specific scenarios
 
 ## Scenario 8 - convert code to CPython
+No sensitive improvement
+
+## Scenario 9 - convert `XPATH` to `CSS Selector` automatically
 - Execution 1 (duration): 27.57s
-- Execution 3 (duration): 27.90s
 - Execution 2 (duration): 28.11s
+- Execution 3 (duration): 27.90s
 - mean: 27.86s

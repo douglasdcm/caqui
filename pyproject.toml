@@ -13,14 +13,16 @@ authors = [
   { name="Douglas Cardoso", email="noemail@noemail.com" },
 ]
 description = "Run asynchronous commands in WebDrivers"
+keywords = ["automation", "asynchronous", "test", "crawler", "robotic process automation", "rpa"]
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+
+license="MIT"
 
 dependencies = [
   "requests",
@@ -33,3 +35,15 @@ dependencies = [
 [project.urls]
 "Homepage" = "https://github.com/douglasdcm/caqui"
 "Bug Tracker" = "https://github.com/douglasdcm/caqui/issues"
+
+[tool.mypy]
+exclude=["tests/performance/test_process_data.py", "tests/test_sniffer.py"]
+disallow_any_unimported = false
+disallow_any_expr = false
+disallow_any_decorated = false
+disallow_any_explicit = false
+disallow_any_generics = false
+disallow_subclassing_any = false
+disallow_untyped_calls = false
+disallow_untyped_defs=false
+check_untyped_defs = true

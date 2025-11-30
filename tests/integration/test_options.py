@@ -64,7 +64,7 @@ def test_chrome_options():
                 "enablePage": False,
                 "traceCategories": "devtools.network",
             },
-            "windowsTypes": "any",
+            "windowsTypes": ["any"],
         }
     }
     options = options = (
@@ -79,7 +79,7 @@ def test_chrome_options():
         .exclude_switches(["sw1", "sw2"])
         .minidump_path("any")
         .mobile_emulation({"any": "any"})
-        .windows_types("any")
+        .windows_types(["any"])
         .perf_logging_prefs(
             {
                 "enableNetwork": False,

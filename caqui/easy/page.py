@@ -169,7 +169,7 @@ class AsyncPage:
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def get_cookie(self, cookie_name):
+    async def get_cookie(self, cookie_name) -> dict:
         """Get the desired cookie"""
         return await asynchronous.get_named_cookie(
             self._server_url, self._session, cookie_name, session_http=self.session_http

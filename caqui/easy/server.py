@@ -45,7 +45,7 @@ class Server:
                 break
             except ConnectionError:
                 sleep(0.5)
-                if i == (MAX_RETIES - 1):
+                if i == (MAX_RETIES - 1) and self._process:
                     self._process.kill()
                     self._process.wait()
                     raise Exception("Driver not started")
@@ -67,7 +67,7 @@ class Server:
             raise
 
         driver_manager = self._browser_factory()
-        self._process = subprocess.Popen(
+        self._process : Union[subprocess.Popen, None] = subprocess.Popen(
             [driver_manager, f"--port={self._port}"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

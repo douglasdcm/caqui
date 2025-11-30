@@ -61,7 +61,7 @@ def test_chrome_capabilities_with_options():
                 "excludeSwitches": ["sw1", "sw2"],
                 "minidumpPath": "any",
                 "mobileEmulation": {"any": "any"},
-                "windowsTypes": "any",
+                "windowsTypes": ["any"],
                 "perfLoggingPrefs": {
                     "enableNetwork": False,
                     "enablePage": False,
@@ -84,7 +84,7 @@ def test_chrome_capabilities_with_options():
         .exclude_switches(["sw1", "sw2"])
         .minidump_path("any")
         .mobile_emulation({"any": "any"})
-        .windows_types("any")
+        .windows_types(["any"])
         .perf_logging_prefs(
             {
                 "enableNetwork": False,

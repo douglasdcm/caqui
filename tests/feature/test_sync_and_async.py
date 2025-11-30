@@ -105,8 +105,8 @@ async def test_set_window_rectangle(setup_functional_environment):
     width = 500
     height = 300
     window_rectangle_before = synchronous.get_window_rectangle(server_url, session)
-    x = window_rectangle_before.get("x") + 1
-    y = window_rectangle_before.get("y") + 1
+    x = window_rectangle_before.get("x", 0) + 1
+    y = window_rectangle_before.get("y", 0) + 1
 
     assert synchronous.set_window_rectangle(server_url, session, width, height, x, y) is True
 
@@ -121,7 +121,6 @@ async def test_set_window_rectangle(setup_functional_environment):
 
     assert await asynchronous.set_window_rectangle(server_url, session, width, height, x, y) is True
 
-    window_rectangle_after = None
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
     assert window_rectangle_after.get("height") != window_rectangle_before.get("height")
@@ -140,18 +139,17 @@ async def test_fullscreen_window(setup_functional_environment):
 
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
-    assert window_rectangle_after.get("height") > window_rectangle_before.get("height")
-    assert window_rectangle_after.get("width") > window_rectangle_before.get("width")
+    assert window_rectangle_after.get("height", 0) > window_rectangle_before.get("height", 0)
+    assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
 
     synchronous.maximize_window(server_url, session)
 
     assert await asynchronous.fullscreen_window(server_url, session) is True
 
-    window_rectangle_after = None
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
-    assert window_rectangle_after.get("height") > window_rectangle_before.get("height")
-    assert window_rectangle_after.get("width") > window_rectangle_before.get("width")
+    assert window_rectangle_after.get("height", 0) > window_rectangle_before.get("height",0)
+    assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
 
 
 @mark.skip(reason="does not work in headless mode")
@@ -164,18 +162,17 @@ async def test_minimize_window(setup_functional_environment):
 
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
-    assert window_rectangle_after.get("height") < window_rectangle_before.get("height")
-    assert window_rectangle_after.get("width") < window_rectangle_before.get("width")
+    assert window_rectangle_after.get("height", 0) < window_rectangle_before.get("height", 0)
+    assert window_rectangle_after.get("width", 0) < window_rectangle_before.get("width",0)
 
     synchronous.maximize_window(server_url, session)
 
     assert await asynchronous.minimize_window(server_url, session) is True
 
-    window_rectangle_after = None
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
-    assert window_rectangle_after.get("height") < window_rectangle_before.get("height")
-    assert window_rectangle_after.get("width") < window_rectangle_before.get("width")
+    assert window_rectangle_after.get("height", 0) < window_rectangle_before.get("height", 0)
+    assert window_rectangle_after.get("width", 0) < window_rectangle_before.get("width", 0)
 
 
 @mark.skip(reason="does not work in headless mode")
@@ -188,8 +185,8 @@ async def test_maximize_window_asynchronous(setup_functional_environment):
 
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
-    assert window_rectangle_after.get("height") > window_rectangle_before.get("height")
-    assert window_rectangle_after.get("width") > window_rectangle_before.get("width")
+    assert window_rectangle_after.get("height", 0) > window_rectangle_before.get("height", 0)
+    assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
 
 
 @mark.skip(reason="does not work in headless mode")
@@ -202,8 +199,8 @@ def test_maximize_window_synchronous(setup_functional_environment):
 
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
-    assert window_rectangle_after.get("height") > window_rectangle_before.get("height")
-    assert window_rectangle_after.get("width") > window_rectangle_before.get("width")
+    assert window_rectangle_after.get("height", 0) > window_rectangle_before.get("height", 0)
+    assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
 
 
 @mark.parametrize("window_type", ("tab", "window"))
@@ -383,7 +380,7 @@ async def test_get_named_cookie(setup_functional_environment):
 
     assert synchronous.get_named_cookie(server_url, session, name).get("value") == expected
     response = await asynchronous.get_named_cookie(server_url, session, name)
-    assert response.get("value") == expected
+    assert response == expected
 
 
 @mark.asyncio
@@ -848,9 +845,9 @@ async def test_get_timeouts(setup_functional_environment):
 async def test_get_status(setup_functional_environment):
     server_url, _ = setup_functional_environment
     expected = "ready"
-    assert expected in synchronous.get_status(server_url).get("value")
+    assert expected in synchronous.get_status(server_url).get("value", [])
     response = await asynchronous.get_status(server_url)
-    assert expected in response.get("value")
+    assert expected in response.get("value", [])
 
 
 @mark.asyncio

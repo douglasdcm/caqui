@@ -186,7 +186,7 @@ async def test_get_window_handles():
 
 @mark.asyncio
 async def test_close_window():
-    expected = []
+    expected:list = []
 
     async def mock_request(*args, **kwargs):
         return fake_responses.CLOSE_WINDOW
@@ -265,7 +265,7 @@ async def test_get_status():
 
     with patch("caqui.asynchronous._get", mock_request):
         response = await asynchronous.get_status("")
-        assert response.get("value").get("ready") is True
+        assert response.get("value", {}).get("ready", False) is True
 
 
 @mark.asyncio
@@ -281,7 +281,7 @@ async def test_get_title():
 
 @mark.asyncio
 async def test_get_cookies():
-    expected = []
+    expected:list = []
 
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_COOKIES

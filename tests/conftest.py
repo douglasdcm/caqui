@@ -13,6 +13,13 @@ SERVER_URL = f"http://localhost:{SERVER_PORT}"
 CAPTURES = "captures"
 
 
+@fixture(autouse=True, scope="session")
+def setup_server():
+    server = Server.get_instance(port=SERVER_PORT)
+    server.start()
+    # yield
+    # server.dispose(delay=3)
+
 def _build_capabilities():
     options = ChromeOptionsBuilder().args(["headless"])
     capabilities = (
@@ -23,13 +30,6 @@ def _build_capabilities():
     ).to_dict()
     return capabilities
 
-
-@fixture(autouse=True, scope="session")
-def setup_server():
-    server = Server.get_instance(port=SERVER_PORT)
-    server.start()
-    # yield
-    # server.dispose(delay=3)
 
 
 @fixture

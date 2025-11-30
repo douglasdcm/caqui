@@ -6,7 +6,7 @@ from caqui.helper import save_picture, get_elements, get_element
 from typing import Any, List, Optional, Union
 
 
-async def _handle_response(resp):
+async def _handle_response(resp) -> Any:
     result = None
     if resp.status in range(200, 399):
         result = await resp.json()
@@ -54,7 +54,7 @@ async def _post(url, payload, session_http: Union[ClientSession, None] = None):
             raise WebDriverError("'POST' request failed.") from e
 
 
-async def _get(url, session_http: Union[ClientSession, None] = None):
+async def _get(url, session_http: Union[ClientSession, None] = None) -> dict:
     if session_http:
         try:
             async with session_http.get(url, headers=HEADERS) as resp:
@@ -308,12 +308,12 @@ async def take_screenshot(
 
 async def get_named_cookie(
     server_url, session, name, session_http: Union[ClientSession, None] = None
-) -> str:
+) -> dict:
     """Get cookie by name"""
     try:
         url = f"{server_url}/session/{session}/cookie/{name}"
         response = await _get(url, session_http)
-        return response.get("value")
+        return response.get("value", {})
     except Exception as e:
         raise WebDriverError(f"Failed to get cookie '{name}'.") from e
 
@@ -325,7 +325,7 @@ async def get_computed_label(
     try:
         url = f"{server_url}/session/{session}/element/{element}/computedlabel"
         response = await _get(url, session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get element computed label.") from e
 
@@ -337,7 +337,7 @@ async def get_computed_role(
     try:
         url = f"{server_url}/session/{session}/element/{element}/computedrole"
         response = await _get(url, session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get element computed role.") from e
 
@@ -349,14 +349,14 @@ async def get_tag_name(
     try:
         url = f"{server_url}/session/{session}/element/{element}/name"
         response = await _get(url, session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get element name.") from e
 
 
 async def get_shadow_root(
     server_url, session, element, session_http: Union[ClientSession, None] = None
-) -> dict:
+) -> str:
     """Get the shadow root element"""
     try:
         root_element = "shadow-6066-11e4-a52e-4f735466cecf"
@@ -374,7 +374,7 @@ async def get_rect(
     try:
         url = f"{server_url}/session/{session}/element/{element}/rect"
         response = await _get(url, session_http)
-        return response.get("value")
+        return response.get("value", {})
     except Exception as e:
         raise WebDriverError("Failed to get element rect.") from e
 
@@ -568,7 +568,7 @@ async def get_page_source(
     try:
         url = f"{server_url}/session/{session}/source"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get the page source.") from e
 
@@ -593,7 +593,7 @@ async def get_alert_text(
     try:
         url = f"{server_url}/session/{session}/alert/text"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get the alert text.") from e
 
@@ -628,7 +628,7 @@ async def is_element_enabled(
     try:
         url = f"{server_url}/session/{session}/element/{element}/enabled"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", False)
     except Exception as e:
         raise WebDriverError("Failed to check if element is enabled.") from e
 
@@ -636,13 +636,13 @@ async def is_element_enabled(
 async def get_css_value(
     server_url, session, element, property_name, session_http: Union[ClientSession, None] = None
 ) -> str:
-    """Check if element is selected"""
+    """Get CSS value"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/css/{property_name}"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
-        raise WebDriverError("Failed to check if element is selected.") from e
+        raise WebDriverError("Failed to get css value.") from e
 
 
 async def is_element_selected(
@@ -664,7 +664,7 @@ async def get_window_rectangle(
     try:
         url = f"{server_url}/session/{session}/window/rect"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", {})
     except Exception as e:
         raise WebDriverError("Failed to get window rectangle.") from e
 
@@ -676,7 +676,7 @@ async def get_window_handles(
     try:
         url = f"{server_url}/session/{session}/window/handles"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", [])
     except Exception as e:
         raise WebDriverError("Failed to get window handles.") from e
 
@@ -698,7 +698,7 @@ async def get_window(server_url, session, session_http: Union[ClientSession, Non
     try:
         url = f"{server_url}/session/{session}/window"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get window.") from e
 
@@ -722,7 +722,7 @@ async def get_url(server_url, session, session_http: Union[ClientSession, None] 
     try:
         url = f"{server_url}/session/{session}/url"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get page url.") from e
 
@@ -737,7 +737,7 @@ async def get_timeouts(
     try:
         url = f"{server_url}/session/{session}/timeouts"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", {})
     except Exception as e:
         raise WebDriverError("Failed to get timeouts.") from e
 
@@ -757,7 +757,7 @@ async def get_title(server_url, session, session_http: Union[ClientSession, None
     try:
         url = f"{server_url}/session/{session}/title"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get page title.") from e
 
@@ -783,7 +783,7 @@ async def find_elements(
 
 async def get_property(
     server_url, session, element, property, session_http: Union[ClientSession, None] = None
-) -> str:
+) -> Any:
     """Get the given HTML property of an element, for example, 'href'"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/property/{property}"
@@ -800,7 +800,7 @@ async def get_attribute(
     try:
         url = f"{server_url}/session/{session}/element/{element}/attribute/{attribute}"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get value from element.") from e
 
@@ -812,7 +812,7 @@ async def get_text(
     try:
         url = f"{server_url}/session/{session}/element/{element}/text"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get text from element.") from e
 
@@ -822,7 +822,7 @@ async def get_cookies(server_url, session, session_http: Union[ClientSession, No
     try:
         url = f"{server_url}/session/{session}/cookie"
         response = await _get(url, session_http=session_http)
-        return response.get("value")
+        return response.get("value", [])
     except Exception as e:
         raise WebDriverError("Failed to get page cookies.") from e
 

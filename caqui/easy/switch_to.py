@@ -1,3 +1,4 @@
+from typing import Union
 from caqui import asynchronous, synchronous
 from caqui.easy.element import Element
 from caqui.easy.alert import Alert
@@ -6,8 +7,8 @@ from caqui.easy.alert import Alert
 class SwitchTo:
     def __init__(self, driver) -> None:
         self._driver = driver
-        self._iframe = None
-        self._window_handle = None
+        self._iframe :Union[str, None]= None
+        self._window_handle:Union[str, None] = None
         self._session_http = driver.session_http
 
     @property

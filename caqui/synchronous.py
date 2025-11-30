@@ -3,7 +3,7 @@ from orjson import dumps
 from caqui.exceptions import WebDriverError
 from caqui import helper
 from caqui.constants import HEADERS
-from typing import Optional
+from typing import Any, Optional
 
 
 def _handle_response(response):
@@ -53,7 +53,7 @@ def _handle_alerts(server_url, session, command):
 
 def _handle_window(server_url, session, command):
     url = f"{server_url}/session/{session}/window/{command}"
-    payload = {}
+    payload:dict = {}
     _post(url, payload)
     return True
 
@@ -83,7 +83,7 @@ def refresh_page(server_url, session):
     """Refresh page"""
     try:
         url = f"{server_url}/session/{session}/refresh"
-        payload = {}
+        payload: dict = {}
         _post(url, payload)
         return True
     except Exception as e:
@@ -94,7 +94,7 @@ def go_forward(server_url, session):
     """Go to page forward"""
     try:
         url = f"{server_url}/session/{session}/forward"
-        payload = {}
+        payload: dict = {}
         _post(url, payload)
         return True
     except Exception as e:
@@ -242,7 +242,7 @@ def take_screenshot(server_url, session, path="/tmp", file_name="caqui"):
         raise WebDriverError("Failed to take screeshot.") from e
 
 
-def get_named_cookie(server_url, session, name) -> str:
+def get_named_cookie(server_url, session, name) -> dict:
     """Get cookie by name."""
     try:
         url = f"{server_url}/session/{session}/cookie/{name}"
@@ -278,7 +278,7 @@ def get_tag_name(server_url, session, element) -> str:
         raise WebDriverError("Failed to get the element name.") from e
 
 
-def get_shadow_root(server_url, session, element) -> dict:
+def get_shadow_root(server_url, session, element) -> str:
     """Get the shadow root element"""
     try:
         root_element = "shadow-6066-11e4-a52e-4f735466cecf"
@@ -638,7 +638,7 @@ def find_elements(server_url, session, locator_type, locator_value) -> list:
         ) from e
 
 
-def get_property(server_url, session, element, property_name) -> str:
+def get_property(server_url, session, element, property_name) -> Any:
     """Get the given HTML property of an element, for example, 'href'"""
     try:
         url = f"{server_url}/session/{session}/element/{element}/property/{property_name}"
@@ -751,9 +751,17 @@ def get_session(server_url: str, capabilities: Optional[dict] = None):
     except Exception as e:
         raise WebDriverError("Failed to open session. Check the browser capabilities.") from e
 
+# from cssify import cssify
 
 def find_element(server_url, session, locator_type, locator_value) -> str:
     """Find an element by a 'locator', for example 'xpath'"""
+    # try:
+    #     if locator_type.lower() == "xpath":
+    #         locator_type = "css selector"
+    #         locator_value = cssify(locator_value)
+    # except Exception:
+    #     # just ignore it and keep using the xpath selector
+    #     pass
     try:
         url = f"{server_url}/session/{session}/element"
         payload = {"using": locator_type, "value": locator_value}

@@ -3,8 +3,8 @@ from caqui import asynchronous
 
 class Window:
     def __init__(self, driver) -> None:
-        self.__remote = driver.remote
-        self.__session = driver.session
+        self._remote = driver.remote
+        self._ssession = driver.session
 
     async def new(self, window_type="tab"):
         """
@@ -14,4 +14,4 @@ class Window:
 
         return (str): window handle
         """
-        return await asynchronous.new_window(self.__remote, self.__session, window_type)
+        return await asynchronous.new_window(self._remote, self._session, window_type)
