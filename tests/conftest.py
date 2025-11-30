@@ -20,6 +20,7 @@ def setup_server():
     # yield
     # server.dispose(delay=3)
 
+
 def _build_capabilities():
     options = ChromeOptionsBuilder().args(["headless"])
     capabilities = (
@@ -29,7 +30,6 @@ def _build_capabilities():
         .page_load_strategy("eager")
     ).to_dict()
     return capabilities
-
 
 
 @fixture

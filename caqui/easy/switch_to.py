@@ -7,8 +7,8 @@ from caqui.easy.alert import Alert
 class SwitchTo:
     def __init__(self, driver) -> None:
         self._driver = driver
-        self._iframe :Union[str, None]= None
-        self._window_handle:Union[str, None] = None
+        self._iframe: Union[str, None] = None
+        self._window_handle: Union[str, None] = None
         self._session_http = driver.session_http
 
     @property

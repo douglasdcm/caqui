@@ -186,7 +186,7 @@ async def test_get_window_handles():
 
 @mark.asyncio
 async def test_close_window():
-    expected:list = []
+    expected: list = []
 
     async def mock_request(*args, **kwargs):
         return fake_responses.CLOSE_WINDOW
@@ -281,7 +281,7 @@ async def test_get_title():
 
 @mark.asyncio
 async def test_get_cookies():
-    expected:list = []
+    expected: list = []
 
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_COOKIES

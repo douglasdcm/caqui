@@ -67,7 +67,7 @@ class Server:
             raise
 
         driver_manager = self._browser_factory()
-        self._process : Union[subprocess.Popen, None] = subprocess.Popen(
+        self._process: Union[subprocess.Popen, None] = subprocess.Popen(
             [driver_manager, f"--port={self._port}"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

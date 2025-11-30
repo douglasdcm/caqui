@@ -2,7 +2,7 @@ from aiohttp import ClientSession
 from orjson import dumps
 from caqui.constants import HEADERS
 from caqui.exceptions import WebDriverError
-from caqui.helper import save_picture, get_elements, get_element
+from caqui.helper import convert_xpath_to_css_selector, save_picture, get_elements, get_element
 from typing import Any, List, Optional, Union
 
 
@@ -520,11 +520,11 @@ async def set_timeouts(
 
 
 async def find_children_elements(
-    server_url,
-    session,
-    parent_element,
-    locator_type,
-    locator_value,
+    server_url: str,
+    session: str,
+    parent_element: str,
+    locator_type: str,
+    locator_value: str,
     session_http: Union[ClientSession, None] = None,
 ):
     """Find the children elements by 'locator_type'
@@ -532,6 +532,7 @@ async def find_children_elements(
     If the 'parent_element' is a shadow element, set the 'locator_type' as 'id' or
     'css selector'
     """
+    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
     try:
         url = f"{server_url}/session/{session}/element/{parent_element}/elements"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
@@ -544,14 +545,15 @@ async def find_children_elements(
 
 
 async def find_child_element(
-    server_url,
-    session,
-    parent_element,
-    locator_type,
-    locator_value,
+    server_url: str,
+    session: str,
+    parent_element: str,
+    locator_type: str,
+    locator_value: str,
     session_http: Union[ClientSession, None] = None,
 ):
     """Find the child element by 'locator_type'"""
+    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
     try:
         url = f"{server_url}/session/{session}/element/{parent_element}/element"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
@@ -763,13 +765,14 @@ async def get_title(server_url, session, session_http: Union[ClientSession, None
 
 
 async def find_elements(
-    server_url,
-    session,
-    locator_type,
-    locator_value,
+    server_url: str,
+    session: str,
+    locator_type: str,
+    locator_value: str,
     session_http: Union[ClientSession, None] = None,
 ) -> List[Any]:
     """Search the DOM elements by 'locator', for example, 'xpath'"""
+    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
     try:
         payload = {"using": locator_type, "value": locator_value}
         url = f"{server_url}/session/{session}/elements"
@@ -880,14 +883,14 @@ async def click(server_url, session, element, session_http: Union[ClientSession,
 
 
 async def find_element(
-    server_url,
-    session,
-    locator_type,
-    locator_value,
+    server_url: str,
+    session: str,
+    locator_type: str,
+    locator_value: str,
     session_http: Union[ClientSession, None] = None,
 ) -> str:
     """Find an element by a 'locator', for example 'xpath'"""
-
+    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
     try:
         payload = {"using": locator_type, "value": locator_value}
         url = f"{server_url}/session/{session}/element"

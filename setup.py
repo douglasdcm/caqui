@@ -1,8 +1,26 @@
-
-from distutils.core import setup 
+from distutils.core import setup
 from Cython.Build import cythonize
+
 setup(
-    ext_modules = cythonize(
-    ['./caqui/asynchronous.pyx', './caqui/constants.pyx', './caqui/helper.pyx', './caqui/exceptions.pyx', './caqui/synchronous.pyx', './caqui/by.pyx', './caqui/__init__.pyx', './caqui/easy/capabilities.pyx', './caqui/easy/options.pyx', './caqui/easy/action_chains.pyx', './caqui/easy/alert.pyx', './caqui/easy/page.pyx', './caqui/easy/switch_to.pyx', './caqui/easy/window.pyx', './caqui/easy/element.pyx', './caqui/easy/__init__.pyx', './caqui/easy/server.pyx']
+    ext_modules=cythonize(
+        [
+            "./caqui/asynchronous.pyx",
+            "./caqui/constants.pyx",
+            "./caqui/helper.pyx",
+            "./caqui/exceptions.pyx",
+            "./caqui/synchronous.pyx",
+            "./caqui/by.pyx",
+            "./caqui/__init__.pyx",
+            "./caqui/easy/capabilities.pyx",
+            "./caqui/easy/options.pyx",
+            "./caqui/easy/action_chains.pyx",
+            "./caqui/easy/alert.pyx",
+            "./caqui/easy/page.pyx",
+            "./caqui/easy/switch_to.pyx",
+            "./caqui/easy/window.pyx",
+            "./caqui/easy/element.pyx",
+            "./caqui/easy/__init__.pyx",
+            "./caqui/easy/server.pyx",
+        ]
     )
 )

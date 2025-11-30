@@ -1,7 +1,7 @@
 from requests import request
 from orjson import dumps
 from caqui.exceptions import WebDriverError
-from caqui import helper
+from caqui.helper import convert_xpath_to_css_selector, save_picture, get_element, get_elements
 from caqui.constants import HEADERS
 from typing import Any, Optional
 
@@ -53,7 +53,7 @@ def _handle_alerts(server_url, session, command):
 
 def _handle_window(server_url, session, command):
     url = f"{server_url}/session/{session}/window/{command}"
-    payload:dict = {}
+    payload: dict = {}
     _post(url, payload)
     return True
 
@@ -225,7 +225,7 @@ def take_screenshot_element(server_url, session, element, path="/tmp", file_name
     try:
         url = f"{server_url}/session/{session}/element/{element}/screenshot"
         response = _get(url).get("value")
-        helper.save_picture(session, path, file_name, response)
+        save_picture(session, path, file_name, response)
         return True
     except Exception as e:
         raise WebDriverError("Failed to take screeshot.") from e
@@ -236,7 +236,7 @@ def take_screenshot(server_url, session, path="/tmp", file_name="caqui"):
     try:
         url = f"{server_url}/session/{session}/screenshot"
         response = _get(url).get("value")
-        helper.save_picture(session, path, file_name, response)
+        save_picture(session, path, file_name, response)
         return True
     except Exception as e:
         raise WebDriverError("Failed to take screeshot.") from e
@@ -428,30 +428,36 @@ def set_timeouts(server_url, session, timeouts):
         raise WebDriverError("Failed to set timeouts.") from e
 
 
-def find_children_elements(server_url, session, parent_element, locator_type, locator_value):
+def find_children_elements(
+    server_url: str, session: str, parent_element: str, locator_type: str, locator_value: str
+):
     """Find the children elements by 'locator_type'
 
     If the 'parent_element' is a shadow element, set the 'locator_type' as 'id' or
     'css selector'
     """
+    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
     try:
         url = f"{server_url}/session/{session}/element/{parent_element}/elements"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
         response = _post(url, payload)
-        return helper.get_elements(response)
+        return get_elements(response)
     except Exception as e:
         raise WebDriverError(
             f"Failed to find the children elements from '{parent_element}'."
         ) from e
 
 
-def find_child_element(server_url, session, parent_element, locator_type, locator_value):
+def find_child_element(
+    server_url: str, session: str, parent_element: str, locator_type: str, locator_value: str
+):
     """Find the child element by 'locator_type'"""
+    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
     try:
         url = f"{server_url}/session/{session}/element/{parent_element}/element"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
         response = _post(url, payload)
-        return helper.get_element(response)
+        return get_element(response)
     except Exception as e:
         raise WebDriverError(f"Failed to find the child element from '{parent_element}'.") from e
 
@@ -490,7 +496,7 @@ def get_active_element(server_url, session):
     try:
         url = f"{server_url}/session/{session}/element/active"
         response = _get(url)
-        return helper.get_element(response)
+        return get_element(response)
     except Exception as e:
         raise WebDriverError("Failed to get the active element.") from e
 
@@ -625,8 +631,9 @@ def get_title(server_url, session) -> str:
         raise WebDriverError("Failed to get page title.") from e
 
 
-def find_elements(server_url, session, locator_type, locator_value) -> list:
+def find_elements(server_url: str, session: str, locator_type: str, locator_value: str) -> list:
     """Search the DOM elements by 'locator', for example, 'xpath'"""
+    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
     try:
         url = f"{server_url}/session/{session}/elements"
         payload = {"using": locator_type, "value": locator_value}
@@ -751,17 +758,10 @@ def get_session(server_url: str, capabilities: Optional[dict] = None):
     except Exception as e:
         raise WebDriverError("Failed to open session. Check the browser capabilities.") from e
 
-# from cssify import cssify
 
-def find_element(server_url, session, locator_type, locator_value) -> str:
+def find_element(server_url: str, session: str, locator_type: str, locator_value: str) -> str:
     """Find an element by a 'locator', for example 'xpath'"""
-    # try:
-    #     if locator_type.lower() == "xpath":
-    #         locator_type = "css selector"
-    #         locator_value = cssify(locator_value)
-    # except Exception:
-    #     # just ignore it and keep using the xpath selector
-    #     pass
+    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
     try:
         url = f"{server_url}/session/{session}/element"
         payload = {"using": locator_type, "value": locator_value}
@@ -772,7 +772,7 @@ def find_element(server_url, session, locator_type, locator_value) -> str:
         if response.get("value").get("error"):
             raise WebDriverError(f"Failed to find element. {response}")
 
-        return helper.get_element(response)
+        return get_element(response)
     except Exception as e:
         raise WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."

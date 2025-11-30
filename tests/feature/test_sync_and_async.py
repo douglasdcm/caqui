@@ -148,7 +148,7 @@ async def test_fullscreen_window(setup_functional_environment):
 
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
-    assert window_rectangle_after.get("height", 0) > window_rectangle_before.get("height",0)
+    assert window_rectangle_after.get("height", 0) > window_rectangle_before.get("height", 0)
     assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
 
 
@@ -163,7 +163,7 @@ async def test_minimize_window(setup_functional_environment):
     window_rectangle_after = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
     assert window_rectangle_after.get("height", 0) < window_rectangle_before.get("height", 0)
-    assert window_rectangle_after.get("width", 0) < window_rectangle_before.get("width",0)
+    assert window_rectangle_after.get("width", 0) < window_rectangle_before.get("width", 0)
 
     synchronous.maximize_window(server_url, session)
 

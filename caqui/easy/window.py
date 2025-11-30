@@ -4,7 +4,7 @@ from caqui import asynchronous
 class Window:
     def __init__(self, driver) -> None:
         self._remote = driver.remote
-        self._ssession = driver.session
+        self._session = driver.session
 
     async def new(self, window_type="tab"):
         """

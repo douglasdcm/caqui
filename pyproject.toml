@@ -20,9 +20,10 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
 ]
 
-license="MIT"
+
 
 dependencies = [
   "requests",
@@ -30,6 +31,7 @@ dependencies = [
   "webdriver_manager",
   "types-requests",
   "orjson",
+  "cssify",
 ]
 
 [project.urls]

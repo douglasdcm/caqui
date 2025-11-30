@@ -108,7 +108,7 @@ def test_get_window_handles(*args):
 
 @patch("caqui.synchronous.request", return_value=fake_responses.CLOSE_WINDOW)
 def test_close_window(*args):
-    expected:list = []
+    expected: list = []
 
     assert synchronous.close_window("", "") == expected
 
@@ -148,7 +148,7 @@ def test_get_title(*args):
 
 @patch("caqui.synchronous.request", return_value=fake_responses.GET_COOKIES)
 def test_get_cookies(*args):
-    expected :list= []
+    expected: list = []
 
     assert synchronous.get_cookies("", "") == expected
 

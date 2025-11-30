@@ -1,4 +1,5 @@
 import base64
+from cssify import cssify  # type: ignore
 
 
 def save_picture(session, path, file_name, response):
@@ -20,3 +21,14 @@ def get_element(response) -> str:
 
     # Firefox
     return list(value.values())[0]
+
+
+def convert_xpath_to_css_selector(locator_type: str, locator_value: str):
+    try:
+        if locator_type.lower() == "xpath":
+            locator_value = cssify(locator_value)
+            locator_type = "css selector"
+    except Exception:
+        # just ignore it and keep using the xpath selector
+        pass
+    return locator_type, locator_value

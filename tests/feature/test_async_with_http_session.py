@@ -185,7 +185,7 @@ async def test_minimize_window(setup_functional_environment):
 
     assert synchronous.minimize_window(server_url, session) is True
 
-    window_rectangle_after :dict= synchronous.get_window_rectangle(server_url, session)
+    window_rectangle_after: dict = synchronous.get_window_rectangle(server_url, session)
     assert window_rectangle_after != window_rectangle_before
     assert window_rectangle_after.get("height", 0) < window_rectangle_before.get("height", 0)
     assert window_rectangle_after.get("width", 0) < window_rectangle_before.get("width", 0)
