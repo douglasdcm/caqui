@@ -14,6 +14,8 @@ class Element:
         self._session = driver.session
         self._session_http = driver.session_http
         self._driver = driver
+        self._locator_type: str = ""
+        self._locator_value: str = ""
 
     def __str__(self) -> str:
         return self._element
@@ -21,7 +23,20 @@ class Element:
     @property
     def element_id(self):
         return self._element
-    
+    @property
+    def locator(self):
+        return (self._locator_type, self._locator_value)
+    @locator.setter
+    def locator(self, locator: tuple[str, str]):
+        """
+        Stores the locator type and values
+
+        Args:
+            value: the locator type and value, for example, ('xpath', '//a')
+        """
+        self._locator_type, self._locator_value = locator
+
+
     @property
     def rect(self):
         """Returns the rectangle that enclosed the element

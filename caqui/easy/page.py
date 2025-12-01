@@ -4,7 +4,7 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 import os
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 from aiohttp import ClientSession
 from caqui import asynchronous, synchronous
@@ -38,7 +38,7 @@ class AsyncPage:
                 self._session,
                 url,
             )
-        self._elements_pool = []
+        self._elements_pool: List[Element]= []
 
     @property
     def remote(self) -> str:
@@ -244,12 +244,22 @@ class AsyncPage:
         )
         result = []
         for element in elements:
-            result.append(Element(element, self))
+            el = Element(element, self)
+            el.locator = (locator, value)
+            result.append(el)
+        self._elements_pool.extend(result)
+        self._elements_pool = list(set(self._elements_pool))
         return result
 
     async def find_element(self, locator, value) -> Element:
         """Find an element by a 'locator', for example 'xpath'"""
+        el: Element = [e for e in self._elements_pool if e.locator == (locator, value)]
+        if el:
+            return el[0]
         element = await asynchronous.find_element(
             self._server_url, self._session, locator, value, session_http=self.session_http
         )
-        return Element(element, self)
+        el = Element(element, self)
+        el.locator = (locator, value)
+        self._elements_pool.append(el)
+        return el

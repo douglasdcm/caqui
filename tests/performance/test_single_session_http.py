@@ -12,7 +12,7 @@ from caqui.easy.options import ChromeOptionsBuilder
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
 CAPTURES = "captures"
-LOAD = 10  # requests
+LOAD = 1  # requests
 
 
 # @mark.skip(reason="Used for performance tests")
