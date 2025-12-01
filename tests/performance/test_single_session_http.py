@@ -35,7 +35,7 @@ class TestPerformance:
         ).to_dict()
         return capabilities
 
-    async def _body(self, page):
+    async def _body(self, page: AsyncPage):
         await page.implicitly_wait(10)
         await page.get(
             PAGE_URL,

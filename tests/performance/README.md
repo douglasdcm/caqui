@@ -860,7 +860,26 @@ Not planned. Need many refactoring and has gain for specific scenarios
 No sensitive improvement
 
 ## Scenario 9 - convert `XPATH` to `CSS Selector` automatically
-- Execution 1 (duration): 27.57s
-- Execution 2 (duration): 28.11s
-- Execution 3 (duration): 27.90s
-- mean: 27.86s
+The values in parentesis are the ones when the code of `cssify` is not compiled by `cython` 
+- Execution 2 (duration): 28.72s (30.55s)
+- Execution 3 (duration): 29.36s (33.06s)
+- Execution 1 (duration): 31.35s (31.64s)
+- mean: 29.81s (30.14s)
+
+## Scenario 10 - add cython compiler directives
+Each execution was done in rounds and separeted by comma. In the first round these compiler directives were added
+```python
+'language_level': 3,
+'boundscheck': False,
+'wraparound': False,
+'cdivision': True,
+```
+In second round
+```python
+'initializedcheck': False,
+'nonecheck': False,
+```
+- Execution 1 (duration): 27.94s, 27.66s
+- Execution 2 (duration): 29.37s, 28.89s
+- Execution 3 (duration): 27.73s, 31.35s
+- mean: 28.34s, 29.30s

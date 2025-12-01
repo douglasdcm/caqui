@@ -21,23 +21,42 @@ def convert_python_to_pyx(root_folder: str):
                 shutil.copyfile(original_file, pyx_path)
                 result.append(pyx_path)
 
-    content = f"""
-from distutils.core import setup 
+    setup_py_content = (
+        f"""
+
+from distutils.core import setup
 from Cython.Build import cythonize
+from setuptools import setup
+
 setup(
-    ext_modules = cythonize(
-    {result}
-    )
+    ext_modules=cythonize(
+        {result},
+        """
+        """
+        compiler_directives={
+            'language_level': 3,
+            'boundscheck': False,
+            'wraparound': False,
+            'cdivision': True,
+            'initializedcheck': False,
+            'nonecheck': False,
+        },
+    ),
 )
+
 """
+    )
     with open("setup.py", "w") as f:
-        f.write(content)
+        f.write(setup_py_content)
 
 
 def build_pyx():
     # Run a simple command and capture output
     result = subprocess.run(
-        ["python", "setup.py", "build_ext", "--inplace"], capture_output=True, text=True, check=True
+        ["python", "setup.py", "build_ext", "--inplace"],
+        capture_output=True,
+        text=True,
+        check=True,
     )
     print("Stdout:", result.stdout)
     print("Stderr:", result.stderr)

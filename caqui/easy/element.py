@@ -1,3 +1,8 @@
+# Copyright (C) 2023 Caqui - All Rights Reserved
+# You may use, distribute and modify this code under the
+# terms of the MIT license.
+# Visit: https://github.com/douglasdcm/caqui
+
 import os
 from caqui import asynchronous, synchronous
 
@@ -13,6 +18,10 @@ class Element:
     def __str__(self) -> str:
         return self._element
 
+    @property
+    def element_id(self):
+        return self._element
+    
     @property
     def rect(self):
         """Returns the rectangle that enclosed the element

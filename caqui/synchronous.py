@@ -1,7 +1,12 @@
+# Copyright (C) 2023 Caqui - All Rights Reserved
+# You may use, distribute and modify this code under the
+# terms of the MIT license.
+# Visit: https://github.com/douglasdcm/caqui
+
 from requests import request
 from orjson import dumps
 from caqui.exceptions import WebDriverError
-from caqui.helper import convert_xpath_to_css_selector, save_picture, get_element, get_elements
+from caqui.helper import save_picture, get_element, get_elements, convert_xpath_to_css_selector
 from caqui.constants import HEADERS
 from typing import Any, Optional
 

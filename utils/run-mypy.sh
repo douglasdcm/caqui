@@ -1,1 +1,1 @@
-mypy caqui/ tests/ --config-file=pyproject.toml 
+mypy caqui/ tests/ --config-file=setup.cfg 

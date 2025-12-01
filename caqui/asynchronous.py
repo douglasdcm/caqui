@@ -1,8 +1,13 @@
+# Copyright (C) 2023 Caqui - All Rights Reserved
+# You may use, distribute and modify this code under the
+# terms of the MIT license.
+# Visit: https://github.com/douglasdcm/caqui
+
 from aiohttp import ClientSession
 from orjson import dumps
 from caqui.constants import HEADERS
 from caqui.exceptions import WebDriverError
-from caqui.helper import convert_xpath_to_css_selector, save_picture, get_elements, get_element
+from caqui.helper import save_picture, get_elements, get_element, convert_xpath_to_css_selector
 from typing import Any, List, Optional, Union
 
 

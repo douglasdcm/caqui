@@ -1,5 +1,10 @@
+# Copyright (C) 2023 Caqui - All Rights Reserved
+# You may use, distribute and modify this code under the
+# terms of the MIT license.
+# Visit: https://github.com/douglasdcm/caqui
+
 import base64
-from cssify import cssify  # type: ignore
+from caqui.cssify import cssify
 
 
 def save_picture(session, path, file_name, response):
