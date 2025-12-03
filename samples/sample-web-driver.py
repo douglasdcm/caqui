@@ -4,14 +4,14 @@ import time
 from caqui import synchronous, asynchronous
 from caqui.easy.options import ChromeOptionsBuilder
 from tests.constants import PAGE_URL
-from caqui.easy.capabilities import BaseCapabilities, ChromeCapabilitiesBuilder
+from caqui.easy.capabilities import BaseCapabilitiesBuilder, ChromeCapabilitiesBuilder
 from caqui.easy.server import Server
 
 
 async def get_all_links(server):
     server_url = server.url
     options = ChromeOptionsBuilder().args(["headless"]).to_dict()
-    capabilities: BaseCapabilities = (
+    capabilities: BaseCapabilitiesBuilder = (
         ChromeCapabilitiesBuilder()
         .accept_insecure_certs(True)
         .page_load_strategy("normal")

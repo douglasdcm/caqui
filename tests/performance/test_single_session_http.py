@@ -97,7 +97,7 @@ class TestPerformance:
             .accept_insecure_certs(True)
             .add_options(options)
             .page_load_strategy("eager")
-        ).to_dict()
+        )
         return capabilities
 
     async def _body(self, page: AsyncPage):

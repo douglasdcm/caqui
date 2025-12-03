@@ -7,3 +7,6 @@ tox
 pytest-asyncio
 build
 mypy
+isort
+black
+flake8

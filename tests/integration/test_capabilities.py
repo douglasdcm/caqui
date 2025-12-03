@@ -4,7 +4,7 @@ from caqui.easy.capabilities import (
     ProxyConfigurationBuilder,
     TimeoutsBuilder,
 )
-from caqui.easy.options import ChromeOptionsBuilder, FirefoxOptions
+from caqui.easy.options import ChromeOptionsBuilder, FirefoxOptionsBuilder
 
 
 def test_firefox_capabilities_with_options():
@@ -28,7 +28,7 @@ def test_firefox_capabilities_with_options():
         }
     }
     options = (
-        FirefoxOptions()
+        FirefoxOptionsBuilder()
         .binary("/usr/bin/firefox")
         .args(["-headless", "-profile"])
         .env({"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"})

@@ -5,7 +5,7 @@
 from caqui.exceptions import WebDriverError
 
 
-class BaseOptions:
+class BaseOptionsBuilder:
     def __init__(self):
         """Builds the Chrome options
 
@@ -123,11 +123,11 @@ class BaseOptions:
         return {"goog:chromeOptions": self.options}
 
 
-class ChromeOptionsBuilder(BaseOptions):
+class ChromeOptionsBuilder(BaseOptionsBuilder):
     pass
 
 
-class EdgeOptionsBuilder(BaseOptions):
+class EdgeOptionsBuilder(BaseOptionsBuilder):
     def wdp_address(self, value: str):
         """An address of a Windows Device Portal server to connect to,
         in the form of hostname/ip:port, for example 127.0.0.1:50080"""
@@ -169,7 +169,7 @@ class EdgeOptionsBuilder(BaseOptions):
         return {"ms:edgeOptions": self.options}
 
 
-class FirefoxOptions(BaseOptions):
+class FirefoxOptionsBuilder(BaseOptionsBuilder):
     def __init__(self):
         super().__init__()
 
@@ -220,3 +220,4 @@ class FirefoxOptions(BaseOptions):
     def to_dict(self):
         """Converts the options to a dict"""
         return {"moz:firefoxOptions": self.options}
+

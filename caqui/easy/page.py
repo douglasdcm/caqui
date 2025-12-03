@@ -11,6 +11,7 @@ from aiohttp import ClientSession
 from caqui import asynchronous, synchronous
 from caqui.easy.action_chains import ActionChains
 from caqui.easy.alert import Alert
+from caqui.easy.capabilities import BaseCapabilitiesBuilder
 from caqui.easy.element import Element
 from caqui.easy.switch_to import SwitchTo
 from caqui.easy.window import Window
@@ -27,6 +28,8 @@ class AsyncPage:
     ) -> None:
         """Mimics Selenium methods"""
         self.session_http = session_http
+        if isinstance(capabilities, BaseCapabilitiesBuilder):
+            capabilities = capabilities.to_dict()
         if not capabilities:
             capabilities = {}
         if not isinstance(capabilities, dict):

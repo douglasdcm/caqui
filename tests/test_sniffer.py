@@ -22,9 +22,15 @@ def setup():
         "app": "chromedriver",
     }
 
+    options = Options()
+    # options.set_capability("deviceName", "Emulator")
+    # options.set_capability("deviceIpAddress", "127.0.0.1")
+    # options.set_capability("locale", "en-US")
+    # options.set_capability("debugCodedUI", False)
+    options.set_capability("app", "geckodriver")
     driver = webdriver.Remote(
         command_executor="http://localhost:9999",
-        desired_capabilities=desired_capabilities,
+        options=options,
     )
     driver.get(PAGE_URL)
     # driver.find_element().value_of_css_property()
@@ -203,7 +209,7 @@ def test_get_attribute_from_input(setup):
     assert data == "cat"
 
 
-@mark.skip("used just to discover request data")
+# @mark.skip("used just to discover request data")
 def test_sniff(setup):
     driver = setup
     search_box = driver.find_element("xpath", "//input")

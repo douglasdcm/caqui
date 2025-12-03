@@ -15,7 +15,7 @@ SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
 CAPTURES = "captures"
 
-
+from webdriver_manager.firefox import GeckoDriverManager
 @fixture(autouse=True, scope="session")
 def setup_server():
     server = Server.get_instance(port=SERVER_PORT)

@@ -6,7 +6,7 @@
 from math import ceil
 from typing import Union
 
-from caqui.easy.options import BaseOptions
+from caqui.easy.options import BaseOptionsBuilder
 
 
 class Browser:
@@ -168,7 +168,7 @@ class TimeoutsBuilder:
         return {"timeouts": self._timeouts}
 
 
-class BaseCapabilities:
+class BaseCapabilitiesBuilder:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
 
     def __init__(self) -> None:
@@ -314,18 +314,18 @@ class BaseCapabilities:
         }
         return self
 
-    def add_options(self, options: Union[dict, BaseOptions]):
+    def add_options(self, options: Union[dict, BaseOptionsBuilder]):
         """Add vendor options, for example
         {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}} or
         {"moz:experimental-webdriver": true}
         """
-        if isinstance(options, BaseOptions):
+        if isinstance(options, BaseOptionsBuilder):
             options = options.to_dict()
         self.options = options
         return self
 
 
-class ChromeCapabilitiesBuilder(BaseCapabilities):
+class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
     def __init__(self):
         super().__init__()
 
@@ -337,12 +337,13 @@ class ChromeCapabilitiesBuilder(BaseCapabilities):
 
         return {"desiredCapabilities": self.desired_capabilities}
 
-
+class EdgeCapabilitiesBuilder(ChromeCapabilitiesBuilder):
+    pass
 class OperaCapabilitiesBuilder(ChromeCapabilitiesBuilder):
     pass
 
 
-class FirefoxCapabilitiesBuilder(BaseCapabilities):
+class FirefoxCapabilitiesBuilder(BaseCapabilitiesBuilder):
     def __init__(self):
         super().__init__()
 
