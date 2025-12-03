@@ -62,7 +62,7 @@ class Server:
             Server._instance = Server(browser, port)
         return Server._instance
 
-    def start(self):
+    def start(self) -> None:
         """Starts the local server"""
         try:
             head(self.url, timeout=TIMEOUT)

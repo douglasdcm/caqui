@@ -2,6 +2,8 @@
 # You may use, distribute and modify this code under the
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
+from caqui.exceptions import WebDriverError
+
 
 class BaseOptions:
     def __init__(self):
@@ -21,7 +23,25 @@ class BaseOptions:
 
         Reference: https://peter.sh/experiments/chromium-command-line-switches/
         """
-        self.options = {**self.options, **{"args": values}}
+        if not isinstance(values, list):
+            raise WebDriverError(f"Args {values} should be a list")
+        self.options = {**self.options, "args": [*values, *self.options.get("args", "")]}
+        return self
+
+    def with_headless(self):
+        self.args(["headless"])
+        return self
+
+    def with_speed_flags(self):
+        self.args(
+            [
+                "blink-settings=imagesEnabled=false",
+                "disable-extensions",
+                "disable-plugins",
+                "disable-background-timer-throttling",
+                "disable-gpu",
+            ]
+        )
         return self
 
     def binary(self, value: str):

@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Generator, Union
 from aiohttp import ClientSession
 from pytest import mark, raises
 from caqui import asynchronous, synchronous
@@ -179,7 +179,9 @@ async def test_fullscreen_window(setup_functional_environment):
 
 @mark.skip(reason="does not work in headless mode")
 @mark.asyncio
-async def test_minimize_window(setup_functional_environment):
+async def test_minimize_window(
+    setup_functional_environment: Generator[Union[str, str], None, None]
+):
     server_url, session = setup_functional_environment
     window_rectangle_before = synchronous.get_window_rectangle(server_url, session)
 

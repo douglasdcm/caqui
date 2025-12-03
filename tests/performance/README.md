@@ -883,3 +883,9 @@ In second round
 - Execution 2 (duration): 29.37s, 28.89s
 - Execution 3 (duration): 27.73s, 31.35s
 - mean: 28.34s, 29.30s
+
+## Scenario 11 - add element pool
+- Execution 1 (duration): 22.95s
+- Execution 2 (duration): 23.01s
+- Execution 3 (duration): 22.80s
+- mean: 22.92s

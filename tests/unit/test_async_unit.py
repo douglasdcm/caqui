@@ -1,4 +1,5 @@
 # necessary import for mokcs
+from typing import Any
 import caqui  # noqa F401
 
 from pytest import mark
@@ -185,7 +186,7 @@ async def test_get_window_handles():
 
 
 @mark.asyncio
-async def test_close_window():
+async def test_close_window() -> None:
     expected: list = []
 
     async def mock_request(*args, **kwargs):
@@ -280,10 +281,10 @@ async def test_get_title():
 
 
 @mark.asyncio
-async def test_get_cookies():
+async def test_get_cookies() -> None:
     expected: list = []
 
-    async def mock_request(*args, **kwargs):
+    async def mock_request(*args: Any, **kwargs: Any) -> Any:
         return fake_responses.GET_COOKIES
 
     with patch("caqui.asynchronous._get", mock_request):
@@ -337,7 +338,7 @@ async def test_find_elements():
 
 
 @mark.asyncio
-async def test_find_element():
+async def test_find_element_foo():
     element = "0.8851292311864847-1"
 
     async def mock_request(*args, **kwargs):

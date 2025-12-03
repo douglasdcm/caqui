@@ -12,6 +12,18 @@ from typing import Any, List, Optional, Union
 
 
 async def _handle_response(resp) -> Any:
+    """
+    Handles the HTTP response from the WebDriver server.
+
+    Args:
+        resp: The HTTP response object.
+
+    Returns:
+        The parsed JSON result from the response.
+
+    Raises:
+        WebDriverError: If the response status is not successful or contains an error.
+    """
     result = None
     if resp.status in range(200, 399):
         result = await resp.json()
@@ -27,6 +39,19 @@ async def _handle_response(resp) -> Any:
 
 
 async def _delete(url, session_http: Union[ClientSession, None] = None):
+    """
+    Sends a DELETE request to the WebDriver server.
+
+    Args:
+        url (str): The endpoint URL.
+        session_http (ClientSession, optional): An existing aiohttp session.
+
+    Returns:
+        The parsed JSON result from the response.
+
+    Raises:
+        WebDriverError: If the request fails.
+    """
     if session_http:
         try:
             async with session_http.delete(url, headers=HEADERS) as resp:
@@ -43,7 +68,21 @@ async def _delete(url, session_http: Union[ClientSession, None] = None):
             raise WebDriverError("'DELETE' request failed.") from e
 
 
-async def _post(url, payload, session_http: Union[ClientSession, None] = None):
+async def _post(url, payload: dict, session_http: Union[ClientSession, None] = None):
+    """
+    Sends a POST request to the WebDriver server.
+
+    Args:
+        url (str): The endpoint URL.
+        payload (dict): The data to send in the request body.
+        session_http (ClientSession, optional): An existing aiohttp session.
+
+    Returns:
+        The parsed JSON result from the response.
+
+    Raises:
+        WebDriverError: If the request fails.
+    """
     if session_http:
         try:
             async with session_http.post(url, data=dumps(payload), headers=HEADERS) as resp:
@@ -59,7 +98,20 @@ async def _post(url, payload, session_http: Union[ClientSession, None] = None):
             raise WebDriverError("'POST' request failed.") from e
 
 
-async def _get(url, session_http: Union[ClientSession, None] = None) -> dict:
+async def _get(url: str, session_http: Union[ClientSession, None] = None) -> dict:
+    """
+    Sends a GET request to the WebDriver server.
+
+    Args:
+        url (str): The endpoint URL.
+        session_http (ClientSession, optional): An existing aiohttp session.
+
+    Returns:
+        dict: The parsed JSON result from the response.
+
+    Raises:
+        WebDriverError: If the request fails.
+    """
     if session_http:
         try:
             async with session_http.get(url, headers=HEADERS) as resp:
@@ -76,6 +128,18 @@ async def _get(url, session_http: Union[ClientSession, None] = None) -> dict:
 
 
 async def _handle_alert(server_url, session, command, session_http) -> bool:
+    """
+    Handles alert actions (accept/dismiss) for the current session.
+
+    Args:
+        server_url (str): The WebDriver server URL.
+        session (str): The session ID.
+        command (str): The alert command ('accept' or 'dismiss').
+        session_http (ClientSession): An existing aiohttp session.
+
+    Returns:
+        bool: True if the alert was handled successfully.
+    """
     url = f"{server_url}/session/{session}/alert/{command}"
     payload = {
         "value": command,
@@ -87,6 +151,18 @@ async def _handle_alert(server_url, session, command, session_http) -> bool:
 async def _handle_window(
     server_url, session, command, session_http: Union[ClientSession, None] = None
 ):
+    """
+    Handles window actions (fullscreen, minimize, maximize) for the current session.
+
+    Args:
+        server_url (str): The WebDriver server URL.
+        session (str): The session ID.
+        command (str): The window command.
+        session_http (ClientSession, optional): An existing aiohttp session.
+
+    Returns:
+        bool: True if the window action was successful.
+    """
     url = f"{server_url}/session/{session}/window/{command}"
     payload: dict = {}
     await _post(url, payload, session_http=session_http)
@@ -825,7 +901,9 @@ async def get_text(
         raise WebDriverError("Failed to get text from element.") from e
 
 
-async def get_cookies(server_url, session, session_http: Union[ClientSession, None] = None) -> list:
+async def get_cookies(
+    server_url: str, session: str, session_http: Union[ClientSession, None] = None
+) -> list:
     """Get the page cookies"""
     try:
         url = f"{server_url}/session/{session}/cookie"

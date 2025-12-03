@@ -1,3 +1,4 @@
+from typing import Generator, Tuple
 from aiohttp import ClientSession
 from pytest import fixture
 from tests.constants import PAGE_URL
@@ -33,10 +34,10 @@ def _build_capabilities():
 
 
 @fixture
-def setup_functional_environment():
-    server_url = SERVER_URL
-    capabilities = _build_capabilities()
-    session = synchronous.get_session(server_url, capabilities)
+def setup_functional_environment() -> Generator[Tuple[str, str], None, None]:
+    server_url: str = SERVER_URL
+    capabilities: dict = _build_capabilities()
+    session: str = synchronous.get_session(server_url, capabilities)
     synchronous.go_to_page(
         server_url,
         session,

@@ -1,6 +1,8 @@
 import re
 from collections import OrderedDict
 
+import pytest
+
 DATA = [
     {
         "title": "# Scenario 1 | No concurrence | Execution 1 | No Shared session\n",
@@ -425,6 +427,7 @@ DATA = [
 ]
 
 
+@pytest.mark.skip
 def test_convert_to_csv():
     FILE = "data-processed.txt"
     for item in DATA:

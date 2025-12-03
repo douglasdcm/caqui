@@ -4,6 +4,7 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 import os
+from typing import Tuple
 from caqui import asynchronous, synchronous
 
 
@@ -23,11 +24,13 @@ class Element:
     @property
     def element_id(self):
         return self._element
+
     @property
     def locator(self):
         return (self._locator_type, self._locator_value)
+
     @locator.setter
-    def locator(self, locator: tuple[str, str]):
+    def locator(self, locator: Tuple[str, str]):
         """
         Stores the locator type and values
 
@@ -35,7 +38,6 @@ class Element:
             value: the locator type and value, for example, ('xpath', '//a')
         """
         self._locator_type, self._locator_value = locator
-
 
     @property
     def rect(self):
@@ -173,14 +175,13 @@ class Element:
             self._remote, self._session, self._element, session_http=self._session_http
         )
 
-    async def find_elements(self, locator, value) -> list:
+    async def find_elements(self, locator: str, value: str) -> list:
         """
         Find the children elements by 'locator_type'
 
         If the 'parent_element' is a shadow element,
          set the 'locator_type' as 'id' or 'css selector'
         """
-        result = []
         elements = await asynchronous.find_children_elements(
             self._remote,
             self._session,
@@ -189,9 +190,7 @@ class Element:
             value,
             session_http=self._session_http,
         )
-        for element in elements:
-            result.append(Element(element, self._driver))
-        return result
+        return [Element(element, self._driver) for element in elements]
 
     async def find_element(self, locator, value) -> "Element":
         """Find the element by `locator_type`"""

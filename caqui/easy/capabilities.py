@@ -185,6 +185,15 @@ class BaseCapabilities:
         return self
 
     def browser_version(self, version: str):
+        """
+        Sets the desired browser version for the capabilities.
+
+        Args:
+            version (str): The version of the browser to be set.
+
+        Returns:
+            self: The instance of the class, allowing for method chaining.
+        """
         self.desired_capabilities = {
             **self.desired_capabilities,
             "browserVersion": version,

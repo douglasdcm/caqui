@@ -18,15 +18,80 @@ LOAD = 1  # requests
 # @mark.skip(reason="Used for performance tests")
 class TestPerformance:
     def _build_capabilities(self):
-        options = ChromeOptionsBuilder().args(
-            [
-                "headless",
-                "blink-settings=imagesEnabled=false",
-                "disable-extensions",
-                "disable-plugins",
-                "disable-background-timer-throttling",
-            ]
-        )
+        options = ChromeOptionsBuilder().with_headless().with_speed_flags()
+        # .args(
+        #     [
+        #         # ai flags
+        #         # "disable-renderer-backgrounding",
+        #         # "disable-background-timer-throttling",
+        #         # "disable-background-networking",
+        #         # "disable-breakpad",
+        #         # "disable-features=Translate,BackForwardCache,MediaRouter",
+        #         # "disable-component-update",
+        #         # "disable-dev-shm-usage",
+        #         # "disable-web-security",
+        #         # "no-sandbox",
+        #         # "enable-automation",
+        #         # "disable-smooth-scrolling",
+        #         # "animation-duration-scale=0",
+        #         # "force-device-scale-factor=1",
+        #         # additional
+        #         # "disable-gpu-compositing",
+        #         # "disable-gpu-driver-bug-workarounds",
+        #         # "disable-gpu-memory-buffer-compositor-resources",
+        #         # "disable-gpu-memory-buffer-video-frames",
+        #         # "disable-gpu-program-cache",
+        #         # "disable-gpu-rasterization",
+        #         # "disable-gpu-vsync",
+        #         # "disable-zero-copy",
+        #         # "disable-zero-copy-dxgi-video",
+        #         # "disable-software-rasterizer",
+        #         # "disable-partial-raster",
+        #         # "disable-background-timer-throttling",
+        #         # "disable-backgrounding-occluded-windows",
+        #         # "disable-best-effort-tasks",
+        #         # "disable-low-end-device-mode",
+        #         # "disable-timeouts-for-profiling",
+        #         # "disable-frame-rate-limit",
+        #         # "disable-vsync-for-tests",
+        #         # "force-refresh-rate-throttle",
+        #         # "disable-modal-animations",
+        #         # "disable-image-animation-resync",
+        #         # "disable-smooth-scrolling",
+        #         # "disable-scroll-to-text-fragment",
+        #         # "animation-duration-scale",
+        #         # "disable-sandbox",
+        #         # "disable-setuid-sandbox",
+        #         # "disable-seccomp-filter-sandbox",
+        #         # "disable-namespace-sandbox",
+        #         # "disable-background-networking",
+        #         # "disable-domain-reliability",
+        #         # "disable-fetching-hints-at-navigation-start",
+        #         # "disable-variations-safe-mode",
+        #         # "disable-variations-seed-fetch-throttling",
+        #         # "disable-extensions-http-throttling",
+        #         # "disable-crash-reporter",
+        #         # "disable-breakpad",
+        #         # "disable-crashpad-for-testing",
+        #         # "disable-crashpad-forwarding",
+        #         # "disable-renderer-backgrounding",
+        #         # "disable-resource-scheduler",
+        #         # "disable-background-media-suspend",
+        #         # "disable-web-security",
+        #         # "enable-automation",
+        #         # "enable-net-benchmarking",
+        #         # "enable-gpu-benchmarking",
+        #         # "enable-benchmarking",
+
+        #         # my flags
+        #         "headless",
+        #         "blink-settings=imagesEnabled=false",
+        #         "disable-extensions",
+        #         "disable-plugins",
+        #         "disable-background-timer-throttling",
+        #         "disable-gpu",
+        #     ]
+        # )
         capabilities = (
             ChromeCapabilitiesBuilder()
             .accept_insecure_certs(True)

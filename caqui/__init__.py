@@ -2,4 +2,3 @@
 # You may use, distribute and modify this code under the
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
-

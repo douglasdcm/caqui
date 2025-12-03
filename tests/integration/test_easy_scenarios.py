@@ -115,17 +115,21 @@ async def test_big_scenario_of_functions(setup_environment: AsyncPage):
     # Returns and base64 encoded string into image
     await element.screenshot("/tmp/image.png")
 
-    assert await element.is_enabled() == synchronous.is_element_enabled(remote, session, element)
-    assert await element.is_selected() == synchronous.is_element_selected(remote, session, element)
-    assert element.tag_name == synchronous.get_tag_name(remote, session, element)
-    assert element.rect == synchronous.get_rect(remote, session, element)
+    assert await element.is_enabled() == synchronous.is_element_enabled(
+        remote, session, element.element_id
+    )
+    assert await element.is_selected() == synchronous.is_element_selected(
+        remote, session, element.element_id
+    )
+    assert element.tag_name == synchronous.get_tag_name(remote, session, element.element_id)
+    assert element.rect == synchronous.get_rect(remote, session, element.element_id)
     css = "background-color"
     assert await element.value_of_css_property(css) == synchronous.get_css_value(
-        remote, session, element, css
+        remote, session, element.element_id, css
     )
-    assert element.text == synchronous.get_text(remote, session, element)
+    assert element.text == synchronous.get_text(remote, session, element.element_id)
     assert await element.get_attribute("value") == synchronous.get_attribute(
-        remote, session, element, "value"
+        remote, session, element.element_id, "value"
     )
     await page.back()
     await page.forward()

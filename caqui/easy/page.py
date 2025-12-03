@@ -38,7 +38,7 @@ class AsyncPage:
                 self._session,
                 url,
             )
-        self._elements_pool: List[Element]= []
+        self._elements_pool: List[Element] = []
 
     @property
     def remote(self) -> str:
@@ -90,12 +90,17 @@ class AsyncPage:
         """Returns the current window handle"""
         return synchronous.get_window(self._server_url, self._session)
 
+    def cleanup_cache(self):
+        self._elements_pool = []
+
     def quit(self):
         """Closes the session"""
+        self.cleanup_cache()
         synchronous.close_session(self._server_url, self._session)
 
     async def close(self):
         """Closes the window"""
+        self.cleanup_cache()
         return await asynchronous.close_window(
             self._server_url, self._session, session_http=self.session_http
         )
@@ -197,18 +202,21 @@ class AsyncPage:
         """This command causes the browser to traverse one step backward
         in the joint session history of the
         current browse. This is equivalent to pressing the back button in the browser."""
+        self._elements_pool = []
         return await asynchronous.go_back(
             self._server_url, self._session, session_http=self.session_http
         )
 
     async def forward(self):
         """Go page forward"""
+        self._elements_pool = []
         return await asynchronous.go_forward(
             self._server_url, self._session, session_http=self.session_http
         )
 
     async def refresh(self):
         """Refreshs the page"""
+        self._elements_pool = []
         return await asynchronous.refresh_page(
             self._server_url, self._session, session_http=self.session_http
         )
@@ -233,6 +241,7 @@ class AsyncPage:
 
     async def get(self, url):
         """Navigates to URL `url`"""
+        self._elements_pool = []
         await asynchronous.go_to_page(
             self._server_url, self._session, url, session_http=self.session_http
         )
@@ -253,13 +262,15 @@ class AsyncPage:
 
     async def find_element(self, locator, value) -> Element:
         """Find an element by a 'locator', for example 'xpath'"""
-        el: Element = [e for e in self._elements_pool if e.locator == (locator, value)]
-        if el:
-            return el[0]
+        elements_filtered: List[Element] = [
+            e for e in self._elements_pool if e.locator == (locator, value)
+        ]
+        if elements_filtered:
+            return elements_filtered[0]
         element = await asynchronous.find_element(
             self._server_url, self._session, locator, value, session_http=self.session_http
         )
-        el = Element(element, self)
-        el.locator = (locator, value)
-        self._elements_pool.append(el)
-        return el
+        result = Element(element, self)
+        result.locator = (locator, value)
+        self._elements_pool.append(result)
+        return result

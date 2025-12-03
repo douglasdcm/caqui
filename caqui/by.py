@@ -3,6 +3,7 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
+
 class By:
     """List of locator strategies"""
 
