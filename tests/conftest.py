@@ -1,13 +1,15 @@
 from typing import Generator, Tuple
+
+import pytest_asyncio
 from aiohttp import ClientSession
 from pytest import fixture
-from tests.constants import PAGE_URL
+
+from caqui import synchronous
 from caqui.easy import AsyncPage
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
 from caqui.easy.options import ChromeOptionsBuilder
 from caqui.easy.server import Server
-from caqui import synchronous
-import pytest_asyncio
+from tests.constants import PAGE_URL
 
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"

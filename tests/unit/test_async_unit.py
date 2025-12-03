@@ -1,11 +1,12 @@
 # necessary import for mokcs
 from typing import Any
-import caqui  # noqa F401
+from unittest.mock import patch
 
 from pytest import mark
+
+import caqui  # noqa F401
 from caqui import asynchronous
 from tests import fake_responses
-from unittest.mock import patch
 
 
 async def mock_request(*args, **kwargs):

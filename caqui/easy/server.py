@@ -3,16 +3,17 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
-import requests
 import subprocess
 from time import sleep
 from typing import Union
+
+import requests
 from requests import head
 from requests.exceptions import ConnectionError
-from webdriver_manager.core.manager import DriverManager
 from webdriver_manager.chrome import ChromeDriverManager
-from caqui.exceptions import ServerError
+from webdriver_manager.core.manager import DriverManager
 
+from caqui.exceptions import ServerError
 
 TIMEOUT = 120  # seconds
 

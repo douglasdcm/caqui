@@ -1,13 +1,13 @@
+import pytest_asyncio
 from aiohttp import ClientSession
 from pytest import mark
+
 from caqui import synchronous
 from caqui.by import By
 from caqui.easy import AsyncPage
-from tests.constants import PAGE_URL
-from pytest import mark
-import pytest_asyncio
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
 from caqui.easy.options import ChromeOptionsBuilder
+from tests.constants import PAGE_URL
 
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"

@@ -1,4 +1,5 @@
 from unittest.mock import patch
+
 from caqui import synchronous
 from tests import fake_responses
 

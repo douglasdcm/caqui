@@ -3,12 +3,14 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
-from requests import request, Response
+from typing import Any, Dict, List, Optional
+
 from orjson import dumps
-from caqui.exceptions import WebDriverError
-from caqui.helper import save_picture, get_element, get_elements, convert_xpath_to_css_selector
+from requests import Response, request
+
 from caqui.constants import HEADERS
-from typing import Any, Optional, Dict, List
+from caqui.exceptions import WebDriverError
+from caqui.helper import convert_xpath_to_css_selector, get_element, get_elements, save_picture
 
 
 def _handle_response(response: Response) -> Dict[str, Any]:

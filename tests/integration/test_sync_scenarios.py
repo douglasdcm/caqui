@@ -1,16 +1,16 @@
 from caqui.synchronous import (
-    find_element,
-    click,
-    send_keys,
-    get_text,
-    get_property,
     clear_element,
-    get_rect,
-    get_css_value,
+    click,
+    dismiss_alert,
+    find_element,
     get_attribute,
+    get_css_value,
+    get_property,
+    get_rect,
+    get_text,
+    send_keys,
     switch_to_frame,
     switch_to_parent_frame,
-    dismiss_alert,
 )
 
 

@@ -1,5 +1,6 @@
-from caqui import synchronous, asynchronous
 from pytest import mark
+
+from caqui import asynchronous, synchronous
 
 
 @mark.asyncio

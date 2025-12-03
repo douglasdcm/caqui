@@ -4,8 +4,9 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 import base64
-from caqui.cssify import cssify
 from functools import lru_cache
+
+from caqui.cssify import cssify
 
 
 def save_picture(session, path, file_name, response):

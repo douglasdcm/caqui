@@ -1,13 +1,14 @@
 # File used to figure out requests format and parameters ####
 
-from selenium import webdriver
 from pytest import fixture, mark
-from tests.constants import PAGE_URL
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.chrome.service import Service
+from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+
+from tests.constants import PAGE_URL
 
 
 @fixture

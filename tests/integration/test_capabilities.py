@@ -1,6 +1,6 @@
 from caqui.easy.capabilities import (
-    FirefoxCapabilitiesBuilder,
     ChromeCapabilitiesBuilder,
+    FirefoxCapabilitiesBuilder,
     ProxyConfigurationBuilder,
     TimeoutsBuilder,
 )

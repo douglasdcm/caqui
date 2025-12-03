@@ -4,9 +4,10 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 from typing import Union
+
 from caqui import asynchronous, synchronous
-from caqui.easy.element import Element
 from caqui.easy.alert import Alert
+from caqui.easy.element import Element
 
 
 class SwitchTo:

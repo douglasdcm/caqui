@@ -1,11 +1,11 @@
 from typing import Generator, Union
+
 from aiohttp import ClientSession
 from pytest import mark, raises
+
 from caqui import asynchronous, synchronous
-from caqui.exceptions import WebDriverError
 from caqui.by import By
-from tests.constants import COOKIE
-from pytest import mark
+from caqui.exceptions import WebDriverError
 from tests.constants import COOKIE
 
 

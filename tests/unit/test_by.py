@@ -1,6 +1,7 @@
-from caqui.by import By
-from caqui import synchronous
 from pytest import mark
+
+from caqui import synchronous
+from caqui.by import By
 
 
 @mark.parametrize(

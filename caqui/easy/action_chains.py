@@ -3,9 +3,10 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
+from typing import Coroutine, List, Union
+
 from caqui import asynchronous
 from caqui.easy.element import Element
-from typing import Coroutine, Union, List
 
 
 class ActionChains:

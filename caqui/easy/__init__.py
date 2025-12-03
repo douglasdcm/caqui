@@ -3,7 +3,7 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
-from caqui.easy.page import AsyncPage
 from caqui.easy.action_chains import ActionChains
+from caqui.easy.page import AsyncPage
 
 __all__ = ["AsyncPage", "ActionChains"]

@@ -1,7 +1,8 @@
-from caqui.easy import AsyncPage, ActionChains
-from caqui.by import By
 from pytest import mark
+
 from caqui import synchronous
+from caqui.by import By
+from caqui.easy import ActionChains, AsyncPage
 
 
 class TestObject:

@@ -7,12 +7,13 @@ import os
 from typing import List, Optional, Union
 
 from aiohttp import ClientSession
+
 from caqui import asynchronous, synchronous
 from caqui.easy.action_chains import ActionChains
-from caqui.easy.window import Window
+from caqui.easy.alert import Alert
 from caqui.easy.element import Element
 from caqui.easy.switch_to import SwitchTo
-from caqui.easy.alert import Alert
+from caqui.easy.window import Window
 from caqui.exceptions import CapabilityNotSupported
 
 

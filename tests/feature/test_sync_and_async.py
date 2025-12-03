@@ -1,8 +1,9 @@
 import aiohttp
 from pytest import mark, raises
+
 from caqui import asynchronous, synchronous
-from caqui.exceptions import WebDriverError
 from caqui.by import By
+from caqui.exceptions import WebDriverError
 from tests.constants import COOKIE
 
 

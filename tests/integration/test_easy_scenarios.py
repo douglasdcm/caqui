@@ -1,9 +1,9 @@
-from caqui.easy import AsyncPage
-from caqui.by import By
-from caqui import synchronous
-from tests.constants import PAGE_URL
 from pytest import mark
-from tests.constants import COOKIE
+
+from caqui import synchronous
+from caqui.by import By
+from caqui.easy import AsyncPage
+from tests.constants import COOKIE, PAGE_URL
 
 
 @mark.asyncio

@@ -5,6 +5,7 @@
 
 from math import ceil
 from typing import Union
+
 from caqui.easy.options import BaseOptions
 
 
