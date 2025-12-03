@@ -3,7 +3,109 @@ from pytest import mark
 from caqui import synchronous
 from caqui.by import By
 from caqui.easy import AsyncPage
+from caqui.easy.capabilities import ChromeCapabilitiesBuilder
+from caqui.easy.options import ChromeOptionsBuilder
 from tests.constants import COOKIE, PAGE_URL
+
+SERVER_PORT = 9999
+SERVER_URL = f"http://localhost:{SERVER_PORT}"
+
+
+def test_async_driver_nested_capabilities():
+    expected = {
+        "desiredCapabilities": {
+            "browserName": "any",
+            "goog:chromeOptions": {
+                "args": ["headless"],
+                "prefs": {"javascript.options.showInConsole": False},
+                "detach": True,
+                "binary": "/path/to/chrome/executable",
+                "extensions": ["ext1", "ext2"],
+                "localState": {"any": "any"},
+                "debuggerAddress": "127.0.0.1:9999",
+                "excludeSwitches": ["sw1", "sw2"],
+                "minidumpPath": "any",
+                "mobileEmulation": {"any": "any"},
+                "windowsTypes": ["any"],
+                "perfLoggingPrefs": {
+                    "enableNetwork": False,
+                    "enablePage": False,
+                    "traceCategories": "devtools.network",
+                    "bufferUsageReportingInterval": 1000,
+                },
+            },
+        }
+    }
+    options = (
+        ChromeOptionsBuilder()
+        .args(["headless"])
+        .prefs({"javascript.options.showInConsole": False})
+        .detach(True)
+        # Other examples
+        .binary("/path/to/chrome/executable")
+        .extensions(["ext1", "ext2"])
+        .local_state({"any": "any"})
+        .debugger_address("127.0.0.1:9999")
+        .exclude_switches(["sw1", "sw2"])
+        .minidump_path("any")
+        .mobile_emulation({"any": "any"})
+        .windows_types(["any"])
+        .perf_logging_prefs(
+            {
+                "enableNetwork": False,
+                "enablePage": False,
+                "traceCategories": "devtools.network",
+                "bufferUsageReportingInterval": 1000,
+            }
+        )
+    )
+    capabilities = ChromeCapabilitiesBuilder()
+    capabilities.browser_name("any")
+    capabilities.add_options(options.to_dict())
+
+    exppected_options = {"goog:chromeOptions": {
+                "args": ["headless"],
+                "prefs": {"javascript.options.showInConsole": False},
+                "detach": True,
+                "binary": "/path/to/chrome/executable",
+                "extensions": ["ext1", "ext2"],
+                "localState": {"any": "any"},
+                "debuggerAddress": "127.0.0.1:9999",
+                "excludeSwitches": ["sw1", "sw2"],
+                "minidumpPath": "any",
+                "mobileEmulation": {"any": "any"},
+                "windowsTypes": ["any"],
+                "perfLoggingPrefs": {
+                    "enableNetwork": False,
+                    "enablePage": False,
+                    "traceCategories": "devtools.network",
+                    "bufferUsageReportingInterval": 1000,
+                },
+            },
+}
+    capabilities.detach(True)
+    capabilities.binary("/path/to/chrome/executable")
+    capabilities.extensions(["ext1", "ext2"])
+    capabilities.debugger_address("127.0.0.1:9999")
+    capabilities.exclude_switches(["sw1", "sw2"])
+    capabilities.minidump_path("any")
+    capabilities.windows_types(["any"])
+    capabilities.mobile_emulation({"any": "any"})
+    capabilities.local_state({"any": "any"})
+    capabilities.extensions(["ext1", "ext2"])
+    capabilities.args(["headless"])
+    capabilities.prefs({"javascript.options.showInConsole": False})
+    capabilities.perf_logging_prefs({
+                    "enableNetwork": False,
+                    "enablePage": False,
+                    "traceCategories": "devtools.network",
+                    "bufferUsageReportingInterval": 1000,
+                })
+    assert capabilities.get_options() == exppected_options
+    assert capabilities.get_capabilities() == expected
+
+    assert capabilities.to_dict() == expected
+
 
 
 @mark.asyncio

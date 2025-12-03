@@ -174,6 +174,7 @@ class BaseCapabilitiesBuilder:
     def __init__(self) -> None:
         self.desired_capabilities: dict = {}
         self.options: dict = {}
+        self.opts = {"goog:chromeOptions": {}}
 
     def to_dict(self):
         raise NotImplementedError
@@ -324,6 +325,45 @@ class BaseCapabilitiesBuilder:
         self.options = options
         return self
 
+    def detach(self, value):
+        self.opts["goog:chromeOptions"]["detach"] = value
+
+    def binary(self, value):
+        self.opts["goog:chromeOptions"]["binary"] = value
+
+    def extensions(self, value):
+        self.opts["goog:chromeOptions"]["extensions"] = value
+
+
+    def debugger_address(self, value):
+        self.opts["goog:chromeOptions"]["debuggerAddress"] = value
+    def exclude_switches(self, value):
+        self.opts["goog:chromeOptions"]["excludeSwitches"] = value
+    def minidump_path(self, value):
+        self.opts["goog:chromeOptions"]["minidumpPath"] = value
+    def windows_types(self, value):
+        self.opts["goog:chromeOptions"]["windowsTypes"] = value
+    def mobile_emulation(self, value):
+        self.opts["goog:chromeOptions"]["mobileEmulation"] = value
+    def local_state(self, value):
+        self.opts["goog:chromeOptions"]["localState"] = value
+    def args(self, value):
+        self.opts["goog:chromeOptions"]["args"] = value
+    def prefs(self, value):
+        self.opts["goog:chromeOptions"]["prefs"] = value
+    def perf_logging_prefs(self, value):
+        self.opts["goog:chromeOptions"]["perfLoggingPrefs"] = value
+    def get_capabilities(self):
+        x = {
+        "desiredCapabilities": {
+            "browserName": "any",
+            **self.opts
+            }
+    }
+        return x 
+
+    def get_options(self):
+        return self.opts
 
 class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
     def __init__(self):
@@ -334,6 +374,7 @@ class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
         Returns the capabilities.
         """
         self.desired_capabilities = {**self.desired_capabilities, **self.options}
+        # breakpoint()
 
         return {"desiredCapabilities": self.desired_capabilities}
 

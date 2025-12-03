@@ -16,7 +16,25 @@ from caqui.easy.element import Element
 from caqui.easy.switch_to import SwitchTo
 from caqui.easy.window import Window
 from caqui.exceptions import CapabilityNotSupported
+from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder, EdgeCapabilitiesBuilder, OperaCapabilitiesBuilder
 
+CHROME = "chrome"
+FIREFOX = "firefox"
+EDGE = "edge"
+OPERA = "opera"
+
+BROWSERS = {
+    CHROME: ChromeCapabilitiesBuilder,
+    FIREFOX: FirefoxCapabilitiesBuilder,
+    EDGE: EdgeCapabilitiesBuilder,
+    OPERA: OperaCapabilitiesBuilder,
+}
+
+class Browser:
+    CHROME
+    FIREFOX
+    EDGE
+    OPERA
 
 class AsyncPage:
     def __init__(
@@ -25,6 +43,7 @@ class AsyncPage:
         capabilities: Optional[dict] = None,
         url: Union[str, None] = None,
         session_http: Union[ClientSession, None] = None,
+        browser = None
     ) -> None:
         """Mimics Selenium methods"""
         self.session_http = session_http
@@ -43,6 +62,7 @@ class AsyncPage:
                 url,
             )
         self._elements_pool: List[Element] = []
+        self._browser = browser.lower()
 
     @property
     def remote(self) -> str:
