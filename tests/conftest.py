@@ -16,6 +16,8 @@ SERVER_URL = f"http://localhost:{SERVER_PORT}"
 CAPTURES = "captures"
 
 from webdriver_manager.firefox import GeckoDriverManager
+
+
 @fixture(autouse=True, scope="session")
 def setup_server():
     server = Server.get_instance(port=SERVER_PORT)
@@ -25,11 +27,10 @@ def setup_server():
 
 
 def _build_capabilities():
-    options = ChromeOptionsBuilder().args(["headless"])
     capabilities = (
         ChromeCapabilitiesBuilder()
         .accept_insecure_certs(True)
-        .add_options(options)
+        .args(["headless"])
         .page_load_strategy("eager")
     ).to_dict()
     return capabilities

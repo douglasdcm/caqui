@@ -5,14 +5,17 @@ from pytest import mark
 from caqui import synchronous
 from caqui.by import By
 from caqui.easy import AsyncPage
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder, EdgeCapabilitiesBuilder
+from caqui.easy.capabilities import (
+    ChromeCapabilitiesBuilder,
+    FirefoxCapabilitiesBuilder,
+    EdgeCapabilitiesBuilder,
+)
 from caqui.easy.options import ChromeOptionsBuilder, FirefoxOptionsBuilder, EdgeOptionsBuilder
 from tests.constants import PAGE_URL
 
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
 CAPTURES = "captures"
-
 
 
 # @mark.skip(reason="Used for performance tests")
@@ -29,10 +32,7 @@ class TestArgs:
         # capabilities.append(chrome_capabilities)
 
         options = FirefoxOptionsBuilder().with_headless().with_speed_flags()
-        options = (
-            FirefoxOptionsBuilder()
-            .args(["-headless", "-profile"])
-        )
+        options = FirefoxOptionsBuilder().args(["-headless", "-profile"])
         firefox_capabilities = FirefoxCapabilitiesBuilder()
         firefox_capabilities.add_options(options.to_dict())
         capabilities.append(firefox_capabilities)
@@ -46,7 +46,6 @@ class TestArgs:
         # )
         # capabilities.append(edge_capabilities)
         return capabilities
-
 
     @pytest_asyncio.fixture
     async def setup_environment(self):
@@ -62,7 +61,6 @@ class TestArgs:
                 pass
             finally:
                 page.quit()
-
 
     @mark.asyncio
     async def test_args_with_many_browsers(

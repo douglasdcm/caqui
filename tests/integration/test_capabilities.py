@@ -41,8 +41,20 @@ def test_firefox_capabilities_with_options():
         .level("info")
     )
     capabilities = FirefoxCapabilitiesBuilder()
-    capabilities.browser_name("any")
-    capabilities.add_options(options.to_dict())
+    (
+        capabilities.browser_name("any")
+        # .add_options(options.to_dict()))
+        .binary("/usr/bin/firefox")
+        .args(["-headless", "-profile"])
+        .env({"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"})
+        .log({"level": "trace"})
+        .profile("any")
+        .android_intent_arguments(["a", "b"])
+        .android_activity("any")
+        .android_device_serial("any")
+        .android_package("any")
+        .level("info")
+    )
     assert capabilities.to_dict() == expected
 
 
@@ -95,8 +107,30 @@ def test_chrome_capabilities_with_options():
         )
     )
     capabilities = ChromeCapabilitiesBuilder()
-    capabilities.browser_name("any")
-    capabilities.add_options(options.to_dict())
+    (
+        capabilities.browser_name("any")
+        # capabilities.add_options(options.to_dict())
+        .args(["headless"])
+        .prefs({"javascript.options.showInConsole": False})
+        .detach(True)
+        # Other examples
+        .binary("/path/to/chrome/executable")
+        .extensions(["ext1", "ext2"])
+        .local_state({"any": "any"})
+        .debugger_address("127.0.0.1:9999")
+        .exclude_switches(["sw1", "sw2"])
+        .minidump_path("any")
+        .mobile_emulation({"any": "any"})
+        .windows_types(["any"])
+        .perf_logging_prefs(
+            {
+                "enableNetwork": False,
+                "enablePage": False,
+                "traceCategories": "devtools.network",
+                "bufferUsageReportingInterval": 1000,
+            }
+        )
+    )
     assert capabilities.to_dict() == expected
 
 

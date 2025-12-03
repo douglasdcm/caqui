@@ -4,7 +4,7 @@
 # Visit: https://github.com/douglasdcm/caqui
 from caqui.exceptions import WebDriverError
 
-
+# TODO remove
 class BaseOptionsBuilder:
     def __init__(self):
         """Builds the Chrome options
@@ -122,7 +122,7 @@ class BaseOptionsBuilder:
         """Converts the options to a dict"""
         return {"goog:chromeOptions": self.options}
 
-
+# TODO remove
 class ChromeOptionsBuilder(BaseOptionsBuilder):
     pass
 
@@ -168,7 +168,7 @@ class EdgeOptionsBuilder(BaseOptionsBuilder):
         """Converts the options to a dict"""
         return {"ms:edgeOptions": self.options}
 
-
+# TODO remove
 class FirefoxOptionsBuilder(BaseOptionsBuilder):
     def __init__(self):
         super().__init__()
@@ -220,4 +220,3 @@ class FirefoxOptionsBuilder(BaseOptionsBuilder):
     def to_dict(self):
         """Converts the options to a dict"""
         return {"moz:firefoxOptions": self.options}
-

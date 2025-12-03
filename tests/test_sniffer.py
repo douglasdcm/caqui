@@ -209,7 +209,7 @@ def test_get_attribute_from_input(setup):
     assert data == "cat"
 
 
-# @mark.skip("used just to discover request data")
+@mark.skip("used just to discover request data")
 def test_sniff(setup):
     driver = setup
     search_box = driver.find_element("xpath", "//input")

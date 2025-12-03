@@ -7,6 +7,7 @@ from math import ceil
 from typing import Union
 
 from caqui.easy.options import BaseOptionsBuilder
+from caqui.exceptions import WebDriverError
 
 
 class Browser:
@@ -178,7 +179,7 @@ class BaseCapabilitiesBuilder:
 
     def to_dict(self):
         raise NotImplementedError
-
+# TODO remove some methods
     def browser_name(self, name: str):
         self.desired_capabilities = {
             **self.desired_capabilities,
@@ -320,6 +321,8 @@ class BaseCapabilitiesBuilder:
         {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}} or
         {"moz:experimental-webdriver": true}
         """
+
+        raise WebDriverError("deprecated")
         if isinstance(options, BaseOptionsBuilder):
             options = options.to_dict()
         self.options = options
@@ -327,59 +330,133 @@ class BaseCapabilitiesBuilder:
 
     def detach(self, value):
         self.opts["goog:chromeOptions"]["detach"] = value
+        return self
 
     def binary(self, value):
         self.opts["goog:chromeOptions"]["binary"] = value
+        return self
 
     def extensions(self, value):
         self.opts["goog:chromeOptions"]["extensions"] = value
-
+        return self
 
     def debugger_address(self, value):
         self.opts["goog:chromeOptions"]["debuggerAddress"] = value
+        return self
+
     def exclude_switches(self, value):
         self.opts["goog:chromeOptions"]["excludeSwitches"] = value
+        return self
+
     def minidump_path(self, value):
         self.opts["goog:chromeOptions"]["minidumpPath"] = value
+        return self
+
     def windows_types(self, value):
         self.opts["goog:chromeOptions"]["windowsTypes"] = value
+        return self
+
     def mobile_emulation(self, value):
         self.opts["goog:chromeOptions"]["mobileEmulation"] = value
+        return self
+
     def local_state(self, value):
         self.opts["goog:chromeOptions"]["localState"] = value
+        return self
+
     def args(self, value):
         self.opts["goog:chromeOptions"]["args"] = value
+        return self
+
     def prefs(self, value):
         self.opts["goog:chromeOptions"]["prefs"] = value
+        return self
+
     def perf_logging_prefs(self, value):
         self.opts["goog:chromeOptions"]["perfLoggingPrefs"] = value
+        return self
+
     def get_capabilities(self):
-        x = {
-        "desiredCapabilities": {
-            "browserName": "any",
-            **self.opts
+        if self.opts["goog:chromeOptions"]:
+            return {"desiredCapabilities": {**self.desired_capabilities, **self.opts}}
+        return {
+            "desiredCapabilities": {
+                **self.desired_capabilities,
             }
-    }
-        return x 
+        }
 
     def get_options(self):
         return self.opts
+
 
 class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
     def __init__(self):
         super().__init__()
 
+    def detach(self, value):
+        self.opts["goog:chromeOptions"]["detach"] = value
+        return self
+
+    def binary(self, value):
+        self.opts["goog:chromeOptions"]["binary"] = value
+        return self
+
+    def extensions(self, value):
+        self.opts["goog:chromeOptions"]["extensions"] = value
+        return self
+
+    def debugger_address(self, value):
+        self.opts["goog:chromeOptions"]["debuggerAddress"] = value
+        return self
+
+    def exclude_switches(self, value):
+        self.opts["goog:chromeOptions"]["excludeSwitches"] = value
+        return self
+
+    def minidump_path(self, value):
+        self.opts["goog:chromeOptions"]["minidumpPath"] = value
+        return self
+
+    def windows_types(self, value):
+        self.opts["goog:chromeOptions"]["windowsTypes"] = value
+        return self
+
+    def mobile_emulation(self, value):
+        self.opts["goog:chromeOptions"]["mobileEmulation"] = value
+        return self
+
+    def local_state(self, value):
+        self.opts["goog:chromeOptions"]["localState"] = value
+        return self
+
+    def args(self, value):
+        self.opts["goog:chromeOptions"]["args"] = value
+        return self
+
+    def prefs(self, value):
+        self.opts["goog:chromeOptions"]["prefs"] = value
+        return self
+
+    def perf_logging_prefs(self, value):
+        self.opts["goog:chromeOptions"]["perfLoggingPrefs"] = value
+        return self
+
     def to_dict(self):
         """
         Returns the capabilities.
         """
+        return self.get_capabilities()
+    # TODO remove
         self.desired_capabilities = {**self.desired_capabilities, **self.options}
         # breakpoint()
 
         return {"desiredCapabilities": self.desired_capabilities}
 
+
 class EdgeCapabilitiesBuilder(ChromeCapabilitiesBuilder):
     pass
+
+
 class OperaCapabilitiesBuilder(ChromeCapabilitiesBuilder):
     pass
 
@@ -387,6 +464,103 @@ class OperaCapabilitiesBuilder(ChromeCapabilitiesBuilder):
 class FirefoxCapabilitiesBuilder(BaseCapabilitiesBuilder):
     def __init__(self):
         super().__init__()
+        self.opts = {"moz:firefoxOptions": {}}
+
+    def detach(self, value):
+        self.options["detach"] = value
+        return self
+
+    def binary(self, value):
+        self.options["binary"] = value
+        return self
+
+    def extensions(self, value):
+        self.options["extensions"] = value
+        return self
+
+    def debugger_address(self, value):
+        self.options["debuggerAddress"] = value
+        return self
+
+    def exclude_switches(self, value):
+        self.options["excludeSwitches"] = value
+        return self
+
+    def minidump_path(self, value):
+        self.options["minidumpPath"] = value
+        return self
+
+    def windows_types(self, value):
+        self.options["windowsTypes"] = value
+        return self
+
+    def mobile_emulation(self, value):
+        self.options["mobileEmulation"] = value
+        return self
+
+    def local_state(self, value):
+        self.options["localState"] = value
+        return self
+
+    def args(self, value):
+        self.options["args"] = value
+        return self
+
+    def prefs(self, value):
+        self.options["prefs"] = value
+        return self
+
+    def perf_logging_prefs(self, value):
+        self.options["perfLoggingPrefs"] = value
+        return self
+
+    def profile(self, value: str):
+        """Base64-encoded ZIP of a profile directory to use for the Firefox instance."""
+        self.options["profile"] = value
+        return self
+
+    def log(self, value: dict):
+        """To increase the logging verbosity of geckodriver and Firefox"""
+        self.options["log"] = value
+        return self
+
+    def env(self, value: dict):
+        """Map of environment variable name to environment variable value"""
+        self.options["env"] = value
+        return self
+
+    def level(self, value: str):
+        """Set the level of verbosity of geckodriver and Firefox.
+        Available levels are `trace`, `debug`, `config`, `info`, `warn`, `error`, and `fatal`"""
+        self.options["level"] = value
+        return self
+
+    def android_package(self, value: str):
+        """The package name of Firefox, e.g., `org.mozilla.firefox`, `org.mozilla.firefox_beta`,
+        or `org.mozilla.fennec` depending on the release channel, or the package name of the
+        application embedding GeckoView, e.g., `org.mozilla.geckoview_example`."""
+        self.options["androidPackage"] = value
+        return self
+
+    def android_activity(self, value: str):
+        """The fully qualified class name of the activity to be launched"""
+        self.options["androidActivity"] = value
+        return self
+
+    def android_device_serial(self, value: str):
+        """The serial number of the device on which to launch the application"""
+        self.options["androidDeviceSerial"] = value
+        return self
+
+    def android_intent_arguments(self, value: list):
+        """Arguments to launch the intent with. Under the hood, geckodriver
+        uses `Android am` to start the Android application under test."""
+        self.options["androidIntentArguments"] = value
+        return self
+
+    def to_dict(self):
+        """Converts the options to a dict"""
+        return {"moz:firefoxOptions": self.options}
 
     def to_dict(self):
         """
@@ -396,6 +570,6 @@ class FirefoxCapabilitiesBuilder(BaseCapabilitiesBuilder):
         if self.options:
             result["capabilities"] = {
                 **result["capabilities"],
-                **{"firstMatch": self.options},
+                **{"firstMatch": {"moz:firefoxOptions": self.options}},
             }
         return result
