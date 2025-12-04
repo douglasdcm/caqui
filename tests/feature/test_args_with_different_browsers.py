@@ -18,41 +18,37 @@ SERVER_URL = f"http://localhost:{SERVER_PORT}"
 CAPTURES = "captures"
 
 
-# @mark.skip(reason="Used for performance tests")
+@mark.skip(reason="Used for performance tests")
 class TestArgs:
     def _build_capabilities(self):
         capabilities = []
-        # options = ChromeOptionsBuilder().with_headless().with_speed_flags()
         # chrome_capabilities = (
         #     ChromeCapabilitiesBuilder()
         #     .accept_insecure_certs(True)
-        #     .add_options(options)
         #     .page_load_strategy("eager")
         # )
         # capabilities.append(chrome_capabilities)
 
-        options = FirefoxOptionsBuilder().with_headless().with_speed_flags()
-        options = FirefoxOptionsBuilder().args(["-headless", "-profile"])
-        firefox_capabilities = FirefoxCapabilitiesBuilder()
-        firefox_capabilities.add_options(options.to_dict())
-        capabilities.append(firefox_capabilities)
+        # options = FirefoxOptionsBuilder().with_headless().with_speed_flags()
+        # options = FirefoxOptionsBuilder().args(["-headless", "-profile"])
+        # firefox_capabilities = FirefoxCapabilitiesBuilder()
+        # firefox_capabilities.args(["-headless", "-profile"])
+        # capabilities.append(firefox_capabilities)
 
         # options = EdgeOptionsBuilder().with_headless().with_speed_flags()
         # edge_capabilities = (
         #     EdgeCapabilitiesBuilder()
         #     .accept_insecure_certs(True)
-        #     .add_options(options)
         #     .page_load_strategy("eager")
         # )
         # capabilities.append(edge_capabilities)
         return capabilities
-
+    
     @pytest_asyncio.fixture
     async def setup_environment(self):
         server_url = SERVER_URL
         capabilities = self._build_capabilities()
         for capability in capabilities:
-            print(capability)
             page = AsyncPage(server_url, capability, PAGE_URL)
             yield page
             try:

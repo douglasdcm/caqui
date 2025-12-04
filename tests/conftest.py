@@ -1,70 +1,51 @@
-from typing import Generator, Tuple
-
 import pytest_asyncio
-from aiohttp import ClientSession
 from pytest import fixture
 
 from caqui import synchronous
 from caqui.easy import AsyncPage
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
-from caqui.easy.options import ChromeOptionsBuilder
-from caqui.easy.server import Server
 from tests.constants import PAGE_URL
 
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
 CAPTURES = "captures"
 
-from webdriver_manager.firefox import GeckoDriverManager
 
 
 @fixture(autouse=True, scope="session")
 def setup_server():
-    server = Server.get_instance(port=SERVER_PORT)
-    server.start()
-    # yield
-    # server.dispose(delay=3)
-
-
-def _build_capabilities():
     capabilities = (
         ChromeCapabilitiesBuilder()
         .accept_insecure_certs(True)
         .args(["headless"])
         .page_load_strategy("eager")
-    ).to_dict()
-    return capabilities
-
-
-@fixture
-def setup_functional_environment() -> Generator[Tuple[str, str], None, None]:
-    server_url: str = SERVER_URL
-    capabilities: dict = _build_capabilities()
-    session: str = synchronous.get_session(server_url, capabilities)
-    synchronous.go_to_page(
-        server_url,
-        session,
-        PAGE_URL,
     )
-    yield server_url, session
-    try:
-        synchronous.dismiss_alert(server_url, session)
-    except Exception:
-        pass
-    finally:
-        synchronous.close_session(server_url, session)
+    page = AsyncPage(SERVER_URL, capabilities, PAGE_URL)
+    page.start()
+    yield page
+    page.dispose()
+
+
 
 
 @pytest_asyncio.fixture
-async def setup_environment():
-    server_url = SERVER_URL
-    capabilities = _build_capabilities()
-    async with ClientSession() as session_http:
-        page = AsyncPage(server_url, capabilities, PAGE_URL, session_http=session_http)
-        yield page
-        try:
-            synchronous.dismiss_alert(server_url, page.session)
-        except Exception:
-            pass
-        finally:
-            page.quit()
+async def setup_functional_environment(setup_server: AsyncPage):
+    await setup_server.get(PAGE_URL)
+    yield setup_server
+    try:
+        await setup_server.alert.dismiss()
+    except Exception:
+        pass
+    finally:
+        setup_server.quit()
+
+
+@pytest_asyncio.fixture
+async def setup_environment(setup_server: AsyncPage):
+    yield setup_server
+    try:
+        synchronous.dismiss_alert(setup_server.server_url, setup_server.session)
+    except Exception:
+        pass
+    finally:
+        setup_server.quit()

@@ -60,7 +60,29 @@ def test_async_driver_nested_capabilities():
         )
     )
     capabilities = ChromeCapabilitiesBuilder()
-    capabilities.browser_name("any")
+    (
+        capabilities.browser_name("any")
+            .args(["headless"])
+        .prefs({"javascript.options.showInConsole": False})
+        .detach(True)
+        # Other examples
+        .binary("/path/to/chrome/executable")
+        .extensions(["ext1", "ext2"])
+        .local_state({"any": "any"})
+        .debugger_address("127.0.0.1:9999")
+        .exclude_switches(["sw1", "sw2"])
+        .minidump_path("any")
+        .mobile_emulation({"any": "any"})
+        .windows_types(["any"])
+        .perf_logging_prefs(
+            {
+                "enableNetwork": False,
+                "enablePage": False,
+                "traceCategories": "devtools.network",
+                "bufferUsageReportingInterval": 1000,
+            }
+        )
+    )
     # capabilities.add_options(options.to_dict())
 
     exppected_options = {

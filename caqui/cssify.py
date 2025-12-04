@@ -45,7 +45,7 @@ def cssify(xpath: str):
     you want to translate, this script is smart but won't do your breakfast).
     """
 
-    css: str = ""
+    css: list = []
     position: int = 0
 
     while position < len(xpath):
@@ -54,41 +54,41 @@ def cssify(xpath: str):
             raise XpathException(f"Invalid or unsupported Xpath: {xpath}")
         match = node.groupdict()
 
-        nav: str = ""
+        parts = []
+        
         if position != 0:
-            nav = " " if match["nav"] == "//" else " > "
+            parts.append(" " if match["nav"] == "//" else " > ")
 
-        tag: str = "" if match["tag"] == "*" else match["tag"] or ""
+        if match["tag"] != "*":
+            parts.append(match["tag"] or "")
 
-        attr: str = ""
         if match["idvalue"]:
-            attr = f"#{match['idvalue'].replace(' ', '#')}"
+            parts.append(f"#{match['idvalue'].replace(' ', '#')}")
         elif match["matched"]:
-            if match["mattr"] == "@id":
-                attr = f"#{match['mvalue'].replace(' ', '#')}"
-            elif match["mattr"] == "@class":
-                attr = f".{match['mvalue'].replace(' ', '.')}"
-            elif match["mattr"] in ["text()", "."]:
-                attr = f":contains(^{match['mvalue']}$)"
-            elif match["mattr"]:
-                if match["mvalue"].find(" ") != -1:
-                    mvalue: str = match["mvalue"]
-                    match["mvalue"] = f'"{mvalue}"'
-                attr = f"[{match['mattr'].replace('@', '')}={match['mvalue']}]"
+            mattr = match["mattr"]
+            mvalue = match["mvalue"]
+            if mattr == "@id":
+                parts.append(f"#{mvalue.replace(' ', '#')}")
+            elif mattr == "@class":
+                parts.append(f".{mvalue.replace(' ', '.')}")
+            elif mattr in ("text()", "."):
+                parts.append(f":contains(^{mvalue}$)")
+            elif mattr:
+                if " " in mvalue:
+                    mvalue = f'"{mvalue}"'
+                parts.append(f"[{mattr.replace('@', '')}={mvalue}]")
         elif match["contained"]:
-            if match["cattr"].startswith("@"):
-                attr = f"[{match['cattr'].replace('@', '')}*={match['cvalue']}]"
-            elif match["cattr"] == "text()":
-                attr = f":contains({match['cvalue']})"
+            cattr = match["cattr"]
+            cvalue = match["cvalue"]
+            if cattr.startswith("@"):
+                parts.append(f"[{cattr.replace('@', '')}*={cvalue}]")
+            elif cattr == "text()":
+                parts.append(f":contains({cvalue})")
 
-        nth: str = ""
         if match["nth"]:
-            nth = f":nth-of-type({match['nth']})"
+            parts.append(f":nth-of-type({match['nth']})")
 
-        node_css: str = nav + tag + attr + nth
-
-        css += node_css
+        css.append("".join(parts))
         position += node.end()
-    else:
-        css = css.strip()
-        return css
+    
+    return "".join(css).strip()

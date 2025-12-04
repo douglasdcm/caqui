@@ -18,5 +18,5 @@ from caqui.by import By
     ],
 )
 def test_locators(setup_functional_environment, locator, value):
-    server_url, session = setup_functional_environment
-    assert synchronous.find_element(server_url, session, locator, value) is not None
+    driver = setup_functional_environment
+    assert synchronous.find_element(driver.server_url, driver.session, locator, value) is not None
