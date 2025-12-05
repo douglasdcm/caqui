@@ -2,20 +2,21 @@
 import asyncio
 import time
 from caqui import synchronous, asynchronous
-from caqui.easy.options import ChromeOptionsBuilder
+
+# from caqui.easy.options import ChromeOptionsBuilder
 from tests.constants import PAGE_URL
 from caqui.easy.capabilities import BaseCapabilitiesBuilder, ChromeCapabilitiesBuilder
-from caqui.easy.server import Server
+from caqui.easy.server import LocalServer
 
 
 async def get_all_links(server):
     server_url = server.url
-    options = ChromeOptionsBuilder().args(["headless"]).to_dict()
+    # options = ChromeOptionsBuilder().args(["headless"]).to_dict()
     capabilities: BaseCapabilitiesBuilder = (
         ChromeCapabilitiesBuilder()
         .accept_insecure_certs(True)
         .page_load_strategy("normal")
-        .add_options(options)
+        # .add_options(options)
     ).to_dict()
 
     session = await asynchronous.get_session(server_url, capabilities)
@@ -47,8 +48,8 @@ async def _get_links(server_url, session, i):
 
 
 try:
-    server = Server(port=9998)
-    server.start()
+    server = LocalServer(port=9998)
+    server._start()
     start = time.time()
     asyncio.run(get_all_links(server))
 finally:

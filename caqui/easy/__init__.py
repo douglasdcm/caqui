@@ -4,6 +4,6 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 from caqui.easy.action_chains import ActionChains
-from caqui.easy.page import AsyncPage
+from caqui.easy.drivers import AsyncDriver
 
-__all__ = ["AsyncPage", "ActionChains"]
+__all__ = ["AsyncDriver", "ActionChains"]

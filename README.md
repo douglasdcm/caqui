@@ -133,7 +133,7 @@ ChromeDriver was started successfully.
 ```
 # Webdriver Manager
 
-Caqui depends on [Webdriver Manager](https://pypi.org/project/webdriver-manager/) that can be configured independenly and has some limitations. Check the project documentation for more information.
+Caqui `Server` class depends on [Webdriver Manager](https://pypi.org/project/webdriver-manager/) that can be configured independenly and has some limitations. Check the project documentation for more information.
 
 
 # Contributing

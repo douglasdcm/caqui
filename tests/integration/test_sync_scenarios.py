@@ -14,8 +14,8 @@ from caqui.synchronous import (
 )
 
 
-def test_switch_to_parent_frame_and_click_alert(setup_functional_environment):
-    driver = setup_functional_environment
+def test_switch_to_parent_frame_and_click_alert(setup_playground):
+    driver = setup_playground
     locator_type = "id"
     locator_value = "my-iframe"
     locator_value_alert_parent = "alert-button"
@@ -24,7 +24,9 @@ def test_switch_to_parent_frame_and_click_alert(setup_functional_environment):
     element_frame = find_element(driver.server_url, driver.session, locator_type, locator_value)
     assert switch_to_frame(driver.server_url, driver.session, element_frame) is True
 
-    alert_button_frame = find_element(driver.server_url, driver.session, locator_type, locator_value_alert_frame)
+    alert_button_frame = find_element(
+        driver.server_url, driver.session, locator_type, locator_value_alert_frame
+    )
     assert click(driver.server_url, driver.session, alert_button_frame) is True
     assert dismiss_alert(driver.server_url, driver.session) is True
 
@@ -36,8 +38,8 @@ def test_switch_to_parent_frame_and_click_alert(setup_functional_environment):
     assert click(driver.server_url, driver.session, alert_button_parent) is True
 
 
-def test_switch_to_frame_and_click_alert(setup_functional_environment):
-    driver = setup_functional_environment
+def test_switch_to_frame_and_click_alert(setup_playground):
+    driver = setup_playground
     locator_type = "id"
     locator_value = "my-iframe"
     locator_value_alert = "alert-button-iframe"
@@ -45,13 +47,15 @@ def test_switch_to_frame_and_click_alert(setup_functional_environment):
     element_frame = find_element(driver.server_url, driver.session, locator_type, locator_value)
     assert switch_to_frame(driver.server_url, driver.session, element_frame) is True
 
-    alert_button = find_element(driver.server_url, driver.session, locator_type, locator_value_alert)
+    alert_button = find_element(
+        driver.server_url, driver.session, locator_type, locator_value_alert
+    )
     assert get_attribute(driver.server_url, driver.session, alert_button, "any") == "any"
     assert click(driver.server_url, driver.session, alert_button) is True
 
 
-def test_get_data_from_hidden_button(setup_functional_environment):
-    driver = setup_functional_environment
+def test_get_data_from_hidden_button(setup_playground):
+    driver = setup_playground
     locator_type = "xpath"
 
     hidden_button = find_element(
@@ -59,14 +63,18 @@ def test_get_data_from_hidden_button(setup_functional_environment):
     )
 
     assert "width" in get_rect(driver.server_url, driver.session, hidden_button)
-    assert "visible" == get_css_value(driver.server_url, driver.session, hidden_button, "visibility")
+    assert "visible" == get_css_value(
+        driver.server_url, driver.session, hidden_button, "visibility"
+    )
     assert True is get_property(driver.server_url, driver.session, hidden_button, "hidden")
     assert ["display"] == get_property(driver.server_url, driver.session, hidden_button, "style")
-    assert "display: none;" == get_attribute(driver.server_url, driver.session, hidden_button, "style")
+    assert "display: none;" == get_attribute(
+        driver.server_url, driver.session, hidden_button, "style"
+    )
 
 
-def test_add_text__click_button_and_get_properties(setup_functional_environment):
-    driver = setup_functional_environment
+def test_add_text__click_button_and_get_properties(setup_playground):
+    driver = setup_playground
     expected = "end"
     locator_type = "xpath"
 
@@ -77,11 +85,16 @@ def test_add_text__click_button_and_get_properties(setup_functional_environment)
     assert get_property(driver.server_url, driver.session, input, property_name="value") == ""
 
     anchor = find_element(driver.server_url, driver.session, locator_type, locator_value="//a")
-    assert get_property(driver.server_url, driver.session, anchor, property_name="href") == "http://any1.com/"
+    assert (
+        get_property(driver.server_url, driver.session, anchor, property_name="href")
+        == "http://any1.com/"
+    )
 
     button = find_element(driver.server_url, driver.session, locator_type, locator_value="//button")
     click(driver.server_url, driver.session, button)
 
-    p = find_element(driver.server_url, driver.session, locator_type, locator_value="//p[@id='end']")
+    p = find_element(
+        driver.server_url, driver.session, locator_type, locator_value="//p[@id='end']"
+    )
 
     assert get_text(driver.server_url, driver.session, p) == expected

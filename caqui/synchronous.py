@@ -720,6 +720,8 @@ def go_to_page(server_url: str, session: str, page_url: str) -> bool:
 
 def close_session(server_url: str, session: str) -> bool:
     """Close an opened session and close the browser"""
+    # from requests import head
+    # head(server_url, timeout=30)
     try:
         url: str = f"{server_url}/session/{session}"
         _delete(url)

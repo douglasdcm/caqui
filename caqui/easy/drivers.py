@@ -7,6 +7,8 @@ import os
 from typing import List, Optional, Union
 
 from aiohttp import ClientSession
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 
 from caqui import asynchronous, synchronous
 from caqui.easy.action_chains import ActionChains
@@ -16,74 +18,30 @@ from caqui.easy.element import Element
 from caqui.easy.switch_to import SwitchTo
 from caqui.easy.window import Window
 from caqui.exceptions import CapabilityNotSupported
-from caqui.easy.capabilities import (
-    ChromeCapabilitiesBuilder,
-    FirefoxCapabilitiesBuilder,
-    EdgeCapabilitiesBuilder,
-    OperaCapabilitiesBuilder,
-)
-import subprocess
-from time import sleep
-from typing import Union
-
-import requests
-from requests import head
-from requests.exceptions import ConnectionError
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.firefox import GeckoDriverManager
-from webdriver_manager.core.manager import DriverManager
-from caqui.easy.server import Server
-from caqui.exceptions import ServerError
 
 TIMEOUT = 120  # seconds
-
-CHROME = "chrome"
-FIREFOX = "firefox"
-EDGE = "edge"
-OPERA = "opera"
 
 CHROME = "ChromeCapabilitiesBuilder"
 FIREFOX = "FirefoxCapabilitiesBuilder"
 EDGE = "EdgeCapabilitiesBuilder"
 OPERA = "OperaCapabilitiesBuilder"
 
-BROWSERS = {
-    CHROME: ChromeCapabilitiesBuilder,
-    FIREFOX: FirefoxCapabilitiesBuilder,
-    EDGE: EdgeCapabilitiesBuilder,
-    OPERA: OperaCapabilitiesBuilder,
-}
-
-DRIVER_MANAGER = {
-    CHROME: ChromeDriverManager,
-    FIREFOX: GeckoDriverManager
-}
-class Browser:
-    CHROME
-    FIREFOX
-    EDGE
-    OPERA
+DRIVER_MANAGER = {CHROME: ChromeDriverManager, FIREFOX: GeckoDriverManager}
 
 
-class AsyncPage:
+class AsyncDriver:
     _instance = None
 
     def __init__(
         self,
-        # TODO make it optional
         server_url: str,
         capabilities: Optional[dict] = None,
-        # TODO remove it
-        url: Union[str, None] = None,
         session_http: Union[ClientSession, None] = None,
-        port:int=9999
+        port: int = 9999,
     ) -> None:
         """Mimics Selenium methods"""
-        self._browser = capabilities.__class__.__qualname__.split(".")[-1]
+        self._browser = capabilities
         self._port = port
-        self._sprocess = None
-        # self._driver_manager = self._browser_factory()
-        # self.start()
         self.session_http = session_http
         if isinstance(capabilities, BaseCapabilitiesBuilder):
             capabilities = capabilities.to_dict()
@@ -93,7 +51,7 @@ class AsyncPage:
             raise CapabilityNotSupported("Expected dictionary")
         self._server_url = server_url
         self._capabilities = capabilities
-        self._session = None
+        self._session = synchronous.get_session(self._server_url, self._capabilities)
         self._elements_pool: List[Element] = []
 
     @property
@@ -302,7 +260,6 @@ class AsyncPage:
 
     async def get(self, url):
         """Navigates to URL `url`"""
-        self._session = synchronous.get_session(self._server_url, self._capabilities)
         self._elements_pool = []
         await asynchronous.go_to_page(
             self._server_url, self._session, url, session_http=self.session_http
@@ -336,80 +293,3 @@ class AsyncPage:
         result.locator = (locator, value)
         self._elements_pool.append(result)
         return result
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-    def _browser_factory(self):
-        if not self._browser:
-            driver_manager = ChromeDriverManager().install()
-        else:
-            # breakpoint()
-            driver_manager = DRIVER_MANAGER[self._browser]().install()
-            # driver_manager = self._browser.install()
-        return driver_manager
-
-    def _wait_server(self):
-        MAX_RETIES = 10
-        for i in range(MAX_RETIES):
-            try:
-                requests.get(self.url, timeout=TIMEOUT)
-                break
-            except ConnectionError:
-                sleep(0.5)
-                if i == (MAX_RETIES - 1) and self._process:
-                    self._process.kill()
-                    self._process.wait()
-                    raise Exception("Driver not started")
-
-    @staticmethod
-    def get_instance(browser: Union[DriverManager, None] = None, port=9999):
-        """(Singleton) Returns the current instance of the server"""
-        if AsyncPage._instance is None:
-            AsyncPage._instance = AsyncPage(browser, port)
-        return AsyncPage._instance
-
-    def start(self) -> None:
-        """Starts the local server"""
-        try:
-            head(self.url, timeout=TIMEOUT)
-        except ConnectionError:
-            pass
-        except Exception:
-            raise
-
-        driver_manager = self._browser_factory()
-        self._process: Union[subprocess.Popen, None] = subprocess.Popen(
-            [driver_manager, f"--port={self._port}"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            start_new_session=True,
-        )
-        if self._process is None:
-            raise ServerError("Not able to start the server.")
-
-        self._wait_server()
-
-    @property
-    def url(self):
-        """
-        Returns the driver URL.
-        """
-        return f"http://localhost:{self._port}"
-
-    @property
-    def process(self):
-        """Returns the process (PID)"""
-        return self._process
-
-    def dispose(self, delay: float = 0):
-        """
-        Disposes the driver process.
-
-        Args:
-            delay: Delay execution for a given number of seconds.
-            The argument may be a floating point number for subsecond precision.
-        """
-        if delay:
-            sleep(delay)
-        if self._process:
-            self._process.kill()
-            self._process.wait()
-            self._process = None

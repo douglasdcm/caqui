@@ -1,51 +1,41 @@
 import pytest_asyncio
 from pytest import fixture
-
-from caqui import synchronous
-from caqui.easy import AsyncPage
+from caqui.easy import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
+from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL
 
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
-CAPTURES = "captures"
 
 
+def _build_capabilities():
+    return (
+        ChromeCapabilitiesBuilder()
+        .accept_insecure_certs(True)
+        .args(["headless", "verbose"])
+        .page_load_strategy("eager")
+    )
 
 @fixture(autouse=True, scope="session")
 def setup_server():
-    capabilities = (
-        ChromeCapabilitiesBuilder()
-        .accept_insecure_certs(True)
-        .args(["headless"])
-        .page_load_strategy("eager")
-    )
-    page = AsyncPage(SERVER_URL, capabilities, PAGE_URL)
-    page.start()
-    yield page
-    page.dispose()
+    server = LocalServer()
+    server.start_chrome()
+    # yield
+    # server.dispose()
 
+
+@pytest_asyncio.fixture
+async def setup_playground():
+    async_driver = AsyncDriver(SERVER_URL, _build_capabilities())
+    await async_driver.get(PAGE_URL)
+    yield async_driver
+    async_driver.quit()
 
 
 
 @pytest_asyncio.fixture
-async def setup_functional_environment(setup_server: AsyncPage):
-    await setup_server.get(PAGE_URL)
-    yield setup_server
-    try:
-        await setup_server.alert.dismiss()
-    except Exception:
-        pass
-    finally:
-        setup_server.quit()
-
-
-@pytest_asyncio.fixture
-async def setup_environment(setup_server: AsyncPage):
-    yield setup_server
-    try:
-        synchronous.dismiss_alert(setup_server.server_url, setup_server.session)
-    except Exception:
-        pass
-    finally:
-        setup_server.quit()
+async def setup_environment():
+    async_driver = AsyncDriver(SERVER_URL, _build_capabilities())
+    yield async_driver
+    async_driver.quit()

@@ -3,10 +3,10 @@ pytest
 pytest-xdist
 selenium
 coverage
-tox
 pytest-asyncio
 build
 mypy
 isort
 black
 flake8
+tox

@@ -2,9 +2,10 @@ from pytest import mark
 
 from caqui import synchronous
 from caqui.by import By
-from caqui.easy import AsyncPage
+from caqui.easy import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
-from caqui.easy.options import ChromeOptionsBuilder
+
+# from caqui.easy.options import ChromeOptionsBuilder
 from tests.constants import COOKIE, PAGE_URL
 
 SERVER_PORT = 9999
@@ -36,33 +37,11 @@ def test_async_driver_nested_capabilities():
             },
         }
     }
-    options = (
-        ChromeOptionsBuilder()
-        .args(["headless"])
-        .prefs({"javascript.options.showInConsole": False})
-        .detach(True)
-        # Other examples
-        .binary("/path/to/chrome/executable")
-        .extensions(["ext1", "ext2"])
-        .local_state({"any": "any"})
-        .debugger_address("127.0.0.1:9999")
-        .exclude_switches(["sw1", "sw2"])
-        .minidump_path("any")
-        .mobile_emulation({"any": "any"})
-        .windows_types(["any"])
-        .perf_logging_prefs(
-            {
-                "enableNetwork": False,
-                "enablePage": False,
-                "traceCategories": "devtools.network",
-                "bufferUsageReportingInterval": 1000,
-            }
-        )
-    )
+    
     capabilities = ChromeCapabilitiesBuilder()
     (
         capabilities.browser_name("any")
-            .args(["headless"])
+        .args(["headless"])
         .prefs({"javascript.options.showInConsole": False})
         .detach(True)
         # Other examples
@@ -127,13 +106,11 @@ def test_async_driver_nested_capabilities():
         }
     )
     assert capabilities.get_options() == exppected_options
-    assert capabilities.get_capabilities() == expected
-
     assert capabilities.to_dict() == expected
 
 
 @mark.asyncio
-async def test_switch_to_parent_frame_and_click_alert(setup_environment: AsyncPage):
+async def test_switch_to_parent_frame_and_click_alert(setup_environment: AsyncDriver):
     driver = setup_environment
     await driver.get(PAGE_URL)
 
@@ -156,7 +133,7 @@ async def test_switch_to_parent_frame_and_click_alert(setup_environment: AsyncPa
 
 
 @mark.asyncio
-async def test_switch_to_frame_and_click_alert(setup_environment: AsyncPage):
+async def test_switch_to_frame_and_click_alert(setup_environment: AsyncDriver):
     driver = setup_environment
     await driver.get(PAGE_URL)
     locator_type = "id"
@@ -172,7 +149,7 @@ async def test_switch_to_frame_and_click_alert(setup_environment: AsyncPage):
 
 
 @mark.asyncio
-async def test_get_data_from_hidden_button(setup_environment: AsyncPage):
+async def test_get_data_from_hidden_button(setup_environment: AsyncDriver):
     driver = setup_environment
     locator_type = "xpath"
     await driver.get(PAGE_URL)
@@ -187,7 +164,7 @@ async def test_get_data_from_hidden_button(setup_environment: AsyncPage):
 
 
 @mark.asyncio
-async def test_add_text__click_button_and_get_properties(setup_environment: AsyncPage):
+async def test_add_text__click_button_and_get_properties(setup_environment: AsyncDriver):
     driver = setup_environment
     expected = "end"
     locator_type = "xpath"
@@ -211,7 +188,7 @@ async def test_add_text__click_button_and_get_properties(setup_environment: Asyn
 
 
 @mark.asyncio
-async def test_big_scenario_of_functions(setup_environment: AsyncPage):
+async def test_big_scenario_of_functions(setup_environment: AsyncDriver):
     page = setup_environment
     remote, session = page.remote, page.session
     await page.implicitly_wait(10)

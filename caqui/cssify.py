@@ -55,7 +55,7 @@ def cssify(xpath: str):
         match = node.groupdict()
 
         parts = []
-        
+
         if position != 0:
             parts.append(" " if match["nav"] == "//" else " > ")
 
@@ -90,5 +90,5 @@ def cssify(xpath: str):
 
         css.append("".join(parts))
         position += node.end()
-    
+
     return "".join(css).strip()

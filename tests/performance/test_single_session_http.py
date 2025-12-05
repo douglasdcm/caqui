@@ -4,9 +4,10 @@ from pytest import mark
 
 from caqui import synchronous
 from caqui.by import By
-from caqui.easy import AsyncPage
+from caqui.easy import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
-from caqui.easy.options import ChromeOptionsBuilder
+
+# from caqui.easy.options import ChromeOptionsBuilder
 from tests.constants import PAGE_URL
 
 SERVER_PORT = 9999
@@ -18,7 +19,7 @@ LOAD = 1  # requests
 @mark.skip(reason="Used for performance tests")
 class TestPerformance:
     def _build_capabilities(self):
-        options = ChromeOptionsBuilder().with_headless().with_speed_flags()
+        # options = ChromeOptionsBuilder().with_headless().with_speed_flags()
         capabilities = (
             ChromeCapabilitiesBuilder()
             .accept_insecure_certs(True)
@@ -27,7 +28,7 @@ class TestPerformance:
         )
         return capabilities
 
-    async def _body(self, page: AsyncPage):
+    async def _body(self, page: AsyncDriver):
         await page.implicitly_wait(10)
         await page.get(
             PAGE_URL,
@@ -89,7 +90,7 @@ class TestPerformance:
     async def setup_environment_without_session_http(self):
         server_url = SERVER_URL
         capabilities = self._build_capabilities()
-        page = AsyncPage(server_url, capabilities, PAGE_URL)
+        page = AsyncDriver(server_url, capabilities, PAGE_URL)
         yield page
         try:
             synchronous.dismiss_alert(server_url, page.session)
@@ -103,7 +104,7 @@ class TestPerformance:
         server_url = SERVER_URL
         capabilities = self._build_capabilities()
         async with ClientSession() as session_http:
-            page = AsyncPage(server_url, capabilities, PAGE_URL, session_http=session_http)
+            page = AsyncDriver(server_url, capabilities, PAGE_URL, session_http=session_http)
             yield page
             try:
                 synchronous.dismiss_alert(server_url, page.session)
@@ -115,7 +116,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_with_session_http1(
         self,
-        setup_environment_with_session_http: AsyncPage,
+        setup_environment_with_session_http: AsyncDriver,
     ):
         page = setup_environment_with_session_http
         await self._body(page)
@@ -123,7 +124,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_without_session_http1(
         self,
-        setup_environment_without_session_http: AsyncPage,
+        setup_environment_without_session_http: AsyncDriver,
     ):
         page = setup_environment_without_session_http
         await self._body(page)
@@ -131,7 +132,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_with_session_http2(
         self,
-        setup_environment_with_session_http: AsyncPage,
+        setup_environment_with_session_http: AsyncDriver,
     ):
         page = setup_environment_with_session_http
         await self._body(page)
@@ -139,7 +140,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_without_session_http2(
         self,
-        setup_environment_without_session_http: AsyncPage,
+        setup_environment_without_session_http: AsyncDriver,
     ):
         page = setup_environment_without_session_http
         await self._body(page)
@@ -147,7 +148,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_with_session_http3(
         self,
-        setup_environment_with_session_http: AsyncPage,
+        setup_environment_with_session_http: AsyncDriver,
     ):
         page = setup_environment_with_session_http
         await self._body(page)
@@ -155,7 +156,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_without_session_http3(
         self,
-        setup_environment_without_session_http: AsyncPage,
+        setup_environment_without_session_http: AsyncDriver,
     ):
         page = setup_environment_without_session_http
         await self._body(page)
@@ -163,7 +164,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_with_session_http4(
         self,
-        setup_environment_with_session_http: AsyncPage,
+        setup_environment_with_session_http: AsyncDriver,
     ):
         page = setup_environment_with_session_http
         await self._body(page)
@@ -171,7 +172,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_without_session_http4(
         self,
-        setup_environment_without_session_http: AsyncPage,
+        setup_environment_without_session_http: AsyncDriver,
     ):
         page = setup_environment_without_session_http
         await self._body(page)
@@ -179,7 +180,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_with_session_http5(
         self,
-        setup_environment_with_session_http: AsyncPage,
+        setup_environment_with_session_http: AsyncDriver,
     ):
         page = setup_environment_with_session_http
         await self._body(page)
@@ -187,7 +188,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_without_session_http5(
         self,
-        setup_environment_without_session_http: AsyncPage,
+        setup_environment_without_session_http: AsyncDriver,
     ):
         page = setup_environment_without_session_http
         await self._body(page)
@@ -195,7 +196,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_with_session_http6(
         self,
-        setup_environment_with_session_http: AsyncPage,
+        setup_environment_with_session_http: AsyncDriver,
     ):
         page = setup_environment_with_session_http
         await self._body(page)
@@ -203,7 +204,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_without_session_http6(
         self,
-        setup_environment_without_session_http: AsyncPage,
+        setup_environment_without_session_http: AsyncDriver,
     ):
         page = setup_environment_without_session_http
         await self._body(page)
@@ -211,7 +212,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_with_session_http7(
         self,
-        setup_environment_with_session_http: AsyncPage,
+        setup_environment_with_session_http: AsyncDriver,
     ):
         page = setup_environment_with_session_http
         await self._body(page)
@@ -219,7 +220,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_without_session_http7(
         self,
-        setup_environment_without_session_http: AsyncPage,
+        setup_environment_without_session_http: AsyncDriver,
     ):
         page = setup_environment_without_session_http
         await self._body(page)
@@ -227,7 +228,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_with_session_http8(
         self,
-        setup_environment_with_session_http: AsyncPage,
+        setup_environment_with_session_http: AsyncDriver,
     ):
         page = setup_environment_with_session_http
         await self._body(page)
@@ -235,7 +236,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_without_session_http8(
         self,
-        setup_environment_without_session_http: AsyncPage,
+        setup_environment_without_session_http: AsyncDriver,
     ):
         page = setup_environment_without_session_http
         await self._body(page)
@@ -243,7 +244,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_with_session_http9(
         self,
-        setup_environment_with_session_http: AsyncPage,
+        setup_environment_with_session_http: AsyncDriver,
     ):
         page = setup_environment_with_session_http
         await self._body(page)
@@ -251,7 +252,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_without_session_http9(
         self,
-        setup_environment_without_session_http: AsyncPage,
+        setup_environment_without_session_http: AsyncDriver,
     ):
         page = setup_environment_without_session_http
         await self._body(page)
@@ -259,7 +260,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_with_session_http10(
         self,
-        setup_environment_with_session_http: AsyncPage,
+        setup_environment_with_session_http: AsyncDriver,
     ):
         page = setup_environment_with_session_http
         await self._body(page)
@@ -267,7 +268,7 @@ class TestPerformance:
     @mark.asyncio
     async def test_big_scenario_of_functions_without_session_http10(
         self,
-        setup_environment_without_session_http: AsyncPage,
+        setup_environment_without_session_http: AsyncDriver,
     ):
         page = setup_environment_without_session_http
         await self._body(page)

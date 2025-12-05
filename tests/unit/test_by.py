@@ -17,6 +17,6 @@ from caqui.by import By
         (By.XPATH, "//button"),
     ],
 )
-def test_locators(setup_functional_environment, locator, value):
-    driver = setup_functional_environment
+def test_locators(setup_playground, locator, value):
+    driver = setup_playground
     assert synchronous.find_element(driver.server_url, driver.session, locator, value) is not None

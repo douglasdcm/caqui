@@ -3,12 +3,6 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
-from math import ceil
-from typing import Union
-
-from caqui.easy.options import BaseOptionsBuilder
-from caqui.exceptions import WebDriverError
-
 
 class Browser:
     """
@@ -22,164 +16,16 @@ class Browser:
     IE = "internet explorer"
 
 
-class ProxyConfigurationBuilder:
-    """
-    Reference: https://www.w3.org/TR/webdriver/#dfn-proxy-configuration
-    """
-
-    def __init__(self) -> None:
-        self._proxy: dict = {}
-
-    def proxy_type(self, proxy: str):
-        """
-        Indicates the type of proxy configuration.
-
-        proxy: pac, direct, autodetect, system, or manual.
-
-        Reference: https://www.w3.org/TR/webdriver/#dfn-proxy-configuration
-        """
-        self._proxy = {
-            **self._proxy,
-            "proxyType": proxy,
-        }
-        return self
-
-    def proxy_autoconfig_url(self, url: str):
-        """
-        Defines the URL for a proxy auto-config file if proxyType is equal to "pac".
-        """
-        self._proxy = {
-            **self._proxy,
-            "proxyAutoconfigUrl": url,
-        }
-        return self
-
-    def ftp_proxy(self, proxy: str):
-        """
-        Defines the proxy host for FTP traffic when the proxyType is "manual".
-
-        proxy: A host and optional port for scheme "ftp".
-        """
-        self._proxy = {
-            **self._proxy,
-            "ftpProxy": proxy,
-        }
-        return self
-
-    def http_proxy(self, proxy: str):
-        """
-        Defines the proxy host for HTTP traffic when the proxyType is "manual".
-
-        proxy: A host and optional port for scheme "http".
-        """
-        self._proxy = {
-            **self._proxy,
-            "httpProxy": proxy,
-        }
-        return self
-
-    def no_proxy(self, proxies: list):
-        """
-        Lists the address for which the proxy should be bypassed when the proxyType is "manual".
-
-        proxies: A List containing any number of Strings.
-        """
-        self._proxy = {
-            **self._proxy,
-            "noProxy": proxies,
-        }
-        return self
-
-    def ssl_proxy(self, proxy: str):
-        """
-        Defines the proxy host for encrypted TLS traffic when the proxyType is "manual".
-
-        proxy: A host and optional port for scheme "https".
-        """
-        self._proxy = {
-            **self._proxy,
-            "sslProxy": proxy,
-        }
-        return self
-
-    def socks_proxy(self, proxy: str):
-        """
-        Defines the proxy host for a SOCKS proxy when the proxyType is "manual".
-
-        proxy: A host and optional port with an undefined scheme.
-        """
-        self._proxy = {
-            **self._proxy,
-            "socksProxy": proxy,
-        }
-        return self
-
-    def socks_version(self, version: int):
-        """
-        Defines the SOCKS proxy version when the proxyType is "manual".
-
-        version: Any integer between 0 and 255 inclusive.
-        """
-        self._proxy = {
-            **self._proxy,
-            "socksVersion": version,
-        }
-        return self
-
-    def to_dict(self):
-        return {"proxy": self._proxy}
-
-
-class TimeoutsBuilder:
-    """
-    Reference: https://www.w3.org/TR/webdriver/#dfn-session-script-timeout
-    """
-
-    def __init__(self) -> None:
-        self._timeouts: dict = {}
-
-    def implicit(self, timeout: int):
-        """Notice: if the number is a float, converts it to an integer"""
-        timeout = ceil(timeout)
-        self._timeouts = {
-            **self._timeouts,
-            "implicit": timeout,
-        }
-        return self
-
-    def page_load(self, timeout: int):
-        """Notice: if the number is a float, converts it to an integer"""
-        timeout = ceil(timeout)
-        self._timeouts = {
-            **self._timeouts,
-            "pageLoad": timeout,
-        }
-        return self
-
-    def script(self, timeout: int):
-        """Notice: if the number is a float, converts it to an integer"""
-        timeout = ceil(timeout)
-        self._timeouts = {
-            **self._timeouts,
-            "script": timeout,
-        }
-        return self
-
-    def to_dict(self):
-        return {"timeouts": self._timeouts}
-
-
 class BaseCapabilitiesBuilder:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
 
     def __init__(self) -> None:
         self.desired_capabilities: dict = {}
         self.options: dict = {}
-        self.opts = {"goog:chromeOptions": {}}
 
     def to_dict(self):
         raise NotImplementedError
-# TODO remove some methods
+
     def browser_name(self, name: str):
         self.desired_capabilities = {
             **self.desired_capabilities,
@@ -236,22 +82,69 @@ class BaseCapabilitiesBuilder:
         }
         return self
 
-    def proxy(self, proxy_configuration: Union[dict, ProxyConfigurationBuilder]):
+    def proxy(
+        self,
+        proxy_type: str,
+        proxy_autoconfig_url: str,
+        ftp_proxy: str,
+        http_proxy: str,
+        no_proxy: list,
+        ssl_proxy: str,
+        socks_proxy: str,
+        socks_version: int,
+    ) -> "BaseCapabilitiesBuilder":
         """
-        Defines the current session’s proxy configuration.
-        Use the ProxyConfigurationBuilder class for simplicity.
+        Defines the current session's proxy configuration.
+
+                This method sets up proxy settings for the WebDriver session according to the
+        W3C WebDriver specification. It allows configuration of various proxy types
+        and their respective settings.
+
+        Args:
+            proxy_type: The type of proxy to use (e.g., 'direct', 'manual', 'pac', 'autodetect', 'system').
+            proxy_autoconfig_url: URL of a proxy auto-config file to be used if proxyType is 'pac'.
+            ftp_proxy: FTP proxy to be used for FTP traffic.
+            http_proxy: HTTP proxy to be used for HTTP traffic.
+            no_proxy: List of hostnames or IP addresses that should not be accessed through a proxy.
+            ssl_proxy: HTTPS/SSL proxy to be used for secure traffic.
+            socks_proxy: SOCKS proxy to be used for SOCKS traffic.
+            socks_version: Version of SOCKS protocol to use (typically 4 or 5).
+
+        Returns:
+            The current BaseCapabilitiesBuilder instance to allow method chaining.
+
+        Reference: https://www.w3.org/TR/webdriver/#dfn-proxy-configuration
         """
-        if isinstance(proxy_configuration, ProxyConfigurationBuilder):
-            proxy_configuration = proxy_configuration.to_dict()
+        proxy_configuration: dict = {
+            "proxy": {
+                "ftpProxy": ftp_proxy,
+                "httpProxy": http_proxy,
+                "noProxy": no_proxy,
+                "proxyAutoconfigUrl": proxy_autoconfig_url,
+                "proxyType": proxy_type,
+                "socksProxy": socks_proxy,
+                "socksVersion": socks_version,
+                "sslProxy": ssl_proxy,
+            },
+        }
         self.desired_capabilities = {
             **self.desired_capabilities,
-            **proxy_configuration,  # type: ignore
+            **proxy_configuration,
         }
         return self
 
     def set_window_rect(self, decison: bool):
         """
-        Indicates whether the remote end supports all of the resizing and repositioning commands.
+        Set the window rect capability for the remote end.
+
+        Indicates whether the remote end supports all of the resizing and repositioning
+        commands, including maximizing, minimizing, fullscreen, and moving the window.
+
+        Args:
+            decison: A boolean flag indicating whether window rect capability is supported.
+
+        Returns:
+            The current instance for method chaining.
         """
         self.desired_capabilities = {
             **self.desired_capabilities,
@@ -259,16 +152,27 @@ class BaseCapabilitiesBuilder:
         }
         return self
 
-    def timeouts(self, session_timeouts: Union[dict, TimeoutsBuilder]):
+
+    def timeouts(self, implicit: int, page_load: int, script: int):
         """
         Describes the timeouts imposed on certain session operations.
-        Use the TimeoutsBuilder class for simplicity.
+
+        Args:
+            implicit: The number of milliseconds to wait when attempting to find an element.
+            page_load: The number of milliseconds to wait for a page load to complete before returning an error.
+            script: The number of milliseconds to wait for an asynchronous script to finish execution before returning an error.
+        Returns:
+            Self instance for method chaining.
+
+        Reference: https://www.w3.org/TR/webdriver/#dfn-session-script-timeout
         """
-        if isinstance(session_timeouts, TimeoutsBuilder):
-            session_timeouts = session_timeouts.to_dict()
         self.desired_capabilities = {
             **self.desired_capabilities,
-            **session_timeouts,  # type: ignore
+            "timeouts": {
+                "implicit": implicit,
+                "pageLoad": page_load,
+                "script": script,
+            },
         }
         return self
 
@@ -316,145 +220,124 @@ class BaseCapabilitiesBuilder:
         }
         return self
 
-    def add_options(self, options: Union[dict, BaseOptionsBuilder]):
-        """Add vendor options, for example
-        {"goog:chromeOptions": {"extensions": [], "args": ["--headless"]}} or
-        {"moz:experimental-webdriver": true}
-        """
+    def get_options(self):
+        return self.options
 
-        raise WebDriverError("deprecated")
-        if isinstance(options, BaseOptionsBuilder):
-            options = options.to_dict()
-        self.options = options
-        return self
+
+class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
+    OPTIONS = "goog:chromeOptions"
+
+    def __init__(self):
+        super().__init__()
+        self.options = {ChromeCapabilitiesBuilder.OPTIONS: {}}
 
     def detach(self, value):
-        self.opts["goog:chromeOptions"]["detach"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["detach"] = value
         return self
 
     def binary(self, value):
-        self.opts["goog:chromeOptions"]["binary"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["binary"] = value
         return self
 
     def extensions(self, value):
-        self.opts["goog:chromeOptions"]["extensions"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["extensions"] = value
         return self
 
     def debugger_address(self, value):
-        self.opts["goog:chromeOptions"]["debuggerAddress"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["debuggerAddress"] = value
         return self
 
     def exclude_switches(self, value):
-        self.opts["goog:chromeOptions"]["excludeSwitches"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["excludeSwitches"] = value
         return self
 
     def minidump_path(self, value):
-        self.opts["goog:chromeOptions"]["minidumpPath"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["minidumpPath"] = value
         return self
 
     def windows_types(self, value):
-        self.opts["goog:chromeOptions"]["windowsTypes"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["windowsTypes"] = value
         return self
 
     def mobile_emulation(self, value):
-        self.opts["goog:chromeOptions"]["mobileEmulation"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["mobileEmulation"] = value
         return self
 
     def local_state(self, value):
-        self.opts["goog:chromeOptions"]["localState"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["localState"] = value
         return self
 
     def args(self, value):
-        self.opts["goog:chromeOptions"]["args"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["args"] = value
         return self
 
     def prefs(self, value):
-        self.opts["goog:chromeOptions"]["prefs"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["prefs"] = value
         return self
 
     def perf_logging_prefs(self, value):
-        self.opts["goog:chromeOptions"]["perfLoggingPrefs"] = value
+        self.options[ChromeCapabilitiesBuilder.OPTIONS]["perfLoggingPrefs"] = value
         return self
 
-    def get_capabilities(self):
-        if self.opts["goog:chromeOptions"]:
-            return {"desiredCapabilities": {**self.desired_capabilities, **self.opts}}
+
+    def to_dict(self):
+        """
+        Returns the capabilities.
+        """
+        if self.options[ChromeCapabilitiesBuilder.OPTIONS]:
+            return {"desiredCapabilities": {**self.desired_capabilities, **self.options}}
         return {
             "desiredCapabilities": {
                 **self.desired_capabilities,
             }
         }
 
-    def get_options(self):
-        return self.opts
 
-
-class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
+class EdgeCapabilitiesBuilder(ChromeCapabilitiesBuilder):
     def __init__(self):
         super().__init__()
+        self.options = {"ms:edgeOptions": {}}
 
-    def detach(self, value):
-        self.opts["goog:chromeOptions"]["detach"] = value
+    def wdp_address(self, value: str):
+        """An address of a Windows Device Portal server to connect to,
+        in the form of hostname/ip:port, for example 127.0.0.1:50080"""
+        self.options = {**self.options, **{"wdpAddress": value}}
         return self
 
-    def binary(self, value):
-        self.opts["goog:chromeOptions"]["binary"] = value
+    def wdp_password(self, value: str):
+        """Optional password to use when connecting to a Windows Device Portal server.
+        Required if the server has authentication enabled."""
+        self.options = {**self.options, **{"wdpPassword": value}}
         return self
 
-    def extensions(self, value):
-        self.opts["goog:chromeOptions"]["extensions"] = value
+    def wdp_username(self, value: str):
+        """Optional user name to use when connecting to a Windows Device Portal server.
+        Required if the server has authentication enabled."""
+        self.options = {**self.options, **{"wdpUsername": value}}
         return self
 
-    def debugger_address(self, value):
-        self.opts["goog:chromeOptions"]["debuggerAddress"] = value
+    def wdp_processId(self, value: str):
+        """The required process ID to use if attaching to a running
+        WebView2 UWP app, for example 36590."""
+        self.options = {**self.options, **{"wdpProcessId": value}}
         return self
 
-    def exclude_switches(self, value):
-        self.opts["goog:chromeOptions"]["excludeSwitches"] = value
+    def webview_options(self, value: str):
+        """An optional dictionary that can be used to configure the WebView2
+        environment when launching a WebView2 app."""
+        self.options = {**self.options, **{"webviewOptions": value}}
         return self
 
-    def minidump_path(self, value):
-        self.opts["goog:chromeOptions"]["minidumpPath"] = value
-        return self
-
-    def windows_types(self, value):
-        self.opts["goog:chromeOptions"]["windowsTypes"] = value
-        return self
-
-    def mobile_emulation(self, value):
-        self.opts["goog:chromeOptions"]["mobileEmulation"] = value
-        return self
-
-    def local_state(self, value):
-        self.opts["goog:chromeOptions"]["localState"] = value
-        return self
-
-    def args(self, value):
-        self.opts["goog:chromeOptions"]["args"] = value
-        return self
-
-    def prefs(self, value):
-        self.opts["goog:chromeOptions"]["prefs"] = value
-        return self
-
-    def perf_logging_prefs(self, value):
-        self.opts["goog:chromeOptions"]["perfLoggingPrefs"] = value
+    def windows_app(self, value: str):
+        """Application user model ID of a Microsoft Edge app package to launch,
+        for example `Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe!MSEDGE.`"""
+        self.options = {**self.options, **{"windowsApp": value}}
         return self
 
     def to_dict(self):
-        """
-        Returns the capabilities.
-        """
-        return self.get_capabilities()
-    # TODO remove
-        self.desired_capabilities = {**self.desired_capabilities, **self.options}
-        # breakpoint()
+        """Converts the options to a dict"""
+        return {"ms:edgeOptions": self.options}
 
-        return {"desiredCapabilities": self.desired_capabilities}
-
-
-class EdgeCapabilitiesBuilder(ChromeCapabilitiesBuilder):
-    pass
 
 
 class OperaCapabilitiesBuilder(ChromeCapabilitiesBuilder):
@@ -464,7 +347,6 @@ class OperaCapabilitiesBuilder(ChromeCapabilitiesBuilder):
 class FirefoxCapabilitiesBuilder(BaseCapabilitiesBuilder):
     def __init__(self):
         super().__init__()
-        self.opts = {"moz:firefoxOptions": {}}
 
     def detach(self, value):
         self.options["detach"] = value
@@ -558,9 +440,6 @@ class FirefoxCapabilitiesBuilder(BaseCapabilitiesBuilder):
         self.options["androidIntentArguments"] = value
         return self
 
-    def to_dict(self):
-        """Converts the options to a dict"""
-        return {"moz:firefoxOptions": self.options}
 
     def to_dict(self):
         """

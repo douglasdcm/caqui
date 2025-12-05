@@ -1,10 +1,8 @@
-from caqui.easy.capabilities import (
+from caqui.easy.capabilities import ( 
     ChromeCapabilitiesBuilder,
     FirefoxCapabilitiesBuilder,
-    ProxyConfigurationBuilder,
-    TimeoutsBuilder,
 )
-from caqui.easy.options import ChromeOptionsBuilder, FirefoxOptionsBuilder
+
 
 
 def test_firefox_capabilities_with_options():
@@ -27,23 +25,9 @@ def test_firefox_capabilities_with_options():
             },
         }
     }
-    options = (
-        FirefoxOptionsBuilder()
-        .binary("/usr/bin/firefox")
-        .args(["-headless", "-profile"])
-        .env({"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"})
-        .log({"level": "trace"})
-        .profile("any")
-        .android_intent_arguments(["a", "b"])
-        .android_activity("any")
-        .android_device_serial("any")
-        .android_package("any")
-        .level("info")
-    )
     capabilities = FirefoxCapabilitiesBuilder()
     (
         capabilities.browser_name("any")
-        # .add_options(options.to_dict()))
         .binary("/usr/bin/firefox")
         .args(["-headless", "-profile"])
         .env({"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"})
@@ -83,33 +67,9 @@ def test_chrome_capabilities_with_options():
             },
         }
     }
-    options = (
-        ChromeOptionsBuilder()
-        .args(["headless"])
-        .prefs({"javascript.options.showInConsole": False})
-        .detach(True)
-        # Other examples
-        .binary("/path/to/chrome/executable")
-        .extensions(["ext1", "ext2"])
-        .local_state({"any": "any"})
-        .debugger_address("127.0.0.1:9999")
-        .exclude_switches(["sw1", "sw2"])
-        .minidump_path("any")
-        .mobile_emulation({"any": "any"})
-        .windows_types(["any"])
-        .perf_logging_prefs(
-            {
-                "enableNetwork": False,
-                "enablePage": False,
-                "traceCategories": "devtools.network",
-                "bufferUsageReportingInterval": 1000,
-            }
-        )
-    )
     capabilities = ChromeCapabilitiesBuilder()
     (
         capabilities.browser_name("any")
-        # capabilities.add_options(options.to_dict())
         .args(["headless"])
         .prefs({"javascript.options.showInConsole": False})
         .detach(True)
@@ -150,8 +110,6 @@ def test_standard_capabilities_with_timeout():
         }
     }
 
-    timeout = TimeoutsBuilder().implicit(1).page_load(1).script(1)
-
     capabilities = (
         ChromeCapabilitiesBuilder()
         .browser_name("any")
@@ -159,10 +117,10 @@ def test_standard_capabilities_with_timeout():
         .browser_version("any")
         .page_load_strategy("any")
         .platform_name("any")
-        .proxy({})
+        # .proxy({})
         .set_window_rect(True)
         .strict_file_interactability(True)
-        .timeouts(timeout.to_dict())
+        .timeouts(implicit=1, page_load=1, script=1)
         .unhandled_prompt_behavior("any")
         .user_agent("any")
     )
@@ -194,17 +152,6 @@ def test_standard_capabilities_with_proxy():
         }
     }
 
-    proxy = (
-        ProxyConfigurationBuilder()
-        .ftp_proxy("any")
-        .http_proxy("str")
-        .no_proxy(["p1", "p2"])
-        .proxy_autoconfig_url("any")
-        .proxy_type("any")
-        .socks_proxy("any")
-        .socks_version(1)
-        .ssl_proxy("any")
-    )
 
     capabilities = (
         ChromeCapabilitiesBuilder()
@@ -213,10 +160,19 @@ def test_standard_capabilities_with_proxy():
         .browser_version("any")
         .page_load_strategy("any")
         .platform_name("any")
-        .proxy(proxy.to_dict())
+        .proxy(
+            ftp_proxy="any",
+            http_proxy="str",
+            no_proxy=["p1", "p2"],
+            proxy_autoconfig_url="any",
+            proxy_type="any",
+            socks_proxy="any",
+            socks_version=1,
+            ssl_proxy="any",
+        )
         .set_window_rect(True)
         .strict_file_interactability(True)
-        .timeouts({})
+        # .timeouts({})
         .unhandled_prompt_behavior("any")
         .user_agent("any")
     )
@@ -245,10 +201,8 @@ def test_standard_capabilities():
         .browser_version("any")
         .page_load_strategy("any")
         .platform_name("any")
-        .proxy({})
         .set_window_rect(True)
         .strict_file_interactability(True)
-        .timeouts({})
         .unhandled_prompt_behavior("any")
         .user_agent("any")
     )

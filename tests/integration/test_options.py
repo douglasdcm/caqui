@@ -1,4 +1,4 @@
-from caqui.easy.options import ChromeOptionsBuilder, FirefoxOptionsBuilder
+from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder
 
 
 def test_firefox_options():
@@ -16,8 +16,27 @@ def test_firefox_options():
             "level": "info",
         }
     }
+    expected = {
+        "capabilities": {
+            "firstMatch": {
+                "moz:firefoxOptions": {
+                    "binary": "/usr/bin/firefox",
+                    "args": ["-headless", "-profile"],
+                    "env": {"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"},
+                    "log": {"level": "trace"},
+                    "profile": "any",
+                    "androidIntentArguments": ["a", "b"],
+                    "androidActivity": "any",
+                    "androidDeviceSerial": "any",
+                    "androidPackage": "any",
+                    "level": "info",
+                }
+            }
+        }
+    }
+
     options = (
-        FirefoxOptionsBuilder()
+        FirefoxCapabilitiesBuilder()
         .binary("/usr/bin/firefox")
         .args(["-headless", "-profile"])
         .env({"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"})
@@ -33,7 +52,7 @@ def test_firefox_options():
 
 
 def test_chrome_options():
-    expected = {
+    expected = {"desiredCapabilities":{
         "goog:chromeOptions": {
             "args": [
                 "headless",
@@ -66,9 +85,9 @@ def test_chrome_options():
             },
             "windowsTypes": ["any"],
         }
-    }
-    options = options = (
-        ChromeOptionsBuilder()
+    }}
+    options = (
+        ChromeCapabilitiesBuilder()
         .args(["headless"])
         .prefs({"javascript.options.showInConsole": False})
         .detach(True)

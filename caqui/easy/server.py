@@ -5,20 +5,33 @@
 
 import subprocess
 from time import sleep
-from typing import Union
+from typing import Dict, Optional
 
 import requests
 from requests import head
 from requests.exceptions import ConnectionError
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.manager import DriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+from webdriver_manager.opera import OperaDriverManager
 
-from caqui.exceptions import ServerError
+from caqui.exceptions import ServerError, WebDriverError
 
-TIMEOUT = 120  # seconds
+TIMEOUT: int = 120  # seconds
+
+CHROME: str = "chrome"
+FIREFOX: str = "firefox"
+EDGE: str = "edge"
+OPERA: str = "opera"
+DRIVER_MANAGER: Dict[str, type] = {
+    CHROME: ChromeDriverManager,
+    FIREFOX: GeckoDriverManager,
+    EDGE: EdgeChromiumDriverManager,
+    OPERA: OperaDriverManager,
+}
 
 
-class Server:
+class LocalServer:
     """
     Starts and stops the local server. Cannot be used with remote servers
 
@@ -29,22 +42,19 @@ class Server:
         port: the port to start the local server
     """
 
-    _instance = None
+    def __init__(self, port: int = 9999) -> None:
+        self._browser: Optional[str] = None
+        self._port: int = port
+        self._process: Optional[subprocess.Popen] = None
 
-    def __init__(self, browser: Union[DriverManager, None] = None, port=9999):
-        self._browser = browser
-        self._port = port
-        self._sprocess = None
+    def _browser_factory(self) -> str:
+        browser: Optional[type] = DRIVER_MANAGER.get(self._browser)
+        if browser:
+            return browser().install()
+        raise WebDriverError(f"Browser {self._browser} not supported")
 
-    def _browser_factory(self):
-        if not self._browser:
-            driver_manager = ChromeDriverManager().install()
-        else:
-            driver_manager = self._browser.install()
-        return driver_manager
-
-    def _wait_server(self):
-        MAX_RETIES = 10
+    def _wait_server(self) -> None:
+        MAX_RETIES: int = 10
         for i in range(MAX_RETIES):
             try:
                 requests.get(self.url, timeout=TIMEOUT)
@@ -56,14 +66,7 @@ class Server:
                     self._process.wait()
                     raise Exception("Driver not started")
 
-    @staticmethod
-    def get_instance(browser: Union[DriverManager, None] = None, port=9999):
-        """(Singleton) Returns the current instance of the server"""
-        if Server._instance is None:
-            Server._instance = Server(browser, port)
-        return Server._instance
-
-    def start(self) -> None:
+    def _start(self) -> None:
         """Starts the local server"""
         try:
             head(self.url, timeout=TIMEOUT)
@@ -72,8 +75,8 @@ class Server:
         except Exception:
             raise
 
-        driver_manager = self._browser_factory()
-        self._process: Union[subprocess.Popen, None] = subprocess.Popen(
+        driver_manager: str = self._browser_factory()
+        self._process = subprocess.Popen(
             [driver_manager, f"--port={self._port}"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -85,18 +88,61 @@ class Server:
         self._wait_server()
 
     @property
-    def url(self):
+    def url(self) -> str:
         """
         Returns the driver URL.
         """
         return f"http://localhost:{self._port}"
 
     @property
-    def process(self):
+    def process(self) -> Optional[subprocess.Popen]:
         """Returns the process (PID)"""
         return self._process
 
-    def dispose(self, delay: float = 0):
+    def start_chrome(self) -> None:
+        """
+        Start a Chrome browser instance for the server.
+
+        Sets the browser type to CHROME and initializes the server startup process.
+        """
+        self._browser = CHROME
+        self._start()
+
+    def start_firefox(self) -> None:
+        """
+        Start Firefox browser for the current session.
+
+        Sets the browser type to Firefox and initiates the browser startup process.
+
+        Returns:
+            None
+        """
+        self._browser = FIREFOX
+        self._start()
+
+    def start_opera(self) -> None:
+        """
+        Initialize and start the Opera browser instance.
+
+        Sets the browser type to Opera and initiates the browser startup process.
+        """
+        self._browser = OPERA
+        self._start()
+
+    def start_edge(self) -> None:
+        """
+        Start the Edge browser and initialize the server.
+
+        This method sets the internal browser instance to EDGE and calls the start method
+        to initialize the server with the Edge browser.
+
+        Returns:
+            None
+        """
+        self._browser = EDGE
+        self._start()
+
+    def dispose(self, delay: float = 0) -> None:
         """
         Disposes the driver process.
 
