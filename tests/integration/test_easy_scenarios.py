@@ -4,7 +4,6 @@ from caqui import synchronous
 from caqui.by import By
 from caqui.easy import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
-
 # from caqui.easy.options import ChromeOptionsBuilder
 from tests.constants import COOKIE, PAGE_URL
 
@@ -37,7 +36,7 @@ def test_async_driver_nested_capabilities():
             },
         }
     }
-    
+
     capabilities = ChromeCapabilitiesBuilder()
     (
         capabilities.browser_name("any")

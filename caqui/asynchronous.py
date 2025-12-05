@@ -10,7 +10,8 @@ from orjson import dumps
 
 from caqui.constants import HEADERS
 from caqui.exceptions import WebDriverError
-from caqui.helper import convert_xpath_to_css_selector, get_element, get_elements, save_picture
+from caqui.helper import (convert_xpath_to_css_selector, get_element,
+                          get_elements, save_picture)
 
 
 async def _handle_response(resp) -> Any:

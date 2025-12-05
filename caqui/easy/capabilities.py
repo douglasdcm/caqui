@@ -101,7 +101,8 @@ class BaseCapabilitiesBuilder:
         and their respective settings.
 
         Args:
-            proxy_type: The type of proxy to use (e.g., 'direct', 'manual', 'pac', 'autodetect', 'system').
+            proxy_type: The type of proxy to use (e.g., 'direct', 'manual',
+              'pac', 'autodetect', 'system').
             proxy_autoconfig_url: URL of a proxy auto-config file to be used if proxyType is 'pac'.
             ftp_proxy: FTP proxy to be used for FTP traffic.
             http_proxy: HTTP proxy to be used for HTTP traffic.
@@ -152,15 +153,16 @@ class BaseCapabilitiesBuilder:
         }
         return self
 
-
     def timeouts(self, implicit: int, page_load: int, script: int):
         """
         Describes the timeouts imposed on certain session operations.
 
         Args:
             implicit: The number of milliseconds to wait when attempting to find an element.
-            page_load: The number of milliseconds to wait for a page load to complete before returning an error.
-            script: The number of milliseconds to wait for an asynchronous script to finish execution before returning an error.
+            page_load: The number of milliseconds to wait for a page load to complete before
+              returning an error.
+            script: The number of milliseconds to wait for an asynchronous script to finish
+              execution before returning an error.
         Returns:
             Self instance for method chaining.
 
@@ -279,7 +281,6 @@ class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["perfLoggingPrefs"] = value
         return self
 
-
     def to_dict(self):
         """
         Returns the capabilities.
@@ -337,7 +338,6 @@ class EdgeCapabilitiesBuilder(ChromeCapabilitiesBuilder):
     def to_dict(self):
         """Converts the options to a dict"""
         return {"ms:edgeOptions": self.options}
-
 
 
 class OperaCapabilitiesBuilder(ChromeCapabilitiesBuilder):
@@ -439,7 +439,6 @@ class FirefoxCapabilitiesBuilder(BaseCapabilitiesBuilder):
         uses `Android am` to start the Android application under test."""
         self.options["androidIntentArguments"] = value
         return self
-
 
     def to_dict(self):
         """

@@ -1,8 +1,5 @@
-from caqui.easy.capabilities import ( 
-    ChromeCapabilitiesBuilder,
-    FirefoxCapabilitiesBuilder,
-)
-
+from caqui.easy.capabilities import (ChromeCapabilitiesBuilder,
+                                     FirefoxCapabilitiesBuilder)
 
 
 def test_firefox_capabilities_with_options():
@@ -151,7 +148,6 @@ def test_standard_capabilities_with_proxy():
             "userAgent": "any",
         }
     }
-
 
     capabilities = (
         ChromeCapabilitiesBuilder()

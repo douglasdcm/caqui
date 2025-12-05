@@ -1,7 +1,6 @@
 import pytest_asyncio
 from pytest import mark
 
-from caqui import synchronous
 from caqui.by import By
 from caqui.easy import AsyncDriver
 from tests.constants import PAGE_URL

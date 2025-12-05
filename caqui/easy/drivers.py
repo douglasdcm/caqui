@@ -35,7 +35,7 @@ class AsyncDriver:
     def __init__(
         self,
         server_url: str,
-        capabilities: Optional[dict] = None,
+        capabilities: Optional[BaseCapabilitiesBuilder] = None,
         session_http: Union[ClientSession, None] = None,
         port: int = 9999,
     ) -> None:
@@ -43,15 +43,11 @@ class AsyncDriver:
         self._browser = capabilities
         self._port = port
         self.session_http = session_http
+        self._capabilities :dict = {}
         if isinstance(capabilities, BaseCapabilitiesBuilder):
-            capabilities = capabilities.to_dict()
-        if not capabilities:
-            capabilities = {}
-        if not isinstance(capabilities, dict):
-            raise CapabilityNotSupported("Expected dictionary")
-        self._server_url = server_url
-        self._capabilities = capabilities
-        self._session = synchronous.get_session(self._server_url, self._capabilities)
+            self._capabilities = capabilities.to_dict()
+        self._server_url :str = server_url
+        self._session :str = synchronous.get_session(self._server_url, self._capabilities)
         self._elements_pool: List[Element] = []
 
     @property

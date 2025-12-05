@@ -1,4 +1,5 @@
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder
+from caqui.easy.capabilities import (ChromeCapabilitiesBuilder,
+                                     FirefoxCapabilitiesBuilder)
 
 
 def test_firefox_options():
@@ -52,40 +53,42 @@ def test_firefox_options():
 
 
 def test_chrome_options():
-    expected = {"desiredCapabilities":{
-        "goog:chromeOptions": {
-            "args": [
-                "headless",
-            ],
-            "detach": True,
-            "prefs": {"javascript.options.showInConsole": False},
-            "binary": "/path/to/chrome/executable",
-            "debuggerAddress": "127.0.0.1:9999",
-            "detach": True,
-            "excludeSwitches": [
-                "sw1",
-                "sw2",
-            ],
-            "extensions": [
-                "ext1",
-                "ext2",
-            ],
-            "localState": {
-                "any": "any",
-            },
-            "minidumpPath": "any",
-            "mobileEmulation": {
-                "any": "any",
-            },
-            "perfLoggingPrefs": {
-                "bufferUsageReportingInterval": 1000,
-                "enableNetwork": False,
-                "enablePage": False,
-                "traceCategories": "devtools.network",
-            },
-            "windowsTypes": ["any"],
+    expected = {
+        "desiredCapabilities": {
+            "goog:chromeOptions": {
+                "args": [
+                    "headless",
+                ],
+                "detach": True,
+                "prefs": {"javascript.options.showInConsole": False},
+                "binary": "/path/to/chrome/executable",
+                "debuggerAddress": "127.0.0.1:9999",
+                "detach": True,
+                "excludeSwitches": [
+                    "sw1",
+                    "sw2",
+                ],
+                "extensions": [
+                    "ext1",
+                    "ext2",
+                ],
+                "localState": {
+                    "any": "any",
+                },
+                "minidumpPath": "any",
+                "mobileEmulation": {
+                    "any": "any",
+                },
+                "perfLoggingPrefs": {
+                    "bufferUsageReportingInterval": 1000,
+                    "enableNetwork": False,
+                    "enablePage": False,
+                    "traceCategories": "devtools.network",
+                },
+                "windowsTypes": ["any"],
+            }
         }
-    }}
+    }
     options = (
         ChromeCapabilitiesBuilder()
         .args(["headless"])

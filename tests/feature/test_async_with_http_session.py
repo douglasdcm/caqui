@@ -200,7 +200,7 @@ async def test_fullscreen_window(setup_playground):
 @mark.skip(reason="does not work in headless mode")
 @mark.asyncio
 async def test_minimize_window(
-    setup_playground: Generator[Union[str, str], None, None],
+    setup_playground: AsyncDriver,
 ):
     driver = setup_playground
     window_rectangle_before = synchronous.get_window_rectangle(driver.server_url, driver.session)

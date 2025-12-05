@@ -1,3 +1,4 @@
+flake8
 cython
 pytest
 pytest-xdist
@@ -8,5 +9,4 @@ build
 mypy
 isort
 black
-flake8
 tox

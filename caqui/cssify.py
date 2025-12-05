@@ -23,9 +23,9 @@ validation_re = (
     "|"
     "(?P<nav>//?)(?P<tag>%(tag)s)"  # //div
     r"(\[("
-    "(?P<matched>(?P<mattr>@?%(attribute)s=[\"'](?P<mvalue>%(value)s))[\"']"  # [@id="bleh"] and [text()="meh"]
+    "(?P<matched>(?P<mattr>@?%(attribute)s=[\"'](?P<mvalue>%(value)s))[\"']"  # noqa: E501 # [@id="bleh"] and [text()="meh"]
     "|"
-    "(?P<contained>contains\\((?P<cattr>@?%(attribute)s,\\s*[\"'](?P<cvalue>%(value)s)[\"']\\))"  # [contains(text(), "bleh")] or [contains(@id, "bleh")]
+    "(?P<contained>contains\\((?P<cattr>@?%(attribute)s,\\s*[\"'](?P<cvalue>%(value)s)[\"']\\))"  # noqa: E501 # [contains(text(), "bleh")] or [contains(@id, "bleh")]
     r")\])?"
     r"(\[(?P<nth>\d+)\])?"
     ")"

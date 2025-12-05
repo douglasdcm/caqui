@@ -24,9 +24,9 @@ def convert_python_to_pyx(root_folder: str):
     setup_py_content = (
         f"""
 
-from distutils.core import setup
-from Cython.Build import cythonize
 from setuptools import setup
+# from distutils.core import setup
+from Cython.Build import cythonize
 
 setup(
     ext_modules=cythonize(

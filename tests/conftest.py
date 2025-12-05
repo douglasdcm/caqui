@@ -1,5 +1,6 @@
 import pytest_asyncio
 from pytest import fixture
+
 from caqui.easy import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
 from caqui.easy.server import LocalServer
@@ -17,6 +18,7 @@ def _build_capabilities():
         .page_load_strategy("eager")
     )
 
+
 @fixture(autouse=True, scope="session")
 def setup_server():
     server = LocalServer()
@@ -31,7 +33,6 @@ async def setup_playground():
     await async_driver.get(PAGE_URL)
     yield async_driver
     async_driver.quit()
-
 
 
 @pytest_asyncio.fixture

@@ -1,17 +1,7 @@
-from caqui.synchronous import (
-    clear_element,
-    click,
-    dismiss_alert,
-    find_element,
-    get_attribute,
-    get_css_value,
-    get_property,
-    get_rect,
-    get_text,
-    send_keys,
-    switch_to_frame,
-    switch_to_parent_frame,
-)
+from caqui.synchronous import (clear_element, click, dismiss_alert,
+                               find_element, get_attribute, get_css_value,
+                               get_property, get_rect, get_text, send_keys,
+                               switch_to_frame, switch_to_parent_frame)
 
 
 def test_switch_to_parent_frame_and_click_alert(setup_playground):

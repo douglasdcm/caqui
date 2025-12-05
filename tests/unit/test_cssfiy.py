@@ -5,13 +5,13 @@
 
 import os
 import sys
+import unittest
 
 from caqui.cssify import XpathException, cssify
 from tests.unit.test_data import SUPPORTED, UNSUPPORTED
 
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parentdir)
-import unittest
 
 
 class CssifyTest(unittest.TestCase):

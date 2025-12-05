@@ -10,7 +10,8 @@ from requests import Response, request
 
 from caqui.constants import HEADERS
 from caqui.exceptions import WebDriverError
-from caqui.helper import convert_xpath_to_css_selector, get_element, get_elements, save_picture
+from caqui.helper import (convert_xpath_to_css_selector, get_element,
+                          get_elements, save_picture)
 
 
 def _handle_response(response: Response) -> Dict[str, Any]:

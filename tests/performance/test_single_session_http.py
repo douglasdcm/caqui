@@ -6,7 +6,6 @@ from caqui import synchronous
 from caqui.by import By
 from caqui.easy import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
-
 # from caqui.easy.options import ChromeOptionsBuilder
 from tests.constants import PAGE_URL
 
@@ -16,7 +15,7 @@ CAPTURES = "captures"
 LOAD = 1  # requests
 
 
-@mark.skip(reason="Used for performance tests")
+# @mark.skip(reason="Used for performance tests")
 class TestPerformance:
     def _build_capabilities(self):
         # options = ChromeOptionsBuilder().with_headless().with_speed_flags()
@@ -90,7 +89,7 @@ class TestPerformance:
     async def setup_environment_without_session_http(self):
         server_url = SERVER_URL
         capabilities = self._build_capabilities()
-        page = AsyncDriver(server_url, capabilities, PAGE_URL)
+        page = AsyncDriver(server_url, capabilities)
         yield page
         try:
             synchronous.dismiss_alert(server_url, page.session)
@@ -104,7 +103,7 @@ class TestPerformance:
         server_url = SERVER_URL
         capabilities = self._build_capabilities()
         async with ClientSession() as session_http:
-            page = AsyncDriver(server_url, capabilities, PAGE_URL, session_http=session_http)
+            page = AsyncDriver(server_url, capabilities, session_http=session_http)
             yield page
             try:
                 synchronous.dismiss_alert(server_url, page.session)
