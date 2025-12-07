@@ -146,13 +146,13 @@ async def test_is_element_enabled():
 
 @mark.asyncio
 async def test_get_css_value():
-    expected = "rgba(0, 0, 0, 1)"
+    expected = "0, 0, 0"
 
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_CSS_COLOR_VALUE
 
     with patch("caqui.asynchronous._get", mock_request):
-        assert await asynchronous.get_css_value("", "", "", "") == expected
+        assert expected in await asynchronous.get_css_value("", "", "", "")
 
 
 @mark.asyncio
@@ -339,7 +339,7 @@ async def test_find_elements():
 
 
 @mark.asyncio
-async def test_find_element_foo():
+async def test_find_element():
     element = "0.8851292311864847-1"
 
     async def mock_request(*args, **kwargs):

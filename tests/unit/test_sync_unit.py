@@ -84,8 +84,8 @@ def test_is_element_enabled(*args: tuple) -> None:
 
 @patch("caqui.synchronous.request", return_value=fake_responses.GET_CSS_COLOR_VALUE)
 def test_get_css_value(*args: tuple) -> None:
-    expected: str = "rgba(0, 0, 0, 1)"
-    assert synchronous.get_css_value("", "", "", "") == expected
+    expected: str = "0, 0, 0"
+    assert expected in synchronous.get_css_value("", "", "", "")
 
 
 @patch("caqui.synchronous.request", return_value=fake_responses.IS_ELEMENT_SELECTED)

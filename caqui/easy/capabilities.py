@@ -222,8 +222,8 @@ class BaseCapabilitiesBuilder:
         }
         return self
 
-    def get_options(self):
-        return self.options
+    # def get_options(self):
+    #     return self.options
 
 
 class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
@@ -345,99 +345,102 @@ class OperaCapabilitiesBuilder(ChromeCapabilitiesBuilder):
 
 
 class FirefoxCapabilitiesBuilder(BaseCapabilitiesBuilder):
+    OPTIONS = "moz:firefoxOptions"
+
     def __init__(self):
         super().__init__()
+        self.options = {"moz:firefoxOptions": {}}
 
     def detach(self, value):
-        self.options["detach"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["detach"] = value
         return self
 
     def binary(self, value):
-        self.options["binary"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["binary"] = value
         return self
 
     def extensions(self, value):
-        self.options["extensions"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["extensions"] = value
         return self
 
     def debugger_address(self, value):
-        self.options["debuggerAddress"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["debuggerAddress"] = value
         return self
 
     def exclude_switches(self, value):
-        self.options["excludeSwitches"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["excludeSwitches"] = value
         return self
 
     def minidump_path(self, value):
-        self.options["minidumpPath"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["minidumpPath"] = value
         return self
 
     def windows_types(self, value):
-        self.options["windowsTypes"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["windowsTypes"] = value
         return self
 
     def mobile_emulation(self, value):
-        self.options["mobileEmulation"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["mobileEmulation"] = value
         return self
 
     def local_state(self, value):
-        self.options["localState"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["localState"] = value
         return self
 
-    def args(self, value):
-        self.options["args"] = value
+    def args(self, value: list):
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["args"] = [f"-{arg}" for arg in value]
         return self
 
     def prefs(self, value):
-        self.options["prefs"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["prefs"] = value
         return self
 
     def perf_logging_prefs(self, value):
-        self.options["perfLoggingPrefs"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["perfLoggingPrefs"] = value
         return self
 
     def profile(self, value: str):
         """Base64-encoded ZIP of a profile directory to use for the Firefox instance."""
-        self.options["profile"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["profile"] = value
         return self
 
     def log(self, value: dict):
         """To increase the logging verbosity of geckodriver and Firefox"""
-        self.options["log"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["log"] = value
         return self
 
     def env(self, value: dict):
         """Map of environment variable name to environment variable value"""
-        self.options["env"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["env"] = value
         return self
 
     def level(self, value: str):
         """Set the level of verbosity of geckodriver and Firefox.
         Available levels are `trace`, `debug`, `config`, `info`, `warn`, `error`, and `fatal`"""
-        self.options["level"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["level"] = value
         return self
 
     def android_package(self, value: str):
         """The package name of Firefox, e.g., `org.mozilla.firefox`, `org.mozilla.firefox_beta`,
         or `org.mozilla.fennec` depending on the release channel, or the package name of the
         application embedding GeckoView, e.g., `org.mozilla.geckoview_example`."""
-        self.options["androidPackage"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["androidPackage"] = value
         return self
 
     def android_activity(self, value: str):
         """The fully qualified class name of the activity to be launched"""
-        self.options["androidActivity"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["androidActivity"] = value
         return self
 
     def android_device_serial(self, value: str):
         """The serial number of the device on which to launch the application"""
-        self.options["androidDeviceSerial"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["androidDeviceSerial"] = value
         return self
 
     def android_intent_arguments(self, value: list):
         """Arguments to launch the intent with. Under the hood, geckodriver
         uses `Android am` to start the Android application under test."""
-        self.options["androidIntentArguments"] = value
+        self.options[FirefoxCapabilitiesBuilder.OPTIONS]["androidIntentArguments"] = value
         return self
 
     def to_dict(self):
@@ -445,9 +448,9 @@ class FirefoxCapabilitiesBuilder(BaseCapabilitiesBuilder):
         Returns the capabilities.
         """
         result = {"capabilities": self.desired_capabilities}
-        if self.options:
+        if self.options[FirefoxCapabilitiesBuilder.OPTIONS]:
             result["capabilities"] = {
                 **result["capabilities"],
-                **{"firstMatch": {"moz:firefoxOptions": self.options}},
+                "firstMatch": [self.options],
             }
         return result

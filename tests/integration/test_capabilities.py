@@ -1,32 +1,33 @@
-from caqui.easy.capabilities import (ChromeCapabilitiesBuilder,
-                                     FirefoxCapabilitiesBuilder)
+from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder
 
 
 def test_firefox_capabilities_with_options():
     expected = {
         "capabilities": {
             "browserName": "any",
-            "firstMatch": {
-                "moz:firefoxOptions": {
-                    "binary": "/usr/bin/firefox",
-                    "args": ["-headless", "-profile"],
-                    "env": {"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"},
-                    "log": {"level": "trace"},
-                    "profile": "any",
-                    "androidIntentArguments": ["a", "b"],
-                    "androidActivity": "any",
-                    "androidDeviceSerial": "any",
-                    "androidPackage": "any",
-                    "level": "info",
+            "firstMatch": [
+                {
+                    "moz:firefoxOptions": {
+                        "binary": "/usr/bin/firefox",
+                        "args": ["-headless", "-profile"],
+                        "env": {"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"},
+                        "log": {"level": "trace"},
+                        "profile": "any",
+                        "androidIntentArguments": ["a", "b"],
+                        "androidActivity": "any",
+                        "androidDeviceSerial": "any",
+                        "androidPackage": "any",
+                        "level": "info",
+                    }
                 }
-            },
+            ],
         }
     }
     capabilities = FirefoxCapabilitiesBuilder()
     (
         capabilities.browser_name("any")
         .binary("/usr/bin/firefox")
-        .args(["-headless", "-profile"])
+        .args(["headless", "profile"])
         .env({"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"})
         .log({"level": "trace"})
         .profile("any")

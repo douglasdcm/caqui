@@ -11,10 +11,11 @@ import requests
 from requests import head
 from requests.exceptions import ConnectionError
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.manager import DriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from webdriver_manager.opera import OperaDriverManager
-from webdriver_manager.core.manager import DriverManager
+
 from caqui.exceptions import ServerError, WebDriverError
 
 TIMEOUT: int = 120  # seconds
@@ -48,7 +49,7 @@ class LocalServer:
         self._process: Optional[subprocess.Popen] = None
 
     def _browser_factory(self) -> str:
-        browser: Optional[type] = DRIVER_MANAGER.get(self._browser) # type: ignore
+        browser: Optional[type] = DRIVER_MANAGER.get(self._browser)  # type: ignore
         if browser:
             return browser().install()
         raise WebDriverError(f"Browser {self._browser} not supported")

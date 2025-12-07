@@ -29,7 +29,7 @@ class ActionChains:
         return self
 
     def move_to_element(self, element: Element):
-        """Move the mouve to the element `element`"""
+        """Move the mouse to the element `element`"""
         self._element = element
         coroutine = asynchronous.actions_move_to_element(
             self._remote, self._session, str(element), session_http=self._session_http
@@ -37,11 +37,11 @@ class ActionChains:
         self._coroutines.append(coroutine)
         return self
 
-    def scroll_to_element(self, element: Element) -> "ActionChains":
+    def scroll_to_element(self, element: Element, delta_y=1000) -> "ActionChains":
         """Scrolls the screen to the element `element`"""
         self._element = element
         coroutine = asynchronous.actions_scroll_to_element(
-            self._remote, self._session, str(element), session_http=self._session_http
+            self._remote, self._session, str(element), delta_y=delta_y, session_http=self._session_http
         )
         self._coroutines.append(coroutine)
         return self

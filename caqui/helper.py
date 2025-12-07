@@ -6,6 +6,8 @@
 import base64
 from functools import lru_cache
 
+from caqui.by import By
+from caqui.constants import ELEMENT
 from caqui.cssify import cssify
 
 
@@ -45,12 +47,12 @@ def get_element(response: dict) -> str:
 
     The function expects `response` to be a mapping containing a "value" mapping.
     For Chrome-based WebDriver responses the element id is usually stored under
-    the "ELEMENT" key. For Firefox/Gecko the element id is commonly provided as
+    the ELEMENT key. For Firefox/Gecko the element id is commonly provided as
     the first value of the inner mapping.
 
     Args:
         response (dict): A WebDriver response dict with a "value" mapping that
-                         contains either the "ELEMENT" key (Chrome) or another
+                         contains either the ELEMENT key (Chrome) or another
                          single key whose value is the element id (Firefox).
 
     Returns:
@@ -63,7 +65,7 @@ def get_element(response: dict) -> str:
     """
     value = response.get("value", {})
     # Google Chrome
-    element = value.get("ELEMENT")
+    element = value.get(ELEMENT)
     if element:
         return element
 
@@ -71,17 +73,17 @@ def get_element(response: dict) -> str:
     return list(value.values())[0]
 
 
-@lru_cache(maxsize=32)
-def convert_xpath_to_css_selector(locator_type: str, locator_value: str):
+@lru_cache(maxsize=42)
+def convert_locator_to_css_selector(locator_type: str, locator_value: str):
     """
-    Convert an XPath locator to a CSS selector if possible.
+    Convert an XPath and Nane locator to a CSS selector if possible.
 
-    This function attempts to convert an XPath locator expression to an equivalent
+    This function attempts to convert an locator expression to an equivalent
     CSS selector. If the conversion fails, the original locator type and value are
     returned unchanged. Results are cached for performance optimization.
 
     Args:
-        locator_type (str): The type of locator (e.g., "xpath", "css selector").
+        locator_type (str): The type of locator (e.g., "xpath", "name").
         locator_value (str): The locator expression value to convert.
 
     Returns:
@@ -93,11 +95,29 @@ def convert_xpath_to_css_selector(locator_type: str, locator_value: str):
         This function uses LRU caching with a maximum size of 32 entries to
         optimize repeated conversions of the same locator values.
     """
-    try:
-        if locator_type.lower() == "xpath":
+    if locator_type.lower() == By.ID:
+        locator_value = f"#{locator_value}"
+        locator_type = By.CSS_SELECTOR
+        return locator_type, locator_value
+
+    if locator_type.lower() == By.CLASS_NAME:
+        locator_value = f".{locator_value}"
+        locator_type = By.CSS_SELECTOR
+        return locator_type, locator_value
+
+    if locator_type.lower() == By.NAME:
+        locator_value = f"[name='{locator_value}']"
+        locator_type = By.CSS_SELECTOR
+        return locator_type, locator_value
+
+    if locator_type.lower() == By.XPATH:
+        try:
             locator_value = cssify(locator_value)
-            locator_type = "css selector"
-    except Exception:
-        # just ignore it and keep using the xpath selector
-        pass
+            locator_type = By.CSS_SELECTOR
+            return locator_type, locator_value
+        except Exception:
+            # just ignore it and keep using the xpath selector
+            pass
+
+    # default path
     return locator_type, locator_value

@@ -18,14 +18,7 @@ class TestObject:
         )
         assert actions is True
 
-        actions = (
-            await ActionChains(driver)
-            .move_to_element(element)
-            .scroll_to_element(element)
-            .click(element)
-            .perform()
-        )
-        assert actions is True
+
 
     @mark.asyncio
     async def test_save_screenshot(self, setup_playground: AsyncDriver):

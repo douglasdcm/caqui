@@ -3,15 +3,14 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
-from typing import Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from aiohttp import ClientSession
 from orjson import dumps
 
-from caqui.constants import HEADERS
+from caqui.constants import ELEMENT, HEADERS
 from caqui.exceptions import WebDriverError
-from caqui.helper import (convert_xpath_to_css_selector, get_element,
-                          get_elements, save_picture)
+from caqui.helper import convert_locator_to_css_selector, get_element, get_elements, save_picture
 
 
 async def _handle_response(resp) -> Any:
@@ -262,7 +261,7 @@ async def switch_to_window(
     """Switch to window"""
     try:
         url = f"{server_url}/session/{session}/window"
-        payload = {"name": handle}
+        payload = {"handle": handle}
         await _post(url, payload, session_http=session_http)
         return True
     except Exception as e:
@@ -292,7 +291,7 @@ async def switch_to_parent_frame(
     """Switch to parent frame of 'element_frame'"""
     try:
         url = f"{server_url}/session/{session}/frame/parent"
-        payload = {"id": {"ELEMENT": element_frame}}
+        payload = {"id": {ELEMENT: element_frame}}
         await _post(url, payload, session_http=session_http)
         return True
     except Exception as e:
@@ -305,7 +304,7 @@ async def switch_to_frame(
     """Switch to frame 'element_frame'"""
     try:
         url = f"{server_url}/session/{session}/frame"
-        payload = {"id": {"ELEMENT": element_frame}}
+        payload = {"id": {ELEMENT: element_frame}}
         await _post(url, payload, session_http=session_http)
         return True
     except Exception as e:
@@ -451,6 +450,44 @@ async def get_shadow_root(
         raise WebDriverError("Failed to get element shadow.") from e
 
 
+async def get_shadow_element(
+    server_url: str,
+    session: str,
+    shadow_element: str,
+    locator_type: str,
+    locator_value: str,
+    session_http: Union[ClientSession, None] = None,
+) -> Optional[str]:
+    """Get the shadow root element"""
+    try:
+        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/element"
+        payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
+        response: Dict[str, Any] = await _post(url, payload, session_http)
+        return response.get("value", {}).get(ELEMENT, "")
+    except Exception as e:
+        raise WebDriverError("Failed to get the element shadow.") from e
+
+
+async def get_shadow_elements(
+    server_url: str,
+    session: str,
+    shadow_element: str,
+    locator_type: str,
+    locator_value: str,
+    session_http: Union[ClientSession, None] = None,
+) -> Optional[str]:
+    """Get the list of shadow root element"""
+    try:
+        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/elements"
+        payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
+        response: Dict[str, Any] = await _post(url, payload, session_http)
+        return [x.get(ELEMENT) for x in response.get("value", {})]
+    except Exception as e:
+        raise WebDriverError("Failed to get the element shadow.") from e
+
+
 async def get_rect(
     server_url, session, element, session_http: Union[ClientSession, None] = None
 ) -> dict:
@@ -470,8 +507,8 @@ async def actions(server_url, session, payload, session_http: Union[ClientSessio
 
 
 async def actions_move_to_element(
-    server_url, session, element, session_http: Union[ClientSession, None] = None
-):
+    server_url: str, session: str, element: str, session_http: Union[ClientSession, None] = None
+) -> bool:
     """Move to an element simulating a mouse movement"""
     try:
         payload = {
@@ -483,17 +520,12 @@ async def actions_move_to_element(
                     "actions": [
                         {
                             "type": "pointerMove",
-                            "duration": 250,
+                            "duration": 0,
                             "x": 0,
                             "y": 0,
-                            "origin": {"ELEMENT": element},
+                            "origin": {ELEMENT: element},
                         }
                     ],
-                },
-                {
-                    "type": "key",
-                    "id": "key",
-                    "actions": [{"type": "pause", "duration": 0}],
                 },
             ]
         }
@@ -503,7 +535,7 @@ async def actions_move_to_element(
 
 
 async def actions_scroll_to_element(
-    server_url, session, element, session_http: Union[ClientSession, None] = None
+    server_url, session, element, delta_y:int=1000,session_http: Union[ClientSession, None] = None
 ):
     """Scroll to an element simulating a mouse movement"""
     try:
@@ -518,9 +550,9 @@ async def actions_scroll_to_element(
                             "x": 0,
                             "y": 0,
                             "deltaX": 0,
-                            "deltaY": 0,
+                            "deltaY": delta_y,
                             "duration": 0,
-                            "origin": {"ELEMENT": element},
+                            "origin": {ELEMENT: element},
                         }
                     ],
                 }
@@ -563,10 +595,10 @@ async def actions_click(
                     "actions": [
                         {
                             "type": "pointerMove",
-                            "duration": 250,
+                            "duration": 0,
                             "x": 0,
                             "y": 0,
-                            "origin": {"ELEMENT": element},
+                            "origin": {ELEMENT: element},
                         },
                         {"type": "pointerDown", "duration": 0, "button": 0},
                         {"type": "pointerUp", "duration": 0, "button": 0},
@@ -616,7 +648,7 @@ async def find_children_elements(
     If the 'parent_element' is a shadow element, set the 'locator_type' as 'id' or
     'css selector'
     """
-    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
     try:
         url = f"{server_url}/session/{session}/element/{parent_element}/elements"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
@@ -637,7 +669,7 @@ async def find_child_element(
     session_http: Union[ClientSession, None] = None,
 ):
     """Find the child element by 'locator_type'"""
-    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
     try:
         url = f"{server_url}/session/{session}/element/{parent_element}/element"
         payload = {"using": locator_type, "value": locator_value, "id": parent_element}
@@ -664,7 +696,7 @@ async def execute_script(
 ):
     """Executes a script, like 'alert('something')' to open an alert window"""
     try:
-        url = f"{server_url}/session/{session}/execute/sync"
+        url = f"{server_url}/session/{session}/execute/async"
         payload = {"script": script, "args": args}
         response = await _post(url, payload, session_http=session_http)
         return response.get("value")
@@ -856,12 +888,12 @@ async def find_elements(
     session_http: Union[ClientSession, None] = None,
 ) -> List[Any]:
     """Search the DOM elements by 'locator', for example, 'xpath'"""
-    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
     try:
         payload = {"using": locator_type, "value": locator_value}
         url = f"{server_url}/session/{session}/elements"
         response = await _post(url, payload, session_http=session_http)
-        return [x.get("ELEMENT") for x in response.get("value")]
+        return [x.get(ELEMENT) for x in response.get("value")]
     except Exception as e:
         raise WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."
@@ -887,7 +919,9 @@ async def get_attribute(
     try:
         url = f"{server_url}/session/{session}/element/{element}/attribute/{attribute}"
         response = await _get(url, session_http=session_http)
-        return response.get("value", "")
+        if not response.get("value"):
+            return ""
+        return response.get("value")
     except Exception as e:
         raise WebDriverError("Failed to get value from element.") from e
 
@@ -976,7 +1010,7 @@ async def find_element(
     session_http: Union[ClientSession, None] = None,
 ) -> str:
     """Find an element by a 'locator', for example 'xpath'"""
-    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
     try:
         payload = {"using": locator_type, "value": locator_value}
         url = f"{server_url}/session/{session}/element"

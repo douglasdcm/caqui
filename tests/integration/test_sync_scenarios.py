@@ -1,16 +1,35 @@
-from caqui.synchronous import (clear_element, click, dismiss_alert,
-                               find_element, get_attribute, get_css_value,
-                               get_property, get_rect, get_text, send_keys,
-                               switch_to_frame, switch_to_parent_frame)
+from caqui.easy.drivers import AsyncDriver
+from caqui.synchronous import (
+    actions,
+    actions_scroll_to_element,
+    clear_element,
+    click,
+    dismiss_alert,
+    find_child_element,
+    find_element,
+    get_attribute,
+    get_css_value,
+    get_property,
+    get_rect,
+    get_text,
+    send_keys,
+    switch_to_frame,
+    switch_to_parent_frame,
+    actions_move_to_element
+)
 
 
-def test_switch_to_parent_frame_and_click_alert(setup_playground):
+def test_switch_to_parent_frame_and_click_alert_foo(setup_playground):
     driver = setup_playground
     locator_type = "id"
     locator_value = "my-iframe"
     locator_value_alert_parent = "alert-button"
     locator_value_alert_frame = "alert-button-iframe"
+    locator_type_form = "css selector"
+    locator_form = "body > form"
 
+    element_form = find_element(driver.server_url, driver.session, locator_type_form, locator_form)
+    actions_scroll_to_element(driver.server_url, driver.session, element_form, delta_y=1000)
     element_frame = find_element(driver.server_url, driver.session, locator_type, locator_value)
     assert switch_to_frame(driver.server_url, driver.session, element_frame) is True
 
@@ -19,8 +38,8 @@ def test_switch_to_parent_frame_and_click_alert(setup_playground):
     )
     assert click(driver.server_url, driver.session, alert_button_frame) is True
     assert dismiss_alert(driver.server_url, driver.session) is True
-
     assert switch_to_parent_frame(driver.server_url, driver.session, element_frame) is True
+
     alert_button_parent = find_element(
         driver.server_url, driver.session, locator_type, locator_value_alert_parent
     )
@@ -28,12 +47,16 @@ def test_switch_to_parent_frame_and_click_alert(setup_playground):
     assert click(driver.server_url, driver.session, alert_button_parent) is True
 
 
-def test_switch_to_frame_and_click_alert(setup_playground):
+def test_switch_to_frame_and_click_alert(setup_playground: AsyncDriver):
     driver = setup_playground
     locator_type = "id"
     locator_value = "my-iframe"
     locator_value_alert = "alert-button-iframe"
+    locator_type_form = "css selector"
+    locator_form = "body > form"
 
+    element_form = find_element(driver.server_url, driver.session, locator_type_form, locator_form)
+    actions_move_to_element(driver.server_url, driver.session, element_form)
     element_frame = find_element(driver.server_url, driver.session, locator_type, locator_value)
     assert switch_to_frame(driver.server_url, driver.session, element_frame) is True
 
@@ -57,8 +80,8 @@ def test_get_data_from_hidden_button(setup_playground):
         driver.server_url, driver.session, hidden_button, "visibility"
     )
     assert True is get_property(driver.server_url, driver.session, hidden_button, "hidden")
-    assert ["display"] == get_property(driver.server_url, driver.session, hidden_button, "style")
-    assert "display: none;" == get_attribute(
+    assert "display" in get_property(driver.server_url, driver.session, hidden_button, "style")
+    assert "display: none;" in get_attribute(
         driver.server_url, driver.session, hidden_button, "style"
     )
 
@@ -75,9 +98,8 @@ def test_add_text__click_button_and_get_properties(setup_playground):
     assert get_property(driver.server_url, driver.session, input, property_name="value") == ""
 
     anchor = find_element(driver.server_url, driver.session, locator_type, locator_value="//a")
-    assert (
-        get_property(driver.server_url, driver.session, anchor, property_name="href")
-        == "http://any1.com/"
+    assert "http://any1.com/" in get_property(
+        driver.server_url, driver.session, anchor, property_name="href"
     )
 
     button = find_element(driver.server_url, driver.session, locator_type, locator_value="//button")

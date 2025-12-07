@@ -6,6 +6,7 @@ from caqui import synchronous
 from caqui.by import By
 from caqui.easy import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
+
 # from caqui.easy.options import ChromeOptionsBuilder
 from tests.constants import PAGE_URL
 
@@ -15,7 +16,7 @@ CAPTURES = "captures"
 LOAD = 1  # requests
 
 
-# @mark.skip(reason="Used for performance tests")
+@mark.skip(reason="Used for performance tests")
 class TestPerformance:
     def _build_capabilities(self):
         # options = ChromeOptionsBuilder().with_headless().with_speed_flags()

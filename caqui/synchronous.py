@@ -8,10 +8,9 @@ from typing import Any, Dict, List, Optional
 from orjson import dumps
 from requests import Response, request
 
-from caqui.constants import HEADERS
+from caqui.constants import ELEMENT, HEADERS
 from caqui.exceptions import WebDriverError
-from caqui.helper import (convert_xpath_to_css_selector, get_element,
-                          get_elements, save_picture)
+from caqui.helper import convert_locator_to_css_selector, get_element, get_elements, save_picture
 
 
 def _handle_response(response: Response) -> Dict[str, Any]:
@@ -154,7 +153,7 @@ def switch_to_window(server_url: str, session: str, handle: str) -> bool:
     """Switch to window"""
     try:
         url: str = f"{server_url}/session/{session}/window"
-        payload: Dict[str, str] = {"name": handle}
+        payload: Dict[str, str] = {"handle": handle}
         _post(url, payload)
         return True
     except Exception as e:
@@ -179,7 +178,7 @@ def switch_to_parent_frame(server_url: str, session: str, element_frame: str) ->
     """Switch to parent frame of 'element_frame'"""
     try:
         url: str = f"{server_url}/session/{session}/frame/parent"
-        payload: Dict[str, Dict[str, str]] = {"id": {"ELEMENT": element_frame}}
+        payload: Dict[str, Dict[str, str]] = {"id": {ELEMENT: element_frame}}
         _post(url, payload)
         return True
     except Exception as e:
@@ -190,7 +189,7 @@ def switch_to_frame(server_url: str, session: str, element_frame: str) -> bool:
     """Switch to frame 'element_frame'"""
     try:
         url: str = f"{server_url}/session/{session}/frame"
-        payload: Dict[str, Dict[str, str]] = {"id": {"ELEMENT": element_frame}}
+        payload: Dict[str, Dict[str, str]] = {"id": {ELEMENT: element_frame}}
         _post(url, payload)
         return True
     except Exception as e:
@@ -303,6 +302,34 @@ def get_shadow_root(server_url: str, session: str, element: str) -> Optional[str
         url: str = f"{server_url}/session/{session}/element/{element}/shadow"
         return _get(url).get("value", {}).get(root_element)
     except Exception as e:
+        raise WebDriverError("Failed to get the root shadow element.") from e
+
+
+def get_shadow_element(
+    server_url: str, session: str, shadow_element: str, locator_type: str, locator_value: str
+) -> Optional[str]:
+    """Get the shadow root element"""
+    try:
+        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/element"
+        payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
+        response: Dict[str, Any] = _post(url, payload)
+        return response.get("value", {}).get(ELEMENT, "")
+    except Exception as e:
+        raise WebDriverError("Failed to get the element shadow.") from e
+
+
+def get_shadow_elements(
+    server_url: str, session: str, shadow_element: str, locator_type: str, locator_value: str
+) -> Optional[str]:
+    """Get the list of shadow root element"""
+    try:
+        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/elements"
+        payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
+        response: Dict[str, Any] = _post(url, payload)
+        return [x.get(ELEMENT) for x in response.get("value", {})]
+    except Exception as e:
         raise WebDriverError("Failed to get the element shadow.") from e
 
 
@@ -327,10 +354,10 @@ def actions_move_to_element(server_url: str, session: str, element: str) -> bool
                     "actions": [
                         {
                             "type": "pointerMove",
-                            "duration": 250,
+                            "duration": 0,
                             "x": 0,
                             "y": 0,
-                            "origin": {"ELEMENT": element},
+                            "origin": {ELEMENT: element},
                         }
                     ],
                 },
@@ -346,7 +373,7 @@ def actions_move_to_element(server_url: str, session: str, element: str) -> bool
         raise WebDriverError("Failed to move to element.") from e
 
 
-def actions_scroll_to_element(server_url: str, session: str, element: str) -> bool:
+def actions_scroll_to_element(server_url: str, session: str, element: str, delta_y=1000) -> bool:
     """Scroll to an element simulating a mouse movement"""
     try:
         payload: Dict[str, List[Dict[str, Any]]] = {
@@ -360,9 +387,9 @@ def actions_scroll_to_element(server_url: str, session: str, element: str) -> bo
                             "x": 0,
                             "y": 0,
                             "deltaX": 0,
-                            "deltaY": 0,
+                            "deltaY": delta_y,
                             "duration": 0,
-                            "origin": {"ELEMENT": element},
+                            "origin": {ELEMENT: element},
                         }
                     ],
                 }
@@ -408,10 +435,10 @@ def actions_click(server_url: str, session: str, element: str) -> bool:
                     "actions": [
                         {
                             "type": "pointerMove",
-                            "duration": 250,
+                            "duration": 0,
                             "x": 0,
                             "y": 0,
-                            "origin": {"ELEMENT": element},
+                            "origin": {ELEMENT: element},
                         },
                         {"type": "pointerDown", "duration": 0, "button": 0},
                         {"type": "pointerUp", "duration": 0, "button": 0},
@@ -454,7 +481,7 @@ def find_children_elements(
     If the 'parent_element' is a shadow element, set the 'locator_type' as 'id' or
     'css selector'
     """
-    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
     try:
         url: str = f"{server_url}/session/{session}/element/{parent_element}/elements"
         payload: Dict[str, str] = {
@@ -474,7 +501,7 @@ def find_child_element(
     server_url: str, session: str, parent_element: str, locator_type: str, locator_value: str
 ) -> str:
     """Find the child element by 'locator_type'"""
-    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
     try:
         url: str = f"{server_url}/session/{session}/element/{parent_element}/element"
         payload: Dict[str, str] = {
@@ -647,12 +674,12 @@ def get_status(server_url: str) -> Dict[str, Any]:
         raise WebDriverError("Failed to get status.") from e
 
 
-def get_title(server_url: str, session: str) -> Optional[str]:
+def get_title(server_url: str, session: str) -> str:
     """Get the page title"""
     try:
         url: str = f"{server_url}/session/{session}/title"
         response: Dict[str, Any] = _get(url)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get page title.") from e
 
@@ -661,12 +688,12 @@ def find_elements(
     server_url: str, session: str, locator_type: str, locator_value: str
 ) -> List[str]:
     """Search the DOM elements by 'locator', for example, 'xpath'"""
-    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
     try:
         url: str = f"{server_url}/session/{session}/elements"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = _post(url, payload)
-        return [x.get("ELEMENT") for x in response.get("value", {})]
+        return [x.get(ELEMENT) for x in response.get("value", {})]
     except Exception as e:
         raise WebDriverError(
             f"Failed to find elements by '{locator_type}'-'{locator_value}'."
@@ -683,11 +710,13 @@ def get_property(server_url: str, session: str, element: str, property_name: str
         raise WebDriverError("Failed to get value from element.") from e
 
 
-def get_attribute(server_url: str, session: str, element: str, attribute: str) -> Optional[str]:
+def get_attribute(server_url: str, session: str, element: str, attribute: str) -> str:
     """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
     try:
         url: str = f"{server_url}/session/{session}/element/{element}/attribute/{attribute}"
         response: Dict[str, Any] = _get(url)
+        if not response.get("value"):
+            return ""
         return response.get("value")
     except Exception as e:
         raise WebDriverError("Failed to get value from element.") from e
@@ -791,7 +820,7 @@ def get_session(server_url: str, capabilities: Optional[Dict[str, Any]] = None) 
 
 def find_element(server_url: str, session: str, locator_type: str, locator_value: str) -> str:
     """Find an element by a 'locator', for example 'xpath'"""
-    locator_type, locator_value = convert_xpath_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
     try:
         url: str = f"{server_url}/session/{session}/element"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}

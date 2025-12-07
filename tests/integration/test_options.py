@@ -1,45 +1,32 @@
-from caqui.easy.capabilities import (ChromeCapabilitiesBuilder,
-                                     FirefoxCapabilitiesBuilder)
+from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder
 
 
 def test_firefox_options():
     expected = {
-        "moz:firefoxOptions": {
-            "binary": "/usr/bin/firefox",
-            "args": ["-headless", "-profile"],
-            "env": {"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"},
-            "log": {"level": "trace"},
-            "profile": "any",
-            "androidIntentArguments": ["a", "b"],
-            "androidActivity": "any",
-            "androidDeviceSerial": "any",
-            "androidPackage": "any",
-            "level": "info",
-        }
-    }
-    expected = {
         "capabilities": {
-            "firstMatch": {
-                "moz:firefoxOptions": {
-                    "binary": "/usr/bin/firefox",
-                    "args": ["-headless", "-profile"],
-                    "env": {"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"},
-                    "log": {"level": "trace"},
-                    "profile": "any",
-                    "androidIntentArguments": ["a", "b"],
-                    "androidActivity": "any",
-                    "androidDeviceSerial": "any",
-                    "androidPackage": "any",
-                    "level": "info",
+            "firstMatch": [
+                {
+                    "moz:firefoxOptions": {
+                        "binary": "/usr/bin/firefox",
+                        "args": ["-headless", "-profile"],
+                        "env": {"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"},
+                        "log": {"level": "trace"},
+                        "profile": "any",
+                        "androidIntentArguments": ["a", "b"],
+                        "androidActivity": "any",
+                        "androidDeviceSerial": "any",
+                        "androidPackage": "any",
+                        "level": "info",
+                    }
                 }
-            }
+            ]
         }
     }
 
-    options = (
+    capabilities = (
         FirefoxCapabilitiesBuilder()
         .binary("/usr/bin/firefox")
-        .args(["-headless", "-profile"])
+        .args(["headless", "profile"])
         .env({"MOZ_LOG": "nsHttp:5", "MOZ_LOG_FILE": "/path/to/my/profile/log"})
         .log({"level": "trace"})
         .profile("any")
@@ -49,7 +36,7 @@ def test_firefox_options():
         .android_package("any")
         .level("info")
     )
-    assert options.to_dict() == expected
+    assert capabilities.to_dict() == expected
 
 
 def test_chrome_options():

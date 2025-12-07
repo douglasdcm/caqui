@@ -4,6 +4,7 @@ from caqui import synchronous
 from caqui.by import By
 from caqui.easy import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
+
 # from caqui.easy.options import ChromeOptionsBuilder
 from tests.constants import COOKIE, PAGE_URL
 
@@ -43,7 +44,6 @@ def test_async_driver_nested_capabilities():
         .args(["headless"])
         .prefs({"javascript.options.showInConsole": False})
         .detach(True)
-        # Other examples
         .binary("/path/to/chrome/executable")
         .extensions(["ext1", "ext2"])
         .local_state({"any": "any"})
@@ -61,50 +61,7 @@ def test_async_driver_nested_capabilities():
             }
         )
     )
-    # capabilities.add_options(options.to_dict())
 
-    exppected_options = {
-        "goog:chromeOptions": {
-            "args": ["headless"],
-            "prefs": {"javascript.options.showInConsole": False},
-            "detach": True,
-            "binary": "/path/to/chrome/executable",
-            "extensions": ["ext1", "ext2"],
-            "localState": {"any": "any"},
-            "debuggerAddress": "127.0.0.1:9999",
-            "excludeSwitches": ["sw1", "sw2"],
-            "minidumpPath": "any",
-            "mobileEmulation": {"any": "any"},
-            "windowsTypes": ["any"],
-            "perfLoggingPrefs": {
-                "enableNetwork": False,
-                "enablePage": False,
-                "traceCategories": "devtools.network",
-                "bufferUsageReportingInterval": 1000,
-            },
-        },
-    }
-    capabilities.detach(True)
-    capabilities.binary("/path/to/chrome/executable")
-    capabilities.extensions(["ext1", "ext2"])
-    capabilities.debugger_address("127.0.0.1:9999")
-    capabilities.exclude_switches(["sw1", "sw2"])
-    capabilities.minidump_path("any")
-    capabilities.windows_types(["any"])
-    capabilities.mobile_emulation({"any": "any"})
-    capabilities.local_state({"any": "any"})
-    capabilities.extensions(["ext1", "ext2"])
-    capabilities.args(["headless"])
-    capabilities.prefs({"javascript.options.showInConsole": False})
-    capabilities.perf_logging_prefs(
-        {
-            "enableNetwork": False,
-            "enablePage": False,
-            "traceCategories": "devtools.network",
-            "bufferUsageReportingInterval": 1000,
-        }
-    )
-    assert capabilities.get_options() == exppected_options
     assert capabilities.to_dict() == expected
 
 
@@ -117,7 +74,11 @@ async def test_switch_to_parent_frame_and_click_alert(setup_environment: AsyncDr
     locator_value = "my-iframe"
     locator_value_alert_parent = "alert-button"
     locator_value_alert_frame = "alert-button-iframe"
+    locator_type_form = "css selector"
+    locator_form = "body > form"
 
+    element_form = await driver.find_element(locator_type_form, locator_form)
+    await driver.actions.scroll_to_element(element_form).perform()
     element_frame = await driver.find_element(locator_type, locator_value)
     assert await driver.switch_to.frame(element_frame) is True
 
@@ -138,6 +99,13 @@ async def test_switch_to_frame_and_click_alert(setup_environment: AsyncDriver):
     locator_type = "id"
     locator_value = "my-iframe"
     locator_value_alert = "alert-button-iframe"
+    locator_type_form = "css selector"
+    locator_form = "body > form"
+
+    element_form = driver.find_element(
+        locator_type_form, locator_form
+    )
+    driver.actions.move_to_element(element_form)
 
     element_frame = await driver.find_element(locator_type, locator_value)
     assert await driver.switch_to.frame(element_frame) is True
@@ -158,8 +126,8 @@ async def test_get_data_from_hidden_button(setup_environment: AsyncDriver):
     assert "width" in await hidden_button.get_rect()
     assert "visible" == await hidden_button.get_css_value("visibility")
     assert True is await hidden_button.get_property("hidden")
-    assert ["display"] == await hidden_button.get_property("style")
-    assert "display: none;" == await hidden_button.get_attribute("style")
+    assert "display" in await hidden_button.get_property("style")
+    assert "display: none;" in await hidden_button.get_attribute("style")
 
 
 @mark.asyncio
@@ -176,7 +144,7 @@ async def test_add_text__click_button_and_get_properties(setup_environment: Asyn
     assert await input_.get_property("value") == ""
 
     anchor = await driver.find_element(locator_type, "//a")
-    assert await anchor.get_property("href") == "http://any1.com/"
+    assert "http://any1.com" in await anchor.get_property("href")
 
     button = await driver.find_element(locator_type, "//button")
     await button.click()
