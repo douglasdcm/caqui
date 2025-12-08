@@ -5,10 +5,13 @@
 
 from caqui import asynchronous
 
+from typing import Dict, List, Tuple, TYPE_CHECKING
+if TYPE_CHECKING:
+    from caqui.easy.drivers import AsyncDriver
 
 class Window:
-    def __init__(self, driver) -> None:
-        self._remote = driver.remote
+    def __init__(self, driver: "AsyncDriver") -> None:
+        self.server_url = driver.server_url
         self._session = driver.session
 
     async def new(self, window_type="tab"):
@@ -19,4 +22,4 @@ class Window:
 
         return (str): window handle
         """
-        return await asynchronous.new_window(self._remote, self._session, window_type)
+        return await asynchronous.new_window(self.server_url, self._session, window_type)

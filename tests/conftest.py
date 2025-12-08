@@ -1,14 +1,14 @@
 import pytest_asyncio
 from pytest import fixture
 
-from caqui.easy import AsyncDriver
+from caqui.easy.drivers import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder
 from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL
 
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
-
+TIMEOUTS = 2000
 
 def _build_capabilities():
     # return FirefoxCapabilitiesBuilder().args(["headless"])
@@ -17,6 +17,7 @@ def _build_capabilities():
         .accept_insecure_certs(True)
         .args(["headless", "verbose"])
         .page_load_strategy("eager")
+        .timeouts(TIMEOUTS, TIMEOUTS, TIMEOUTS)
     )
 
 

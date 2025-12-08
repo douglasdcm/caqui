@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from caqui.constants import ELEMENT
+from caqui.constants import ELEMENT_W3C
 
 # All fake responses where collected from chromedriver responses
 
@@ -41,7 +41,7 @@ DEFAULT = dict_to_json(
     {
         "sessionId": "4358a5b53794586af59678fc1653dc40",
         "status": 0,
-        "value": {ELEMENT: "0.8851292311864847-1"},
+        "value": {ELEMENT_W3C: "0.8851292311864847-1"},
     }
 )
 
@@ -193,9 +193,9 @@ FIND_ELEMENTS = dict_to_json(
         "sessionId": "9be93a374d185216134bf0c3fafee52e",
         "status": 0,
         "value": [
-            {ELEMENT: "C230605181E69CB2C4C36B8E83FE1245_element_1"},
-            {ELEMENT: "C230605181E69CB2C4C36B8E83FE1245_element_2"},
-            {ELEMENT: "C230605181E69CB2C4C36B8E83FE1245_element_3"},
+            {ELEMENT_W3C: "C230605181E69CB2C4C36B8E83FE1245_element_1"},
+            {ELEMENT_W3C: "C230605181E69CB2C4C36B8E83FE1245_element_2"},
+            {ELEMENT_W3C: "C230605181E69CB2C4C36B8E83FE1245_element_3"},
         ],
     }
 )

@@ -8,9 +8,15 @@ from typing import Any, Dict, List, Optional
 from orjson import dumps
 from requests import Response, request
 
-from caqui.constants import ELEMENT, HEADERS
+from caqui.constants import ELEMENT_JSONWIRE, ELEMENT_W3C, HEADERS
 from caqui.exceptions import WebDriverError
-from caqui.helper import convert_locator_to_css_selector, get_element, get_elements, save_picture
+from caqui.helper import (
+    convert_locator_to_css_selector,
+    get_element,
+    get_element_jsonwire,
+    get_elements,
+    save_picture,
+)
 
 
 def _handle_response(response: Response) -> Dict[str, Any]:
@@ -152,8 +158,20 @@ def maximize_window(server_url: str, session: str) -> bool:
 def switch_to_window(server_url: str, session: str, handle: str) -> bool:
     """Switch to window"""
     try:
+        # raise Exception("deleteme")
         url: str = f"{server_url}/session/{session}/window"
         payload: Dict[str, str] = {"handle": handle}
+        _post(url, payload)
+        return True
+    except Exception as e:
+        raise WebDriverError("Failed to switch to window.") from e
+
+
+def switch_to_window_jsonwire(server_url: str, session: str, handle: str) -> bool:
+    """Switch to window"""
+    try:
+        url: str = f"{server_url}/session/{session}/window"
+        payload: Dict[str, str] = {"name": handle}
         _post(url, payload)
         return True
     except Exception as e:
@@ -177,8 +195,20 @@ def new_window(server_url: str, session: str, window_type: str = "tab") -> Optio
 def switch_to_parent_frame(server_url: str, session: str, element_frame: str) -> bool:
     """Switch to parent frame of 'element_frame'"""
     try:
+        # raise Exception("deleteme")
         url: str = f"{server_url}/session/{session}/frame/parent"
-        payload: Dict[str, Dict[str, str]] = {"id": {ELEMENT: element_frame}}
+        payload: Dict[str, Dict[str, str]] = {"id": {ELEMENT_W3C: element_frame}}
+        _post(url, payload)
+        return True
+    except Exception as e:
+        raise WebDriverError("Failed to switch to parent frame.") from e
+
+
+def switch_to_parent_frame_jsonwire(server_url: str, session: str, element_frame: str) -> bool:
+    """Switch to parent frame of 'element_frame'"""
+    try:
+        url: str = f"{server_url}/session/{session}/frame/parent"
+        payload: Dict[str, Dict[str, str]] = {"id": {ELEMENT_JSONWIRE: element_frame}}
         _post(url, payload)
         return True
     except Exception as e:
@@ -188,8 +218,20 @@ def switch_to_parent_frame(server_url: str, session: str, element_frame: str) ->
 def switch_to_frame(server_url: str, session: str, element_frame: str) -> bool:
     """Switch to frame 'element_frame'"""
     try:
+        # raise Exception("deleteme")
         url: str = f"{server_url}/session/{session}/frame"
-        payload: Dict[str, Dict[str, str]] = {"id": {ELEMENT: element_frame}}
+        payload: Dict[str, Dict[str, str]] = {"id": {ELEMENT_W3C: element_frame}}
+        _post(url, payload)
+        return True
+    except Exception as e:
+        raise WebDriverError("Failed to switch to frame.") from e
+
+
+def switch_to_frame_jsonwire(server_url: str, session: str, element_frame: str) -> bool:
+    """Switch to frame 'element_frame'"""
+    try:
+        url: str = f"{server_url}/session/{session}/frame"
+        payload: Dict[str, Dict[str, str]] = {"id": {ELEMENT_JSONWIRE: element_frame}}
         _post(url, payload)
         return True
     except Exception as e:
@@ -310,11 +352,26 @@ def get_shadow_element(
 ) -> Optional[str]:
     """Get the shadow root element"""
     try:
+        # raise Exception("deleteme")
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/element"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = _post(url, payload)
-        return response.get("value", {}).get(ELEMENT, "")
+        return response.get("value", {}).get(ELEMENT_W3C, "")
+    except Exception as e:
+        raise WebDriverError("Failed to get the element shadow.") from e
+
+
+def get_shadow_element_jsonwire(
+    server_url: str, session: str, shadow_element: str, locator_type: str, locator_value: str
+) -> Optional[str]:
+    """Get the shadow root element"""
+    try:
+        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/element"
+        payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
+        response: Dict[str, Any] = _post(url, payload)
+        return response.get("value", {}).get(ELEMENT_JSONWIRE, "")
     except Exception as e:
         raise WebDriverError("Failed to get the element shadow.") from e
 
@@ -324,11 +381,26 @@ def get_shadow_elements(
 ) -> Optional[str]:
     """Get the list of shadow root element"""
     try:
+        # raise Exception("deleteme")
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/elements"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = _post(url, payload)
-        return [x.get(ELEMENT) for x in response.get("value", {})]
+        return [x.get(ELEMENT_W3C) for x in response.get("value", {})]
+    except Exception as e:
+        raise WebDriverError("Failed to get the element shadow.") from e
+
+
+def get_shadow_elements_jsonwire(
+    server_url: str, session: str, shadow_element: str, locator_type: str, locator_value: str
+) -> Optional[str]:
+    """Get the list of shadow root element"""
+    try:
+        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/elements"
+        payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
+        response: Dict[str, Any] = _post(url, payload)
+        return [x.get(ELEMENT_JSONWIRE) for x in response.get("value", {})]
     except Exception as e:
         raise WebDriverError("Failed to get the element shadow.") from e
 
@@ -345,6 +417,7 @@ def get_rect(server_url: str, session: str, element: str) -> Optional[Dict[str, 
 def actions_move_to_element(server_url: str, session: str, element: str) -> bool:
     """Move to an element simulating a mouse movement"""
     try:
+        # raise Exception("deleteme")
         payload: Dict[str, List[Dict[str, Any]]] = {
             "actions": [
                 {
@@ -357,7 +430,38 @@ def actions_move_to_element(server_url: str, session: str, element: str) -> bool
                             "duration": 0,
                             "x": 0,
                             "y": 0,
-                            "origin": {ELEMENT: element},
+                            "origin": {ELEMENT_W3C: element},
+                        }
+                    ],
+                },
+                {
+                    "type": "key",
+                    "id": "key",
+                    "actions": [{"type": "pause", "duration": 0}],
+                },
+            ]
+        }
+        return actions(server_url, session, payload)
+    except Exception as e:
+        raise WebDriverError("Failed to move to element.") from e
+
+
+def actions_move_to_element_jsonwire(server_url: str, session: str, element: str) -> bool:
+    """Move to an element simulating a mouse movement"""
+    try:
+        payload: Dict[str, List[Dict[str, Any]]] = {
+            "actions": [
+                {
+                    "type": "pointer",
+                    "parameters": {"pointerType": "mouse"},
+                    "id": "mouse",
+                    "actions": [
+                        {
+                            "type": "pointerMove",
+                            "duration": 0,
+                            "x": 0,
+                            "y": 0,
+                            "origin": {ELEMENT_JSONWIRE: element},
                         }
                     ],
                 },
@@ -375,6 +479,7 @@ def actions_move_to_element(server_url: str, session: str, element: str) -> bool
 
 def actions_scroll_to_element(server_url: str, session: str, element: str, delta_y=1000) -> bool:
     """Scroll to an element simulating a mouse movement"""
+    # raise Exception("deleteme")
     try:
         payload: Dict[str, List[Dict[str, Any]]] = {
             "actions": [
@@ -389,7 +494,36 @@ def actions_scroll_to_element(server_url: str, session: str, element: str, delta
                             "deltaX": 0,
                             "deltaY": delta_y,
                             "duration": 0,
-                            "origin": {ELEMENT: element},
+                            "origin": {ELEMENT_W3C: element},
+                        }
+                    ],
+                }
+            ]
+        }
+        return actions(server_url, session, payload)
+    except Exception as e:
+        raise WebDriverError("Failed to scroll to element.") from e
+
+
+def actions_scroll_to_element_jsonwire(
+    server_url: str, session: str, element: str, delta_y=1000
+) -> bool:
+    """Scroll to an element simulating a mouse movement"""
+    try:
+        payload: Dict[str, List[Dict[str, Any]]] = {
+            "actions": [
+                {
+                    "type": "wheel",
+                    "id": "wheel",
+                    "actions": [
+                        {
+                            "type": "scroll",
+                            "x": 0,
+                            "y": 0,
+                            "deltaX": 0,
+                            "deltaY": delta_y,
+                            "duration": 0,
+                            "origin": {ELEMENT_JSONWIRE: element},
                         }
                     ],
                 }
@@ -425,6 +559,7 @@ def submit(server_url: str, session: str, element: str) -> bool:
 
 def actions_click(server_url: str, session: str, element: str) -> bool:
     """Click an element simulating a mouse movement"""
+    # raise Exception("deleteme")
     try:
         payload: Dict[str, List[Dict[str, Any]]] = {
             "actions": [
@@ -438,7 +573,44 @@ def actions_click(server_url: str, session: str, element: str) -> bool:
                             "duration": 0,
                             "x": 0,
                             "y": 0,
-                            "origin": {ELEMENT: element},
+                            "origin": {ELEMENT_W3C: element},
+                        },
+                        {"type": "pointerDown", "duration": 0, "button": 0},
+                        {"type": "pointerUp", "duration": 0, "button": 0},
+                    ],
+                },
+                {
+                    "type": "key",
+                    "id": "key",
+                    "actions": [
+                        {"type": "pause", "duration": 0},
+                        {"type": "pause", "duration": 0},
+                        {"type": "pause", "duration": 0},
+                    ],
+                },
+            ]
+        }
+        return actions(server_url, session, payload)
+    except Exception as e:
+        raise WebDriverError("Failed to click the element.") from e
+
+
+def actions_click_jsonwire(server_url: str, session: str, element: str) -> bool:
+    """Click an element simulating a mouse movement"""
+    try:
+        payload: Dict[str, List[Dict[str, Any]]] = {
+            "actions": [
+                {
+                    "type": "pointer",
+                    "parameters": {"pointerType": "mouse"},
+                    "id": "mouse",
+                    "actions": [
+                        {
+                            "type": "pointerMove",
+                            "duration": 0,
+                            "x": 0,
+                            "y": 0,
+                            "origin": {ELEMENT_JSONWIRE: element},
                         },
                         {"type": "pointerDown", "duration": 0, "button": 0},
                         {"type": "pointerUp", "duration": 0, "button": 0},
@@ -550,6 +722,16 @@ def get_active_element(server_url: str, session: str) -> str:
         url: str = f"{server_url}/session/{session}/element/active"
         response: Dict[str, Any] = _get(url)
         return get_element(response)
+    except Exception as e:
+        raise WebDriverError("Failed to get the active element.") from e
+
+
+def get_active_element_jsonwire(server_url: str, session: str) -> str:
+    """Get the active element"""
+    try:
+        url: str = f"{server_url}/session/{session}/element/active"
+        response: Dict[str, Any] = _get(url)
+        return get_element_jsonwire(response)
     except Exception as e:
         raise WebDriverError("Failed to get the active element.") from e
 
@@ -693,7 +875,23 @@ def find_elements(
         url: str = f"{server_url}/session/{session}/elements"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = _post(url, payload)
-        return [x.get(ELEMENT) for x in response.get("value", {})]
+        return [x.get(ELEMENT_W3C) for x in response.get("value", {})]
+    except Exception as e:
+        raise WebDriverError(
+            f"Failed to find elements by '{locator_type}'-'{locator_value}'."
+        ) from e
+
+
+def find_elements_jsonwire(
+    server_url: str, session: str, locator_type: str, locator_value: str
+) -> List[str]:
+    """Search the DOM elements by 'locator', for example, 'xpath'"""
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+    try:
+        url: str = f"{server_url}/session/{session}/elements"
+        payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
+        response: Dict[str, Any] = _post(url, payload)
+        return [x.get(ELEMENT_JSONWIRE) for x in response.get("value", {})]
     except Exception as e:
         raise WebDriverError(
             f"Failed to find elements by '{locator_type}'-'{locator_value}'."

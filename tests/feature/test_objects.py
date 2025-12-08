@@ -18,8 +18,6 @@ class TestObject:
         )
         assert actions is True
 
-
-
     @mark.asyncio
     async def test_save_screenshot(self, setup_playground: AsyncDriver):
         driver = setup_playground
@@ -31,7 +29,7 @@ class TestObject:
         driver = setup_playground
 
         element_string = synchronous.find_element(
-            driver.remote, driver.session, By.XPATH, "//button"
+            driver.server_url, driver.session, By.XPATH, "//button"
         )
         element = await driver.find_element(locator=By.XPATH, value="//button")
         assert str(element) == element_string

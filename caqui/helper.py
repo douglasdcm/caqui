@@ -7,7 +7,7 @@ import base64
 from functools import lru_cache
 
 from caqui.by import By
-from caqui.constants import ELEMENT
+from caqui.constants import ELEMENT_JSONWIRE, ELEMENT_W3C
 from caqui.cssify import cssify
 
 
@@ -63,9 +63,41 @@ def get_element(response: dict) -> str:
                         `response.get("value")` returns None), attribute access
                         on `None` will raise.
     """
+    # raise Exception("deleteme")
     value = response.get("value", {})
     # Google Chrome
-    element = value.get(ELEMENT)
+    element = value.get(ELEMENT_W3C)
+    if element:
+        return element
+
+    # Firefox
+    return list(value.values())[0]
+
+
+def get_element_jsonwire(response: dict) -> str:
+    """Extract the element identifier from a WebDriver response payload.
+
+    The function expects `response` to be a mapping containing a "value" mapping.
+    For Chrome-based WebDriver responses the element id is usually stored under
+    the ELEMENT key. For Firefox/Gecko the element id is commonly provided as
+    the first value of the inner mapping.
+
+    Args:
+        response (dict): A WebDriver response dict with a "value" mapping that
+                         contains either the ELEMENT key (Chrome) or another
+                         single key whose value is the element id (Firefox).
+
+    Returns:
+        str: The extracted element identifier.
+
+    Raises:
+        AttributeError: If `response` does not contain a "value" mapping (i.e. when
+                        `response.get("value")` returns None), attribute access
+                        on `None` will raise.
+    """
+    value = response.get("value", {})
+    # Google Chrome
+    element = value.get(ELEMENT_JSONWIRE)
     if element:
         return element
 

@@ -28,63 +28,63 @@ class TestPerformance:
         )
         return capabilities
 
-    async def _body(self, page: AsyncDriver):
-        await page.implicitly_wait(10)
-        await page.get(
+    async def _body(self, driver: AsyncDriver):
+        await driver.implicitly_wait(10)
+        await driver.get(
             PAGE_URL,
         )
         for _ in range(LOAD):
-            click_button = await page.find_element(By.ID, "button")
+            click_button = await driver.find_element(By.ID, "button")
             await click_button.click()
 
-        await page.switch_to.active_element.get_attribute("value")
-        element = await page.find_element(By.XPATH, "//a")
+        await driver.switch_to.active_element.get_attribute("value")
+        element = await driver.find_element(By.XPATH, "//a")
         # Returns and base64 encoded string into image
         await element.screenshot("/tmp/image.png")
 
-        await page.back()
-        await page.forward()
-        await page.refresh()
+        await driver.back()
+        await driver.forward()
+        await driver.refresh()
 
-        alert_element = await page.find_element(By.CSS_SELECTOR, "#alert-button-prompt")
+        alert_element = await driver.find_element(By.CSS_SELECTOR, "#alert-button-prompt")
         await alert_element.click()
-        alert_object = page.switch_to.alert
-        await page.alert.accept()
+        alert_object = driver.switch_to.alert
+        await driver.alert.accept()
 
         await alert_element.click()
         await alert_object.send_keys("Caqui")
         await alert_object.dismiss()
 
-        iframe = await page.find_element(By.ID, "my-iframe")
+        iframe = await driver.find_element(By.ID, "my-iframe")
         # switch to selected iframe
-        await page.switch_to.frame(iframe)
-        await page.switch_to.default_content()
+        await driver.switch_to.frame(iframe)
+        await driver.switch_to.default_content()
         # switching to second iframe based on index
-        iframe = (await page.find_elements(By.ID, "my-iframe"))[0]
+        iframe = (await driver.find_elements(By.ID, "my-iframe"))[0]
 
         # switch to selected iframe
-        await page.switch_to.frame(iframe)
+        await driver.switch_to.frame(iframe)
         # switch back to default content
-        await page.switch_to.default_content()
+        await driver.switch_to.default_content()
 
-        window_handle = page.current_window_handle
-        assert len(page.window_handles) >= 1
-        await page.switch_to.window(window_handle)
+        window_handle = driver.current_window_handle
+        assert len(driver.window_handles) >= 1
+        await driver.switch_to.window(window_handle)
         # Opens a new tab and switches to new tab
-        await page.switch_to.new_window("tab")
+        await driver.switch_to.new_window("tab")
         # Opens a new window and switches to new window
-        await page.switch_to.new_window("window")
+        await driver.switch_to.new_window("window")
 
         # Access each dimension individually
-        await page.set_window_size(1024, 768)
+        await driver.set_window_size(1024, 768)
         # Move the window to the top left of the primary monitor
-        await page.set_window_position(0, 0)
-        await page.maximize_window()
+        await driver.set_window_position(0, 0)
+        await driver.maximize_window()
         # await driver.minimize_window()  # does not work on headless mode
-        await page.save_screenshot("/tmp/image.png")
+        await driver.save_screenshot("/tmp/image.png")
 
         # Executing JavaScript to capture innerText of header element
-        await page.execute_script('alert("any warn")')
+        await driver.execute_script('alert("any warn")')
 
     @pytest_asyncio.fixture
     async def setup_environment_without_session_http(self):

@@ -1,6 +1,8 @@
+from pytest import mark
 from caqui.easy.drivers import AsyncDriver
 from caqui.synchronous import (
     actions,
+    actions_move_to_element,
     actions_scroll_to_element,
     clear_element,
     click,
@@ -15,11 +17,11 @@ from caqui.synchronous import (
     send_keys,
     switch_to_frame,
     switch_to_parent_frame,
-    actions_move_to_element
 )
 
 
-def test_switch_to_parent_frame_and_click_alert_foo(setup_playground):
+@mark.asyncio
+async def test_switch_to_parent_frame_and_click_alert_foo(setup_playground: AsyncDriver):
     driver = setup_playground
     locator_type = "id"
     locator_value = "my-iframe"
@@ -28,26 +30,23 @@ def test_switch_to_parent_frame_and_click_alert_foo(setup_playground):
     locator_type_form = "css selector"
     locator_form = "body > form"
 
-    element_form = find_element(driver.server_url, driver.session, locator_type_form, locator_form)
-    actions_scroll_to_element(driver.server_url, driver.session, element_form, delta_y=1000)
-    element_frame = find_element(driver.server_url, driver.session, locator_type, locator_value)
-    assert switch_to_frame(driver.server_url, driver.session, element_frame) is True
+    element_form = await driver.find_element(locator_type_form, locator_form)
+    await driver.actions.scroll_to_element(element_form, delta_y=1000).perform()
+    element_frame = await driver.find_element(locator_type, locator_value)
+    assert await driver.switch_to.frame(element_frame) is True
 
-    alert_button_frame = find_element(
-        driver.server_url, driver.session, locator_type, locator_value_alert_frame
-    )
-    assert click(driver.server_url, driver.session, alert_button_frame) is True
-    assert dismiss_alert(driver.server_url, driver.session) is True
-    assert switch_to_parent_frame(driver.server_url, driver.session, element_frame) is True
+    alert_button_frame = await driver.find_element(locator_type, locator_value_alert_frame)
+    assert await alert_button_frame.click() is True
+    assert await driver.alert.dismiss() is True
+    assert await driver.switch_to.default_content() is True
 
-    alert_button_parent = find_element(
-        driver.server_url, driver.session, locator_type, locator_value_alert_parent
-    )
-    assert get_attribute(driver.server_url, driver.session, alert_button_parent, "any") == "any"
-    assert click(driver.server_url, driver.session, alert_button_parent) is True
+    alert_button_parent = await driver.find_element(locator_type, locator_value_alert_parent)
+    assert await alert_button_parent.get_attribute("any") == "any"
+    assert await alert_button_parent.click() is True
 
 
-def test_switch_to_frame_and_click_alert(setup_playground: AsyncDriver):
+@mark.asyncio
+async def test_switch_to_frame_and_click_alert(setup_playground: AsyncDriver):
     driver = setup_playground
     locator_type = "id"
     locator_value = "my-iframe"
@@ -55,16 +54,14 @@ def test_switch_to_frame_and_click_alert(setup_playground: AsyncDriver):
     locator_type_form = "css selector"
     locator_form = "body > form"
 
-    element_form = find_element(driver.server_url, driver.session, locator_type_form, locator_form)
-    actions_move_to_element(driver.server_url, driver.session, element_form)
-    element_frame = find_element(driver.server_url, driver.session, locator_type, locator_value)
-    assert switch_to_frame(driver.server_url, driver.session, element_frame) is True
+    element_form = await driver.find_element(locator_type_form, locator_form)
+    await driver.actions.move_to_element(element_form).perform()
+    element_frame = await driver.find_element(locator_type, locator_value)
+    assert await driver.switch_to.frame(element_frame) is True
 
-    alert_button = find_element(
-        driver.server_url, driver.session, locator_type, locator_value_alert
-    )
-    assert get_attribute(driver.server_url, driver.session, alert_button, "any") == "any"
-    assert click(driver.server_url, driver.session, alert_button) is True
+    alert_button = await driver.find_element(locator_type, locator_value_alert)
+    assert await alert_button.get_attribute("any") == "any"
+    assert await alert_button.click() is True
 
 
 def test_get_data_from_hidden_button(setup_playground):

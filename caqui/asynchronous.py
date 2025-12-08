@@ -8,9 +8,15 @@ from typing import Any, Dict, List, Optional, Union
 from aiohttp import ClientSession
 from orjson import dumps
 
-from caqui.constants import ELEMENT, HEADERS
+from caqui.constants import ELEMENT_JSONWIRE, ELEMENT_W3C, HEADERS
 from caqui.exceptions import WebDriverError
-from caqui.helper import convert_locator_to_css_selector, get_element, get_elements, save_picture
+from caqui.helper import (
+    convert_locator_to_css_selector,
+    get_element,
+    get_element_jsonwire,
+    get_elements,
+    save_picture,
+)
 
 
 async def _handle_response(resp) -> Any:
@@ -268,6 +274,19 @@ async def switch_to_window(
         raise WebDriverError("Failed to switch to window.") from e
 
 
+async def switch_to_window_jsonwire(
+    server_url, session, handle, session_http: Union[ClientSession, None] = None
+):
+    """Switch to window"""
+    try:
+        url = f"{server_url}/session/{session}/window"
+        payload = {"name": handle}
+        await _post(url, payload, session_http=session_http)
+        return True
+    except Exception as e:
+        raise WebDriverError("Failed to switch to window.") from e
+
+
 async def new_window(
     server_url, session, window_type="tab", session_http: Union[ClientSession, None] = None
 ) -> str:
@@ -288,10 +307,24 @@ async def new_window(
 async def switch_to_parent_frame(
     server_url, session, element_frame, session_http: Union[ClientSession, None] = None
 ):
+    # raise Exception("deleteme")
     """Switch to parent frame of 'element_frame'"""
     try:
         url = f"{server_url}/session/{session}/frame/parent"
-        payload = {"id": {ELEMENT: element_frame}}
+        payload = {"id": {ELEMENT_W3C: element_frame}}
+        await _post(url, payload, session_http=session_http)
+        return True
+    except Exception as e:
+        raise WebDriverError("Failed to switch to parent frame.") from e
+
+
+async def switch_to_parent_frame_jsonwire(
+    server_url, session, element_frame, session_http: Union[ClientSession, None] = None
+):
+    """Switch to parent frame of 'element_frame'"""
+    try:
+        url = f"{server_url}/session/{session}/frame/parent"
+        payload = {"id": {ELEMENT_JSONWIRE: element_frame}}
         await _post(url, payload, session_http=session_http)
         return True
     except Exception as e:
@@ -302,9 +335,24 @@ async def switch_to_frame(
     server_url, session, element_frame, session_http: Union[ClientSession, None] = None
 ):
     """Switch to frame 'element_frame'"""
+    # raise Exception("deleteme")
+
     try:
         url = f"{server_url}/session/{session}/frame"
-        payload = {"id": {ELEMENT: element_frame}}
+        payload = {"id": {ELEMENT_W3C: element_frame}}
+        await _post(url, payload, session_http=session_http)
+        return True
+    except Exception as e:
+        raise WebDriverError("Failed to switch to frame.") from e
+
+
+async def switch_to_frame_jsonwire(
+    server_url, session, element_frame, session_http: Union[ClientSession, None] = None
+):
+    """Switch to frame 'element_frame'"""
+    try:
+        url = f"{server_url}/session/{session}/frame"
+        payload = {"id": {ELEMENT_JSONWIRE: element_frame}}
         await _post(url, payload, session_http=session_http)
         return True
     except Exception as e:
@@ -438,7 +486,7 @@ async def get_tag_name(
 
 
 async def get_shadow_root(
-    server_url, session, element, session_http: Union[ClientSession, None] = None
+    server_url: str, session: str, element: str, session_http: Union[ClientSession, None] = None
 ) -> str:
     """Get the shadow root element"""
     try:
@@ -459,12 +507,32 @@ async def get_shadow_element(
     session_http: Union[ClientSession, None] = None,
 ) -> Optional[str]:
     """Get the shadow root element"""
+    # raise Exception("deleteme")
     try:
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/element"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = await _post(url, payload, session_http)
-        return response.get("value", {}).get(ELEMENT, "")
+        return response.get("value", {}).get(ELEMENT_W3C, "")
+    except Exception as e:
+        raise WebDriverError("Failed to get the element shadow.") from e
+
+
+async def get_shadow_element_jsonwire(
+    server_url: str,
+    session: str,
+    shadow_element: str,
+    locator_type: str,
+    locator_value: str,
+    session_http: Union[ClientSession, None] = None,
+) -> Optional[str]:
+    """Get the shadow root element"""
+    try:
+        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/element"
+        payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
+        response: Dict[str, Any] = await _post(url, payload, session_http)
+        return response.get("value", {}).get(ELEMENT_JSONWIRE, "")
     except Exception as e:
         raise WebDriverError("Failed to get the element shadow.") from e
 
@@ -483,7 +551,26 @@ async def get_shadow_elements(
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/elements"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = await _post(url, payload, session_http)
-        return [x.get(ELEMENT) for x in response.get("value", {})]
+        return [x.get(ELEMENT_W3C) for x in response.get("value", {})]
+    except Exception as e:
+        raise WebDriverError("Failed to get the element shadow.") from e
+
+
+async def get_shadow_elements_jsonwire(
+    server_url: str,
+    session: str,
+    shadow_element: str,
+    locator_type: str,
+    locator_value: str,
+    session_http: Union[ClientSession, None] = None,
+) -> List[str]:
+    """Get the list of shadow root element"""
+    try:
+        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/elements"
+        payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
+        response: Dict[str, Any] = await _post(url, payload, session_http)
+        return [x.get(ELEMENT_JSONWIRE) for x in response.get("value", {})]
     except Exception as e:
         raise WebDriverError("Failed to get the element shadow.") from e
 
@@ -510,6 +597,7 @@ async def actions_move_to_element(
     server_url: str, session: str, element: str, session_http: Union[ClientSession, None] = None
 ) -> bool:
     """Move to an element simulating a mouse movement"""
+    # raise Exception("deleteme")
     try:
         payload = {
             "actions": [
@@ -523,7 +611,35 @@ async def actions_move_to_element(
                             "duration": 0,
                             "x": 0,
                             "y": 0,
-                            "origin": {ELEMENT: element},
+                            "origin": {ELEMENT_W3C: element},
+                        }
+                    ],
+                },
+            ]
+        }
+        return await actions(server_url, session, payload, session_http=session_http)
+    except Exception as e:
+        raise WebDriverError("Failed to move to element.") from e
+
+
+async def actions_move_to_element_jsonwire(
+    server_url: str, session: str, element: str, session_http: Union[ClientSession, None] = None
+) -> bool:
+    """Move to an element simulating a mouse movement"""
+    try:
+        payload = {
+            "actions": [
+                {
+                    "type": "pointer",
+                    "parameters": {"pointerType": "mouse"},
+                    "id": "mouse",
+                    "actions": [
+                        {
+                            "type": "pointerMove",
+                            "duration": 0,
+                            "x": 0,
+                            "y": 0,
+                            "origin": {ELEMENT_JSONWIRE: element},
                         }
                     ],
                 },
@@ -535,7 +651,11 @@ async def actions_move_to_element(
 
 
 async def actions_scroll_to_element(
-    server_url, session, element, delta_y:int=1000,session_http: Union[ClientSession, None] = None
+    server_url,
+    session,
+    element,
+    delta_y: int = 1000,
+    session_http: Union[ClientSession, None] = None,
 ):
     """Scroll to an element simulating a mouse movement"""
     try:
@@ -552,7 +672,40 @@ async def actions_scroll_to_element(
                             "deltaX": 0,
                             "deltaY": delta_y,
                             "duration": 0,
-                            "origin": {ELEMENT: element},
+                            "origin": {ELEMENT_W3C: element},
+                        }
+                    ],
+                }
+            ]
+        }
+        return await actions(server_url, session, payload, session_http=session_http)
+    except Exception as e:
+        raise WebDriverError("Failed to scroll to element.") from e
+
+
+async def actions_scroll_to_element_jsonwire(
+    server_url,
+    session,
+    element,
+    delta_y: int = 1000,
+    session_http: Union[ClientSession, None] = None,
+):
+    """Scroll to an element simulating a mouse movement"""
+    try:
+        payload = {
+            "actions": [
+                {
+                    "type": "wheel",
+                    "id": "wheel",
+                    "actions": [
+                        {
+                            "type": "scroll",
+                            "x": 0,
+                            "y": 0,
+                            "deltaX": 0,
+                            "deltaY": delta_y,
+                            "duration": 0,
+                            "origin": {ELEMENT_JSONWIRE: element},
                         }
                     ],
                 }
@@ -585,6 +738,7 @@ async def actions_click(
     server_url, session, element, session_http: Union[ClientSession, None] = None
 ):
     """Click an element simulating a mouse movement"""
+    # raise Exception("deleteme")
     try:
         payload = {
             "actions": [
@@ -598,7 +752,46 @@ async def actions_click(
                             "duration": 0,
                             "x": 0,
                             "y": 0,
-                            "origin": {ELEMENT: element},
+                            "origin": {ELEMENT_W3C: element},
+                        },
+                        {"type": "pointerDown", "duration": 0, "button": 0},
+                        {"type": "pointerUp", "duration": 0, "button": 0},
+                    ],
+                },
+                {
+                    "type": "key",
+                    "id": "key",
+                    "actions": [
+                        {"type": "pause", "duration": 0},
+                        {"type": "pause", "duration": 0},
+                        {"type": "pause", "duration": 0},
+                    ],
+                },
+            ]
+        }
+        return await actions(server_url, session, payload, session_http=session_http)
+    except Exception as e:
+        raise WebDriverError("Failed to click the element.") from e
+
+
+async def actions_click_jsonwire(
+    server_url, session, element, session_http: Union[ClientSession, None] = None
+):
+    """Click an element simulating a mouse movement"""
+    try:
+        payload = {
+            "actions": [
+                {
+                    "type": "pointer",
+                    "parameters": {"pointerType": "mouse"},
+                    "id": "mouse",
+                    "actions": [
+                        {
+                            "type": "pointerMove",
+                            "duration": 0,
+                            "x": 0,
+                            "y": 0,
+                            "origin": {ELEMENT_JSONWIRE: element},
                         },
                         {"type": "pointerDown", "duration": 0, "button": 0},
                         {"type": "pointerUp", "duration": 0, "button": 0},
@@ -888,12 +1081,33 @@ async def find_elements(
     session_http: Union[ClientSession, None] = None,
 ) -> List[Any]:
     """Search the DOM elements by 'locator', for example, 'xpath'"""
+    # raise Exception("deleteme")
     locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
     try:
         payload = {"using": locator_type, "value": locator_value}
         url = f"{server_url}/session/{session}/elements"
         response = await _post(url, payload, session_http=session_http)
-        return [x.get(ELEMENT) for x in response.get("value")]
+        return [x.get(ELEMENT_W3C) for x in response.get("value")]
+    except Exception as e:
+        raise WebDriverError(
+            f"Failed to find element by '{locator_type}'-'{locator_value}'."
+        ) from e
+
+
+async def find_elements_jsonwire(
+    server_url: str,
+    session: str,
+    locator_type: str,
+    locator_value: str,
+    session_http: Union[ClientSession, None] = None,
+) -> List[Any]:
+    """Search the DOM elements by 'locator', for example, 'xpath'"""
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+    try:
+        payload = {"using": locator_type, "value": locator_value}
+        url = f"{server_url}/session/{session}/elements"
+        response = await _post(url, payload, session_http=session_http)
+        return [x.get(ELEMENT_JSONWIRE) for x in response.get("value")]
     except Exception as e:
         raise WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."
@@ -1021,6 +1235,31 @@ async def find_element(
         if response.get("value").get("error"):
             raise WebDriverError(f"Failed to find element. {response}")
         return get_element(response)
+    except Exception as e:
+        raise WebDriverError(
+            f"Failed to find element by '{locator_type}'-'{locator_value}'."
+        ) from e
+
+
+async def find_element_jsonwire(
+    server_url: str,
+    session: str,
+    locator_type: str,
+    locator_value: str,
+    session_http: Union[ClientSession, None] = None,
+) -> str:
+    """Find an element by a 'locator', for example 'xpath'"""
+    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+    try:
+        payload = {"using": locator_type, "value": locator_value}
+        url = f"{server_url}/session/{session}/element"
+        response = await _post(url, payload, session_http=session_http)
+
+        # Firefox does not support id locator, so it prints the error message to the user
+        # It helps on debug
+        if response.get("value").get("error"):
+            raise WebDriverError(f"Failed to find element. {response}")
+        return get_element_jsonwire(response)
     except Exception as e:
         raise WebDriverError(
             f"Failed to find element by '{locator_type}'-'{locator_value}'."
