@@ -296,6 +296,7 @@ class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
 
 class EdgeCapabilitiesBuilder(BaseCapabilitiesBuilder):
     OPTIONS = "ms:edgeOptions"
+
     def __init__(self):
         super().__init__()
         self.options = {EdgeCapabilitiesBuilder.OPTIONS: {}}
@@ -354,6 +355,7 @@ class EdgeCapabilitiesBuilder(BaseCapabilitiesBuilder):
         in the form of hostname/ip:port, for example 127.0.0.1:50080"""
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["wdpAddress"] = value
         return self
+
     def wdp_password(self, value: str):
         """Optional password to use when connecting to a Windows Device Portal server.
         Required if the server has authentication enabled."""

@@ -2,13 +2,8 @@ from pytest import mark
 
 from caqui.easy.drivers import AsyncDriver
 from caqui.synchronous import (
-    actions,
-    actions_move_to_element,
-    actions_scroll_to_element,
     clear_element,
     click,
-    dismiss_alert,
-    find_child_element,
     find_element,
     get_attribute,
     get_css_value,
@@ -16,8 +11,6 @@ from caqui.synchronous import (
     get_rect,
     get_text,
     send_keys,
-    switch_to_frame,
-    switch_to_parent_frame,
 )
 
 

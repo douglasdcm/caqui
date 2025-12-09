@@ -1,4 +1,5 @@
 from pytest import mark
+
 from caqui.by import By
 from caqui.easy.drivers import AsyncDriver
 

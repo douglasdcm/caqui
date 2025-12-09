@@ -13,13 +13,12 @@ from tests.constants import PAGE_URL
 SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
 CAPTURES = "captures"
-LOAD = 1  # requests
+LOAD = 10  # requests
 
 
-@mark.skip(reason="Used for performance tests")
+# @mark.skip(reason="Used for performance tests")
 class TestPerformance:
     def _build_capabilities(self):
-        # options = ChromeOptionsBuilder().with_headless().with_speed_flags()
         capabilities = (
             ChromeCapabilitiesBuilder()
             .accept_insecure_certs(True)

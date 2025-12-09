@@ -1,6 +1,6 @@
 # It opens the WebDriver, navigate to a page and get all links
 # Run `export PYTHONPATH=$(pwd)` before execute it
-# python samples/sample-web-driver.py 
+# python samples/sample-web-driver.py
 # Link found 'http://any1.com/'
 # Link found 'http://any2.com/'
 # Link found 'http://any3.com/'
@@ -13,14 +13,13 @@ from caqui.easy.capabilities import BaseCapabilitiesBuilder, ChromeCapabilitiesB
 from caqui.easy.server import LocalServer
 from caqui.easy.drivers import AsyncDriver
 
+
 async def get_all_links(server):
     capabilities: BaseCapabilitiesBuilder = (
-        ChromeCapabilitiesBuilder()
-        .accept_insecure_certs(True)
-        .page_load_strategy("normal")
+        ChromeCapabilitiesBuilder().accept_insecure_certs(True).page_load_strategy("normal")
     )
 
-    driver = AsyncDriver("http://localhost:9998",capabilities)
+    driver = AsyncDriver("http://localhost:9998", capabilities)
 
     await driver.get(
         PAGE_URL,

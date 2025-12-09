@@ -1,8 +1,14 @@
 from pytest import mark
+
 from caqui.by import By
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder, EdgeCapabilitiesBuilder, FirefoxCapabilitiesBuilder
+from caqui.easy.capabilities import (
+    ChromeCapabilitiesBuilder,
+    EdgeCapabilitiesBuilder,
+    FirefoxCapabilitiesBuilder,
+)
 from caqui.easy.drivers import AsyncDriver
 from tests.constants import PAGE_URL
+
 
 @mark.asyncio
 async def test_capability_as_dictionary():
@@ -10,23 +16,19 @@ async def test_capability_as_dictionary():
     SERVER_URL = f"http://localhost:{SERVER_PORT}"
 
     capabilities = {
-        "capabilities": {
-            "firstMatch": [
-                {
-                    "moz:firefoxOptions": {
-                        "args": ["headless"],
-                    }
-                }
-            ],
+        "desiredCapabilities": {
+            "goog:chromeOptions": {
+                "args": ["headless"],
+            },
         }
     }
     driver = AsyncDriver(SERVER_URL, capabilities, specification="jsonwire")
-    
+
     locator_type = By.XPATH
     locator_value = "//input"
     await driver.get(PAGE_URL)
     element = await driver.find_element(locator_type, locator_value)
-    
+
     await element.click()
     assert await element.is_selected() is False
 
@@ -122,7 +124,6 @@ def test_chrome_capabilities_with_options():
     assert capabilities.to_dict() == expected
 
 
-
 def test_edge_capabilities_with_options():
     expected = {
         "desiredCapabilities": {
@@ -145,12 +146,12 @@ def test_edge_capabilities_with_options():
                     "traceCategories": "devtools.network",
                     "bufferUsageReportingInterval": 1000,
                 },
-                "wdpAddress":"any",
-                "wdpPassword":"any",
-                "wdpUsername":"any",
-                "wdpProcessId":"any",
-                "webviewOptions":"any",
-                "windowsApp":"any",
+                "wdpAddress": "any",
+                "wdpPassword": "any",
+                "wdpUsername": "any",
+                "wdpProcessId": "any",
+                "webviewOptions": "any",
+                "windowsApp": "any",
             },
         }
     }
@@ -186,6 +187,7 @@ def test_edge_capabilities_with_options():
     )
     assert capabilities.to_dict() == expected
 
+
 def test_standard_capabilities_with_timeout():
     expected = {
         "desiredCapabilities": {
@@ -209,7 +211,7 @@ def test_standard_capabilities_with_timeout():
         .browser_version("any")
         .page_load_strategy("any")
         .platform_name("any")
-        .timeouts(1,1,1)
+        .timeouts(1, 1, 1)
         .set_window_rect(True)
         .strict_file_interactability(True)
         .timeouts(implicit=1, page_load=1, script=1)

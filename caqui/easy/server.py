@@ -46,11 +46,11 @@ class LocalServer:
             /home/my-user/.wdm/drivers/chromedriver/linux64/142.0.7444.175/chromedriver-linux64
     """
 
-    def __init__(self, port: int = 9999, executable_path:Optional[str]=None) -> None:
+    def __init__(self, port: int = 9999, executable_path: Optional[str] = None) -> None:
         self._browser: Optional[str] = None
         self._port: int = port
         self._process: Optional[subprocess.Popen] = None
-        self._executable_path :Optional[str] = executable_path
+        self._executable_path: Optional[str] = executable_path
 
     def _browser_factory(self) -> str:
         browser: Optional[type] = DRIVER_MANAGER.get(self._browser)  # type: ignore

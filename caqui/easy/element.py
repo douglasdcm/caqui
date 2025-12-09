@@ -5,8 +5,9 @@
 
 import os
 from typing import TYPE_CHECKING, Dict, List, Tuple
-from caqui.constants import Specification
+
 from caqui import asynchronous, synchronous
+from caqui.constants import Specification
 
 if TYPE_CHECKING:
     from caqui.easy.drivers import AsyncDriver
@@ -107,7 +108,7 @@ FIND_ELEMENT_SHADOW_IMPLEMENTATIONS: Dict[str, _FindShadowElement] = {
     Specification.EDGE: _FindShadowElementJsonWire,
     Specification.OPERA: _FindShadowElementJsonWire,
     Specification.JSONWIRE: _FindShadowElementJsonWire,
-    Specification.W3C: _FindShadowElementW3C
+    Specification.W3C: _FindShadowElementW3C,
 }
 
 

@@ -1,11 +1,8 @@
-import aiohttp
-from pytest import mark, raises
+from pytest import mark
 
-from caqui import synchronous
 from caqui.by import By
 from caqui.easy.drivers import AsyncDriver
-from caqui.exceptions import WebDriverError
-from tests.constants import COOKIE, OTHER_URL, PAGE_URL
+from tests.constants import COOKIE
 
 
 @mark.asyncio
@@ -16,8 +13,8 @@ async def test_add_cookie(setup_playground: AsyncDriver):
     await driver.get(
         "https://example.org/",
     )
-    cookie = COOKIE
-    assert await driver.add_cookie(cookie) is True
+
+    assert await driver.add_cookie(COOKIE) is True
     cookies_after = await driver.get_cookies()
     assert len(cookies_after) > 0
 
@@ -33,10 +30,15 @@ async def test_add_cookie(setup_playground: AsyncDriver):
     assert len(cookies_after) > len(cookies_before)
 
 
-@mark.skip(reason="works just in firefox")
 @mark.asyncio
 async def test_delete_cookie_asynchronous(setup_playground: AsyncDriver):
     driver = setup_playground
+    driver = setup_playground
+    await driver.get(
+        "https://example.org/",
+    )
+    await driver.add_cookie(COOKIE)
+
     cookies = await driver.get_cookies()
     name = cookies[0].get(By.NAME)
     zero = 0
@@ -49,11 +51,13 @@ async def test_delete_cookie_asynchronous(setup_playground: AsyncDriver):
     assert len(cookies) == zero
 
 
-@mark.skip(reason="works just in firefox")
 @mark.asyncio
 async def test_delete_cookies_asynchronous(setup_playground: AsyncDriver):
     driver = setup_playground
-
+    await driver.get(
+        "https://example.org/",
+    )
+    await driver.add_cookie(COOKIE)
     cookies_before = await driver.get_cookies()
 
     response = await driver.delete_all_cookies()
@@ -63,13 +67,16 @@ async def test_delete_cookies_asynchronous(setup_playground: AsyncDriver):
     assert len(cookies_before) != len(cookies_after)
 
 
-@mark.skip(reason="works just with Firefox")
 @mark.asyncio
 async def test_get_named_cookie(setup_playground: AsyncDriver):
     driver = setup_playground
-    name = "username"  # cookie created on page load
+    cookie = COOKIE
     expected = "John Doe"
-
-    assert await driver.get_named_cookie(name).get("value") == expected
-    response = await driver.get_named_cookie(name)
-    assert response == expected
+    cookie["name"] = expected
+    await driver.get(
+        "https://example.org/",
+    )
+    await driver.add_cookie(cookie)
+    x = await driver.get_cookies()
+    actual = await driver.get_cookie(expected)
+    assert actual["name"] == expected

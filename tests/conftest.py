@@ -1,7 +1,9 @@
 import pytest_asyncio
 from pytest import fixture
 
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder ,FirefoxCapabilitiesBuilder, OperaCapabilitiesBuilder, EdgeCapabilitiesBuilder
+from caqui.easy.capabilities import (  # EdgeCapabilitiesBuilder,; FirefoxCapabilitiesBuilder,; OperaCapabilitiesBuilder,
+    ChromeCapabilitiesBuilder,
+)
 from caqui.easy.drivers import AsyncDriver
 from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL
@@ -26,9 +28,9 @@ def _build_capabilities():
 
 @fixture(autouse=True, scope="session")
 def setup_server():
-    server = LocalServer(executable_path="/home/douglas/.wdm/drivers/operadriver/linux64/v.140.0.7339.249/operadriver_linux64/operadriver")
-    server.start()
-    # server.start_chrome()
+    server = LocalServer()
+    # server.start()
+    server.start_chrome()
     # server.start_firefox()
     # server.start_opera()
     # server.start_edge()

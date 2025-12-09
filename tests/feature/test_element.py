@@ -1,11 +1,9 @@
-import aiohttp
 from pytest import mark, raises
 
-from caqui import synchronous
 from caqui.by import By
 from caqui.easy.drivers import AsyncDriver
 from caqui.exceptions import WebDriverError
-from tests.constants import COOKIE, OTHER_URL, PAGE_URL
+from tests.constants import OTHER_URL
 
 
 @mark.asyncio

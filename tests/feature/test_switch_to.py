@@ -14,11 +14,7 @@ async def test_switch_to_window_foo(setup_playground: AsyncDriver, window_type):
     new_page = handles[1]
 
     assert await driver.switch_to.window(window_handle=new_page) is True
-    assert driver.title in [
-        "",
-        "Speed Dial", # for Opera
-        "Address Bar Dropdown" # for Opera
-    ]
+    assert driver.title in ["", "Speed Dial", "Address Bar Dropdown"]  # for Opera  # for Opera
     await driver.switch_to.window(window_handle=sample_page) is True
 
 

@@ -13,14 +13,14 @@ from tests.constants import PAGE_URL
 
 @fixture
 def setup():
-    desired_capabilities = {
-        # 'deviceName': 'Device',
-        "deviceName": "Emulator",
-        "deviceIpAddress": "127.0.0.1",
-        "locale": "en-US",
-        "debugCodedUI": False,
-        "app": "chromedriver",
-    }
+    # desired_capabilities = {
+    #     # 'deviceName': 'Device',
+    #     "deviceName": "Emulator",
+    #     "deviceIpAddress": "127.0.0.1",
+    #     "locale": "en-US",
+    #     "debugCodedUI": False,
+    #     "app": "chromedriver",
+    # }
 
     options = Options()
     # options.set_capability("deviceName", "Emulator")

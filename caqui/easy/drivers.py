@@ -4,21 +4,21 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 import os
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 from aiohttp import ClientSession
 
 from caqui import asynchronous, synchronous
-from caqui.easy.action_chains import ActionChainsW3C, ActionChainsJsonWire
+from caqui.constants import Specification
+from caqui.easy.action_chains import ActionChainsJsonWire, ActionChainsW3C
 from caqui.easy.alert import Alert
 from caqui.easy.capabilities import BaseCapabilitiesBuilder
 from caqui.easy.element import Element
-from caqui.easy.switch_to import SwitchToW3C, SwitchToJsonWire
+from caqui.easy.switch_to import SwitchToJsonWire, SwitchToW3C
 from caqui.easy.window import Window
 from caqui.exceptions import WebDriverError
-from caqui.constants import Specification
-TIMEOUT = 120  # seconds
 
+TIMEOUT = 120  # seconds
 
 
 SWITCHTO_IMPLEMENTATIONS = {
@@ -129,7 +129,7 @@ FIND_ELEMENT_IMPLEMENTATIONS: Dict[str, _FindElement] = {
     Specification.EDGE: _FindElementJsonWire,
     Specification.OPERA: _FindElementJsonWire,
     Specification.JSONWIRE: _FindElementJsonWire,
-    Specification.W3C: _FindElementW3C
+    Specification.W3C: _FindElementW3C,
 }
 
 
@@ -142,17 +142,19 @@ class AsyncDriver:
         capabilities: Union[BaseCapabilitiesBuilder, dict, None] = None,
         session_http: Union[ClientSession, None] = None,
         port: int = 9999,
-        specification :str= ""
+        specification: str = "",
     ) -> None:
         """Mimics Selenium methods
-        
+
         Args:
             server_url: the URL of the remote server running the driver
             capabilities: the configuration to the driver
             session_http: a client to make HTTP requests
             port: the port where the remote server is running the driver
-            specification: the specification the driver follows. Allowed values are "w3c" or "jsonwire"
-                For example, ChromeDriver follows JsonWire protocol while GeckoDriver works with W3C
+            specification: the specification the driver follows.
+            Allowed values are "w3c" or "jsonwire"
+                For example, ChromeDriver follows JsonWire protocol while
+                GeckoDriver works with W3C
         """
         if isinstance(capabilities, BaseCapabilitiesBuilder):
             self.browser = capabilities.__class__.__name__
@@ -162,8 +164,7 @@ class AsyncDriver:
             raise WebDriverError("No valid specification or capabilities")
         self._port = port
         self.session_http = session_http
-        self._capabilities :dict = {}
-        # breakpoint()
+        self._capabilities: dict = {}
         if isinstance(capabilities, BaseCapabilitiesBuilder):
             self._capabilities = capabilities.to_dict()
         else:
@@ -171,11 +172,6 @@ class AsyncDriver:
         self._server_url: str = server_url
         self._session: str = synchronous.get_session(self._server_url, self._capabilities)
         self._elements_pool: List[Element] = []
-
-    @property
-    def server_url(self) -> str:
-        """Returns the Driver Server URL"""
-        return self._server_url
 
     @property
     def server_url(self) -> str:
@@ -386,7 +382,6 @@ class AsyncDriver:
         await asynchronous.go_to_page(
             self._server_url, self._session, url, session_http=self.session_http
         )
-
 
     async def find_elements(self, locator, value) -> List[Element]:
         """Search the DOM elements by 'locator', for example, 'xpath'"""

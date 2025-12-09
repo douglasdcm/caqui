@@ -2,7 +2,7 @@ from pytest import mark
 
 from caqui import synchronous
 from caqui.by import By
-from caqui.easy import ActionChainsW3C, AsyncDriver
+from caqui.easy import AsyncDriver
 
 
 class TestObject:

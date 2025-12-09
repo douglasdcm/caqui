@@ -1,32 +1,42 @@
 from pytest import fixture, mark
 
 from caqui.by import By
+from caqui.constants import Specification
 from caqui.easy import AsyncDriver
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder, OperaCapabilitiesBuilder, EdgeCapabilitiesBuilder
+from caqui.easy.capabilities import (
+    ChromeCapabilitiesBuilder,
+    EdgeCapabilitiesBuilder,
+    FirefoxCapabilitiesBuilder,
+    OperaCapabilitiesBuilder,
+)
 from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL
-from caqui.constants import Specification
 
 CAPABILITIES = {
-    Specification.CHROME:{
-        "capability": ChromeCapabilitiesBuilder(),
-        "port":9997,
-        "url":f"http://localhost:9997"
+    Specification.CHROME: {
+        "capability": ChromeCapabilitiesBuilder().args(["headless"]),
+        "port": 9997,
+        "url": "http://localhost:9997",
     },
     Specification.FIREFOX: {
-        "capability": FirefoxCapabilitiesBuilder(), "port":9996,
-        "url":f"http://localhost:9996"    
+        "capability": FirefoxCapabilitiesBuilder().args(["headless"]),
+        "port": 9996,
+        "url": "http://localhost:9996",
     },
-    Specification.OPERA:{"capability": OperaCapabilitiesBuilder(), "port":9995,
-        "url":f"http://localhost:9995"
+    Specification.OPERA: {
+        "capability": OperaCapabilitiesBuilder().args(["headless"]),
+        "port": 9995,
+        "url": "http://localhost:9995",
     },
-    Specification.EDGE:{"capability": EdgeCapabilitiesBuilder(), "port":9994,
-        "url":f"http://localhost:9994"
-    }
+    Specification.EDGE: {
+        "capability": EdgeCapabilitiesBuilder().args(["headless"]),
+        "port": 9994,
+        "url": "http://localhost:9994",
+    },
 }
 
 
-# @mark.skip(reason="Used for local tests")
+@mark.skip(reason="Used for local tests")
 class TestArgs:
     @fixture(autouse=True, scope="class")
     def setup_server_chrome(self):
@@ -39,46 +49,46 @@ class TestArgs:
     def setup_server_firefox(self):
         server = LocalServer(
             CAPABILITIES[Specification.FIREFOX]["port"],
-            executable_path="/home/douglas/.wdm/drivers/geckodriver/linux64/v0.36.0/geckodriver"    
+            executable_path=("/home/douglas/.wdm/drivers/geckodriver/linux64/v0.36.0/geckodriver"),
         )
         server.start_firefox()
         yield
         server.dispose()
 
-
     @fixture(autouse=True, scope="class")
     def setup_server_opera(self):
         server = LocalServer(
             CAPABILITIES[Specification.OPERA]["port"],
-            executable_path="/home/douglas/.wdm/drivers/operadriver/linux64/v.140.0.7339.249/operadriver_linux64/operadriver")
+            executable_path=(
+                "/home/douglas/.wdm/drivers/operadriver/linux64/v.140.0.7339.249/"
+                "operadriver_linux64/operadriver"
+            ),
+        )
         server.start_opera()
         yield
         server.dispose()
-
 
     @fixture(autouse=True, scope="class")
     def setup_server_edge(self):
         server = LocalServer(
             CAPABILITIES[Specification.EDGE]["port"],
-            executable_path="/home/douglas/.wdm/drivers/edgedriver/142/msedgedriver"
+            executable_path="/home/douglas/.wdm/drivers/edgedriver/142/msedgedriver",
         )
         server.start_edge()
         yield
         server.dispose()
 
-
-
-    @mark.parametrize("capabilities",[
-        CAPABILITIES[Specification.CHROME],
-        CAPABILITIES[Specification.FIREFOX],
-        CAPABILITIES[Specification.OPERA],
-        CAPABILITIES[Specification.EDGE],
-
-    ])
+    @mark.parametrize(
+        "capabilities",
+        [
+            CAPABILITIES[Specification.CHROME],
+            CAPABILITIES[Specification.FIREFOX],
+            CAPABILITIES[Specification.OPERA],
+            CAPABILITIES[Specification.EDGE],
+        ],
+    )
     @mark.asyncio
-    async def test_args_with_many_browsers(
-        self, capabilities
-    ):
+    async def test_args_with_many_browsers(self, capabilities):
         driver = None
         try:
             server_url = capabilities["url"]
