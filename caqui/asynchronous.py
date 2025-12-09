@@ -503,7 +503,7 @@ async def get_shadow_element(
     locator_type: str,
     locator_value: str,
     session_http: Union[ClientSession, None] = None,
-) -> Optional[str]:
+) -> str:
     """Get the shadow root element"""
     try:
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
@@ -522,7 +522,7 @@ async def get_shadow_element_jsonwire(
     locator_type: str,
     locator_value: str,
     session_http: Union[ClientSession, None] = None,
-) -> Optional[str]:
+) -> str:
     """Get the shadow root element"""
     try:
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
@@ -541,8 +541,8 @@ async def get_shadow_elements(
     locator_type: str,
     locator_value: str,
     session_http: Union[ClientSession, None] = None,
-) -> Optional[str]:
-    """Get the list of shadow root element"""
+) -> List[str]:
+    """Get the list of shadow root elements"""
     try:
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/elements"
@@ -1127,9 +1127,9 @@ async def get_attribute(
     try:
         url = f"{server_url}/session/{session}/element/{element}/attribute/{attribute}"
         response = await _get(url, session_http=session_http)
-        if not response.get("value"):
+        if response.get("value") is None:
             return ""
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get value from element.") from e
 

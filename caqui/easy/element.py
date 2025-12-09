@@ -4,7 +4,9 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 import os
-from typing import TYPE_CHECKING, Dict, List, Tuple
+from typing import TYPE_CHECKING, Callable, Dict, List, Optional, Tuple
+
+from aiohttp import ClientSession
 
 from caqui import asynchronous, synchronous
 from caqui.constants import Specification
@@ -14,12 +16,15 @@ if TYPE_CHECKING:
 
 
 class _FindShadowElement:
-    async def find_element(self, async_driver: "AsyncDriver", locator, value) -> "Element":
+    async def find_element(self, element: "Element", locator: str, value: str) -> "Element":
+        raise NotImplementedError("Not implemented by subclass")
+
+    async def find_elements(self, element: "Element", locator, value) -> List["Element"]:
         raise NotImplementedError("Not implemented by subclass")
 
 
 class _FindShadowElementW3C(_FindShadowElement):
-    async def find_elements(self, element: "Element", locator: str, value: str) -> list:
+    async def find_elements(self, element: "Element", locator: str, value: str) -> List["Element"]:
         """
         Find the children elements by 'locator_type'
 
@@ -39,7 +44,7 @@ class _FindShadowElementW3C(_FindShadowElement):
         )
         return [Element(e, element._driver) for e in shadow_element]
 
-    async def find_element(self, element: "Element", locator: str, value: str) -> list:
+    async def find_element(self, element: "Element", locator: str, value: str) -> "Element":
         """
         Find the children elements by 'locator_type'
 
@@ -61,7 +66,7 @@ class _FindShadowElementW3C(_FindShadowElement):
 
 
 class _FindShadowElementJsonWire:
-    async def find_elements(self, element: "Element", locator: str, value: str) -> list:
+    async def find_elements(self, element: "Element", locator: str, value: str) -> List["Element"]:
         """
         Find the children elements by 'locator_type'
 
@@ -81,7 +86,7 @@ class _FindShadowElementJsonWire:
         )
         return [Element(e, element._driver) for e in shadow_element]
 
-    async def find_element(self, element: "Element", locator: str, value: str) -> list:
+    async def find_element(self, element: "Element", locator: str, value: str) -> "Element":
         """
         Find the children elements by 'locator_type'
 
@@ -102,7 +107,7 @@ class _FindShadowElementJsonWire:
         return Element(shadow_element, element._driver)
 
 
-FIND_ELEMENT_SHADOW_IMPLEMENTATIONS: Dict[str, _FindShadowElement] = {
+FIND_ELEMENT_SHADOW_IMPLEMENTATIONS: Dict[str, Callable] = {
     Specification.FIREFOX: _FindShadowElementW3C,
     Specification.CHROME: _FindShadowElementJsonWire,
     Specification.EDGE: _FindShadowElementJsonWire,
@@ -114,11 +119,11 @@ FIND_ELEMENT_SHADOW_IMPLEMENTATIONS: Dict[str, _FindShadowElement] = {
 
 class Element:
     def __init__(self, element: str, driver: "AsyncDriver") -> None:
-        self._element = element
-        self._server_url = driver.server_url
-        self._session = driver.session
-        self._session_http = driver.session_http
-        self._driver = driver
+        self._element: str = element
+        self._server_url: str = driver.server_url
+        self._session: str = driver.session
+        self._session_http: Optional[ClientSession] = driver.session_http
+        self._driver: "AsyncDriver" = driver
         self._locator_type: str = ""
         self._locator_value: str = ""
 

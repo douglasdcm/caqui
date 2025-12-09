@@ -77,6 +77,5 @@ async def test_get_named_cookie(setup_playground: AsyncDriver):
         "https://example.org/",
     )
     await driver.add_cookie(cookie)
-    x = await driver.get_cookies()
     actual = await driver.get_cookie(expected)
     assert actual["name"] == expected

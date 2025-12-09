@@ -72,45 +72,6 @@ async def test_fullscreen_window(setup_playground: AsyncDriver):
     assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
 
 
-from datetime import datetime, timedelta
-from time import sleep
-
-from caqui import synchronous
-from caqui.by import By
-
-
-def wait_for_window_minimized(driver: AsyncDriver):
-    TIMEOUT = 30
-    SLEEP = 0.5
-
-    current_datetime = datetime.now()
-    time_to_add = timedelta(seconds=TIMEOUT)
-    new_datetime = current_datetime + time_to_add
-    while datetime.now() < new_datetime:
-        result = synchronous.get_window_rectangle(driver.server_url, driver.session)
-        print(result)
-        if result["x"] == 0 and result["y"] == 0:
-            return
-        sleep(SLEEP)
-    raise TimeoutError()
-
-
-def wait_for_window_maximized(driver: AsyncDriver):
-    TIMEOUT = 30
-    SLEEP = 0.5
-
-    current_datetime = datetime.now()
-    time_to_add = timedelta(seconds=TIMEOUT)
-    new_datetime = current_datetime + time_to_add
-    while datetime.now() < new_datetime:
-        result = synchronous.get_window_rectangle(driver.server_url, driver.session)
-        print(result)
-        if result["x"] > 0 and result["y"] > 0:
-            return
-        sleep(SLEEP)
-    raise TimeoutError()
-
-
 @mark.asyncio
 async def test_minimize_window(setup_playground: AsyncDriver):
     driver = setup_playground
@@ -121,7 +82,6 @@ async def test_minimize_window(setup_playground: AsyncDriver):
 @mark.asyncio
 async def test_maximize_window_asynchronous(setup_playground: AsyncDriver):
     driver = setup_playground
-    window_rectangle_before = await driver.get_window_size()
 
     assert await driver.maximize_window() is True
 

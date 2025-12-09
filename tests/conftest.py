@@ -1,9 +1,7 @@
 import pytest_asyncio
 from pytest import fixture
 
-from caqui.easy.capabilities import (  # EdgeCapabilitiesBuilder,; FirefoxCapabilitiesBuilder,; OperaCapabilitiesBuilder,
-    ChromeCapabilitiesBuilder,
-)
+from caqui.easy.capabilities import ChromeCapabilitiesBuilder
 from caqui.easy.drivers import AsyncDriver
 from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL

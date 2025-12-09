@@ -177,7 +177,7 @@ def switch_to_window_jsonwire(server_url: str, session: str, handle: str) -> boo
         raise WebDriverError("Failed to switch to window.") from e
 
 
-def new_window(server_url: str, session: str, window_type: str = "tab") -> Optional[str]:
+def new_window(server_url: str, session: str, window_type: str = "tab") -> str:
     """Open a new window
     :param window_type (str): tab or window
 
@@ -307,34 +307,34 @@ def get_named_cookie(server_url: str, session: str, name: str) -> Optional[Dict[
         raise WebDriverError(f"Failed to get the cookie '{name}'.") from e
 
 
-def get_computed_label(server_url: str, session: str, element: str) -> Optional[str]:
+def get_computed_label(server_url: str, session: str, element: str) -> str:
     """Get the element computed label. Get the accessibility name."""
     try:
         url: str = f"{server_url}/session/{session}/element/{element}/computedlabel"
-        return _get(url).get("value")
+        return _get(url).get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get the element computed label.") from e
 
 
-def get_computed_role(server_url: str, session: str, element: str) -> Optional[str]:
+def get_computed_role(server_url: str, session: str, element: str) -> str:
     """Get the element computed role (the element role)"""
     try:
         url: str = f"{server_url}/session/{session}/element/{element}/computedrole"
-        return _get(url).get("value")
+        return _get(url).get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get the element computed role.") from e
 
 
-def get_tag_name(server_url: str, session: str, element: str) -> Optional[str]:
+def get_tag_name(server_url: str, session: str, element: str) -> str:
     """Get the element tag name"""
     try:
         url: str = f"{server_url}/session/{session}/element/{element}/name"
-        return _get(url).get("value")
+        return _get(url).get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get the element name.") from e
 
 
-def get_shadow_root(server_url: str, session: str, element: str) -> Optional[str]:
+def get_shadow_root(server_url: str, session: str, element: str) -> str:
     """Get the shadow root element"""
     try:
         root_element: str = "shadow-6066-11e4-a52e-4f735466cecf"
@@ -346,7 +346,7 @@ def get_shadow_root(server_url: str, session: str, element: str) -> Optional[str
 
 def get_shadow_element(
     server_url: str, session: str, shadow_element: str, locator_type: str, locator_value: str
-) -> Optional[str]:
+) -> str:
     """Get the shadow root element"""
     try:
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
@@ -360,7 +360,7 @@ def get_shadow_element(
 
 def get_shadow_element_jsonwire(
     server_url: str, session: str, shadow_element: str, locator_type: str, locator_value: str
-) -> Optional[str]:
+) -> str:
     """Get the shadow root element"""
     try:
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
@@ -374,7 +374,7 @@ def get_shadow_element_jsonwire(
 
 def get_shadow_elements(
     server_url: str, session: str, shadow_element: str, locator_type: str, locator_value: str
-) -> Optional[str]:
+) -> List[str]:
     """Get the list of shadow root element"""
     try:
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
@@ -388,7 +388,7 @@ def get_shadow_elements(
 
 def get_shadow_elements_jsonwire(
     server_url: str, session: str, shadow_element: str, locator_type: str, locator_value: str
-) -> Optional[str]:
+) -> List[str]:
     """Get the list of shadow root element"""
     try:
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
@@ -699,11 +699,11 @@ def execute_script(server_url: str, session: str, script: str, args: List[Any] =
         raise WebDriverError("Failed to run the script.") from e
 
 
-def get_alert_text(server_url: str, session: str) -> Optional[str]:
+def get_alert_text(server_url: str, session: str) -> str:
     """Get the text from an alert"""
     try:
         url: str = f"{server_url}/session/{session}/alert/text"
-        return _get(url).get("value")
+        return _get(url).get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get the alert text.") from e
 
@@ -748,11 +748,11 @@ def is_element_enabled(server_url: str, session: str, element: str) -> bool:
         raise WebDriverError("Failed to check if element is enabled.") from e
 
 
-def get_css_value(server_url: str, session: str, element: str, property_name: str) -> Optional[str]:
+def get_css_value(server_url: str, session: str, element: str, property_name: str) -> str:
     """Get the css property value"""
     try:
         url: str = f"{server_url}/session/{session}/element/{element}/css/{property_name}"
-        return _get(url).get("value")
+        return _get(url).get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get the css property value.") from e
 
@@ -907,7 +907,7 @@ def get_attribute(server_url: str, session: str, element: str, attribute: str) -
         response: Dict[str, Any] = _get(url)
         if not response.get("value"):
             return ""
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get value from element.") from e
 
@@ -950,12 +950,12 @@ def close_session(server_url: str, session: str) -> bool:
         raise WebDriverError("Failed to close session.") from e
 
 
-def get_text(server_url: str, session: str, element: str) -> Optional[str]:
+def get_text(server_url: str, session: str, element: str) -> str:
     """Get the text of an element"""
     try:
         url: str = f"{server_url}/session/{session}/element/{element}/text"
         response: Dict[str, Any] = _get(url)
-        return response.get("value")
+        return response.get("value", "")
     except Exception as e:
         raise WebDriverError("Failed to get text from element.") from e
 

@@ -4,7 +4,7 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 import os
-from typing import Dict, List, Union
+from typing import Callable, Dict, List, Union
 
 from aiohttp import ClientSession
 
@@ -123,7 +123,7 @@ class _FindElementJsonWire:
         return result
 
 
-FIND_ELEMENT_IMPLEMENTATIONS: Dict[str, _FindElement] = {
+FIND_ELEMENT_IMPLEMENTATIONS: Dict[str, Callable] = {
     Specification.FIREFOX: _FindElementW3C,
     Specification.CHROME: _FindElementJsonWire,
     Specification.EDGE: _FindElementJsonWire,
@@ -139,7 +139,7 @@ class AsyncDriver:
     def __init__(
         self,
         server_url: str,
-        capabilities: Union[BaseCapabilitiesBuilder, dict, None] = None,
+        capabilities: Union[BaseCapabilitiesBuilder, dict] = dict(),
         session_http: Union[ClientSession, None] = None,
         port: int = 9999,
         specification: str = "",
@@ -168,7 +168,7 @@ class AsyncDriver:
         if isinstance(capabilities, BaseCapabilitiesBuilder):
             self._capabilities = capabilities.to_dict()
         else:
-            self._capabilities: dict = capabilities
+            self._capabilities = capabilities
         self._server_url: str = server_url
         self._session: str = synchronous.get_session(self._server_url, self._capabilities)
         self._elements_pool: List[Element] = []

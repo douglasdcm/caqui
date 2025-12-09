@@ -4,18 +4,6 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 
-class Browser:
-    """
-    https://pypi.org/project/webdriver-manager/
-    """
-
-    CHROME = "chrome"
-    FIREFOX = "firefox"
-    EDGE = "edge"
-    OPERA = "opera"
-    IE = "internet explorer"
-
-
 class BaseCapabilitiesBuilder:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
 
@@ -23,7 +11,7 @@ class BaseCapabilitiesBuilder:
         self.desired_capabilities: dict = {}
         self.options: dict = {}
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         raise NotImplementedError
 
     def browser_name(self, name: str):
