@@ -122,6 +122,7 @@ async def test_get_url(setup_playground: AsyncDriver):
 
     assert expected in driver.current_url
 
+
 @mark.asyncio
 async def test_get_title(setup_playground: AsyncDriver):
     driver = setup_playground

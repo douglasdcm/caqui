@@ -1,8 +1,8 @@
 import pytest_asyncio
 from pytest import fixture
 
+from caqui.easy.capabilities import ChromeCapabilitiesBuilder ,FirefoxCapabilitiesBuilder, OperaCapabilitiesBuilder, EdgeCapabilitiesBuilder
 from caqui.easy.drivers import AsyncDriver
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder
 from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL
 
@@ -10,12 +10,15 @@ SERVER_PORT = 9999
 SERVER_URL = f"http://localhost:{SERVER_PORT}"
 TIMEOUTS = 2000
 
+
 def _build_capabilities():
+    # return OperaCapabilitiesBuilder().args(["headless"])
     # return FirefoxCapabilitiesBuilder().args(["headless"])
+    # return EdgeCapabilitiesBuilder().args(["headless"])
     return (
         ChromeCapabilitiesBuilder()
         .accept_insecure_certs(True)
-        .args(["headless", "verbose"])
+        .args(["headless"])
         .page_load_strategy("eager")
         .timeouts(TIMEOUTS, TIMEOUTS, TIMEOUTS)
     )
@@ -23,9 +26,12 @@ def _build_capabilities():
 
 @fixture(autouse=True, scope="session")
 def setup_server():
-    server = LocalServer()
-    server.start_chrome()
+    server = LocalServer(executable_path="/home/douglas/.wdm/drivers/operadriver/linux64/v.140.0.7339.249/operadriver_linux64/operadriver")
+    server.start()
+    # server.start_chrome()
     # server.start_firefox()
+    # server.start_opera()
+    # server.start_edge()
     # yield
     # server.dispose()
 

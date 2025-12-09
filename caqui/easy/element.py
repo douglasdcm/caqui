@@ -4,14 +4,12 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 import os
-
+from typing import TYPE_CHECKING, Dict, List, Tuple
+from caqui.constants import Specification
 from caqui import asynchronous, synchronous
 
-
-from typing import Dict, List, Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
     from caqui.easy.drivers import AsyncDriver
-
 
 
 class _FindShadowElement:
@@ -60,6 +58,7 @@ class _FindShadowElementW3C(_FindShadowElement):
         )
         return Element(shadow_element, element._driver)
 
+
 class _FindShadowElementJsonWire:
     async def find_elements(self, element: "Element", locator: str, value: str) -> list:
         """
@@ -102,16 +101,13 @@ class _FindShadowElementJsonWire:
         return Element(shadow_element, element._driver)
 
 
-CHROME = "ChromeCapabilitiesBuilder"
-FIREFOX = "FirefoxCapabilitiesBuilder"
-EDGE = "EdgeCapabilitiesBuilder"
-OPERA = "OperaCapabilitiesBuilder"
-
 FIND_ELEMENT_SHADOW_IMPLEMENTATIONS: Dict[str, _FindShadowElement] = {
-    FIREFOX: _FindShadowElementW3C,
-    CHROME: _FindShadowElementJsonWire,
-    EDGE: _FindShadowElementW3C,
-    OPERA: _FindShadowElementW3C,
+    Specification.FIREFOX: _FindShadowElementW3C,
+    Specification.CHROME: _FindShadowElementJsonWire,
+    Specification.EDGE: _FindShadowElementJsonWire,
+    Specification.OPERA: _FindShadowElementJsonWire,
+    Specification.JSONWIRE: _FindShadowElementJsonWire,
+    Specification.W3C: _FindShadowElementW3C
 }
 
 

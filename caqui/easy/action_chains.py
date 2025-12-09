@@ -3,16 +3,16 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
-from typing import Coroutine, List, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Coroutine, List, Union
 
 from caqui import asynchronous
 
 if TYPE_CHECKING:
-    from caqui.easy.element import Element
     from caqui.easy.drivers import AsyncDriver
+    from caqui.easy.element import Element
 
 
-class ActionChains:
+class ActionChainsW3C:
     def __init__(self, driver: "AsyncDriver") -> None:
         self._server_url = driver.server_url
         self._session = driver.session
@@ -40,7 +40,7 @@ class ActionChains:
         self._coroutines.append(coroutine)
         return self
 
-    def scroll_to_element(self, element: "Element", delta_y=1000) -> "ActionChains":
+    def scroll_to_element(self, element: "Element", delta_y=1000) -> "ActionChainsW3C":
         """Scrolls the screen to the element `element`"""
         self._element = element
         coroutine = asynchronous.actions_scroll_to_element(
@@ -59,7 +59,7 @@ class ActionChains:
         return True
 
 
-class ActionChainsJsonWire(ActionChains):
+class ActionChainsJsonWire(ActionChainsW3C):
     def __init__(self, driver):
         super().__init__(driver)
 
@@ -72,7 +72,7 @@ class ActionChainsJsonWire(ActionChains):
         self._coroutines.append(coroutine)
         return self
 
-    def scroll_to_element(self, element: "Element", delta_y=1000) -> "ActionChains":
+    def scroll_to_element(self, element: "Element", delta_y=1000) -> "ActionChainsW3C":
         """Scrolls the screen to the element `element`"""
         self._element = element
         coroutine = asynchronous.actions_scroll_to_element_jsonwire(

@@ -7,6 +7,7 @@ from caqui.easy.drivers import AsyncDriver
 from caqui.exceptions import WebDriverError
 from tests.constants import COOKIE, OTHER_URL, PAGE_URL
 
+
 @mark.asyncio
 async def test_send_alert_text(setup_playground: AsyncDriver):
     driver = setup_playground
@@ -46,4 +47,3 @@ async def test_dismiss_alert(setup_playground: AsyncDriver):
     element = await driver.find_element(locator_type, locator_value)
     await element.click()
     assert await driver.alert.dismiss() is True
-

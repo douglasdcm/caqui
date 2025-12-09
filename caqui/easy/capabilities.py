@@ -294,50 +294,105 @@ class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
         }
 
 
-class EdgeCapabilitiesBuilder(ChromeCapabilitiesBuilder):
+class EdgeCapabilitiesBuilder(BaseCapabilitiesBuilder):
+    OPTIONS = "ms:edgeOptions"
     def __init__(self):
         super().__init__()
-        self.options = {"ms:edgeOptions": {}}
+        self.options = {EdgeCapabilitiesBuilder.OPTIONS: {}}
 
+    def perf_logging_prefs(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["perfLoggingPrefs"] = value
+        return self
+
+    def detach(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["detach"] = value
+        return self
+
+    def binary(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["binary"] = value
+        return self
+
+    def extensions(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["extensions"] = value
+        return self
+
+    def debugger_address(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["debuggerAddress"] = value
+        return self
+
+    def exclude_switches(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["excludeSwitches"] = value
+        return self
+
+    def minidump_path(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["minidumpPath"] = value
+        return self
+
+    def windows_types(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["windowsTypes"] = value
+        return self
+
+    def mobile_emulation(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["mobileEmulation"] = value
+        return self
+
+    def local_state(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["localState"] = value
+        return self
+
+    def args(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["args"] = value
+        return self
+
+    def prefs(self, value):
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["prefs"] = value
+        return self
+
+    # More options
     def wdp_address(self, value: str):
         """An address of a Windows Device Portal server to connect to,
         in the form of hostname/ip:port, for example 127.0.0.1:50080"""
-        self.options = {**self.options, **{"wdpAddress": value}}
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["wdpAddress"] = value
         return self
-
     def wdp_password(self, value: str):
         """Optional password to use when connecting to a Windows Device Portal server.
         Required if the server has authentication enabled."""
-        self.options = {**self.options, **{"wdpPassword": value}}
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["wdpPassword"] = value
         return self
 
     def wdp_username(self, value: str):
         """Optional user name to use when connecting to a Windows Device Portal server.
         Required if the server has authentication enabled."""
-        self.options = {**self.options, **{"wdpUsername": value}}
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["wdpUsername"] = value
         return self
 
     def wdp_processId(self, value: str):
         """The required process ID to use if attaching to a running
         WebView2 UWP app, for example 36590."""
-        self.options = {**self.options, **{"wdpProcessId": value}}
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["wdpProcessId"] = value
         return self
 
     def webview_options(self, value: str):
         """An optional dictionary that can be used to configure the WebView2
         environment when launching a WebView2 app."""
-        self.options = {**self.options, **{"webviewOptions": value}}
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["webviewOptions"] = value
         return self
 
     def windows_app(self, value: str):
         """Application user model ID of a Microsoft Edge app package to launch,
         for example `Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe!MSEDGE.`"""
-        self.options = {**self.options, **{"windowsApp": value}}
+        self.options[EdgeCapabilitiesBuilder.OPTIONS]["windowsApp"] = value
         return self
 
     def to_dict(self):
         """Converts the options to a dict"""
-        return {"ms:edgeOptions": self.options}
+        if self.options[EdgeCapabilitiesBuilder.OPTIONS]:
+            return {"desiredCapabilities": {**self.desired_capabilities, **self.options}}
+        return {
+            "desiredCapabilities": {
+                **self.desired_capabilities,
+            }
+        }
 
 
 class OperaCapabilitiesBuilder(ChromeCapabilitiesBuilder):

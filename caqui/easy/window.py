@@ -3,11 +3,13 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
+from typing import TYPE_CHECKING, Dict, List, Tuple
+
 from caqui import asynchronous
 
-from typing import Dict, List, Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
     from caqui.easy.drivers import AsyncDriver
+
 
 class Window:
     def __init__(self, driver: "AsyncDriver") -> None:

@@ -9,32 +9,34 @@ from typing import Dict, List, Optional, Union
 from aiohttp import ClientSession
 
 from caqui import asynchronous, synchronous
-from caqui.easy.action_chains import ActionChains, ActionChainsJsonWire
+from caqui.easy.action_chains import ActionChainsW3C, ActionChainsJsonWire
 from caqui.easy.alert import Alert
 from caqui.easy.capabilities import BaseCapabilitiesBuilder
-from caqui.easy.switch_to import SwitchTo, SwitchToJsonWire
 from caqui.easy.element import Element
+from caqui.easy.switch_to import SwitchToW3C, SwitchToJsonWire
 from caqui.easy.window import Window
-
+from caqui.exceptions import WebDriverError
+from caqui.constants import Specification
 TIMEOUT = 120  # seconds
 
-CHROME = "ChromeCapabilitiesBuilder"
-FIREFOX = "FirefoxCapabilitiesBuilder"
-EDGE = "EdgeCapabilitiesBuilder"
-OPERA = "OperaCapabilitiesBuilder"
+
 
 SWITCHTO_IMPLEMENTATIONS = {
-    FIREFOX: SwitchTo,
-    CHROME: SwitchToJsonWire,
-    EDGE: SwitchTo,
-    OPERA: SwitchTo,
+    Specification.FIREFOX: SwitchToW3C,
+    Specification.CHROME: SwitchToJsonWire,
+    Specification.EDGE: SwitchToJsonWire,
+    Specification.OPERA: SwitchToJsonWire,
+    Specification.JSONWIRE: SwitchToJsonWire,
+    Specification.W3C: SwitchToW3C,
 }
 
 ACTION_CHAINS_IMPLEMENTATIONS = {
-    FIREFOX: ActionChains,
-    CHROME: ActionChainsJsonWire,
-    EDGE: ActionChains,
-    OPERA: ActionChains,
+    Specification.FIREFOX: ActionChainsW3C,
+    Specification.CHROME: ActionChainsJsonWire,
+    Specification.EDGE: ActionChainsJsonWire,
+    Specification.OPERA: ActionChainsJsonWire,
+    Specification.JSONWIRE: ActionChainsJsonWire,
+    Specification.W3C: ActionChainsW3C,
 }
 
 
@@ -122,10 +124,12 @@ class _FindElementJsonWire:
 
 
 FIND_ELEMENT_IMPLEMENTATIONS: Dict[str, _FindElement] = {
-    FIREFOX: _FindElementW3C,
-    CHROME: _FindElementJsonWire,
-    EDGE: _FindElementW3C,
-    OPERA: _FindElementW3C,
+    Specification.FIREFOX: _FindElementW3C,
+    Specification.CHROME: _FindElementJsonWire,
+    Specification.EDGE: _FindElementJsonWire,
+    Specification.OPERA: _FindElementJsonWire,
+    Specification.JSONWIRE: _FindElementJsonWire,
+    Specification.W3C: _FindElementW3C
 }
 
 
@@ -135,17 +139,35 @@ class AsyncDriver:
     def __init__(
         self,
         server_url: str,
-        capabilities: Optional[BaseCapabilitiesBuilder] = None,
+        capabilities: Union[BaseCapabilitiesBuilder, dict, None] = None,
         session_http: Union[ClientSession, None] = None,
         port: int = 9999,
+        specification :str= ""
     ) -> None:
-        """Mimics Selenium methods"""
-        self.browser = capabilities.__class__.__name__
+        """Mimics Selenium methods
+        
+        Args:
+            server_url: the URL of the remote server running the driver
+            capabilities: the configuration to the driver
+            session_http: a client to make HTTP requests
+            port: the port where the remote server is running the driver
+            specification: the specification the driver follows. Allowed values are "w3c" or "jsonwire"
+                For example, ChromeDriver follows JsonWire protocol while GeckoDriver works with W3C
+        """
+        if isinstance(capabilities, BaseCapabilitiesBuilder):
+            self.browser = capabilities.__class__.__name__
+        elif specification.lower() in ["w3c", "jsonwire"]:
+            self.browser = specification.lower()
+        else:
+            raise WebDriverError("No valid specification or capabilities")
         self._port = port
         self.session_http = session_http
-        self._capabilities: dict = {}
+        self._capabilities :dict = {}
+        # breakpoint()
         if isinstance(capabilities, BaseCapabilitiesBuilder):
             self._capabilities = capabilities.to_dict()
+        else:
+            self._capabilities: dict = capabilities
         self._server_url: str = server_url
         self._session: str = synchronous.get_session(self._server_url, self._capabilities)
         self._elements_pool: List[Element] = []
@@ -181,10 +203,9 @@ class AsyncDriver:
         return Window(self)
 
     @property
-    def actions(self) -> ActionChains:
+    def actions(self) -> ActionChainsW3C:
         """Returns the `ActionChains` object"""
         return ACTION_CHAINS_IMPLEMENTATIONS[self.browser](self)
-        return ActionChains(self)
 
     @property
     def alert(self):
@@ -192,7 +213,7 @@ class AsyncDriver:
         return Alert(self)
 
     @property
-    def switch_to(self) -> SwitchTo:
+    def switch_to(self) -> SwitchToW3C:
         """Returns the `SwithTo` object"""
         return SWITCHTO_IMPLEMENTATIONS[self.browser](self)
 
@@ -366,43 +387,13 @@ class AsyncDriver:
             self._server_url, self._session, url, session_http=self.session_http
         )
 
-    # async def find_shadow_elements(self, element, locator, value) -> list:
-    #     """Search the DOM elements by 'locator', for example, 'xpath'"""
-    #     return await FIND_ELEMENT_SHADOW_IMPLEMENTATIONS[self._browser]().find_elements(self, locator, value)
-
-    # async def find_shadow_element(self, locator, value) -> Element:
-    #     """Find an element by a 'locator', for example 'xpath'"""
-    #     return await FIND_ELEMENT_SHADOW_IMPLEMENTATIONS[self._browser]().find_element(self, locator, value)
 
     async def find_elements(self, locator, value) -> List[Element]:
         """Search the DOM elements by 'locator', for example, 'xpath'"""
         return await FIND_ELEMENT_IMPLEMENTATIONS[self.browser]().find_elements(
             self, locator, value
         )
-        elements = await asynchronous.find_elements(
-            self._server_url, self._session, locator, value, session_http=self.session_http
-        )
-        result = []
-        for element in elements:
-            el = Element(element, self)
-            el.locator = (locator, value)
-            result.append(el)
-        self._elements_pool.extend(result)
-        self._elements_pool = list(set(self._elements_pool))
-        return result
 
     async def find_element(self, locator, value) -> Element:
         """Find an element by a 'locator', for example 'xpath'"""
         return await FIND_ELEMENT_IMPLEMENTATIONS[self.browser]().find_element(self, locator, value)
-        elements_filtered: List[Element] = [
-            e for e in self._elements_pool if e.locator == (locator, value)
-        ]
-        if elements_filtered:
-            return elements_filtered[0]
-        element = await asynchronous.find_element(
-            self._server_url, self._session, locator, value, session_http=self.session_http
-        )
-        result = Element(element, self)
-        result.locator = (locator, value)
-        self._elements_pool.append(result)
-        return result

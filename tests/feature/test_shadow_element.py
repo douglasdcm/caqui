@@ -1,12 +1,6 @@
-import aiohttp
-from aiohttp import ClientSession
-from pytest import mark, raises
-
-from caqui import asynchronous, synchronous
+from pytest import mark
 from caqui.by import By
 from caqui.easy.drivers import AsyncDriver
-from caqui.exceptions import WebDriverError
-from tests.constants import COOKIE, OTHER_URL, PAGE_URL
 
 
 @mark.parametrize("locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")])
@@ -39,6 +33,3 @@ async def test_find_element_from_shadow_root(setup_playground: AsyncDriver, loca
     actual = await shadow_content.get_text()
 
     assert actual == expected
-
-
-

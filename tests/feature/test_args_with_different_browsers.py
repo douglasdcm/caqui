@@ -1,39 +1,93 @@
-import pytest_asyncio
-from pytest import mark
+from pytest import fixture, mark
 
 from caqui.by import By
 from caqui.easy import AsyncDriver
+from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder, OperaCapabilitiesBuilder, EdgeCapabilitiesBuilder
+from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL
+from caqui.constants import Specification
 
-SERVER_PORT = 9999
-SERVER_URL = f"http://localhost:{SERVER_PORT}"
-CAPTURES = "captures"
+CAPABILITIES = {
+    Specification.CHROME:{
+        "capability": ChromeCapabilitiesBuilder(),
+        "port":9997,
+        "url":f"http://localhost:9997"
+    },
+    Specification.FIREFOX: {
+        "capability": FirefoxCapabilitiesBuilder(), "port":9996,
+        "url":f"http://localhost:9996"    
+    },
+    Specification.OPERA:{"capability": OperaCapabilitiesBuilder(), "port":9995,
+        "url":f"http://localhost:9995"
+    },
+    Specification.EDGE:{"capability": EdgeCapabilitiesBuilder(), "port":9994,
+        "url":f"http://localhost:9994"
+    }
+}
 
 
-@mark.skip(reason="Used for performance tests")
+# @mark.skip(reason="Used for local tests")
 class TestArgs:
-    def _build_capabilities(self):
-        capabilities = []
-        return capabilities
+    @fixture(autouse=True, scope="class")
+    def setup_server_chrome(self):
+        server = LocalServer(CAPABILITIES[Specification.CHROME]["port"])
+        server.start_chrome()
+        yield
+        server.dispose()
 
-    @pytest_asyncio.fixture
-    async def setup_environment(self):
-        server_url = SERVER_URL
-        capabilities = self._build_capabilities()
-        for capability in capabilities:
-            page = AsyncDriver(server_url, capability, PAGE_URL)
-            yield page
-            page.quit()
+    @fixture(autouse=True, scope="class")
+    def setup_server_firefox(self):
+        server = LocalServer(
+            CAPABILITIES[Specification.FIREFOX]["port"],
+            executable_path="/home/douglas/.wdm/drivers/geckodriver/linux64/v0.36.0/geckodriver"    
+        )
+        server.start_firefox()
+        yield
+        server.dispose()
 
+
+    @fixture(autouse=True, scope="class")
+    def setup_server_opera(self):
+        server = LocalServer(
+            CAPABILITIES[Specification.OPERA]["port"],
+            executable_path="/home/douglas/.wdm/drivers/operadriver/linux64/v.140.0.7339.249/operadriver_linux64/operadriver")
+        server.start_opera()
+        yield
+        server.dispose()
+
+
+    @fixture(autouse=True, scope="class")
+    def setup_server_edge(self):
+        server = LocalServer(
+            CAPABILITIES[Specification.EDGE]["port"],
+            executable_path="/home/douglas/.wdm/drivers/edgedriver/142/msedgedriver"
+        )
+        server.start_edge()
+        yield
+        server.dispose()
+
+
+
+    @mark.parametrize("capabilities",[
+        CAPABILITIES[Specification.CHROME],
+        CAPABILITIES[Specification.FIREFOX],
+        CAPABILITIES[Specification.OPERA],
+        CAPABILITIES[Specification.EDGE],
+
+    ])
     @mark.asyncio
     async def test_args_with_many_browsers(
-        self,
-        setup_environment: AsyncDriver,
+        self, capabilities
     ):
-        page = setup_environment
-        await page.implicitly_wait(10)
-        await page.get(
-            PAGE_URL,
-        )
-        click_button = await page.find_element(By.ID, "button")
-        await click_button.click()
+        driver = None
+        try:
+            server_url = capabilities["url"]
+            capabilities["capability"].args(["headless"])
+            driver = AsyncDriver(server_url, capabilities["capability"])
+            await driver.get(
+                PAGE_URL,
+            )
+            click_button = await driver.find_element(By.ID, "button")
+            await click_button.click()
+        finally:
+            driver.quit()

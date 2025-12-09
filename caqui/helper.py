@@ -63,7 +63,6 @@ def get_element(response: dict) -> str:
                         `response.get("value")` returns None), attribute access
                         on `None` will raise.
     """
-    # raise Exception("deleteme")
     value = response.get("value", {})
     # Google Chrome
     element = value.get(ELEMENT_W3C)

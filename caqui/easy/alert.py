@@ -3,7 +3,8 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
-from typing import Coroutine, List, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Coroutine, List, Union
+
 from caqui import asynchronous, synchronous
 
 if TYPE_CHECKING:

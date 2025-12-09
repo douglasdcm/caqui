@@ -113,9 +113,6 @@ async def test_maximize_window_asynchronous(setup_playground: AsyncDriver):
     assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
 
 
-
-
-
 @mark.parametrize("window_type", ("tab", "window"))
 @mark.asyncio
 async def test_new_window(setup_playground: AsyncDriver, window_type):
@@ -126,9 +123,6 @@ async def test_new_window(setup_playground: AsyncDriver, window_type):
 
     # time.sleep(3)
     assert await driver.switch_to.new_window(window_type) is not None
-
-
-
 
 
 @mark.asyncio
@@ -200,7 +194,6 @@ async def test_get_rect(setup_playground: AsyncDriver):
     assert actual["y"]
 
 
-
 @mark.asyncio
 async def test_move_to_element(setup_playground: AsyncDriver):
     driver = setup_playground
@@ -251,8 +244,6 @@ async def test_raise_exception_when_element_not_found(setup_playground: AsyncDri
         await driver.find_element(locator_type, locator_value)
 
 
-
-
 @mark.asyncio
 async def test_find_children_elements(setup_playground: AsyncDriver):
     driver = setup_playground
@@ -267,7 +258,6 @@ async def test_find_children_elements(setup_playground: AsyncDriver):
     assert len(children_elements) > expected
 
 
-
 @mark.asyncio
 async def test_find_child_element(setup_playground: AsyncDriver):
     driver = setup_playground
@@ -279,7 +269,6 @@ async def test_find_child_element(setup_playground: AsyncDriver):
     child_element = await parent_element.find_element(locator_type, locator_value)
     text = await child_element.get_text()
     assert text == expected
-
 
 
 @mark.asyncio
@@ -296,8 +285,6 @@ async def test_execute_script_asynchronous(setup_playground: AsyncDriver):
     script = "alert('any warn')"
 
     assert await driver.execute_script(script) is None
-
-
 
 
 @mark.asyncio

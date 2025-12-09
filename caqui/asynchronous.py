@@ -307,7 +307,6 @@ async def new_window(
 async def switch_to_parent_frame(
     server_url, session, element_frame, session_http: Union[ClientSession, None] = None
 ):
-    # raise Exception("deleteme")
     """Switch to parent frame of 'element_frame'"""
     try:
         url = f"{server_url}/session/{session}/frame/parent"
@@ -335,7 +334,6 @@ async def switch_to_frame(
     server_url, session, element_frame, session_http: Union[ClientSession, None] = None
 ):
     """Switch to frame 'element_frame'"""
-    # raise Exception("deleteme")
 
     try:
         url = f"{server_url}/session/{session}/frame"
@@ -507,7 +505,6 @@ async def get_shadow_element(
     session_http: Union[ClientSession, None] = None,
 ) -> Optional[str]:
     """Get the shadow root element"""
-    # raise Exception("deleteme")
     try:
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/element"
@@ -597,7 +594,6 @@ async def actions_move_to_element(
     server_url: str, session: str, element: str, session_http: Union[ClientSession, None] = None
 ) -> bool:
     """Move to an element simulating a mouse movement"""
-    # raise Exception("deleteme")
     try:
         payload = {
             "actions": [
@@ -738,7 +734,6 @@ async def actions_click(
     server_url, session, element, session_http: Union[ClientSession, None] = None
 ):
     """Click an element simulating a mouse movement"""
-    # raise Exception("deleteme")
     try:
         payload = {
             "actions": [
@@ -1081,7 +1076,6 @@ async def find_elements(
     session_http: Union[ClientSession, None] = None,
 ) -> List[Any]:
     """Search the DOM elements by 'locator', for example, 'xpath'"""
-    # raise Exception("deleteme")
     locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
     try:
         payload = {"using": locator_type, "value": locator_value}

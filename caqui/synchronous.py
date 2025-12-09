@@ -158,7 +158,6 @@ def maximize_window(server_url: str, session: str) -> bool:
 def switch_to_window(server_url: str, session: str, handle: str) -> bool:
     """Switch to window"""
     try:
-        # raise Exception("deleteme")
         url: str = f"{server_url}/session/{session}/window"
         payload: Dict[str, str] = {"handle": handle}
         _post(url, payload)
@@ -195,7 +194,6 @@ def new_window(server_url: str, session: str, window_type: str = "tab") -> Optio
 def switch_to_parent_frame(server_url: str, session: str, element_frame: str) -> bool:
     """Switch to parent frame of 'element_frame'"""
     try:
-        # raise Exception("deleteme")
         url: str = f"{server_url}/session/{session}/frame/parent"
         payload: Dict[str, Dict[str, str]] = {"id": {ELEMENT_W3C: element_frame}}
         _post(url, payload)
@@ -218,7 +216,6 @@ def switch_to_parent_frame_jsonwire(server_url: str, session: str, element_frame
 def switch_to_frame(server_url: str, session: str, element_frame: str) -> bool:
     """Switch to frame 'element_frame'"""
     try:
-        # raise Exception("deleteme")
         url: str = f"{server_url}/session/{session}/frame"
         payload: Dict[str, Dict[str, str]] = {"id": {ELEMENT_W3C: element_frame}}
         _post(url, payload)
@@ -352,7 +349,6 @@ def get_shadow_element(
 ) -> Optional[str]:
     """Get the shadow root element"""
     try:
-        # raise Exception("deleteme")
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/element"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
@@ -381,7 +377,6 @@ def get_shadow_elements(
 ) -> Optional[str]:
     """Get the list of shadow root element"""
     try:
-        # raise Exception("deleteme")
         locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/elements"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
@@ -417,7 +412,6 @@ def get_rect(server_url: str, session: str, element: str) -> Optional[Dict[str, 
 def actions_move_to_element(server_url: str, session: str, element: str) -> bool:
     """Move to an element simulating a mouse movement"""
     try:
-        # raise Exception("deleteme")
         payload: Dict[str, List[Dict[str, Any]]] = {
             "actions": [
                 {
@@ -479,7 +473,6 @@ def actions_move_to_element_jsonwire(server_url: str, session: str, element: str
 
 def actions_scroll_to_element(server_url: str, session: str, element: str, delta_y=1000) -> bool:
     """Scroll to an element simulating a mouse movement"""
-    # raise Exception("deleteme")
     try:
         payload: Dict[str, List[Dict[str, Any]]] = {
             "actions": [
@@ -559,7 +552,6 @@ def submit(server_url: str, session: str, element: str) -> bool:
 
 def actions_click(server_url: str, session: str, element: str) -> bool:
     """Click an element simulating a mouse movement"""
-    # raise Exception("deleteme")
     try:
         payload: Dict[str, List[Dict[str, Any]]] = {
             "actions": [

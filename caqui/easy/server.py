@@ -11,7 +11,6 @@ import requests
 from requests import head
 from requests.exceptions import ConnectionError
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.manager import DriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from webdriver_manager.opera import OperaDriverManager
@@ -41,15 +40,22 @@ class LocalServer:
         Reference: https://pypi.org/project/webdriver-manager/#use-with-chrome
 
         port: the port to start the local server
+        executable_path: the path where the driver. For example:
+            /home/my-user/.wdm/drivers/geckodriver/linux64/v0.36.0/geckodriver
+            /home/my-user/.wdm/drivers/operadriver/linux64/v.140.0.7339.249/operadriver_linux64/operadriver
+            /home/my-user/.wdm/drivers/chromedriver/linux64/142.0.7444.175/chromedriver-linux64
     """
 
-    def __init__(self, port: int = 9999) -> None:
+    def __init__(self, port: int = 9999, executable_path:Optional[str]=None) -> None:
         self._browser: Optional[str] = None
         self._port: int = port
         self._process: Optional[subprocess.Popen] = None
+        self._executable_path :Optional[str] = executable_path
 
     def _browser_factory(self) -> str:
         browser: Optional[type] = DRIVER_MANAGER.get(self._browser)  # type: ignore
+        if self._executable_path:
+            return self._executable_path
         if browser:
             return browser().install()
         raise WebDriverError(f"Browser {self._browser} not supported")
@@ -67,8 +73,8 @@ class LocalServer:
                     self._process.wait()
                     raise Exception("Driver not started")
 
-    def _start(self) -> None:
-        """Starts the local server"""
+    def start(self) -> None:
+        """Starts the local server when the `executable_path` is provided"""
         try:
             head(self.url, timeout=TIMEOUT)
         except ConnectionError:
@@ -107,7 +113,7 @@ class LocalServer:
         Sets the browser type to CHROME and initializes the server startup process.
         """
         self._browser = CHROME
-        self._start()
+        self.start()
 
     def start_firefox(self) -> None:
         """
@@ -119,7 +125,7 @@ class LocalServer:
             None
         """
         self._browser = FIREFOX
-        self._start()
+        self.start()
 
     def start_opera(self) -> None:
         """
@@ -128,7 +134,7 @@ class LocalServer:
         Sets the browser type to Opera and initiates the browser startup process.
         """
         self._browser = OPERA
-        self._start()
+        self.start()
 
     def start_edge(self) -> None:
         """
@@ -141,7 +147,7 @@ class LocalServer:
             None
         """
         self._browser = EDGE
-        self._start()
+        self.start()
 
     def dispose(self, delay: float = 0) -> None:
         """
