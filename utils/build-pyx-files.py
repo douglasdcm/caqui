@@ -23,12 +23,26 @@ def convert_python_to_pyx(root_folder: str):
 
     setup_py_content = (
         f"""
-
-from setuptools import setup
+from setuptools import setup, find_packages
 # from distutils.core import setup
-from Cython.Build import cythonize
+try:
+    from Cython.Build import cythonize
+    USE_CYTHON = True
+except ImportError:
+    USE_CYTHON = False
 
 setup(
+    name="caqui",
+    version="4.0.0",
+    packages=find_packages(include=['caqui']),
+    setup_requires=[
+        "requests",
+        "aiohttp",
+        "webdriver_manager",
+        "types-requests",
+        "orjson",
+        "Cython",
+    ],
     ext_modules=cythonize(
         {result},
         """
