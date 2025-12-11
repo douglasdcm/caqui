@@ -263,7 +263,7 @@ class AsyncDriver:
             self._server_url, self._session, script, args, session_http=self.session_http
         )
 
-    async def set_window_position(self, x, y):
+    async def set_window_position(self, x: int, y: int) -> None:
         """Repositions the page"""
         rect = await asynchronous.get_window_rectangle(
             self._server_url, self._session, session_http=self.session_http
