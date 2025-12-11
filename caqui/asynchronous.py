@@ -856,7 +856,7 @@ async def get_computed_role(
         WebDriverError: If retrieving the computed role fails.
     """
     try:
-        url = f"{server_url}/session/{session}/element/{element}/computedlabel"
+        url = f"{server_url}/session/{session}/element/{element}/computedrole"
         response = await _get(url, session_http)
         return response.get("value", "")
     except Exception as e:

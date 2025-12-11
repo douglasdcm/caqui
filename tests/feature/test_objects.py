@@ -66,9 +66,9 @@ class TestObject:
     @mark.asyncio
     async def test_send_keys(self, setup_playground: AsyncDriver):
         driver = setup_playground
-        element = await driver.find_element(locator=By.XPATH, value="//body")
+        element = await driver.find_element(locator=By.ID, value="input")
         await element.send_keys(text="any")
-        assert element.text == "any"
+        assert await element.get_property("value") == "any"
 
     @mark.asyncio
     async def test_click(self, setup_playground: AsyncDriver):
