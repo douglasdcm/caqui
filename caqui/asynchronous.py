@@ -189,7 +189,24 @@ async def add_cookie(server_url, session, cookie, session_http: Union[ClientSess
 
 
 async def delete_cookie(server_url, session, name, session_http: Union[ClientSession, None] = None):
-    """Delete cookie by name"""
+    """
+    Delete cookie by name
+
+    This function deletes a cookie with the specified name from the WebDriver session.
+    Based on W3C WebDriver Specification.
+
+    Args:
+        server_url: The base URL of the WebDriver server
+        session: The session identifier for the WebDriver session
+        name: The name of the cookie to delete
+        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
+
+    Returns:
+        True if the cookie was successfully deleted
+
+    Raises:
+        WebDriverError: If the cookie deletion fails
+    """
     try:
         url = f"{server_url}/session/{session}/cookie/{name}"
         await _delete(url, session_http)
@@ -199,7 +216,17 @@ async def delete_cookie(server_url, session, name, session_http: Union[ClientSes
 
 
 async def refresh_page(server_url, session, session_http: Union[ClientSession, None] = None):
-    """Refresh page"""
+    """
+    Refreshes the current page by making an HTTP POST request to the server URL.
+
+    Args:
+        server_url (str): The base URL of the server.
+        session (Session or None): The current session object. If not provided, a new one will be created.
+        session_http (ClientSession or None, optional): An existing client session object. Defaults to None.
+
+    Returns:
+        bool: True if the refresh operation was successful, False otherwise.
+    """
     try:
         url = f"{server_url}/session/{session}/refresh"
         payload: dict = {}
@@ -210,7 +237,20 @@ async def refresh_page(server_url, session, session_http: Union[ClientSession, N
 
 
 async def go_forward(server_url, session, session_http: Union[ClientSession, None] = None):
-    """Go to page forward"""
+    """
+    Go to page forward.
+
+    This function sends a POST request to the specified URL, 
+    with an empty payload, and returns True if successful.
+
+    Parameters:
+        server_url (str): The base URL of the server.
+        session (Session or None): The current session. If not provided, it will be obtained from the session HTTP object.
+        session_http (ClientSession or None): An optional ClientSession object to use for the POST request. Defaults to None.
+
+    Returns:
+        bool: True if the page forward operation is successful, False otherwise.
+    """
     try:
         url = f"{server_url}/session/{session}/forward"
         payload: dict = {}
@@ -220,8 +260,27 @@ async def go_forward(server_url, session, session_http: Union[ClientSession, Non
         raise WebDriverError("Failed to go to page forward.") from e
 
 
-async def set_window_rectangle(server_url, session, width, height, x, y, session_http=None):
-    """Set window rectangle"""
+async def set_window_rectangle(server_url: str, session: str, width: int, height: int, x: int, y:int, session_http:Union[ClientSession, None]=None):
+    """
+    Set window rectangle.
+    
+    This function sets the window size and position based on W3C WebDriver Specification.
+    
+    Args:
+        server_url: The base URL of the WebDriver server
+        session: The session identifier for the WebDriver session
+        width: The desired window width in pixels
+        height: The desired window height in pixels
+        x: The desired window x coordinate
+        y: The desired window y coordinate
+        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
+    
+    Returns:
+        True if the window rectangle was successfully set
+    
+    Raises:
+        WebDriverError: If the window rectangle setting fails
+    """
     try:
         url = f"{server_url}/session/{session}/window/rect"
         payload = {"width": width, "height": height, "x": x, "y": y}
@@ -231,8 +290,23 @@ async def set_window_rectangle(server_url, session, width, height, x, y, session
         raise WebDriverError("Failed to set window rectangle.") from e
 
 
-async def fullscreen_window(server_url, session, session_http: Union[ClientSession, None] = None):
-    """Fullscreen window"""
+async def fullscreen_window(server_url: str, session: str, session_http: Union[ClientSession, None] = None):
+    """
+    Fullscreen window.
+    
+    This function fullscreens the window based on W3C WebDriver Specification.
+    
+    Args:
+        server_url: The base URL of the WebDriver server
+        session: The session identifier for the WebDriver session
+        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
+    
+    Returns:
+        True if the window was successfully fullscreened
+    
+    Raises:
+        WebDriverError: If the fullscreen operation fails
+    """
     try:
         return await _handle_window(
             server_url, session, command="fullscreen", session_http=session_http
@@ -241,18 +315,46 @@ async def fullscreen_window(server_url, session, session_http: Union[ClientSessi
         raise WebDriverError("Failed to fullscreen window.") from e
 
 
-async def minimize_window(server_url, session, session_http: Union[ClientSession, None] = None):
-    """Minimize window"""
+async def minimize_window(server_url: str, session: str, session_http: Union[ClientSession, None] = None):
+    """
+    Minimize window.
+    
+    This function minimizes the window based on W3C WebDriver Specification.
+    
+    Args:
+        server_url: The base URL of the WebDriver server
+        session: The session identifier for the WebDriver session
+        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
+    
+    Returns:
+        True if the window was successfully minimized
+    
+    Raises:
+        WebDriverError: If the minimize operation fails
+    """
     try:
         return await _handle_window(
             server_url, session, command="minimize", session_http=session_http
         )
     except Exception as e:
         raise WebDriverError("Failed to minimize window.") from e
-
-
-async def maximize_window(server_url, session, session_http: Union[ClientSession, None] = None):
-    """Maximize window"""
+async def maximize_window(server_url: str, session: str, session_http: Union[ClientSession, None] = None):
+    """
+    Maximize window.
+    
+    This function maximizes the window based on W3C WebDriver Specification.
+    
+    Args:
+        server_url: The base URL of the WebDriver server
+        session: The session identifier for the WebDriver session
+        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
+    
+    Returns:
+        True if the window was successfully maximized
+    
+    Raises:
+        WebDriverError: If the maximize operation fails
+    """
     try:
         return await _handle_window(
             server_url, session, command="maximize", session_http=session_http
@@ -262,7 +364,7 @@ async def maximize_window(server_url, session, session_http: Union[ClientSession
 
 
 async def switch_to_window(
-    server_url, session, handle, session_http: Union[ClientSession, None] = None
+    server_url: str, session: str, handle: str, session_http: Union[ClientSession, None] = None
 ):
     """Switch to window"""
     try:
