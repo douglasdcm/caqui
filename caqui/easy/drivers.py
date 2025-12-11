@@ -227,15 +227,21 @@ class AsyncDriver:
     def page_source(self):
         return synchronous.get_page_source(self._server_url, self._session)
 
-    def cleanup_cache(self):
+    def cleanup_cache(self) -> None:
+        """
+        Clears the cache by resetting the _elements_pool attribute.
+
+        This method is intended to be called when the cache needs to be cleaned up.
+        It does not perform any actual cleaning, but rather resets the pool of elements.
+        """
         self._elements_pool = []
 
-    def quit(self):
+    def quit(self)->None:
         """Closes the session"""
         self.cleanup_cache()
         synchronous.close_session(self._server_url, self._session)
 
-    async def close(self):
+    async def close(self)->None:
         """Closes the window"""
         self.cleanup_cache()
         return await asynchronous.close_window(
@@ -243,6 +249,16 @@ class AsyncDriver:
         )
 
     async def execute_script(self, script, args=[]):
+        """
+        Execute a JavaScript script on the browser.
+
+        Args:
+            script (str): The JavaScript script to execute.
+            args (list[str], optional): Variable arguments for the script. Defaults to [].
+
+        Returns:
+            result: The result of the executed script.
+        """
         return await asynchronous.execute_script(
             self._server_url, self._session, script, args, session_http=self.session_http
         )
