@@ -19,12 +19,21 @@ from caqui.helper import (
 )
 
 
-def _handle_response(response: Response) -> Dict[str, Any]:
+def _handle_response(response: dict) -> dict:
     """
-    Handles the HTTP response from a web request.
-    ...
+    Handles synchronous responses from a WebDriver.
+
+    The function checks if the response status code falls within the range of 200-399.
+    If it does, it extracts the JSON response and raises an error with the status code and text.
+    Otherwise, it raises an error with the status code, text, and details (if available).
+
+    Parameters:
+    response (dict): The WebDriver response to be handled.
+
+    Returns:
+    dict: The parsed response data.
     """
-    result: Dict[str, Any] = {}
+    result = None
     if response.status_code in range(200, 399):
         result = response.json()
     else:
