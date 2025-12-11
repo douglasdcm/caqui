@@ -10,13 +10,13 @@ async def test_refresh_page(setup_playground: AsyncDriver):
     driver = setup_playground
 
     element_before = await driver.find_element(By.XPATH, "//input")
-    assert await driver.refresh() is True
+    await driver.refresh()
 
     element_after = await driver.find_element(By.XPATH, "//input")
     assert element_before != element_after
 
     element_before = element_after
-    assert await driver.refresh() is True
+    await driver.refresh()
 
     element_after = await driver.find_element(By.XPATH, "//input")
     assert element_before != element_after
@@ -31,7 +31,7 @@ async def test_go_forward(setup_playground: AsyncDriver):
     title = "Sample page"
 
     await driver.back()
-    assert await driver.forward() is True
+    await driver.forward()
     assert driver.title == title
 
 
@@ -42,9 +42,9 @@ async def test_set_window_rectangle(setup_playground: AsyncDriver):
     x = window_rectangle_before.get("width", 0) + 1
     y = window_rectangle_before.get("height", 0) + 1
 
-    assert await driver.set_window_size(width=x, height=y) is True
-
+    await driver.set_window_size(width=x, height=y)
     window_rectangle_after = await driver.get_window_size()
+
     assert window_rectangle_after != window_rectangle_before
     assert window_rectangle_after.get("height") != window_rectangle_before.get("height")
     assert window_rectangle_after.get("width") != window_rectangle_before.get("width")
@@ -55,18 +55,17 @@ async def test_fullscreen_window(setup_playground: AsyncDriver):
     driver = setup_playground
     window_rectangle_before = await driver.get_window_size()
 
-    assert await driver.fullscreen_window() is True
+    await driver.fullscreen_window()
 
     window_rectangle_after = await driver.get_window_size()
     assert window_rectangle_after != window_rectangle_before
     assert window_rectangle_after.get("height", 0) > window_rectangle_before.get("height", 0)
     assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
 
-    driver.maximize_window()
-
-    assert await driver.fullscreen_window() is True
-
+    await driver.maximize_window()
+    await driver.fullscreen_window()
     window_rectangle_after = await driver.get_window_size()
+
     assert window_rectangle_after != window_rectangle_before
     assert window_rectangle_after.get("height", 0) > window_rectangle_before.get("height", 0)
     assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
@@ -75,26 +74,20 @@ async def test_fullscreen_window(setup_playground: AsyncDriver):
 @mark.asyncio
 async def test_minimize_window(setup_playground: AsyncDriver):
     driver = setup_playground
-
-    assert await driver.minimize_window() is True
+    await driver.minimize_window()
 
 
 @mark.asyncio
 async def test_maximize_window_asynchronous(setup_playground: AsyncDriver):
     driver = setup_playground
-
-    assert await driver.maximize_window() is True
+    await driver.maximize_window()
 
 
 @mark.parametrize("window_type", ("tab", "window"))
 @mark.asyncio
 async def test_new_window(setup_playground: AsyncDriver, window_type):
     driver = setup_playground
-
     assert await driver.switch_to.new_window(window_type) is not None
-    # import time
-
-    # time.sleep(3)
     assert await driver.switch_to.new_window(window_type) is not None
 
 
@@ -103,17 +96,14 @@ async def test_take_screenshot_element(setup_playground: AsyncDriver):
     driver = setup_playground
     locator_type = By.CSS_SELECTOR
     locator_value = "#alert-button"
-
     element = await driver.find_element(locator_type, locator_value)
-
-    assert await element.screenshot("/tmp/picture.png") is True
+    await element.screenshot("/tmp/picture.png")
 
 
 @mark.asyncio
 async def test_take_screenshot(setup_playground: AsyncDriver):
     driver = setup_playground
-
-    assert await driver.save_screenshot("/tmp/picture.png") is True
+    await driver.save_screenshot("/tmp/picture.png")
 
 
 @mark.asyncio
@@ -174,7 +164,7 @@ async def test_move_to_element(setup_playground: AsyncDriver):
     locator_value = "//button"
 
     element = await driver.find_element(locator_type, locator_value)
-    assert await driver.actions.move_to_element(element).perform() is True
+    await driver.actions.move_to_element(element).perform()
 
 
 @mark.asyncio
@@ -184,7 +174,7 @@ async def test_actions_scroll_to_element(setup_playground: AsyncDriver):
     locator_value = "//button"
 
     element = await driver.find_element(locator_type, locator_value)
-    assert await driver.actions.scroll_to_element(element).perform() is True
+    await driver.actions.scroll_to_element(element).perform()
 
 
 @mark.asyncio
@@ -194,7 +184,7 @@ async def test_submit_foo(setup_playground: AsyncDriver):
     locator_value = "my-form"
 
     element = await driver.find_element(locator_type, locator_value)
-    assert await element.submit() is True
+    await element.submit()
 
 
 @mark.asyncio
@@ -204,7 +194,7 @@ async def test_actions_click(setup_playground: AsyncDriver):
     locator_value = "//button"
 
     element = await driver.find_element(locator_type, locator_value)
-    assert await driver.actions.click(element).perform() is True
+    await driver.actions.click(element).perform()
 
 
 @mark.asyncio
@@ -295,4 +285,4 @@ async def test_clear_element(setup_playground: AsyncDriver):
 
     element = await driver.find_element(locator_type, locator_value)
     await element.send_keys(text)
-    assert await element.clear() is True
+    await element.clear()

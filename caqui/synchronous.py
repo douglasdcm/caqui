@@ -19,7 +19,7 @@ from caqui.helper import (
 )
 
 
-def _handle_response(response: dict) -> dict:
+def _handle_response(response) -> dict:
     """
     Handles synchronous responses from a WebDriver.
 
@@ -409,11 +409,11 @@ def get_shadow_elements_jsonwire(
         raise WebDriverError("Failed to get the element shadow.") from e
 
 
-def get_rect(server_url: str, session: str, element: str) -> Optional[Dict[str, Any]]:
+def get_rect(server_url: str, session: str, element: str) -> Dict[str, Any]:
     """Get the element rectangle"""
     try:
         url: str = f"{server_url}/session/{session}/element/{element}/rect"
-        return _get(url).get("value")
+        return _get(url).get("value", {})
     except Exception as e:
         raise WebDriverError("Failed to get the element rect.") from e
 

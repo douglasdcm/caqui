@@ -199,7 +199,8 @@ async def delete_cookie(server_url, session, name, session_http: Union[ClientSes
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
         name: The name of the cookie to delete
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
 
     Returns:
         True if the cookie was successfully deleted
@@ -221,8 +222,10 @@ async def refresh_page(server_url, session, session_http: Union[ClientSession, N
 
     Args:
         server_url (str): The base URL of the server.
-        session (Session or None): The current session object. If not provided, a new one will be created.
-        session_http (ClientSession or None, optional): An existing client session object. Defaults to None.
+        session (Session or None): The current session object.
+        If not provided, a new one will be created.
+        session_http (ClientSession or None, optional): An existing client
+        session object. Defaults to None.
 
     Returns:
         bool: True if the refresh operation was successful, False otherwise.
@@ -240,13 +243,15 @@ async def go_forward(server_url, session, session_http: Union[ClientSession, Non
     """
     Go to page forward.
 
-    This function sends a POST request to the specified URL, 
+    This function sends a POST request to the specified URL,
     with an empty payload, and returns True if successful.
 
     Parameters:
         server_url (str): The base URL of the server.
-        session (Session or None): The current session. If not provided, it will be obtained from the session HTTP object.
-        session_http (ClientSession or None): An optional ClientSession object to use for the POST request. Defaults to None.
+        session (Session or None): The current session.
+        If not provided, it will be obtained from the session HTTP object.
+        session_http (ClientSession or None): An optional ClientSession object to use for
+        the POST request. Defaults to None.
 
     Returns:
         bool: True if the page forward operation is successful, False otherwise.
@@ -260,12 +265,20 @@ async def go_forward(server_url, session, session_http: Union[ClientSession, Non
         raise WebDriverError("Failed to go to page forward.") from e
 
 
-async def set_window_rectangle(server_url: str, session: str, width: int, height: int, x: int, y:int, session_http:Union[ClientSession, None]=None):
+async def set_window_rectangle(
+    server_url: str,
+    session: str,
+    width: int,
+    height: int,
+    x: int,
+    y: int,
+    session_http: Union[ClientSession, None] = None,
+):
     """
     Set window rectangle.
-    
+
     This function sets the window size and position based on W3C WebDriver Specification.
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
@@ -273,11 +286,12 @@ async def set_window_rectangle(server_url: str, session: str, width: int, height
         height: The desired window height in pixels
         x: The desired window x coordinate
         y: The desired window y coordinate
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         True if the window rectangle was successfully set
-    
+
     Raises:
         WebDriverError: If the window rectangle setting fails
     """
@@ -290,20 +304,23 @@ async def set_window_rectangle(server_url: str, session: str, width: int, height
         raise WebDriverError("Failed to set window rectangle.") from e
 
 
-async def fullscreen_window(server_url: str, session: str, session_http: Union[ClientSession, None] = None):
+async def fullscreen_window(
+    server_url: str, session: str, session_http: Union[ClientSession, None] = None
+):
     """
     Fullscreen window.
-    
+
     This function fullscreens the window based on W3C WebDriver Specification.
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         True if the window was successfully fullscreened
-    
+
     Raises:
         WebDriverError: If the fullscreen operation fails
     """
@@ -315,20 +332,23 @@ async def fullscreen_window(server_url: str, session: str, session_http: Union[C
         raise WebDriverError("Failed to fullscreen window.") from e
 
 
-async def minimize_window(server_url: str, session: str, session_http: Union[ClientSession, None] = None):
+async def minimize_window(
+    server_url: str, session: str, session_http: Union[ClientSession, None] = None
+):
     """
     Minimize window.
-    
+
     This function minimizes the window based on W3C WebDriver Specification.
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         True if the window was successfully minimized
-    
+
     Raises:
         WebDriverError: If the minimize operation fails
     """
@@ -338,20 +358,25 @@ async def minimize_window(server_url: str, session: str, session_http: Union[Cli
         )
     except Exception as e:
         raise WebDriverError("Failed to minimize window.") from e
-async def maximize_window(server_url: str, session: str, session_http: Union[ClientSession, None] = None):
+
+
+async def maximize_window(
+    server_url: str, session: str, session_http: Union[ClientSession, None] = None
+):
     """
     Maximize window.
-    
+
     This function maximizes the window based on W3C WebDriver Specification.
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         True if the window was successfully maximized
-    
+
     Raises:
         WebDriverError: If the maximize operation fails
     """
@@ -365,7 +390,7 @@ async def maximize_window(server_url: str, session: str, session_http: Union[Cli
 
 async def switch_to_window(
     server_url: str, session: str, handle: str, session_http: Union[ClientSession, None] = None
-    ):
+):
     """
     Switch to window.
 
@@ -430,18 +455,19 @@ async def new_window(
 ) -> str:
     """
     Open a new window.
-    
+
     This function opens a new window or tab based on W3C WebDriver Specification.
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
         window_type: The type of window to open ('tab' or 'window'). Defaults to 'tab'
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         The handle of the newly opened window
-    
+
     Raises:
         WebDriverError: If the window creation fails
     """
@@ -459,19 +485,20 @@ async def switch_to_parent_frame(
 ):
     """
     Switch to parent frame of 'element_frame'.
-    
+
     This function switches the WebDriver context to the parent frame of the specified frame element.
     Based on W3C WebDriver Specification.
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
         element_frame: The frame element identifier whose parent frame to switch to
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         True if the switch to parent frame was successful
-    
+
     Raises:
         WebDriverError: If the switch to parent frame operation fails
     """
@@ -489,19 +516,20 @@ async def switch_to_parent_frame_jsonwire(
 ):
     """
     Switch to parent frame of 'element_frame'.
-    
+
     This function switches the WebDriver context to the parent frame of the specified frame element.
     Based on W3C WebDriver Specification (JsonWire protocol).
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
         element_frame: The frame element identifier whose parent frame to switch to
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         True if the switch to parent frame was successful
-    
+
     Raises:
         WebDriverError: If the switch to parent frame operation fails
     """
@@ -519,19 +547,20 @@ async def switch_to_frame(
 ):
     """
     Switch to frame 'element_frame'.
-    
+
     This function switches the WebDriver context to the specified frame element.
     Based on W3C WebDriver Specification.
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
         element_frame: The frame element identifier to switch to
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         True if the switch to frame was successful
-    
+
     Raises:
         WebDriverError: If the switch to frame operation fails
     """
@@ -549,19 +578,20 @@ async def switch_to_frame_jsonwire(
 ):
     """
     Switch to frame 'element_frame'.
-    
+
     This function switches the WebDriver context to the specified frame element.
     Based on W3C WebDriver Specification (JsonWire protocol).
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
         element_frame: The frame element identifier to switch to
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         True if the switch to frame was successful
-    
+
     Raises:
         WebDriverError: If the switch to frame operation fails
     """
@@ -608,19 +638,20 @@ async def send_alert_text(
 ):
     """
     Send text to an alert dialog.
-    
+
     This function sends text to the currently open alert dialog.
     Based on W3C WebDriver Specification.
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
         text: The text to send to the alert dialog
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         True if the text was successfully sent to the alert
-    
+
     Raises:
         WebDriverError: If sending text to the alert fails
     """
@@ -638,18 +669,19 @@ async def send_alert_text(
 async def accept_alert(server_url, session, session_http: Union[ClientSession, None] = None):
     """
     Accept alert.
-    
+
     This function accepts the currently open alert dialog.
     Based on W3C WebDriver Specification.
-    
+
     Args:
         server_url: The base URL of the WebDriver server
         session: The session identifier for the WebDriver session
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used
-    
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used
+
     Returns:
         True if the alert was successfully accepted
-    
+
     Raises:
         WebDriverError: If the alert acceptance fails
     """
@@ -657,6 +689,8 @@ async def accept_alert(server_url, session, session_http: Union[ClientSession, N
         return await _handle_alert(server_url, session, "accept", session_http=session_http)
     except Exception as e:
         raise WebDriverError("Failed to accept alert.") from e
+
+
 async def dismiss_alert(server_url, session, session_http: Union[ClientSession, None] = None):
     """Dismiss alert
 
@@ -666,7 +700,8 @@ async def dismiss_alert(server_url, session, session_http: Union[ClientSession, 
     Args:
         server_url: The base URL of the WebDriver server.
         session: The session identifier for the WebDriver session.
-        session_http: Optional HTTP client session for making requests. If not provided, a default session will be used.
+        session_http: Optional HTTP client session for making requests.
+        If not provided, a default session will be used.
 
     Returns:
         True if the alert was successfully dismissed.
@@ -696,7 +731,8 @@ async def take_screenshot_element(
         element: The identifier of the element to take a screenshot of.
         path: The directory path where the screenshot will be saved.
         file_name: The name of the file to save the screenshot as.
-        session_http: An optional HTTP client session for making requests. If not provided, a default session will be used.
+        session_http: An optional HTTP client session for making requests.
+        If not provided, a default session will be used.
 
     Returns:
         True if the screenshot was successfully taken and saved.
@@ -707,7 +743,7 @@ async def take_screenshot_element(
     try:
         url = f"{server_url}/session/{session}/element/{element}/screenshot"
         response = await _get(url, session_http)
-        picture = response.get("value")
+        picture = response.get("value", "")
         save_picture(session, path, file_name, picture)
         return True
     except Exception as e:
@@ -715,10 +751,10 @@ async def take_screenshot_element(
 
 
 async def take_screenshot(
-    server_url,
-    session,
-    path="/tmp",
-    file_name="caqui",
+    server_url: str,
+    session: str,
+    path: str = "/tmp",
+    file_name: str = "caqui",
     session_http: Union[ClientSession, None] = None,
 ):
     """Take screenshot
@@ -728,7 +764,8 @@ async def take_screenshot(
         session: The session identifier for the WebDriver session.
         path: The directory path where the screenshot will be saved.
         file_name: The name of the file to save the screenshot as.
-        session_http: An optional HTTP client session for making requests. If not provided, a default session will be used.
+        session_http: An optional HTTP client session for making requests.
+        If not provided, a default session will be used.
 
     Returns:
         True if the screenshot was successfully taken and saved.
@@ -739,7 +776,7 @@ async def take_screenshot(
     try:
         url = f"{server_url}/session/{session}/screenshot"
         response = await _get(url, session_http)
-        picture = response.get("value")
+        picture = response.get("value", "")
         save_picture(session, path, file_name, picture)
         return True
     except Exception as e:
@@ -752,12 +789,13 @@ async def get_named_cookie(
     """Get cookie by name.
 
     This function retrieves a cookie from the WebDriver session based on the specified name.
-    
+
     Args:
         server_url: The base URL of the WebDriver server.
         session: The session identifier for the WebDriver session.
         name: The name of the cookie to retrieve.
-        session_http: An optional HTTP client session for making requests. If not provided, a default session will be used.
+        session_http: An optional HTTP client session for making requests.
+        If not provided, a default session will be used.
 
     Returns:
         A dictionary representing the cookie if found, otherwise an empty dictionary.
@@ -772,6 +810,7 @@ async def get_named_cookie(
     except Exception as e:
         raise WebDriverError(f"Failed to get cookie '{name}'.") from e
 
+
 async def get_computed_label(
     server_url, session, element, session_http: Union[ClientSession, None] = None
 ) -> str:
@@ -781,7 +820,8 @@ async def get_computed_label(
         server_url: The base URL of the WebDriver server.
         session: The session identifier for the WebDriver session.
         element: The identifier of the element to retrieve the computed label for.
-        session_http: An optional HTTP client session for making requests. If not provided, a default session will be used.
+        session_http: An optional HTTP client session for making requests.
+        If not provided, a default session will be used.
 
     Returns:
         The computed label of the element, which represents its accessibility name.
@@ -796,6 +836,7 @@ async def get_computed_label(
     except Exception as e:
         raise WebDriverError("Failed to get element computed label.") from e
 
+
 async def get_computed_role(
     server_url, session, element, session_http: Union[ClientSession, None] = None
 ) -> str:
@@ -805,7 +846,8 @@ async def get_computed_role(
         server_url: The base URL of the WebDriver server.
         session: The session identifier for the WebDriver session.
         element: The identifier of the element to retrieve the computed role for.
-        session_http: An optional HTTP client session for making requests. If not provided, a default session will be used.
+        session_http: An optional HTTP client session for making requests.
+        If not provided, a default session will be used.
 
     Returns:
         The computed role of the element, which represents its accessibility role.
@@ -820,9 +862,10 @@ async def get_computed_role(
     except Exception as e:
         raise WebDriverError("Failed to get element computed label.") from e
 
+
 async def get_tag_name(
     server_url, session, element, session_http: Union[ClientSession, None] = None
-    ) -> str:
+) -> str:
     """
     Get the tag name of a specified element in a WebDriver session.
 
@@ -849,7 +892,7 @@ async def get_tag_name(
 
 async def get_shadow_root(
     server_url: str, session: str, element: str, session_http: Union[ClientSession, None] = None
-    ) -> str:
+) -> str:
     """
     Get the shadow root element from a specified web element.
 
@@ -882,7 +925,7 @@ async def get_shadow_element(
     locator_type: str,
     locator_value: str,
     session_http: Union[ClientSession, None] = None,
-    ) -> str:
+) -> str:
     """Get the shadow root element"""
     """
     Get the shadow root element from a web page using the W3C WebDriver Specification.
@@ -1023,6 +1066,30 @@ async def actions(server_url, session, payload, session_http: Union[ClientSessio
 async def actions_move_to_element(
     server_url: str, session: str, element: str, session_http: Union[ClientSession, None] = None
 ) -> bool:
+    """
+    Move to an element simulating a mouse movement.
+
+    This function sends a WebDriver Actions command to move the mouse pointer to a
+    specified element, following the W3C WebDriver Specification.
+
+    Args:
+        server_url: The URL of the WebDriver server.
+        session: The session identifier for the WebDriver session.
+        element: The element identifier (W3C element reference) to move the pointer to.
+        session_http: Optional HTTP client session for making requests. If not provided,
+                      a new session will be created.
+
+    Returns:
+        A boolean indicating whether the move action was successfully executed.
+
+    Raises:
+        WebDriverError: If the action fails to move to the element.
+
+    Note:
+        The mouse movement is performed with zero duration, resulting in an instant
+        pointer movement to the element's location. The element reference follows the
+        W3C WebDriver specification format.
+    """
     """Move to an element simulating a mouse movement"""
     try:
         payload = {
@@ -1310,7 +1377,11 @@ async def get_page_source(
 
 
 async def execute_script(
-    server_url, session, script, args=[], session_http: Union[ClientSession, None] = None
+    server_url: str,
+    session: str,
+    script: str,
+    args: List = [],
+    session_http: Union[ClientSession, None] = None,
 ):
     """Executes a script, like 'alert('something')' to open an alert window"""
     try:

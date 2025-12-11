@@ -11,7 +11,7 @@ from caqui.constants import ELEMENT_JSONWIRE, ELEMENT_W3C
 from caqui.cssify import cssify
 
 
-def save_picture(session, path, file_name, response):
+def save_picture(session: str, path: str, file_name: str, response: str) -> None:
     """
     Save a screenshot to a file.
     :param session: session id
@@ -105,7 +105,7 @@ def get_element_jsonwire(response: dict) -> str:
 
 
 @lru_cache(maxsize=42)
-def convert_locator_to_css_selector(locator_type: str, locator_value: str):
+def convert_locator_to_css_selector(locator_type: str, locator_value: str) -> tuple:
     """
     Convert an XPath and Nane locator to a CSS selector if possible.
 

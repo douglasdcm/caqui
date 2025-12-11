@@ -90,7 +90,7 @@ async def test_execute_script():
         return fake_responses.EXECUTE_SCRIPT
 
     with patch("caqui.asynchronous._post", mock_request):
-        assert await asynchronous.execute_script("", "", "", "") == expected
+        assert await asynchronous.execute_script("", "", "", []) == expected
 
 
 @mark.asyncio

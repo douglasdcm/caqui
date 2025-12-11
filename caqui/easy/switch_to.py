@@ -16,22 +16,22 @@ if TYPE_CHECKING:
 class SwitchToW3C:
     def __init__(self, driver: "AsyncDriver") -> None:
         self._driver = driver
-        self._iframe: Union[str, None] = None
-        self._window_handle: Union[str, None] = None
+        self._iframe: Union[str] = ""
+        self._window_handle: Union[str] = ""
         self._session_http = driver.session_http
 
     @property
-    def active_element(self):
+    def active_element(self) -> "Element":
         """Returns the active element"""
         element = synchronous.get_active_element(self._driver.server_url, self._driver.session)
         return Element(element, self._driver)
 
     @property
-    def alert(self):
+    def alert(self) -> "Alert":
         """Returns the `Alert` object"""
         return Alert(self._driver)
 
-    async def new_window(self, window_type):
+    async def new_window(self, window_type) -> str:
         """Opens a new window"""
         self._window_handle = await asynchronous.new_window(
             self._driver.server_url,
@@ -47,7 +47,7 @@ class SwitchToW3C:
         )
         return self._window_handle
 
-    async def window(self, window_handle):
+    async def window(self, window_handle: str) -> str:
         """Switchs to window `window_handle`"""
         self._window_handle = await asynchronous.switch_to_window(
             self._driver.server_url,
@@ -57,19 +57,19 @@ class SwitchToW3C:
         )
         return self._window_handle
 
-    async def frame(self, iframe):
+    async def frame(self, iframe: Union[str, Element]) -> None:
         """Switches to frame `iframe`"""
         self._iframe = str(iframe)
-        return await asynchronous.switch_to_frame(
+        await asynchronous.switch_to_frame(
             self._driver.server_url,
             self._driver.session,
             self._iframe,
             session_http=self._session_http,
         )
 
-    async def default_content(self):
+    async def default_content(self) -> None:
         """Switches to parent frame of 'element_frame'"""
-        return await asynchronous.switch_to_parent_frame(
+        await asynchronous.switch_to_parent_frame(
             self._driver.server_url,
             self._driver.session,
             self._iframe,
@@ -81,8 +81,8 @@ class SwitchToJsonWire(SwitchToW3C):
     def __init__(self, driver) -> None:
         super().__init__(driver)
         self._driver = driver
-        self._iframe: Union[str, None] = None
-        self._window_handle: Union[str, None] = None
+        self._iframe: Union[str] = ""
+        self._window_handle: Union[str] = ""
         self._session_http = driver.session_http
 
     @property

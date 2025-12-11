@@ -25,7 +25,7 @@ async def test_switch_to_parent_frame_asynchronous(setup_playground: AsyncDriver
     locator_value = "my-iframe"
 
     element_frame = await driver.find_element(locator_type, locator_value)
-    assert await driver.switch_to.frame(element_frame) is True
+    await driver.switch_to.frame(element_frame)
 
 
 @mark.asyncio
@@ -40,4 +40,4 @@ async def test_switch_to_frame_asynchronous(setup_playground: AsyncDriver):
     await driver.actions.scroll_to_element(element_form, delta_y=1000).perform()
 
     element_frame = await driver.find_element(locator_type, locator_value)
-    assert await driver.switch_to.frame(element_frame) is True
+    await driver.switch_to.frame(element_frame)

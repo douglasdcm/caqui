@@ -10,13 +10,12 @@ class TestObject:
     async def test_action_chains(self, setup_playground: AsyncDriver):
         driver = setup_playground
         element = await driver.find_element(By.XPATH, "//button")
-        actions = (
+        (
             await driver.actions.move_to_element(element)
             .scroll_to_element(element)
             .click(element)
             .perform()
         )
-        assert actions is True
 
     @mark.asyncio
     async def test_save_screenshot(self, setup_playground: AsyncDriver):
@@ -56,7 +55,7 @@ class TestObject:
     async def test_clear(self, setup_playground: AsyncDriver):
         driver = setup_playground
         element = await driver.find_element(locator=By.XPATH, value="//input")
-        assert await element.clear() is True
+        await element.clear()
 
     @mark.asyncio
     async def test_text_property(self, setup_playground: AsyncDriver):
@@ -68,13 +67,14 @@ class TestObject:
     async def test_send_keys(self, setup_playground: AsyncDriver):
         driver = setup_playground
         element = await driver.find_element(locator=By.XPATH, value="//body")
-        assert await element.send_keys(text="any") is True
+        await element.send_keys(text="any")
+        assert element.text == "any"
 
     @mark.asyncio
     async def test_click(self, setup_playground: AsyncDriver):
         driver = setup_playground
         element = await driver.find_element(locator=By.XPATH, value="//body")
-        assert await element.click() is True
+        await element.click()
 
     @mark.asyncio
     async def test_find_elements_from_element(self, setup_playground: AsyncDriver):

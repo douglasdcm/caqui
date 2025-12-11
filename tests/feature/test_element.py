@@ -61,9 +61,7 @@ async def test_get_window_handles(setup_playground: AsyncDriver):
 @mark.asyncio
 async def test_close_window_async(setup_playground: AsyncDriver):
     driver = setup_playground
-
-    response = await driver.close()
-    assert isinstance(response, list)
+    await driver.close()
 
 
 @mark.asyncio
@@ -106,10 +104,10 @@ async def test_go_back(setup_playground: AsyncDriver):
     title_other = "Other page"
 
     await driver.get(OTHER_URL)
-    assert await driver.back() is True
+    await driver.back()
     assert driver.title == title_sample
 
-    await driver.forward() is True
+    await driver.forward()
     assert driver.title == title_other
 
 
@@ -206,7 +204,7 @@ async def test_send_keys(setup_playground: AsyncDriver):
 
     element = await driver.find_element(locator_type, locator_value)
 
-    assert await element.send_keys(text_async) is True
+    await element.send_keys(text_async)
 
 
 @mark.asyncio
@@ -216,5 +214,4 @@ async def test_click(setup_playground: AsyncDriver):
     locator_value = "//button"
 
     element = await driver.find_element(locator_type, locator_value)
-
-    assert await element.click() is True
+    await element.click()

@@ -2,6 +2,7 @@ from setuptools import setup, Extension, find_packages
 from Cython.Build import cythonize
 import os
 
+
 # Collect all .pyx files
 def list_pyx_files(base_dir):
     pyx_files = []
@@ -10,6 +11,7 @@ def list_pyx_files(base_dir):
             if f.endswith(".pyx"):
                 pyx_files.append(os.path.join(root, f))
     return pyx_files
+
 
 pyx_modules = list_pyx_files("caqui")
 

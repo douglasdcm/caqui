@@ -16,7 +16,7 @@ CAPTURES = "captures"
 LOAD = 10  # requests
 
 
-# @mark.skip(reason="Used for performance tests")
+@mark.skip(reason="Used for performance tests")
 class TestPerformance:
     def _build_capabilities(self):
         capabilities = (

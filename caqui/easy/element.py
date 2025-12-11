@@ -131,15 +131,15 @@ class Element:
         return self._element
 
     @property
-    def element_id(self):
+    def element_id(self) -> str:
         return self._element
 
     @property
-    def locator(self):
+    def locator(self) -> Tuple[str, str]:
         return (self._locator_type, self._locator_value)
 
     @locator.setter
-    def locator(self, locator: Tuple[str, str]):
+    def locator(self, locator: Tuple[str, str]) -> None:
         """
         Stores the locator type and values
 
@@ -149,33 +149,33 @@ class Element:
         self._locator_type, self._locator_value = locator
 
     @property
-    def rect(self):
+    def rect(self) -> Dict[str, float]:
         """Returns the rectangle that enclosed the element
         For example: {"height": 23, "width": 183, "x": 10, "y": 9652.12}
         """
         return synchronous.get_rect(self._server_url, self._session, self._element)
 
     @property
-    def tag_name(self):
+    def tag_name(self) -> str:
         """Returns the tag name of the element"""
         return synchronous.get_tag_name(self._server_url, self._session, self._element)
 
     @property
-    def text(self):
+    def text(self) -> str:
         """Returns the text of the element"""
         return synchronous.get_text(self._server_url, self._session, self._element)
 
     @property
-    def active_element(self):
+    def active_element(self) -> "Element":
         """Returns the active element"""
-        self._element = synchronous.get_active_element(self._driver, self._session)
-        return self._element
+        self._element = synchronous.get_active_element(self._server_url, self._session)
+        return Element(self._element, driver=self._driver)
 
     @property
     def shadow_root(self) -> "ShadowElement":
         return ShadowElement(self._element, self._driver)
 
-    async def value_of_css_property(self, property_name):
+    async def value_of_css_property(self, property_name: str) -> str:
         """Returns the desired CSS property of the element"""
         return await asynchronous.get_css_value(
             self._server_url,
@@ -185,13 +185,13 @@ class Element:
             session_http=self._session_http,
         )
 
-    async def screenshot(self, file):
+    async def screenshot(self, file) -> None:
         """Takes a screenshot of the element"""
         path = os.path.dirname(file)
         if not path:
             path = "./"
         file_name = os.path.basename(file)
-        return await asynchronous.take_screenshot_element(
+        await asynchronous.take_screenshot_element(
             self._server_url,
             self._session,
             self._element,
@@ -206,19 +206,19 @@ class Element:
             self._server_url, self._session, self._element, session_http=self._session_http
         )
 
-    async def is_enabled(self):
+    async def is_enabled(self) -> bool:
         """Returns True if the element is enabled. Otherwise returns False"""
         return await asynchronous.is_element_enabled(
             self._server_url, self._session, self._element, session_http=self._session_http
         )
 
-    async def get_text(self):
+    async def get_text(self) -> str:
         """Returns the text of the element"""
         return await asynchronous.get_text(
             self._server_url, self._session, self._element, session_http=self._session_http
         )
 
-    async def get_css_value(self, property_name):
+    async def get_css_value(self, property_name: str) -> str:
         """Returns the desired CSS property of the element"""
         return await asynchronous.get_css_value(
             self._server_url,
@@ -228,37 +228,37 @@ class Element:
             session_http=self._session_http,
         )
 
-    async def submit(self):
+    async def submit(self) -> None:
         """Submits a form"""
-        return await asynchronous.submit(
+        await asynchronous.submit(
             self._server_url, self._session, self._element, session_http=self._session_http
         )
 
-    async def get_rect(self):
+    async def get_rect(self) -> Dict[str, float]:
         """Returns the rectangle that enclosed the element"""
         return await asynchronous.get_rect(
             self._server_url, self._session, self._element, session_http=self._session_http
         )
 
-    async def get_tag_name(self):
+    async def get_tag_name(self) -> str:
         """Returns the element tag name"""
         return await asynchronous.get_tag_name(
             self._server_url, self._session, self._element, session_http=self._session_http
         )
 
-    async def get_computed_label(self):
+    async def get_computed_label(self) -> str:
         """Get the element tag computed label. Get the accessibility name"""
         return await asynchronous.get_computed_label(
             self._server_url, self._session, self._element, session_http=self._session_http
         )
 
-    async def get_computed_role(self):
+    async def get_computed_role(self) -> str:
         """Get the element tag computed role (the element role)"""
         return await asynchronous.get_computed_role(
             self._server_url, self._session, self._element, session_http=self._session_http
         )
 
-    async def get_property(self, property):
+    async def get_property(self, property: str) -> str:
         """Get the given HTML property of an element, for example, 'href'"""
         return await asynchronous.get_property(
             self._server_url,
@@ -268,7 +268,7 @@ class Element:
             session_http=self._session_http,
         )
 
-    async def get_attribute(self, attribute):
+    async def get_attribute(self, attribute: str) -> str:
         """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
         return await asynchronous.get_attribute(
             self._server_url,
@@ -278,21 +278,21 @@ class Element:
             session_http=self._session_http,
         )
 
-    async def clear(self):
+    async def clear(self) -> None:
         """Clear the element text"""
-        return await asynchronous.clear_element(
+        await asynchronous.clear_element(
             self._server_url, self._session, self._element, session_http=self._session_http
         )
 
-    async def send_keys(self, text):
+    async def send_keys(self, text: str) -> None:
         """Fill the element with a text"""
-        return await asynchronous.send_keys(
+        await asynchronous.send_keys(
             self._server_url, self._session, self._element, text, session_http=self._session_http
         )
 
-    async def click(self):
+    async def click(self) -> None:
         """Click on the element"""
-        return await asynchronous.click(
+        await asynchronous.click(
             self._server_url, self._session, self._element, session_http=self._session_http
         )
 
@@ -313,7 +313,7 @@ class Element:
         )
         return [Element(element, self._driver) for element in elements]
 
-    async def find_element(self, locator, value) -> "Element":
+    async def find_element(self, locator: str, value: str) -> "Element":
         """Find the element by `locator_type`"""
         element = await asynchronous.find_child_element(
             self._server_url,

@@ -4,15 +4,15 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 
+from typing import Dict, List
+
+
 class BaseCapabilitiesBuilder:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
 
     def __init__(self) -> None:
         self.desired_capabilities: dict = {}
         self.options: dict = {}
-
-    def to_dict(self) -> dict:
-        raise NotImplementedError
 
     def browser_name(self, name: str):
         self.desired_capabilities = {
@@ -80,7 +80,7 @@ class BaseCapabilitiesBuilder:
         ssl_proxy: str,
         socks_proxy: str,
         socks_version: int,
-    ) -> "BaseCapabilitiesBuilder":
+    ):
         """
         Defines the current session's proxy configuration.
 
@@ -210,8 +210,8 @@ class BaseCapabilitiesBuilder:
         }
         return self
 
-    # def get_options(self):
-    #     return self.options
+    def to_dict(self) -> dict:
+        raise NotImplementedError("Need to be implemented in subclasses")
 
 
 class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
@@ -221,55 +221,55 @@ class ChromeCapabilitiesBuilder(BaseCapabilitiesBuilder):
         super().__init__()
         self.options = {ChromeCapabilitiesBuilder.OPTIONS: {}}
 
-    def detach(self, value):
+    def detach(self, value: bool) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["detach"] = value
         return self
 
-    def binary(self, value):
+    def binary(self, value: str) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["binary"] = value
         return self
 
-    def extensions(self, value):
+    def extensions(self, value: List[str]) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["extensions"] = value
         return self
 
-    def debugger_address(self, value):
+    def debugger_address(self, value: str) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["debuggerAddress"] = value
         return self
 
-    def exclude_switches(self, value):
+    def exclude_switches(self, value: List[str]) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["excludeSwitches"] = value
         return self
 
-    def minidump_path(self, value):
+    def minidump_path(self, value: str) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["minidumpPath"] = value
         return self
 
-    def windows_types(self, value):
+    def windows_types(self, value: List[str]) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["windowsTypes"] = value
         return self
 
-    def mobile_emulation(self, value):
+    def mobile_emulation(self, value: Dict[str, str]) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["mobileEmulation"] = value
         return self
 
-    def local_state(self, value):
+    def local_state(self, value: Dict[str, str]) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["localState"] = value
         return self
 
-    def args(self, value):
+    def args(self, value: List[str]) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["args"] = value
         return self
 
-    def prefs(self, value):
+    def prefs(self, value: Dict[str, bool]) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["prefs"] = value
         return self
 
-    def perf_logging_prefs(self, value):
+    def perf_logging_prefs(self, value: Dict[str, object]) -> "ChromeCapabilitiesBuilder":
         self.options[ChromeCapabilitiesBuilder.OPTIONS]["perfLoggingPrefs"] = value
         return self
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """
         Returns the capabilities.
         """
@@ -289,92 +289,92 @@ class EdgeCapabilitiesBuilder(BaseCapabilitiesBuilder):
         super().__init__()
         self.options = {EdgeCapabilitiesBuilder.OPTIONS: {}}
 
-    def perf_logging_prefs(self, value):
+    def perf_logging_prefs(self, value: Dict[str, object]) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["perfLoggingPrefs"] = value
         return self
 
-    def detach(self, value):
+    def detach(self, value: str) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["detach"] = value
         return self
 
-    def binary(self, value):
+    def binary(self, value: bool) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["binary"] = value
         return self
 
-    def extensions(self, value):
+    def extensions(self, value: List[str]) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["extensions"] = value
         return self
 
-    def debugger_address(self, value):
+    def debugger_address(self, value: str) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["debuggerAddress"] = value
         return self
 
-    def exclude_switches(self, value):
+    def exclude_switches(self, value: List[str]) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["excludeSwitches"] = value
         return self
 
-    def minidump_path(self, value):
+    def minidump_path(self, value: str) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["minidumpPath"] = value
         return self
 
-    def windows_types(self, value):
+    def windows_types(self, value: List[str]) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["windowsTypes"] = value
         return self
 
-    def mobile_emulation(self, value):
+    def mobile_emulation(self, value: Dict[str, str]) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["mobileEmulation"] = value
         return self
 
-    def local_state(self, value):
+    def local_state(self, value: Dict[str, str]) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["localState"] = value
         return self
 
-    def args(self, value):
+    def args(self, value: List[str]) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["args"] = value
         return self
 
-    def prefs(self, value):
+    def prefs(self, value: Dict[str, bool]) -> "EdgeCapabilitiesBuilder":
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["prefs"] = value
         return self
 
     # More options
-    def wdp_address(self, value: str):
+    def wdp_address(self, value: str) -> "EdgeCapabilitiesBuilder":
         """An address of a Windows Device Portal server to connect to,
         in the form of hostname/ip:port, for example 127.0.0.1:50080"""
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["wdpAddress"] = value
         return self
 
-    def wdp_password(self, value: str):
+    def wdp_password(self, value: str) -> "EdgeCapabilitiesBuilder":
         """Optional password to use when connecting to a Windows Device Portal server.
         Required if the server has authentication enabled."""
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["wdpPassword"] = value
         return self
 
-    def wdp_username(self, value: str):
+    def wdp_username(self, value: str) -> "EdgeCapabilitiesBuilder":
         """Optional user name to use when connecting to a Windows Device Portal server.
         Required if the server has authentication enabled."""
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["wdpUsername"] = value
         return self
 
-    def wdp_processId(self, value: str):
+    def wdp_processId(self, value: str) -> "EdgeCapabilitiesBuilder":
         """The required process ID to use if attaching to a running
         WebView2 UWP app, for example 36590."""
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["wdpProcessId"] = value
         return self
 
-    def webview_options(self, value: str):
+    def webview_options(self, value: str) -> "EdgeCapabilitiesBuilder":
         """An optional dictionary that can be used to configure the WebView2
         environment when launching a WebView2 app."""
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["webviewOptions"] = value
         return self
 
-    def windows_app(self, value: str):
+    def windows_app(self, value: str) -> "EdgeCapabilitiesBuilder":
         """Application user model ID of a Microsoft Edge app package to launch,
         for example `Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe!MSEDGE.`"""
         self.options[EdgeCapabilitiesBuilder.OPTIONS]["windowsApp"] = value
         return self
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """Converts the options to a dict"""
         if self.options[EdgeCapabilitiesBuilder.OPTIONS]:
             return {"desiredCapabilities": {**self.desired_capabilities, **self.options}}
@@ -396,99 +396,99 @@ class FirefoxCapabilitiesBuilder(BaseCapabilitiesBuilder):
         super().__init__()
         self.options = {"moz:firefoxOptions": {}}
 
-    def detach(self, value):
+    def detach(self, value: bool) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["detach"] = value
         return self
 
-    def binary(self, value):
+    def binary(self, value: str) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["binary"] = value
         return self
 
-    def extensions(self, value):
+    def extensions(self, value: List[str]) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["extensions"] = value
         return self
 
-    def debugger_address(self, value):
+    def debugger_address(self, value: str) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["debuggerAddress"] = value
         return self
 
-    def exclude_switches(self, value):
+    def exclude_switches(self, value: List[str]) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["excludeSwitches"] = value
         return self
 
-    def minidump_path(self, value):
+    def minidump_path(self, value: str) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["minidumpPath"] = value
         return self
 
-    def windows_types(self, value):
+    def windows_types(self, value: List[str]) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["windowsTypes"] = value
         return self
 
-    def mobile_emulation(self, value):
+    def mobile_emulation(self, value: Dict[str, str]) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["mobileEmulation"] = value
         return self
 
-    def local_state(self, value):
+    def local_state(self, value: Dict[str, str]) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["localState"] = value
         return self
 
-    def args(self, value: list):
+    def args(self, value: List[str]) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["args"] = [f"-{arg}" for arg in value]
         return self
 
-    def prefs(self, value):
+    def prefs(self, value: Dict[str, bool]) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["prefs"] = value
         return self
 
-    def perf_logging_prefs(self, value):
+    def perf_logging_prefs(self, value: Dict[str, object]) -> "FirefoxCapabilitiesBuilder":
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["perfLoggingPrefs"] = value
         return self
 
-    def profile(self, value: str):
+    def profile(self, value: str) -> "FirefoxCapabilitiesBuilder":
         """Base64-encoded ZIP of a profile directory to use for the Firefox instance."""
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["profile"] = value
         return self
 
-    def log(self, value: dict):
+    def log(self, value: dict) -> "FirefoxCapabilitiesBuilder":
         """To increase the logging verbosity of geckodriver and Firefox"""
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["log"] = value
         return self
 
-    def env(self, value: dict):
+    def env(self, value: dict) -> "FirefoxCapabilitiesBuilder":
         """Map of environment variable name to environment variable value"""
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["env"] = value
         return self
 
-    def level(self, value: str):
+    def level(self, value: str) -> "FirefoxCapabilitiesBuilder":
         """Set the level of verbosity of geckodriver and Firefox.
         Available levels are `trace`, `debug`, `config`, `info`, `warn`, `error`, and `fatal`"""
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["level"] = value
         return self
 
-    def android_package(self, value: str):
+    def android_package(self, value: str) -> "FirefoxCapabilitiesBuilder":
         """The package name of Firefox, e.g., `org.mozilla.firefox`, `org.mozilla.firefox_beta`,
         or `org.mozilla.fennec` depending on the release channel, or the package name of the
         application embedding GeckoView, e.g., `org.mozilla.geckoview_example`."""
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["androidPackage"] = value
         return self
 
-    def android_activity(self, value: str):
+    def android_activity(self, value: str) -> "FirefoxCapabilitiesBuilder":
         """The fully qualified class name of the activity to be launched"""
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["androidActivity"] = value
         return self
 
-    def android_device_serial(self, value: str):
+    def android_device_serial(self, value: str) -> "FirefoxCapabilitiesBuilder":
         """The serial number of the device on which to launch the application"""
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["androidDeviceSerial"] = value
         return self
 
-    def android_intent_arguments(self, value: list):
+    def android_intent_arguments(self, value: list) -> "FirefoxCapabilitiesBuilder":
         """Arguments to launch the intent with. Under the hood, geckodriver
         uses `Android am` to start the Android application under test."""
         self.options[FirefoxCapabilitiesBuilder.OPTIONS]["androidIntentArguments"] = value
         return self
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """
         Returns the capabilities.
         """

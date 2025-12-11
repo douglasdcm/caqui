@@ -14,7 +14,7 @@ async def test_add_cookie(setup_playground: AsyncDriver):
         "https://example.org/",
     )
 
-    assert await driver.add_cookie(COOKIE) is True
+    await driver.add_cookie(COOKIE)
     cookies_after = await driver.get_cookies()
     assert len(cookies_after) > 0
 
@@ -22,7 +22,7 @@ async def test_add_cookie(setup_playground: AsyncDriver):
     cookie = cookies_before[0]
     cookie[By.NAME] = "another"
 
-    assert await driver.add_cookie(cookie) is True
+    await driver.add_cookie(cookie)
     cookies_after = await driver.get_cookies()
     assert len(cookies_after) > len(cookies_before)
 
@@ -43,7 +43,7 @@ async def test_delete_cookie_asynchronous(setup_playground: AsyncDriver):
     name = cookies[0].get(By.NAME)
     zero = 0
 
-    assert await driver.delete_cookie(name) is True
+    await driver.delete_cookie(name)
     cookies = await driver.get_cookies()
     assert len(cookies) == zero
 
@@ -59,9 +59,7 @@ async def test_delete_cookies_asynchronous(setup_playground: AsyncDriver):
     )
     await driver.add_cookie(COOKIE)
     cookies_before = await driver.get_cookies()
-
-    response = await driver.delete_all_cookies()
-    assert response is True
+    await driver.delete_all_cookies()
 
     cookies_after = await driver.get_cookies()
     assert len(cookies_before) != len(cookies_after)

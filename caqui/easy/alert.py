@@ -18,24 +18,24 @@ class Alert:
         self._session_http = driver.session_http
 
     @property
-    def text(self):
+    def text(self) -> str:
         """Returns the text of the alert"""
         return synchronous.get_alert_text(self._server_url, self._session)
 
-    async def accept(self):
+    async def accept(self) -> None:
         """Accepts the alert"""
-        return await asynchronous.accept_alert(
+        await asynchronous.accept_alert(
             self._server_url, self._session, session_http=self._session_http
         )
 
-    async def dismiss(self):
+    async def dismiss(self) -> None:
         """Closes the alert ignoring it"""
-        return await asynchronous.dismiss_alert(
+        await asynchronous.dismiss_alert(
             self._server_url, self._session, session_http=self._session_http
         )
 
-    async def send_keys(self, text):
+    async def send_keys(self, text) -> None:
         """Send a text to a textbox in the alert"""
-        return await asynchronous.send_alert_text(
+        await asynchronous.send_alert_text(
             self._server_url, self._session, text, session_http=self._session_http
         )

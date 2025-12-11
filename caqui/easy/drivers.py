@@ -184,17 +184,17 @@ class AsyncDriver:
         return self._session
 
     @property
-    def title(self):
+    def title(self) -> str:
         """Returns the title of the page"""
         return synchronous.get_title(self._server_url, self._session)
 
     @property
-    def current_url(self):
+    def current_url(self) -> str:
         """Returns the current URL of the page"""
         return synchronous.get_url(self._server_url, self._session)
 
     @property
-    def window(self):
+    def window(self) -> Window:
         """Returns the current `Window` object"""
         return Window(self)
 
@@ -204,7 +204,7 @@ class AsyncDriver:
         return ACTION_CHAINS_IMPLEMENTATIONS[self.browser](self)
 
     @property
-    def alert(self):
+    def alert(self) -> Alert:
         """Returns the `Alert` object"""
         return Alert(self)
 
@@ -214,17 +214,17 @@ class AsyncDriver:
         return SWITCHTO_IMPLEMENTATIONS[self.browser](self)
 
     @property
-    def window_handles(self):
+    def window_handles(self) -> List[str]:
         """Returns the window handles"""
         return synchronous.get_window_handles(self._server_url, self._session)
 
     @property
-    def current_window_handle(self):
+    def current_window_handle(self) -> str:
         """Returns the current window handle"""
         return synchronous.get_window(self._server_url, self._session)
 
     @property
-    def page_source(self):
+    def page_source(self) -> str:
         return synchronous.get_page_source(self._server_url, self._session)
 
     def cleanup_cache(self) -> None:
@@ -236,19 +236,19 @@ class AsyncDriver:
         """
         self._elements_pool = []
 
-    def quit(self)->None:
+    def quit(self) -> None:
         """Closes the session"""
         self.cleanup_cache()
         synchronous.close_session(self._server_url, self._session)
 
-    async def close(self)->None:
+    async def close(self) -> None:
         """Closes the window"""
         self.cleanup_cache()
-        return await asynchronous.close_window(
+        await asynchronous.close_window(
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def execute_script(self, script, args=[]):
+    async def execute_script(self, script: str, args: List = []):
         """
         Execute a JavaScript script on the browser.
 
@@ -271,14 +271,14 @@ class AsyncDriver:
         return await asynchronous.set_window_rectangle(
             self._server_url,
             self._session,
-            rect.get("width"),
-            rect.get("height"),
+            rect.get("width", 0),
+            rect.get("height", 0),
             x,
             y,
             session_http=self.session_http,
         )
 
-    async def set_window_size(self, width, height):
+    async def set_window_size(self, width: int, height: int) -> None:
         """Resizes the page"""
         rect = await asynchronous.get_window_rectangle(
             self._server_url, self._session, session_http=self.session_http
@@ -288,8 +288,8 @@ class AsyncDriver:
             self._session,
             width,
             height,
-            rect.get("x"),
-            rect.get("y"),
+            rect.get("x", 0),
+            rect.get("y", 0),
             session_http=self.session_http,
         )
 
@@ -299,13 +299,13 @@ class AsyncDriver:
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def get_window_size(self):
+    async def get_window_size(self) -> dict:
         """Returns the window rectangle"""
         return await asynchronous.get_window_rectangle(
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def save_screenshot(self, file):
+    async def save_screenshot(self, file: str) -> bool:
         """Takes a scheenshot of the page"""
         path = os.path.dirname(file)
         if not path:
@@ -315,96 +315,94 @@ class AsyncDriver:
             self._server_url, self._session, path, file_name, session_http=self.session_http
         )
 
-    async def delete_all_cookies(self):
+    async def delete_all_cookies(self) -> None:
         """Deletes all storaged cookies"""
-        return await asynchronous.delete_all_cookies(
+        await asynchronous.delete_all_cookies(
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def delete_cookie(self, cookie_name):
+    async def delete_cookie(self, cookie_name) -> None:
         """Delete the desired cookie"""
-        return await asynchronous.delete_cookie(
+        await asynchronous.delete_cookie(
             self._server_url, self._session, cookie_name, session_http=self.session_http
         )
 
-    async def get_cookies(self):
+    async def get_cookies(self) -> List[dict]:
         """Get all cookies"""
         return await asynchronous.get_cookies(
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def get_cookie(self, cookie_name) -> dict:
+    async def get_cookie(self, cookie_name: str) -> dict:
         """Get the desired cookie"""
         return await asynchronous.get_named_cookie(
             self._server_url, self._session, cookie_name, session_http=self.session_http
         )
 
-    async def add_cookie(self, cookie):
+    async def add_cookie(self, cookie: dict) -> None:
         """Add a new cookie"""
-        return await asynchronous.add_cookie(
+        await asynchronous.add_cookie(
             self._server_url, self._session, cookie, session_http=self.session_http
         )
 
-    async def implicitly_wait(self, timeouts: int):
+    async def implicitly_wait(self, timeouts: int) -> None:
         """Set implicty timeouts"""
-        return await asynchronous.set_timeouts(
+        await asynchronous.set_timeouts(
             self._server_url, self._session, timeouts, session_http=self.session_http
         )
 
-    async def back(self):
+    async def back(self) -> None:
         """This command causes the browser to traverse one step backward
         in the joint session history of the
         current browse. This is equivalent to pressing the back button in the browser."""
         self._elements_pool = []
-        return await asynchronous.go_back(
-            self._server_url, self._session, session_http=self.session_http
-        )
+        await asynchronous.go_back(self._server_url, self._session, session_http=self.session_http)
 
-    async def forward(self):
+    async def forward(self) -> None:
         """Go page forward"""
         self._elements_pool = []
-        return await asynchronous.go_forward(
+        await asynchronous.go_forward(
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def refresh(self):
+    async def refresh(self) -> None:
         """Refreshs the page"""
         self._elements_pool = []
-        return await asynchronous.refresh_page(
+        await asynchronous.refresh_page(
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def fullscreen_window(self):
+    async def fullscreen_window(self) -> None:
         """Sets the page in fullscreen"""
-        return await asynchronous.fullscreen_window(
+        await asynchronous.fullscreen_window(
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def minimize_window(self):
+    async def minimize_window(self) -> None:
         """Minimizes the page"""
-        return await asynchronous.minimize_window(
+        await asynchronous.minimize_window(
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def maximize_window(self):
+    async def maximize_window(self) -> None:
         """Maximizes the page"""
-        return await asynchronous.maximize_window(
+        await asynchronous.maximize_window(
             self._server_url, self._session, session_http=self.session_http
         )
 
-    async def get(self, url):
+    async def get(self, url: str) -> None:
         """Navigates to URL `url`"""
         self._elements_pool = []
         await asynchronous.go_to_page(
             self._server_url, self._session, url, session_http=self.session_http
         )
 
-    async def find_elements(self, locator, value) -> List[Element]:
+    async def find_elements(self, locator: str, value: str) -> List[Element]:
         """Search the DOM elements by 'locator', for example, 'xpath'"""
         return await FIND_ELEMENT_IMPLEMENTATIONS[self.browser]().find_elements(
             self, locator, value
         )
 
-    async def find_element(self, locator, value) -> Element:
+    async def find_element(self, locator: str, value: str) -> Element:
         """Find an element by a 'locator', for example 'xpath'"""
         return await FIND_ELEMENT_IMPLEMENTATIONS[self.browser]().find_element(self, locator, value)

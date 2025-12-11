@@ -16,7 +16,7 @@ class Window:
         self.server_url = driver.server_url
         self._session = driver.session
 
-    async def new(self, window_type="tab"):
+    async def new(self, window_type: str = "tab") -> str:
         """
         Open a new window
 

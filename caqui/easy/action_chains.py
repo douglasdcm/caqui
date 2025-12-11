@@ -20,7 +20,7 @@ class ActionChainsW3C:
         self._coroutines: List[Coroutine] = []
         self._element = Union["Element", None]
 
-    def click(self, element: "Element"):
+    def click(self, element: "Element") -> "ActionChainsW3C":
         """
         Clicks on the element `element`
         """
@@ -31,7 +31,7 @@ class ActionChainsW3C:
         self._coroutines.append(coroutine)
         return self
 
-    def move_to_element(self, element: "Element"):
+    def move_to_element(self, element: "Element") -> "ActionChainsW3C":
         """Move the mouse to the element `element`"""
         self._element = element
         coroutine = asynchronous.actions_move_to_element(
@@ -40,7 +40,7 @@ class ActionChainsW3C:
         self._coroutines.append(coroutine)
         return self
 
-    def scroll_to_element(self, element: "Element", delta_y=1000) -> "ActionChainsW3C":
+    def scroll_to_element(self, element: "Element", delta_y: int = 1000) -> "ActionChainsW3C":
         """Scrolls the screen to the element `element`"""
         self._element = element
         coroutine = asynchronous.actions_scroll_to_element(
@@ -53,17 +53,16 @@ class ActionChainsW3C:
         self._coroutines.append(coroutine)
         return self
 
-    async def perform(self):
+    async def perform(self) -> None:
         """Executes the chain of Coroutines"""
         [await coroutine for coroutine in self._coroutines]
-        return True
 
 
 class ActionChainsJsonWire(ActionChainsW3C):
     def __init__(self, driver):
         super().__init__(driver)
 
-    def move_to_element(self, element: "Element"):
+    def move_to_element(self, element: "Element") -> "ActionChainsW3C":
         """Move the mouse to the element `element`"""
         self._element = element
         coroutine = asynchronous.actions_move_to_element_jsonwire(

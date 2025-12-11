@@ -40,7 +40,7 @@ CAPABILITIES = {
 class TestArgs:
     @fixture(autouse=True, scope="class")
     def setup_server_chrome(self):
-        server = LocalServer(CAPABILITIES[Specification.CHROME]["port"])
+        server = LocalServer(CAPABILITIES[Specification.CHROME]["port"])  # type: ignore
         server.start_chrome()
         yield
         server.dispose()
@@ -48,7 +48,7 @@ class TestArgs:
     @fixture(autouse=True, scope="class")
     def setup_server_firefox(self):
         server = LocalServer(
-            CAPABILITIES[Specification.FIREFOX]["port"],
+            CAPABILITIES[Specification.FIREFOX]["port"],  # type: ignore
             executable_path=("/home/douglas/.wdm/drivers/geckodriver/linux64/v0.36.0/geckodriver"),
         )
         server.start_firefox()
@@ -58,7 +58,7 @@ class TestArgs:
     @fixture(autouse=True, scope="class")
     def setup_server_opera(self):
         server = LocalServer(
-            CAPABILITIES[Specification.OPERA]["port"],
+            CAPABILITIES[Specification.OPERA]["port"],  # type: ignore
             executable_path=(
                 "/home/douglas/.wdm/drivers/operadriver/linux64/v.140.0.7339.249/"
                 "operadriver_linux64/operadriver"
@@ -71,7 +71,7 @@ class TestArgs:
     @fixture(autouse=True, scope="class")
     def setup_server_edge(self):
         server = LocalServer(
-            CAPABILITIES[Specification.EDGE]["port"],
+            CAPABILITIES[Specification.EDGE]["port"],  # type: ignore
             executable_path="/home/douglas/.wdm/drivers/edgedriver/142/msedgedriver",
         )
         server.start_edge()
@@ -100,4 +100,5 @@ class TestArgs:
             click_button = await driver.find_element(By.ID, "button")
             await click_button.click()
         finally:
-            driver.quit()
+            if driver:
+                driver.quit()

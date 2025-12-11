@@ -12,12 +12,12 @@ async def test_send_alert_text(setup_playground: AsyncDriver):
 
     element = await driver.find_element(locator_type, locator_value)
     await element.click()
-    assert await driver.alert.send_keys(text="any1") is True
-    await driver.alert.accept() is True
+    await driver.alert.send_keys(text="any1")
+    await driver.alert.accept()
 
     await element.click()
-    assert await driver.alert.send_keys("any2") is True
-    await driver.alert.accept() is True
+    await driver.alert.send_keys("any2")
+    await driver.alert.accept()
 
     await element.click()
 
@@ -30,8 +30,7 @@ async def test_accept_alert(setup_playground: AsyncDriver):
 
     element = await driver.find_element(locator_type, locator_value)
     await element.click()
-
-    assert await driver.alert.accept() is True
+    await driver.alert.accept()
 
 
 @mark.asyncio
@@ -42,4 +41,4 @@ async def test_dismiss_alert(setup_playground: AsyncDriver):
 
     element = await driver.find_element(locator_type, locator_value)
     await element.click()
-    assert await driver.alert.dismiss() is True
+    await driver.alert.dismiss()

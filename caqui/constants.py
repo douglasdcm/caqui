@@ -4,20 +4,22 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 
-HEADERS = {
+from typing import Dict
+
+HEADERS: Dict[str, str] = {
     "Accept-Encoding": "identity",
     "Accept": "application/json",
     "Content-Type": "application/json;charset=UTF-8",
     "Connection": "keep-alive",
 }
-ELEMENT_W3C = "element-6066-11e4-a52e-4f735466cecf"
-ELEMENT_JSONWIRE = "ELEMENT"
+ELEMENT_W3C: str = "element-6066-11e4-a52e-4f735466cecf"
+ELEMENT_JSONWIRE: str = "ELEMENT"
 
 
 class Specification:
-    CHROME = "ChromeCapabilitiesBuilder"
-    FIREFOX = "FirefoxCapabilitiesBuilder"
-    EDGE = "EdgeCapabilitiesBuilder"
-    OPERA = "OperaCapabilitiesBuilder"
-    JSONWIRE = "jsonwire"
-    W3C = "w3c"
+    CHROME: str = "ChromeCapabilitiesBuilder"
+    FIREFOX: str = "FirefoxCapabilitiesBuilder"
+    EDGE: str = "EdgeCapabilitiesBuilder"
+    OPERA: str = "OperaCapabilitiesBuilder"
+    JSONWIRE: str = "jsonwire"
+    W3C: str = "w3c"
