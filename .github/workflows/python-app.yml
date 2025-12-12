@@ -30,6 +30,7 @@ jobs:
         pip install --upgrade setuptools
         pip install -e .
         pip install -r test-requirements.txt
+        pip install -r dev-requirements.txt
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
