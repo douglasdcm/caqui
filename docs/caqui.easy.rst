@@ -36,18 +36,11 @@ caqui.easy.element module
    :undoc-members:
    :show-inheritance:
 
-caqui.easy.options module
+
+caqui.easy.drivers module
 -------------------------
 
-.. automodule:: caqui.easy.options
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-caqui.easy.page module
-----------------------
-
-.. automodule:: caqui.easy.page
+.. automodule:: caqui.easy.drivers
    :members:
    :undoc-members:
    :show-inheritance:

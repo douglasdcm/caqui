@@ -1,6 +1,7 @@
-from caqui.by import By
-from caqui import synchronous
 from pytest import mark
+
+from caqui import synchronous
+from caqui.by import By
 
 
 @mark.parametrize(
@@ -16,5 +17,6 @@ from pytest import mark
         (By.XPATH, "//button"),
     ],
 )
-def test_locators(setup_functional_environment, locator, value):
-    assert synchronous.find_element(*setup_functional_environment, locator, value) is not None
+def test_locators(setup_playground, locator, value):
+    driver = setup_playground
+    assert synchronous.find_element(driver.server_url, driver.session, locator, value) is not None

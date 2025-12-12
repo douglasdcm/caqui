@@ -1,7 +1,12 @@
+flake8
+cython
 pytest
 pytest-xdist
 selenium
 coverage
-tox
 pytest-asyncio
 build
+mypy
+isort
+black
+tox

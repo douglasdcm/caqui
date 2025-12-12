@@ -1,3 +1,7 @@
+from typing import Any, Dict
+
+from caqui.constants import ELEMENT_W3C
+
 # All fake responses where collected from chromedriver responses
 
 
@@ -13,27 +17,31 @@ class Dictionary:
         return self.dictionary.get(key)
 
 
-def dict_to_json(dictionary):
-    class MockResponse:
-        @property
-        def status_code(self):
-            return 200
+class MockResponse:
+    def __init__(self, dictionary: Dict[str, Any]) -> None:
+        self._dictionary = dictionary
 
-        # used by async functions
-        def get(self, argument, *args):
-            return dictionary.get(argument)
+    @property
+    def status_code(self) -> int:
+        return 200
 
-        def json(self):
-            return Dictionary(dictionary)
+    # used by async functions
+    def get(self, argument: str, *args: Any) -> Any:
+        return self._dictionary.get(argument)
 
-    return MockResponse()
+    def json(self) -> Dictionary:
+        return Dictionary(self._dictionary)
+
+
+def dict_to_json(dictionary: Dict[str, Any]) -> "MockResponse":
+    return MockResponse(dictionary)
 
 
 DEFAULT = dict_to_json(
     {
         "sessionId": "4358a5b53794586af59678fc1653dc40",
         "status": 0,
-        "value": {"ELEMENT": "0.8851292311864847-1"},
+        "value": {ELEMENT_W3C: "0.8851292311864847-1"},
     }
 )
 
@@ -185,9 +193,9 @@ FIND_ELEMENTS = dict_to_json(
         "sessionId": "9be93a374d185216134bf0c3fafee52e",
         "status": 0,
         "value": [
-            {"ELEMENT": "C230605181E69CB2C4C36B8E83FE1245_element_1"},
-            {"ELEMENT": "C230605181E69CB2C4C36B8E83FE1245_element_2"},
-            {"ELEMENT": "C230605181E69CB2C4C36B8E83FE1245_element_3"},
+            {ELEMENT_W3C: "C230605181E69CB2C4C36B8E83FE1245_element_1"},
+            {ELEMENT_W3C: "C230605181E69CB2C4C36B8E83FE1245_element_2"},
+            {ELEMENT_W3C: "C230605181E69CB2C4C36B8E83FE1245_element_3"},
         ],
     }
 )

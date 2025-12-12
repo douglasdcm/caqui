@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61.8", "wheel", "Cython>=0.29"]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = ["caqui*"]
@@ -8,26 +8,67 @@ exclude = ["tests*", "utils", ".vscode", ".git*", "dist"]
 
 [project]
 name = "caqui"
-version = "3.0.4"
+version = "4.0.0"
 authors = [
   { name="Douglas Cardoso", email="noemail@noemail.com" },
 ]
 description = "Run asynchronous commands in WebDrivers"
+keywords = ["automation", "asynchronous", "test", "crawler", "robotic process automation", "rpa"]
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+[project.license]
+"file" = "LICENSE"
 
 dependencies = [
   "requests",
   "aiohttp",
-  "webdriver_manager"
+  "webdriver_manager",
+  "types-requests",
+  "orjson",
+  "Cython",
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/douglasdcm/caqui"
 "Bug Tracker" = "https://github.com/douglasdcm/caqui/issues"
+
+[tool.mypy]
+exclude=["tests/performance/test_process_data.py", "tests/test_sniffer.py"]
+disallow_any_unimported = false
+disallow_any_expr = false
+disallow_any_decorated = false
+disallow_any_explicit = false
+disallow_any_generics = false
+disallow_subclassing_any = false
+disallow_untyped_calls = false
+disallow_untyped_defs=false
+check_untyped_defs = true
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+# requires = virtualenv<20.22.0
+envlist = py{37,38,39,310,311,312}, linter
+
+[testenv]
+deps =
+    -r test-requirements.txt
+    -r dev-requirements.txt
+commands =
+    pytest -n auto {posargs}
+
+[testenv:linter]
+deps = 
+    -r test-requirements.txt
+    -r dev-requirements.txt
+commands = 
+    black -l 100 .
+    isort --profile black --line-length 100 caqui tests
+    flake8 --exclude venv*,.tox,build,*/test_process_data.py --max-line-length 100
+    mypy caqui tests --config=pyproject.toml    
+"""

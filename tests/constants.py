@@ -5,6 +5,7 @@ ROOT_DIR = BASE_DIR + "/caqui/src"
 TEST_DIR = BASE_DIR + "/tests"
 
 PAGE_URL = f"file:///{TEST_DIR}/html/playground.html"
+OTHER_URL = f"file:///{TEST_DIR}/html/other.html"
 COOKIE = {
     "domain": ".example.org",
     "httpOnly": True,

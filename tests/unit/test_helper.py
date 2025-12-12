@@ -1,6 +1,7 @@
-from caqui.helper import get_elements, get_element
 from pytest import mark
-from tests.fake_responses import FIND_ELEMENTS, FIND_ELEMENT
+
+from caqui.helper import get_element, get_elements
+from tests.fake_responses import FIND_ELEMENT, FIND_ELEMENTS
 
 
 @mark.parametrize(

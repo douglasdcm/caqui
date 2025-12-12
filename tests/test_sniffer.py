@@ -1,29 +1,36 @@
 # File used to figure out requests format and parameters ####
 
-from selenium import webdriver
 from pytest import fixture, mark
-from tests.constants import PAGE_URL
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.chrome.service import Service
+from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+
+from tests.constants import PAGE_URL
 
 
 @fixture
 def setup():
-    desired_capabilities = {
-        # 'deviceName': 'Device',
-        "deviceName": "Emulator",
-        "deviceIpAddress": "127.0.0.1",
-        "locale": "en-US",
-        "debugCodedUI": False,
-        "app": "chromedriver",
-    }
+    # desired_capabilities = {
+    #     # 'deviceName': 'Device',
+    #     "deviceName": "Emulator",
+    #     "deviceIpAddress": "127.0.0.1",
+    #     "locale": "en-US",
+    #     "debugCodedUI": False,
+    #     "app": "chromedriver",
+    # }
 
+    options = Options()
+    # options.set_capability("deviceName", "Emulator")
+    # options.set_capability("deviceIpAddress", "127.0.0.1")
+    # options.set_capability("locale", "en-US")
+    # options.set_capability("debugCodedUI", False)
+    options.set_capability("app", "geckodriver")
     driver = webdriver.Remote(
         command_executor="http://localhost:9999",
-        desired_capabilities=desired_capabilities,
+        options=options,
     )
     driver.get(PAGE_URL)
     # driver.find_element().value_of_css_property()

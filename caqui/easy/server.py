@@ -1,16 +1,37 @@
+# Copyright (C) 2023 Caqui - All Rights Reserved
+# You may use, distribute and modify this code under the
+# terms of the MIT license.
+# Visit: https://github.com/douglasdcm/caqui
+
+import subprocess
 from time import sleep
-from typing import Union
+from typing import Dict, Optional
+
+import requests
 from requests import head
 from requests.exceptions import ConnectionError
-import requests
-import subprocess
-from webdriver_manager.core.manager import DriverManager
 from webdriver_manager.chrome import ChromeDriverManager
-from caqui.exceptions import ServerError
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+from webdriver_manager.opera import OperaDriverManager
 
-TIMEOUT = 120 # seconds
+from caqui.exceptions import ServerError, WebDriverError
 
-class Server:
+TIMEOUT: int = 120  # seconds
+
+CHROME: str = "chrome"
+FIREFOX: str = "firefox"
+EDGE: str = "edge"
+OPERA: str = "opera"
+DRIVER_MANAGER: Dict[str, type] = {
+    CHROME: ChromeDriverManager,
+    FIREFOX: GeckoDriverManager,
+    EDGE: EdgeChromiumDriverManager,
+    OPERA: OperaDriverManager,
+}
+
+
+class LocalServer:
     """
     Starts and stops the local server. Cannot be used with remote servers
 
@@ -19,44 +40,41 @@ class Server:
         Reference: https://pypi.org/project/webdriver-manager/#use-with-chrome
 
         port: the port to start the local server
+        executable_path: the path where the driver. For example:
+        /home/my-user/.wdm/drivers/geckodriver/linux64/v0.36.0/geckodriver
+        /home/my-user/.wdm/drivers/operadriver/linux64/v.140.0.7339.249/operadriver_linux64/operadriver
+        /home/my-user/.wdm/drivers/chromedriver/linux64/142.0.7444.175/chromedriver-linux64
     """
 
-    _instance = None
+    def __init__(self, port: int = 9999, executable_path: Optional[str] = None) -> None:
+        self._browser: Optional[str] = None
+        self._port: int = port
+        self._process: Optional[subprocess.Popen] = None
+        self._executable_path: Optional[str] = executable_path
 
-    def __init__(self, browser: Union[DriverManager, None] = None, port=9999):
-        self.__browser = browser
-        self.__port = port
-        self.__process = None
+    def _browser_factory(self) -> str:
+        browser: Optional[type] = DRIVER_MANAGER.get(self._browser)  # type: ignore
+        if self._executable_path:
+            return self._executable_path
+        if browser:
+            return browser().install()
+        raise WebDriverError(f"Browser {self._browser} not supported")
 
-    def __browser_factory(self):
-        if not self.__browser:
-            driver_manager = ChromeDriverManager().install()
-        else:
-            driver_manager = self.__browser.install()
-        return driver_manager
-
-    def __wait_server(self):
-        MAX_RETIES = 10
+    def _wait_server(self) -> None:
+        MAX_RETIES: int = 10
         for i in range(MAX_RETIES):
             try:
                 requests.get(self.url, timeout=TIMEOUT)
                 break
             except ConnectionError:
-                sleep(1)
-                if i == (MAX_RETIES - 1):
-                    self.__process.kill()
-                    self.__process.wait()
+                sleep(0.5)
+                if i == (MAX_RETIES - 1) and self._process:
+                    self._process.kill()
+                    self._process.wait()
                     raise Exception("Driver not started")
 
-    @staticmethod
-    def get_instance(browser: Union[DriverManager, None] = None, port=9999):
-        """(Singleton) Returns the current instance of the server"""
-        if Server._instance is None:
-            Server._instance = Server(browser, port)
-        return Server._instance
-
-    def start(self):
-        """Starts the local server"""
+    def start(self) -> None:
+        """Starts the local server when the `executable_path` is provided"""
         try:
             head(self.url, timeout=TIMEOUT)
         except ConnectionError:
@@ -64,35 +82,84 @@ class Server:
         except Exception:
             raise
 
-        driver_manager = self.__browser_factory()
-        self.__process = subprocess.Popen(
-            [driver_manager, f"--port={self.__port}"],
+        driver_manager: str = self._browser_factory()
+        self._process = subprocess.Popen(
+            [driver_manager, f"--port={self._port}"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             start_new_session=True,
         )
-        if self.__process is None:
+        if self._process is None:
             raise ServerError("Not able to start the server.")
 
-        self.__wait_server()
+        self._wait_server()
 
     @property
-    def url(self):
+    def url(self) -> str:
         """
         Returns the driver URL.
         """
-        return f"http://localhost:{self.__port}"
+        return f"http://localhost:{self._port}"
 
     @property
-    def process(self):
+    def process(self) -> Optional[subprocess.Popen]:
         """Returns the process (PID)"""
-        return self.__process
+        return self._process
 
-    def dispose(self):
+    def start_chrome(self) -> None:
+        """
+        Start a Chrome browser instance for the server.
+
+        Sets the browser type to CHROME and initializes the server startup process.
+        """
+        self._browser = CHROME
+        self.start()
+
+    def start_firefox(self) -> None:
+        """
+        Start Firefox browser for the current session.
+
+        Sets the browser type to Firefox and initiates the browser startup process.
+
+        Returns:
+            None
+        """
+        self._browser = FIREFOX
+        self.start()
+
+    def start_opera(self) -> None:
+        """
+        Initialize and start the Opera browser instance.
+
+        Sets the browser type to Opera and initiates the browser startup process.
+        """
+        self._browser = OPERA
+        self.start()
+
+    def start_edge(self) -> None:
+        """
+        Start the Edge browser and initialize the server.
+
+        This method sets the internal browser instance to EDGE and calls the start method
+        to initialize the server with the Edge browser.
+
+        Returns:
+            None
+        """
+        self._browser = EDGE
+        self.start()
+
+    def dispose(self, delay: float = 0) -> None:
         """
         Disposes the driver process.
+
+        Args:
+            delay: Delay execution for a given number of seconds.
+            The argument may be a floating point number for subsecond precision.
         """
-        if self.__process:
-            self.__process.kill()
-            self.__process.wait()
-            self.__process = None
+        if delay:
+            sleep(delay)
+        if self._process:
+            self._process.kill()
+            self._process.wait()
+            self._process = None
