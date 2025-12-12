@@ -59,6 +59,7 @@ class BaseCapabilitiesBuilder:
 
     def page_load_strategy(self, strategy: str):
         """
+        Defines the current session’s page load strategy.
         strategy: normal, eager or none
 
         Reference: https://www.w3.org/TR/webdriver/#dfn-table-of-page-load-strategies
@@ -81,15 +82,13 @@ class BaseCapabilitiesBuilder:
         socks_version: int,
     ):
         """
-        Defines the current session's proxy configuration.
-
-                This method sets up proxy settings for the WebDriver session according to the
+        This method sets up proxy settings for the WebDriver session according to the
         W3C WebDriver specification. It allows configuration of various proxy types
         and their respective settings.
 
         Args:
             proxy_type: The type of proxy to use (e.g., 'direct', 'manual',
-              'pac', 'autodetect', 'system').
+            'pac', 'autodetect', 'system').
             proxy_autoconfig_url: URL of a proxy auto-config file to be used if proxyType is 'pac'.
             ftp_proxy: FTP proxy to be used for FTP traffic.
             http_proxy: HTTP proxy to be used for HTTP traffic.
@@ -147,9 +146,9 @@ class BaseCapabilitiesBuilder:
         Args:
             implicit: The number of milliseconds to wait when attempting to find an element.
             page_load: The number of milliseconds to wait for a page load to complete before
-              returning an error.
+            returning an error.
             script: The number of milliseconds to wait for an asynchronous script to finish
-              execution before returning an error.
+            execution before returning an error.
         Returns:
             Self instance for method chaining.
 
@@ -184,9 +183,9 @@ class BaseCapabilitiesBuilder:
             "dismiss" All simple dialogs encountered should be dismissed.
             "accept" All simple dialogs encountered should be accepted.
             "dismiss and notify" All simple dialogs encountered should be dismissed,
-              and an error returned that the dialog was handled.
+            and an error returned that the dialog was handled.
             "accept and notify" All simple dialogs encountered should be accepted,
-              and an error returned that the dialog was handled.
+            and an error returned that the dialog was handled.
             "ignore" All simple dialogs encountered should be left to the user to handle.
 
         Reference: https://www.w3.org/TR/webdriver/#dfn-user-prompt-handler

@@ -49,7 +49,7 @@ Example:
 ```python
 from os import getcwd
 from pytest import mark, fixture
-from caqui.easy import AsyncDriver
+from caqui.easy.drivers import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
 from caqui.by import By
 from caqui.easy.server import LocalServer

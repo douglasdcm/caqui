@@ -41,9 +41,9 @@ class LocalServer:
 
         port: the port to start the local server
         executable_path: the path where the driver. For example:
-            /home/my-user/.wdm/drivers/geckodriver/linux64/v0.36.0/geckodriver
-            /home/my-user/.wdm/drivers/operadriver/linux64/v.140.0.7339.249/operadriver_linux64/operadriver
-            /home/my-user/.wdm/drivers/chromedriver/linux64/142.0.7444.175/chromedriver-linux64
+        /home/my-user/.wdm/drivers/geckodriver/linux64/v0.36.0/geckodriver
+        /home/my-user/.wdm/drivers/operadriver/linux64/v.140.0.7339.249/operadriver_linux64/operadriver
+        /home/my-user/.wdm/drivers/chromedriver/linux64/142.0.7444.175/chromedriver-linux64
     """
 
     def __init__(self, port: int = 9999, executable_path: Optional[str] = None) -> None:

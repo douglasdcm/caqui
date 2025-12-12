@@ -20,6 +20,11 @@ linter:
 	flake8 --exclude venv*,.tox,build,*/test_process_data.py --max-line-length 100
 	mypy caqui tests --config=pyproject.toml    
 
+coverage:
+	coverage run --source='caqui' -m pytest -n auto
+	coverage report
+	coverage html
+
 clear:
 	rm -rf build/ dist/ *.egg-info
 	python utils/cleanup-cython-files.py

@@ -2,7 +2,7 @@ from pytest import fixture, mark
 
 from caqui.by import By
 from caqui.constants import Specification
-from caqui.easy import AsyncDriver
+from caqui.easy.drivers import AsyncDriver
 from caqui.easy.capabilities import (
     ChromeCapabilitiesBuilder,
     EdgeCapabilitiesBuilder,
