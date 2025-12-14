@@ -6,7 +6,7 @@ from caqui.easy.drivers import AsyncDriver
 
 @mark.parametrize("window_type", ("tab", "window"))
 @mark.asyncio
-async def test_switch_to_window_foo(setup_playground: AsyncDriver, window_type):
+async def test_switch_to_window(setup_playground: AsyncDriver, window_type):
     driver = setup_playground
     await driver.switch_to.new_window(window_type)
     handles = driver.window_handles

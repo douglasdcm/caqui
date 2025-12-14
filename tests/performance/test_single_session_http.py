@@ -4,8 +4,8 @@ from pytest import mark
 
 from caqui import synchronous
 from caqui.by import By
-from caqui.easy.drivers import AsyncDriver
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
+from caqui.easy.drivers import AsyncDriver
 
 # from caqui.easy.options import ChromeOptionsBuilder
 from tests.constants import PAGE_URL

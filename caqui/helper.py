@@ -9,6 +9,7 @@ from functools import lru_cache
 from caqui.by import By
 from caqui.constants import ELEMENT_JSONWIRE, ELEMENT_W3C
 from caqui.cssify import cssify
+from caqui.exceptions import WebDriverError
 
 
 def save_picture(session: str, path: str, file_name: str, response: str) -> None:
@@ -105,9 +106,9 @@ def get_element_jsonwire(response: dict) -> str:
 
 
 @lru_cache(maxsize=42)
-def convert_locator_to_css_selector(locator_type: str, locator_value: str) -> tuple:
+def convert_locator_to_css_selector_or_xpath(locator_type: str, locator_value: str) -> tuple:
     """
-    Convert an XPath and Nane locator to a CSS selector if possible.
+    Convert a locator type and value to a CSS selector OR XPATH if possible.
 
     This function attempts to convert an locator expression to an equivalent
     CSS selector. If the conversion fails, the original locator type and value are
@@ -126,29 +127,47 @@ def convert_locator_to_css_selector(locator_type: str, locator_value: str) -> tu
         This function uses LRU caching with a maximum size of 32 entries to
         optimize repeated conversions of the same locator values.
     """
+    if locator_type not in list(
+        {
+            key: value
+            for key, value in By.__dict__.items()
+            if not key.startswith("__") and not callable(value)
+        }.values()
+    ):
+        raise WebDriverError(f"Locator {locator_type} not allowed")
     if locator_type.lower() == By.ID:
         locator_value = f"#{locator_value}"
         locator_type = By.CSS_SELECTOR
         return locator_type, locator_value
-
     if locator_type.lower() == By.CLASS_NAME:
         locator_value = f".{locator_value}"
         locator_type = By.CSS_SELECTOR
         return locator_type, locator_value
-
     if locator_type.lower() == By.NAME:
         locator_value = f"[name='{locator_value}']"
         locator_type = By.CSS_SELECTOR
         return locator_type, locator_value
-
-    if locator_type.lower() == By.XPATH:
-        try:
-            locator_value = cssify(locator_value)
-            locator_type = By.CSS_SELECTOR
-            return locator_type, locator_value
-        except Exception:
-            # just ignore it and keep using the xpath selector
-            pass
-
+    if locator_type.lower() == By.LINK_TEXT:
+        locator_value = f"//a[text()='{locator_value}']"
+        locator_type = By.XPATH
+        return locator_type, locator_value
+    if locator_type.lower() == By.PARTIAL_LINK_TEXT:
+        locator_value = f"//a[contains(text(),'{locator_value}')]"
+        locator_type = By.XPATH
+        return locator_type, locator_value
+    if locator_type.lower() == By.TAG_NAME:
+        locator_value = f"//{locator_value}"
+        locator_type = By.XPATH
+        return locator_type, locator_value
+    # if locator_type.lower() == By.XPATH:
+    #     try:
+    #         locator_value = cssify(locator_value)
+    #         locator_type = By.CSS_SELECTOR
+    #         return locator_type, locator_value
+    #     except Exception:
+    #         # just ignore it and keep using the xpath selector
+    #         pass
     # default path
     return locator_type, locator_value
+
+

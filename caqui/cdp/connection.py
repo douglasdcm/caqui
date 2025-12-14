@@ -4,11 +4,7 @@
 # Visit: https://github.com/HyperionGray/python-chrome-devtools-protocol/pull/59/files
 #
 # Inportant note!
-# This code was integrally copied from the cdp library to allow the connection
-# with the Connection class to be used directly in Caqui without depending on the cdp package.
-# It was done due the critial issue reportes here https://github.com/HyperionGray/python-chrome-devtools-protocol/pull/61#discussion_r2615997104
-# Once the issue is resolved and a new version of cdp is released, this file should be removed
-# and the cdp package should be used directly.
+# This code was copied from the cdp library and changed to allow multiple connections
 
 
 """
@@ -20,11 +16,19 @@ and event dispatching.
 """
 
 from __future__ import annotations
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6826c0f (Add tests to blank page)
 import asyncio
 import json
 import logging
 import typing
+<<<<<<< HEAD
 from dataclasses import dataclass, field
+=======
+from dataclasses import dataclass
+>>>>>>> 6826c0f (Add tests to blank page)
 
 try:
     import websockets
@@ -35,8 +39,12 @@ except ImportError:
     WEBSOCKETS_AVAILABLE = False
     WebSocketClientProtocol = typing.Any  # type: ignore
 
+<<<<<<< HEAD
 from cdp.util import parse_json_event, T_JSON_DICT
 
+=======
+from cdp.util import T_JSON_DICT, parse_json_event
+>>>>>>> 6826c0f (Add tests to blank page)
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +101,11 @@ class CDPConnection:
                 print(event)
     """
 
+<<<<<<< HEAD
+=======
+    main_context_id = None
+
+>>>>>>> 6826c0f (Add tests to blank page)
     def __init__(self, url: str, timeout: float = 30.0):
         """
         Initialize a CDP connection.
@@ -115,6 +128,14 @@ class CDPConnection:
         self._event_queue: asyncio.Queue = asyncio.Queue()
         self._recv_task: typing.Optional[asyncio.Task] = None
         self._closed = False
+<<<<<<< HEAD
+=======
+        self._wss: typing.List[WebSocketClientProtocol] = []
+
+    async def set_url(self, url):
+        self.url = url
+        self._ws = None
+>>>>>>> 6826c0f (Add tests to blank page)
 
     async def connect(self) -> None:
         """Establish the WebSocket connection."""
@@ -123,6 +144,10 @@ class CDPConnection:
 
         try:
             self._ws = await websockets.connect(self.url)  # type: ignore
+<<<<<<< HEAD
+=======
+            self._wss.append(self._ws)
+>>>>>>> 6826c0f (Add tests to blank page)
             self._recv_task = asyncio.create_task(self._receive_loop())
             logger.info(f"Connected to {self.url}")
         except Exception as e:
@@ -150,8 +175,16 @@ class CDPConnection:
         self._pending_commands.clear()
 
         # Close the WebSocket
+<<<<<<< HEAD
         if self._ws:
             await self._ws.close()
+=======
+        for ws in self._wss:
+            await ws.close()
+
+        if self._ws:
+            # await self._ws.close()
+>>>>>>> 6826c0f (Add tests to blank page)
             self._ws = None
 
         logger.info("Connection closed")
@@ -286,7 +319,10 @@ class CDPConnection:
 
         try:
             # Send the command
+<<<<<<< HEAD
             # print("xxxxx", json.dumps(request))
+=======
+>>>>>>> 6826c0f (Add tests to blank page)
             await self._ws.send(json.dumps(request))
             logger.debug(f"Sent command {cmd_id}: {request['method']}")
             # Wait for the response

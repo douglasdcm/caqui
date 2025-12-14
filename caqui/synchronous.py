@@ -11,7 +11,7 @@ from requests import Response, request
 from caqui.constants import ELEMENT_JSONWIRE, ELEMENT_W3C, HEADERS
 from caqui.exceptions import WebDriverError
 from caqui.helper import (
-    convert_locator_to_css_selector,
+    convert_locator_to_css_selector_or_xpath,
     get_element,
     get_element_jsonwire,
     get_elements,
@@ -358,7 +358,9 @@ def get_shadow_element(
 ) -> str:
     """Get the shadow root element"""
     try:
-        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        locator_type, locator_value = convert_locator_to_css_selector_or_xpath(
+            locator_type, locator_value
+        )
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/element"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = _post(url, payload)
@@ -372,7 +374,9 @@ def get_shadow_element_jsonwire(
 ) -> str:
     """Get the shadow root element"""
     try:
-        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        locator_type, locator_value = convert_locator_to_css_selector_or_xpath(
+            locator_type, locator_value
+        )
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/element"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = _post(url, payload)
@@ -386,7 +390,9 @@ def get_shadow_elements(
 ) -> List[str]:
     """Get the list of shadow root element"""
     try:
-        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        locator_type, locator_value = convert_locator_to_css_selector_or_xpath(
+            locator_type, locator_value
+        )
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/elements"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = _post(url, payload)
@@ -400,7 +406,9 @@ def get_shadow_elements_jsonwire(
 ) -> List[str]:
     """Get the list of shadow root element"""
     try:
-        locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+        locator_type, locator_value = convert_locator_to_css_selector_or_xpath(
+            locator_type, locator_value
+        )
         url: str = f"{server_url}/session/{session}/shadow/{shadow_element}/elements"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = _post(url, payload)
@@ -654,7 +662,9 @@ def find_children_elements(
     If the 'parent_element' is a shadow element, set the 'locator_type' as 'id' or
     'css selector'
     """
-    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector_or_xpath(
+        locator_type, locator_value
+    )
     try:
         url: str = f"{server_url}/session/{session}/element/{parent_element}/elements"
         payload: Dict[str, str] = {
@@ -674,7 +684,9 @@ def find_child_element(
     server_url: str, session: str, parent_element: str, locator_type: str, locator_value: str
 ) -> str:
     """Find the child element by 'locator_type'"""
-    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector_or_xpath(
+        locator_type, locator_value
+    )
     try:
         url: str = f"{server_url}/session/{session}/element/{parent_element}/element"
         payload: Dict[str, str] = {
@@ -871,7 +883,9 @@ def find_elements(
     server_url: str, session: str, locator_type: str, locator_value: str
 ) -> List[str]:
     """Search the DOM elements by 'locator', for example, 'xpath'"""
-    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector_or_xpath(
+        locator_type, locator_value
+    )
     try:
         url: str = f"{server_url}/session/{session}/elements"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
@@ -887,7 +901,9 @@ def find_elements_jsonwire(
     server_url: str, session: str, locator_type: str, locator_value: str
 ) -> List[str]:
     """Search the DOM elements by 'locator', for example, 'xpath'"""
-    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector_or_xpath(
+        locator_type, locator_value
+    )
     try:
         url: str = f"{server_url}/session/{session}/elements"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
@@ -1019,14 +1035,14 @@ def get_session(server_url: str, capabilities: Optional[Dict[str, Any]] = None) 
 
 def find_element(server_url: str, session: str, locator_type: str, locator_value: str) -> str:
     """Find an element by a 'locator', for example 'xpath'"""
-    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
+    locator_type, locator_value = convert_locator_to_css_selector_or_xpath(
+        locator_type, locator_value
+    )
     try:
         url: str = f"{server_url}/session/{session}/element"
         payload: Dict[str, str] = {"using": locator_type, "value": locator_value}
         response: Dict[str, Any] = _post(url, payload)
 
-        # Firefox does not support id locator, so it prints the error message to the user
-        # It helps on debug
         if response.get("value", {}).get("error"):
             raise WebDriverError(f"Failed to find element. {response}")
 

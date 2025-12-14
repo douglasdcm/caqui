@@ -8,7 +8,7 @@ from caqui.easy.capabilities import (
     FirefoxCapabilitiesBuilder,
     OperaCapabilitiesBuilder,
 )
-from caqui.easy.drivers import AsyncDriver
+from caqui.easy.cdp.drivers import AsyncDriver
 from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL
 

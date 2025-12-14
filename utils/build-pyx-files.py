@@ -33,7 +33,7 @@ except ImportError:
 
 setup(
     name="caqui",
-    version="4.0.0",
+    version="5.0.0",
     packages=find_packages(include=['caqui']),
     setup_requires=[
         "requests",

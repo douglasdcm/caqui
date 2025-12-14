@@ -68,7 +68,7 @@ async def test_find_children_elements():
         return fake_responses.FIND_ELEMENTS
 
     with patch("caqui.asynchronous._post", mock_request):
-        assert element in await asynchronous.find_children_elements("", "", "", "", "")
+        assert element in await asynchronous.find_children_elements("", "", "", "xpath", "")
 
 
 @mark.asyncio
@@ -79,7 +79,7 @@ async def test_find_child_element():
         return fake_responses.FIND_ELEMENT
 
     with patch("caqui.asynchronous._post", mock_request):
-        assert await asynchronous.find_child_element("", "", "", "", "") == element
+        assert await asynchronous.find_child_element("", "", "", "xpath", "") == element
 
 
 @mark.asyncio
@@ -335,7 +335,7 @@ async def test_find_elements():
         return fake_responses.FIND_ELEMENTS
 
     with patch("caqui.asynchronous._post", mock_request):
-        assert element in await asynchronous.find_elements("", "", "", "")
+        assert element in await asynchronous.find_elements("", "", "xpath", "")
 
 
 @mark.asyncio
@@ -346,7 +346,7 @@ async def test_find_element():
         return fake_responses.FIND_ELEMENT
 
     with patch("caqui.asynchronous._post", mock_request):
-        assert await asynchronous.find_element("", "", "", "") == element
+        assert await asynchronous.find_element("", "", "xpath", "") == element
 
 
 @mark.asyncio

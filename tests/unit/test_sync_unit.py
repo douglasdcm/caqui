@@ -34,7 +34,7 @@ def test_set_timeouts(*args: tuple) -> None:
 def test_find_children_elements(*args: tuple) -> None:
     element: str = "C230605181E69CB2C4C36B8E83FE1245_element_2"
 
-    elements: list = synchronous.find_children_elements("", "", "", "", "")
+    elements: list = synchronous.find_children_elements("", "", "", "xpath", "")
 
     assert element in elements
     assert len(elements) == 3
@@ -44,7 +44,7 @@ def test_find_children_elements(*args: tuple) -> None:
 def test_find_child_element(*args: tuple) -> None:
     expected: str = "0.8851292311864847-1"
 
-    assert synchronous.find_child_element("", "", "", "", "") == expected
+    assert synchronous.find_child_element("", "", "", "xpath", "") == expected
 
 
 @patch("caqui.synchronous.request", return_value=fake_responses.EXECUTE_SCRIPT)
@@ -158,7 +158,7 @@ def test_get_cookies(*args: tuple) -> None:
 def test_find_elements(*args: tuple) -> None:
     element: str = "C230605181E69CB2C4C36B8E83FE1245_element_2"
 
-    elements: list = synchronous.find_elements("", "", "", "")
+    elements: list = synchronous.find_elements("", "", "xpath", "")
 
     assert element in elements
     assert len(elements) == 3
@@ -216,4 +216,4 @@ def test_get_session(*args: tuple) -> None:
 def test_find_element(*args: tuple) -> None:
     expected: str = "0.8851292311864847-1"
 
-    assert synchronous.find_element("", "", "", "") == expected
+    assert synchronous.find_element("", "", "xpath", "") == expected
