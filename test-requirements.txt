@@ -10,3 +10,4 @@ mypy
 isort
 black
 tox
+pytest-randomly

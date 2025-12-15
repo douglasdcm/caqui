@@ -31,6 +31,7 @@ dependencies = [
   "types-requests",
   "orjson",
   "Cython",
+  "beautifulsoup4",
 ]
 
 [project.urls]

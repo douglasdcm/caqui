@@ -284,6 +284,7 @@ class CDPConnection:
         
         try:
             # Send the command
+            # print("xxxxx", json.dumps(request))
             await self._ws.send(json.dumps(request))
             logger.debug(f"Sent command {cmd_id}: {request['method']}")
             # Wait for the response

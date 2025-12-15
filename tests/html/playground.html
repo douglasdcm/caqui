@@ -28,6 +28,44 @@
     <p id="demo"></p>
     <button hidden id="hidden-button" style="display: none;" onclick="openAlert()">hidden</button>
     <br>
+
+    <!-- Checkboxes and Radio Buttons Section -->
+    <div class="form-section">
+        <h2>Checkboxes and Radio Buttons</h2>
+        
+        <div class="checkbox-group">
+            <label>Interests:</label>
+            <input type="checkbox" id="interest-tech" name="interest" value="technology" checked>
+            <label for="interest-tech" style="display: inline;">Technology</label>
+            
+            <input type="checkbox" id="interest-sports" name="interest" value="sports">
+            <label for="interest-sports" style="display: inline;">Sports</label>
+            
+            <input type="checkbox" id="interest-music" name="interest" value="music">
+            <label for="interest-music" style="display: inline;">Music</label>
+        </div>
+        
+        <div class="radio-group">
+            <label>Gender:</label>
+            <input type="radio" id="gender-male" name="gender" value="male" checked>
+            <label for="gender-male" style="display: inline;">Male</label>
+            
+            <input type="radio" id="gender-female" name="gender" value="female">
+            <label for="gender-female" style="display: inline;">Female</label>
+            
+            <input type="radio" id="gender-other" name="gender" value="other">
+            <label for="gender-other" style="display: inline;">Other</label>
+        </div>
+        
+        <div class="checkbox-group">
+            <label>
+                <input type="checkbox" id="terms" name="terms">
+                I agree to the terms and conditions
+            </label>
+        </div>
+    </div>
+    
+
     <p id="end">end</p>
     <div class="parent">
         any0
@@ -44,6 +82,7 @@
         <input type="text" id="lname" name="lname" value="Doe"><br><br>
         <input type="submit" value="Submit">
     </form>
+
 
     <!-- shadow element -->
     <div id="app">

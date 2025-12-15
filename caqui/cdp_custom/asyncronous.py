@@ -3,11 +3,13 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
+import asyncio
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from aiohttp import ClientSession
 from orjson import dumps
 
+from caqui.by import By
 from caqui.cdp_custom.connection import CDPConnection
 from caqui.cdp_custom.launcher import get_ws_url
 from caqui.constants import ELEMENT_JSONWIRE, ELEMENT_W3C, HEADERS
@@ -1443,28 +1445,28 @@ async def is_element_enabled(
         raise WebDriverError("Failed to check if element is enabled.") from e
 
 
-async def get_css_value(
-    server_url, session, element, property_name, session_http: Union[ClientSession, None] = None
-) -> str:
-    """Get CSS value"""
-    try:
-        url = f"{server_url}/session/{session}/element/{element}/css/{property_name}"
-        response = await _get(url, session_http=session_http)
-        return response.get("value", "")
-    except Exception as e:
-        raise WebDriverError("Failed to get css value.") from e
+# async def get_css_value(
+#     server_url, session, element, property_name, session_http: Union[ClientSession, None] = None
+# ) -> str:
+#     """Get CSS value"""
+#     try:
+#         url = f"{server_url}/session/{session}/element/{element}/css/{property_name}"
+#         response = await _get(url, session_http=session_http)
+#         return response.get("value", "")
+#     except Exception as e:
+#         raise WebDriverError("Failed to get css value.") from e
 
 
-async def is_element_selected(
-    server_url, session, element, session_http: Union[ClientSession, None] = None
-) -> bool:
-    """Check if element is selected"""
-    try:
-        url = f"{server_url}/session/{session}/element/{element}/selected"
-        response = await _get(url, session_http=session_http)
-        return bool(response.get("value"))
-    except Exception as e:
-        raise WebDriverError("Failed to check if element is selected.") from e
+# async def is_element_selected(
+#     server_url, session, element, session_http: Union[ClientSession, None] = None
+# ) -> bool:
+#     """Check if element is selected"""
+#     try:
+#         url = f"{server_url}/session/{session}/element/{element}/selected"
+#         response = await _get(url, session_http=session_http)
+#         return bool(response.get("value"))
+#     except Exception as e:
+#         raise WebDriverError("Failed to check if element is selected.") from e
 
 
 async def get_window_rectangle(
@@ -1513,28 +1515,28 @@ async def get_window(server_url, session, session_http: Union[ClientSession, Non
         raise WebDriverError("Failed to get window.") from e
 
 
-async def go_back(server_url, session, session_http: Union[ClientSession, None] = None):
-    """
-    This command causes the browser to traverse one step backward
-    in the joint session history of the
-    current browse. This is equivalent to pressing the back button in the browser.
-    """
-    try:
-        url = f"{server_url}/session/{session}/back"
-        await _post(url, {}, session_http=session_http)
-        return True
-    except Exception as e:
-        raise WebDriverError("Failed to go back to page.") from e
+# async def go_back(server_url, session, session_http: Union[ClientSession, None] = None):
+#     """
+#     This command causes the browser to traverse one step backward
+#     in the joint session history of the
+#     current browse. This is equivalent to pressing the back button in the browser.
+#     """
+#     try:
+#         url = f"{server_url}/session/{session}/back"
+#         await _post(url, {}, session_http=session_http)
+#         return True
+#     except Exception as e:
+#         raise WebDriverError("Failed to go back to page.") from e
 
 
-async def get_url(server_url, session, session_http: Union[ClientSession, None] = None) -> str:
-    """Returns the URL from web page:"""
-    try:
-        url = f"{server_url}/session/{session}/url"
-        response = await _get(url, session_http=session_http)
-        return response.get("value", "")
-    except Exception as e:
-        raise WebDriverError("Failed to get page url.") from e
+# async def get_url(server_url, session, session_http: Union[ClientSession, None] = None) -> str:
+#     """Returns the URL from web page:"""
+#     try:
+#         url = f"{server_url}/session/{session}/url"
+#         response = await _get(url, session_http=session_http)
+#         return response.get("value", "")
+#     except Exception as e:
+#         raise WebDriverError("Failed to get page url.") from e
 
 
 async def get_timeouts(
@@ -1561,95 +1563,6 @@ async def get_status(server_url, session_http: Union[ClientSession, None] = None
     except Exception as e:
         raise WebDriverError("Failed to get status.") from e
 
-
-async def get_title(server_url, session, session_http: Union[ClientSession, None] = None) -> str:
-    """Get the page title"""
-    try:
-        url = f"{server_url}/session/{session}/title"
-        response = await _get(url, session_http=session_http)
-        return response.get("value", "")
-    except Exception as e:
-        raise WebDriverError("Failed to get page title.") from e
-
-
-async def find_elements(
-    server_url: str,
-    session: str,
-    locator_type: str,
-    locator_value: str,
-    session_http: Union[ClientSession, None] = None,
-) -> List[Any]:
-    """Search the DOM elements by 'locator', for example, 'xpath'"""
-    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
-    try:
-        payload = {"using": locator_type, "value": locator_value}
-        url = f"{server_url}/session/{session}/elements"
-        response = await _post(url, payload, session_http=session_http)
-        return [x.get(ELEMENT_W3C) for x in response.get("value")]
-    except Exception as e:
-        raise WebDriverError(
-            f"Failed to find element by '{locator_type}'-'{locator_value}'."
-        ) from e
-
-
-async def find_elements_jsonwire(
-    server_url: str,
-    session: str,
-    locator_type: str,
-    locator_value: str,
-    session_http: Union[ClientSession, None] = None,
-) -> List[Any]:
-    """Search the DOM elements by 'locator', for example, 'xpath'"""
-    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
-    try:
-        payload = {"using": locator_type, "value": locator_value}
-        url = f"{server_url}/session/{session}/elements"
-        response = await _post(url, payload, session_http=session_http)
-        return [x.get(ELEMENT_JSONWIRE) for x in response.get("value")]
-    except Exception as e:
-        raise WebDriverError(
-            f"Failed to find element by '{locator_type}'-'{locator_value}'."
-        ) from e
-
-
-async def get_property(
-    server_url, session, element, property, session_http: Union[ClientSession, None] = None
-) -> Any:
-    """Get the given HTML property of an element, for example, 'href'"""
-    try:
-        url = f"{server_url}/session/{session}/element/{element}/property/{property}"
-        response = await _get(url, session_http=session_http)
-        return response.get("value")
-    except Exception as e:
-        raise WebDriverError("Failed to get value from element.") from e
-
-
-async def get_attribute(
-    server_url, session, element, attribute, session_http: Union[ClientSession, None] = None
-) -> str:
-    """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
-    try:
-        url = f"{server_url}/session/{session}/element/{element}/attribute/{attribute}"
-        response = await _get(url, session_http=session_http)
-        if response.get("value") is None:
-            return ""
-        return response.get("value", "")
-    except Exception as e:
-        raise WebDriverError("Failed to get value from element.") from e
-
-
-async def get_text(
-    server_url, session, element, session_http: Union[ClientSession, None] = None
-) -> str:
-    """Get the text of an element"""
-    try:
-        url = f"{server_url}/session/{session}/element/{element}/text"
-        response = await _get(url, session_http=session_http)
-        return response.get("value", "")
-    except Exception as e:
-        raise WebDriverError("Failed to get text from element.") from e
-
-
 async def get_cookies(
     server_url: str, session: str, session_http: Union[ClientSession, None] = None
 ) -> list:
@@ -1672,98 +1585,6 @@ async def close_session(server_url, session, session_http: Union[ClientSession, 
         raise WebDriverError("Failed to close session.") from e
 
 
-# async def get(server_url, session, page_url, session_http: Union[ClientSession, None] = None):
-#     """Does the same of 'go_to_page'. Added to be compatible with selenium method name'"""
-#     return go_to_page(server_url, session, page_url, session_http=session_http)
-
-
-# async def go_to_page(
-#     server_url, session, page_url, session_http: Union[ClientSession, None] = None
-# ):
-#     """Navigate to 'page_url'"""
-#     try:
-#         url = f"{server_url}/session/{session}/url"
-#         payload = {"url": page_url}
-#         await _post(url, payload, session_http=session_http)
-#         return True
-#     except Exception as e:
-#         raise WebDriverError(f"Failed to navigate to page '{page_url}'.") from e
-
-
-# async def send_keys(
-#     server_url, session, element, text, session_http: Union[ClientSession, None] = None
-# ):
-#     """Fill an editable element, for example a textarea, with a given text"""
-#     try:
-#         url = f"{server_url}/session/{session}/element/{element}/value"
-#         payload = {"text": text, "value": [*text], "id": element}
-#         await _post(url, payload, session_http=session_http)
-#         return True
-#     except Exception as e:
-#         raise WebDriverError(f"Failed to send key '{text}'.") from e
-
-
-# async def click(server_url, session, element, session_http: Union[ClientSession, None] = None):
-#     """Click on an element"""
-#     try:
-#         payload = {"id": element}
-#         url = f"{server_url}/session/{session}/element/{element}/click"
-#         await _post(url, payload, session_http=session_http)
-#         return True
-#     except Exception as e:
-#         raise WebDriverError("Failed to click on element.") from e
-
-
-# async def find_element(
-#     server_url: str,
-#     session: str,
-#     locator_type: str,
-#     locator_value: str,
-#     session_http: Union[ClientSession, None] = None,
-# ) -> str:
-#     """Find an element by a 'locator', for example 'xpath'"""
-#     locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
-#     try:
-#         payload = {"using": locator_type, "value": locator_value}
-#         url = f"{server_url}/session/{session}/element"
-#         response = await _post(url, payload, session_http=session_http)
-
-#         # Firefox does not support id locator, so it prints the error message to the user
-#         # It helps on debug
-#         if response.get("value").get("error"):
-#             raise WebDriverError(f"Failed to find element. {response}")
-#         return get_element(response)
-#     except Exception as e:
-#         raise WebDriverError(
-#             f"Failed to find element by '{locator_type}'-'{locator_value}'."
-#         ) from e
-
-
-async def find_element_jsonwire(
-    server_url: str,
-    session: str,
-    locator_type: str,
-    locator_value: str,
-    session_http: Union[ClientSession, None] = None,
-) -> str:
-    """Find an element by a 'locator', for example 'xpath'"""
-    locator_type, locator_value = convert_locator_to_css_selector(locator_type, locator_value)
-    try:
-        payload = {"using": locator_type, "value": locator_value}
-        url = f"{server_url}/session/{session}/element"
-        response = await _post(url, payload, session_http=session_http)
-
-        # Firefox does not support id locator, so it prints the error message to the user
-        # It helps on debug
-        if response.get("value").get("error"):
-            raise WebDriverError(f"Failed to find element. {response}")
-        return get_element_jsonwire(response)
-    except Exception as e:
-        raise WebDriverError(
-            f"Failed to find element by '{locator_type}'-'{locator_value}'."
-        ) from e
-
-
 async def get_session(
     server_url: str,
     capabilities: Optional[dict] = None,
@@ -1783,15 +1604,17 @@ async def get_session(
         raise WebDriverError("Failed to open session. Check the browser capabilities.") from e
 
 
-from cdp import page, dom, browser, input_
+from cdp import page, dom, browser, input_, target, runtime
+from bs4 import BeautifulSoup
 
-
-async def get(conn, page_url: str)->None:
+async def get(conn: CDPConnection, page_url: str)->None:
     """Does the same of 'go_to_page'. Added to be compatible with selenium method name'"""
     try:
         await conn.execute(
             page.navigate(url=page_url)
         )
+        
+        await conn.execute(page.enable())
     except Exception as e:
         raise WebDriverError(f"Failed to navigate to page '{page_url}'.") from e
 
@@ -1822,14 +1645,45 @@ async def find_element(
 ):
     """Find an element by a 'selector', for example an 'xpath' like '//div[@id="example"]'"""
     try:
+        selector = locator_value
         locator_type, selector = convert_locator_to_css_selector(locator_type, locator_value)
-        node = await conn.execute(dom.get_document())
-        node_id = await conn.execute(dom.query_selector(node_id=node.node_id, selector=selector))
-        if not node_id:
+        if locator_type == By.CSS_SELECTOR:
+            node = await conn.execute(dom.get_document())
+            node_id = await conn.execute(dom.query_selector(node_id=node.node_id, selector=selector))
+            if not node_id:
+                raise WebDriverError(f"Could not find element with selector: {locator_value}")
+            return node_id
+        await conn.execute(dom.enable())
+        search_result = await conn.execute(dom.perform_search(query=selector, include_user_agent_shadow_dom=True))
+        search_id = search_result[0]
+        result_count = search_result[1]
+
+        if result_count == 0:
             raise WebDriverError(f"Could not find element with selector: {locator_value}")
-        return node_id
+
+        nodes = await conn.execute(dom.get_search_results(
+            search_id=search_id,
+            from_index=0,
+            to_index=result_count
+        ))        
+        return nodes[0]
     except Exception as e:
         raise WebDriverError(f"Could not find element with selector: {locator_value}") from e
+
+async def find_elements(
+    conn: CDPConnection, locator_type, locator_value: str
+):
+    """Find an element by a 'selector', for example an 'xpath' like '//div[@id="example"]'"""
+    try:
+        locator_type, selector = convert_locator_to_css_selector(locator_type, locator_value)
+        node = await conn.execute(dom.get_document())
+        node_ids = await conn.execute(dom.query_selector_all(node_id=node.node_id, selector=selector))
+        if not node_ids:
+            raise WebDriverError(f"Could not find element with selector: {locator_value}")
+        return node_ids
+    except Exception as e:
+        raise WebDriverError(f"Could not find element with selector: {locator_value}") from e
+
 
 # async def click(remote_object):
 #     """Click on an element"""
@@ -1875,3 +1729,125 @@ async def click(conn: CDPConnection, element):
     except Exception as e:
         raise WebDriverError("Failed to click on element.") from e
 
+
+async def send_keys(conn: CDPConnection, element, text: str):
+    """Send keys to an element"""
+    try:
+        await conn.execute(dom.focus(node_id=element))
+        for char in text:
+            await conn.execute(
+                input_.dispatch_key_event(
+                    'keyDown',
+                    text=char,
+                    unmodified_text=char,
+                    windows_virtual_key_code=ord(char),
+                    native_virtual_key_code=ord(char),
+                )
+            )
+            await conn.execute(
+                input_.dispatch_key_event(
+                    'keyUp',
+                    text=char,
+                    unmodified_text=char,
+                    windows_virtual_key_code=ord(char),
+                    native_virtual_key_code=ord(char),
+                )
+            )
+    except Exception as e:
+        raise WebDriverError("Failed to send keys to element.") from e
+
+async def get_text(
+    conn: CDPConnection, element
+) -> str:
+    """Get the text of an element"""
+    try:
+        html_doc = await conn.execute(dom.get_outer_html(node_id=element))
+        soup = BeautifulSoup(html_doc, 'html.parser')
+        return soup.get_text()
+    except Exception as e:
+        raise WebDriverError("Failed to get text from element.") from e
+
+async def get_attribute(
+    conn: CDPConnection, element, attribute: str
+) -> str:
+    """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
+    try:
+        attributes = await conn.execute(dom.get_attributes(node_id=element))
+        attr_dict = {attributes[i]: attributes[i + 1] for i in range(0, len(attributes), 2)}
+        result = attr_dict.get(attribute)
+        if result is None:
+            raise WebDriverError("Failed to get value from element.")
+        return result
+    except Exception as e:
+        raise WebDriverError("Failed to get value from element.") from e
+    
+async def get_title(conn: CDPConnection) -> str:
+    """Get the page title"""
+    try:
+        root_node = await conn.execute(dom.get_document())
+        title_node_id = await conn.execute(
+            dom.query_selector(node_id=root_node.node_id, selector='title')
+        )
+        result = await conn.execute(dom.get_outer_html(node_id=title_node_id))
+        return BeautifulSoup(result, 'html.parser').get_text()
+    except Exception as e:
+        raise WebDriverError("Failed to get page title.") from e
+
+async def get_url(conn: CDPConnection) -> str:
+    """Returns the URL from web page:"""
+    try:
+        await conn.execute(page.enable())
+        frame_tree = await conn.execute(page.get_frame_tree())
+        current_url = frame_tree.frame.url
+        return current_url
+    except Exception as e:
+        raise WebDriverError("Failed to get page url.") from e
+
+
+async def go_back(conn: CDPConnection):
+    try:
+        result = await conn.execute(page.get_navigation_history())
+        current = result[0]
+        if current <= 0:
+            return
+        entry = result[1][current - 1]
+        await conn.execute(
+            page.navigate_to_history_entry(entry.id_)
+        )
+    except Exception as e:
+        raise WebDriverError("Failed to go back to page.") from e
+
+async def is_element_selected(
+    conn: CDPConnection, element
+) -> bool:
+    """Check if element is selected"""
+    try:
+        try:
+            get_attribute_value = await get_attribute(conn, element, "checked")
+            return get_attribute_value.lower() == ""
+        except WebDriverError:
+            pass
+        try:
+            get_attribute_value = await get_attribute(conn, element, "selected")
+            return get_attribute_value.lower() == ""
+        except WebDriverError:
+            pass
+        return False
+    except Exception as e:
+        raise WebDriverError("Failed to check if element is selected.") from e
+
+async def get_css_value(
+    conn: CDPConnection, element, property_name
+) -> str:
+    """Get CSS value"""
+    try:
+        styles = await get_attribute(conn, element, "style")
+        styles = styles.split(";")
+        for s in styles:
+            items = s.split(":")
+            if len(items) == 2:
+                if items[0].strip() == property_name:
+                    return items[1].strip()
+        raise WebDriverError("Failed to get css value.")
+    except Exception as e:
+        raise WebDriverError("Failed to get css value.") from e
