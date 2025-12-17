@@ -14,6 +14,8 @@ HEADERS: Dict[str, str] = {
 }
 ELEMENT_W3C: str = "element-6066-11e4-a52e-4f735466cecf"
 ELEMENT_JSONWIRE: str = "ELEMENT"
+TIMEOUT = 5  # seconds
+TIME_FORMAT_MICROSECONDS = "%Y-%m-%d_%H-%M-%S-%f"
 
 
 class Specification:

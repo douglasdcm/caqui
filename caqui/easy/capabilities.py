@@ -9,6 +9,7 @@ from typing import Dict, List
 
 class BaseCapabilitiesBuilder:
     """Reference: https://www.w3.org/TR/webdriver/#capabilities"""
+
     def __init__(self) -> None:
         self.desired_capabilities: dict = {}
         self.options: dict = {}

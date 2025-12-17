@@ -4,3 +4,4 @@ webdriver_manager
 types-requests
 orjson
 beautifulsoup4
+git+https://github.com/HyperionGray/python-chrome-devtools-protocol.git@5915dce242d4f0cd8c5f8a5e843a535dacc57fc3
