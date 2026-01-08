@@ -8,7 +8,6 @@ from functools import lru_cache
 
 from caqui.by import By
 from caqui.constants import ELEMENT_JSONWIRE, ELEMENT_W3C
-from caqui.cssify import cssify
 from caqui.exceptions import WebDriverError
 
 
@@ -159,15 +158,4 @@ def convert_locator_to_css_selector_or_xpath(locator_type: str, locator_value: s
         locator_value = f"//{locator_value}"
         locator_type = By.XPATH
         return locator_type, locator_value
-    # if locator_type.lower() == By.XPATH:
-    #     try:
-    #         locator_value = cssify(locator_value)
-    #         locator_type = By.CSS_SELECTOR
-    #         return locator_type, locator_value
-    #     except Exception:
-    #         # just ignore it and keep using the xpath selector
-    #         pass
-    # default path
     return locator_type, locator_value
-
-

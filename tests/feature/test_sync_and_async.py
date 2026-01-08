@@ -1,7 +1,8 @@
 from pytest import mark, raises
+
 from caqui import asynchronous, synchronous
-from caqui.exceptions import WebDriverError
 from caqui.by import By
+from caqui.exceptions import WebDriverError
 from tests.constants import COOKIE
 
 
@@ -213,7 +214,9 @@ async def test_switch_to_window(setup_functional_environment, window_type):
     assert synchronous.get_title(server_url, session) == ""
     synchronous.switch_to_window_jsonwire(server_url, session, handle=sample_page) is True
 
-    assert await asynchronous.switch_to_window_jsonwire(server_url, session, handle=new_page) is True
+    assert (
+        await asynchronous.switch_to_window_jsonwire(server_url, session, handle=new_page) is True
+    )
     assert synchronous.get_title(server_url, session) == ""
 
 
@@ -502,7 +505,9 @@ async def test_actions_scroll_to_element(setup_functional_environment):
 
     element = synchronous.find_element(server_url, session, locator_type, locator_value)
     assert synchronous.actions_scroll_to_element_jsonwire(server_url, session, element) is True
-    assert await asynchronous.actions_scroll_to_element_jsonwire(server_url, session, element) is True
+    assert (
+        await asynchronous.actions_scroll_to_element_jsonwire(server_url, session, element) is True
+    )
 
 
 @mark.asyncio

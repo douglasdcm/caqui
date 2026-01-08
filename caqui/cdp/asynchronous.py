@@ -6,7 +6,9 @@
 import asyncio
 import datetime
 import json
+import urllib.request
 from typing import Any, Dict, List, Optional
+from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 from cdp import (
@@ -18,21 +20,15 @@ from cdp import (
     network,
     page,
     runtime,
-    target,
     storage,
+    target,
 )
 
+from caqui.cdp.by import By
 from caqui.cdp.connection import CDPConnection
-import urllib.request
-from urllib.parse import urlparse
-
-from caqui.by import By
 from caqui.constants import TIME_FORMAT_MICROSECONDS, TIMEOUT
 from caqui.exceptions import WebDriverError
-from caqui.helper import (
-    convert_locator_to_css_selector_or_xpath,
-    save_picture,
-)
+from caqui.helper import convert_locator_to_css_selector_or_xpath, save_picture
 
 
 class GlobalValues:
@@ -1125,37 +1121,37 @@ async def get_tag_name(conn: CDPConnection, element: dom.NodeId) -> str:
         raise WebDriverError("Failed to get element name.") from e
 
 
-async def get_shadow_element_v1(
-    conn: CDPConnection,
-    shadow_root_locator_type: str,
-    shadoe_root_locator_value: str,
-    locator_type: str,
-    locator_value: str,
-) -> dom.NodeId:
-    """
-    Get the shadow root element from a web page using the W3C WebDriver Specification.
+# async def get_shadow_element_v1(
+#     conn: CDPConnection,
+#     shadow_root_locator_type: str,
+#     shadoe_root_locator_value: str,
+#     locator_type: str,
+#     locator_value: str,
+# ) -> dom.NodeId:
+#     """
+#     Get the shadow root element from a web page using the W3C WebDriver Specification.
 
-    Parameters:
-        conn: CDPConnection: The connection to the websocket.
-        shadow_element: The ID or name of the shadow element to retrieve.
-        locator_type: The type of locator to use (e.g., 'css selector', 'xpath').
-        locator_value: The value of the locator to find the element.
+#     Parameters:
+#         conn: CDPConnection: The connection to the websocket.
+#         shadow_element: The ID or name of the shadow element to retrieve.
+#         locator_type: The type of locator to use (e.g., 'css selector', 'xpath').
+#         locator_value: The value of the locator to find the element.
 
-    Returns:
-        The shadow root element as a string, or an empty string if not found.
+#     Returns:
+#         The shadow root element as a string, or an empty string if not found.
 
-    Raises:
-        WebDriverError: If there is an error retrieving the shadow element.
-    """
-    try:
-        host_node = await _find_element(
-            conn, shadow_root_locator_type, shadoe_root_locator_value, depth=-1, pierce=True
-        )
-        host_details = await conn.execute(dom.describe_node(node_id=host_node, depth=1))
-        shadow_roots = host_details.shadow_roots
-        return await _find_element(conn, locator_type, locator_value, shadow_roots[0].node_id)
-    except Exception as e:
-        raise WebDriverError("Failed to get the element shadow.") from e
+#     Raises:
+#         WebDriverError: If there is an error retrieving the shadow element.
+#     """
+#     try:
+#         host_node = await _find_element(
+#             conn, shadow_root_locator_type, shadoe_root_locator_value, depth=-1, pierce=True
+#         )
+#         host_details = await conn.execute(dom.describe_node(node_id=host_node, depth=1))
+#         shadow_roots = host_details.shadow_roots
+#         return await _find_element(conn, locator_type, locator_value, shadow_roots[0].node_id)
+#     except Exception as e:
+#         raise WebDriverError("Failed to get the element shadow.") from e
 
 
 async def get_shadow_element(

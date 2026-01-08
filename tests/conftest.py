@@ -3,9 +3,9 @@ from pytest import fixture
 
 from caqui import asynchronous
 from caqui.cdp.connection import CDPConnection
-from caqui.easy.cdp.launcher import close_chrome, get_ws_url, launch_chrome
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
 from caqui.easy.cdp.drivers import AsyncDriver as AsyncDriverCDP
+from caqui.easy.cdp.launcher import close_chrome, get_ws_url, launch_chrome
 from caqui.easy.drivers import AsyncDriver
 from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL

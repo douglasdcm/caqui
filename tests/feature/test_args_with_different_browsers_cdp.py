@@ -1,6 +1,6 @@
 from pytest import fixture, mark
 
-from caqui.by import By
+from caqui.cdp.by import By
 from caqui.constants import Specification
 from caqui.easy.capabilities import (
     ChromeCapabilitiesBuilder,

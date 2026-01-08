@@ -16,19 +16,13 @@ and event dispatching.
 """
 
 from __future__ import annotations
-<<<<<<< HEAD
-=======
 
->>>>>>> 6826c0f (Add tests to blank page)
 import asyncio
 import json
 import logging
+import time
 import typing
-<<<<<<< HEAD
-from dataclasses import dataclass, field
-=======
 from dataclasses import dataclass
->>>>>>> 6826c0f (Add tests to blank page)
 
 try:
     import websockets
@@ -39,12 +33,7 @@ except ImportError:
     WEBSOCKETS_AVAILABLE = False
     WebSocketClientProtocol = typing.Any  # type: ignore
 
-<<<<<<< HEAD
-from cdp.util import parse_json_event, T_JSON_DICT
-
-=======
 from cdp.util import T_JSON_DICT, parse_json_event
->>>>>>> 6826c0f (Add tests to blank page)
 
 logger = logging.getLogger(__name__)
 
@@ -101,11 +90,8 @@ class CDPConnection:
                 print(event)
     """
 
-<<<<<<< HEAD
-=======
     main_context_id = None
 
->>>>>>> 6826c0f (Add tests to blank page)
     def __init__(self, url: str, timeout: float = 30.0):
         """
         Initialize a CDP connection.
@@ -128,14 +114,12 @@ class CDPConnection:
         self._event_queue: asyncio.Queue = asyncio.Queue()
         self._recv_task: typing.Optional[asyncio.Task] = None
         self._closed = False
-<<<<<<< HEAD
-=======
         self._wss: typing.List[WebSocketClientProtocol] = []
+        self._loop = None
 
     async def set_url(self, url):
         self.url = url
         self._ws = None
->>>>>>> 6826c0f (Add tests to blank page)
 
     async def connect(self) -> None:
         """Establish the WebSocket connection."""
@@ -144,14 +128,12 @@ class CDPConnection:
 
         try:
             self._ws = await websockets.connect(self.url)  # type: ignore
-<<<<<<< HEAD
-=======
             self._wss.append(self._ws)
->>>>>>> 6826c0f (Add tests to blank page)
             self._recv_task = asyncio.create_task(self._receive_loop())
             logger.info(f"Connected to {self.url}")
         except Exception as e:
             raise CDPConnectionError(f"Failed to connect to {self.url}: {e}")
+
 
     async def close(self) -> None:
         """Close the WebSocket connection."""
@@ -175,19 +157,14 @@ class CDPConnection:
         self._pending_commands.clear()
 
         # Close the WebSocket
-<<<<<<< HEAD
-        if self._ws:
-            await self._ws.close()
-=======
         for ws in self._wss:
             await ws.close()
 
         if self._ws:
-            # await self._ws.close()
->>>>>>> 6826c0f (Add tests to blank page)
             self._ws = None
 
         logger.info("Connection closed")
+
 
     async def __aenter__(self) -> CDPConnection:
         """Async context manager entry."""
@@ -319,10 +296,6 @@ class CDPConnection:
 
         try:
             # Send the command
-<<<<<<< HEAD
-            # print("xxxxx", json.dumps(request))
-=======
->>>>>>> 6826c0f (Add tests to blank page)
             await self._ws.send(json.dumps(request))
             logger.debug(f"Sent command {cmd_id}: {request['method']}")
             # Wait for the response
@@ -331,6 +304,9 @@ class CDPConnection:
 
             # Send the result back to the generator
             try:
+                # print(request)
+                # print(result)
+                # print("=================")
                 cmd.send(result)
             except StopIteration as e:
                 return e.value
@@ -345,6 +321,7 @@ class CDPConnection:
             # Clean up the pending command on error
             self._pending_commands.pop(cmd_id, None)
             raise
+
 
     async def listen(self) -> typing.AsyncIterator[typing.Any]:
         """
@@ -391,3 +368,185 @@ class CDPConnection:
     def pending_command_count(self) -> int:
         """Get the number of pending commands (for debugging/monitoring)."""
         return len(self._pending_commands)
+
+from websocket import create_connection
+class CDPConnectionSync:
+    def __init__(self, url: str, timeout: float = 30.0):
+        self._url = url
+        self._timeout = timeout
+        self._ws= None
+        self._request_id = 0
+        self._message_queue = queue.Queue()
+
+    @property
+    def url(self):
+        return self._url
+
+    @url.setter
+    def url(self, value):
+        self._url = value
+
+    def set_url(self, url):
+        self._url = url
+
+    def connect(self):
+        self._ws = create_connection(self._url)
+        t = threading.Thread(target=run_receive_thread, args=(self._ws,))
+        t.daemon = True
+        t.start()
+
+    def get_event_nowait(self) -> typing.Optional[typing.Any]:
+        """
+        Get an event from the queue without waiting.
+
+        Returns:
+            A CDP event object, or None if no events are available
+        """
+        try:
+            return _event_queue.get_nowait()
+        except queue.Empty:
+            return None
+
+
+
+    def execute(self, command, wait=True):
+        try:
+            result = None
+            request = next(command)
+            self._request_id += 1
+
+            request["id"] = self._request_id
+            self._ws.send(json.dumps(request))
+            if not wait:
+                return
+            timeout = 10 # seconds
+            start_time = time.time()
+            request_id = self._request_id
+            pending_requests[request_id] = None
+            while pending_requests[request_id] is None:
+                if time.time() - start_time > timeout:
+                    del pending_requests[request_id]
+                    raise TimeoutError("Response not received within timeout")
+                # Process messages from the queue in the main thread while waiting
+                while not message_queue.empty():
+                    process_incoming_message()
+                # time.sleep(0.1) # Prevents busy waiting
+                
+            response = pending_requests[request_id]
+            raw = response
+            del pending_requests[request_id]
+            # return response
+            # raw = json.loads(self._ws.recv())
+            if "error" in raw:
+                raise CDPCommandError(raw["error"], message=raw)
+            try:
+                # print(request)
+                # print(raw)
+                # print("------------------")
+                result = raw.get("result", {})
+                if result:
+                    # time.sleep(0.1)
+                    command.send(result)
+                    raise RuntimeError("CDP generator did not stop")
+            except StopIteration as e:
+                return e.value
+        except Exception:
+            raise
+
+    def close(self):
+        self._ws.close()
+
+import websocket
+import threading
+import json
+import time
+import uuid
+import queue
+
+# A dictionary to store pending requests and their expected responses
+pending_requests = {}
+# A queue to put incoming messages for processing
+message_queue = queue.Queue()
+_event_queue = queue.Queue()
+
+def on_message(ws, message):
+    message_queue.put(message)
+
+def _handle_event(data: T_JSON_DICT) -> None:
+    """Handle an event notification."""
+    try:
+        event = parse_json_event(data)
+        _event_queue.put(event)
+    except Exception as e:
+        logger.error(f"Failed to parse event: {e}")
+
+
+def run_receive_thread(ws):
+    # This loop runs indefinitely in a separate thread to receive messages
+    while True:
+        try:
+            message = ws.recv()
+            data = json.loads(message)
+            if "method" in data:
+                # This is an event
+                _handle_event(data)
+            if message:
+                on_message(ws, message)
+        except websocket.WebSocketConnectionClosedException:
+            break
+        except Exception as e:
+            logging.exception(f"Error in receive thread: {e}")
+            break
+
+def send_request_and_wait_for_response(ws, request_data):
+    request_id = str(uuid.uuid4()) # Generate a unique ID
+    request_data["id"] = request_id
+    
+    # Store a placeholder for the response
+    pending_requests[request_id] = None
+
+    ws.send(json.dumps(request_data))
+    
+    # Wait for the response in a blocking manner
+    timeout = 10 # seconds
+    start_time = time.time()
+    while pending_requests[request_id] is None:
+        if time.time() - start_time > timeout:
+            del pending_requests[request_id]
+            raise TimeoutError("Response not received within timeout")
+        # Process messages from the queue in the main thread while waiting
+        while not message_queue.empty():
+            process_incoming_message()
+        # time.sleep(0.1) # Prevents busy waiting
+        
+    response = pending_requests[request_id]
+    del pending_requests[request_id]
+    return response
+
+def process_incoming_message():
+    # Called by the main thread to handle messages received by the receive thread
+    message_str = message_queue.get()
+    try:
+        message = json.loads(message_str)
+        msg_id = message.get("id")
+        if msg_id in pending_requests:
+            # If it matches a pending request, store it
+            pending_requests[msg_id] = message
+    except json.JSONDecodeError:
+        logging.exception(f"Could not decode JSON: {message_str}")
+
+
+# Main code execution
+# ws = websocket.WebSocket()
+# ws.connect("ws://your_server_address")
+# t = threading.Thread(target=run_receive_thread, args=(ws,))
+# t.daemon = True
+# t.start()
+
+# try:
+#     response1 = send_request_and_wait_for_response(ws, {"type": "data_request_1"})
+#     print(f"Response 1: {response1}")
+#     response2 = send_request_and_wait_for_response(ws, {"type": "data_request_2"})
+#     print(f"Response 2: {response2}")
+# except Exception as e:
+#     print(f"Failed to get response: {e}")

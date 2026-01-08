@@ -44,13 +44,6 @@ class Element:
         self._locator_type, self._locator_value = locator
 
     # TODO test it
-    async def get_rect(self) -> Dict[str, float]:
-        """Returns the rectangle that enclosed the element
-        For example: {"height": 23, "width": 183, "x": 10, "y": 9652.12}
-        """
-        return await asynchronous.get_rect(self._conn, self._element)
-
-    # TODO test it
     async def tag_name(self) -> str:
         """Returns the tag name of the element"""
         return await asynchronous.get_tag_name(self._conn, self._element)

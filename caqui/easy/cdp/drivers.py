@@ -6,7 +6,7 @@
 import os
 from typing import List, Union
 
-from caqui.by import By
+from caqui.cdp.by import By
 from caqui.cdp import asynchronous
 from caqui.easy.cdp.action_chains import ActionChains
 from caqui.easy.cdp.alert import Alert
@@ -139,9 +139,6 @@ class AsyncDriver:
 
     async def set_window_size(self, width: int, height: int) -> None:
         """Resizes the page"""
-        rect = await asynchronous.get_window_rectangle(
-            self._conn,
-        )
         return await asynchronous.set_window_rectangle(
             self._conn,
             width,

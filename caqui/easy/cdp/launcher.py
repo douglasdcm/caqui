@@ -1,7 +1,8 @@
-import orjson
 import subprocess
 import time
 import urllib.request
+
+import orjson
 
 
 def launch_chrome(port=9222):
@@ -12,10 +13,11 @@ def launch_chrome(port=9222):
             "--user-data-dir=/tmp/cdp-profile",
             "--no-first-run",
             "--no-default-browser-check",
-            "--headless",
+            # "--headless",
             "--no-zygote",
             "--no-sandbox",
             "about:blank",
+            f"--remote-allow-origins=http://127.0.0.1:{port}"
         ]
     )
     time.sleep(0.1)

@@ -1,6 +1,6 @@
 from pytest import mark
 
-from caqui.by import By
+from caqui.cdp.by import By
 from caqui.easy.drivers import AsyncDriver
 
 
