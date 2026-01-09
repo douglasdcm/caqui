@@ -3,13 +3,13 @@ import time
 from pytest import mark, raises
 
 from caqui.cdp.by import By
-from caqui.easy.cdp.drivers import AsyncDriver
+from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
 from caqui.exceptions import WebDriverError
 
 
 class TestCDPDriver:
     @mark.asyncio
-    async def test_cdp_refresh_page(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_refresh_page(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
 
         element_before = await driver.find_element(By.XPATH, "//input")
@@ -28,7 +28,7 @@ class TestCDPDriver:
         assert element_before != element_after
 
     @mark.asyncio
-    async def test_cdp_go_forward(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_go_forward(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         title = "Sample page"
         await driver.back()
@@ -37,7 +37,7 @@ class TestCDPDriver:
         assert await driver.get_title() == title
 
     @mark.asyncio
-    async def test_cdp_set_window_rectangle(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_set_window_rectangle(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         window_rectangle_before = await driver.get_window_size()
         x = window_rectangle_before.get("width", 0) + 1
@@ -51,7 +51,7 @@ class TestCDPDriver:
         assert window_rectangle_after.get("width") != window_rectangle_before.get("width")
 
     @mark.asyncio
-    async def test_cdp_fullscreen_window(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_fullscreen_window(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         window_rectangle_before = await driver.get_window_size()
         await driver.fullscreen_window()
@@ -59,22 +59,22 @@ class TestCDPDriver:
         assert window_rectangle_after != window_rectangle_before
 
     @mark.asyncio
-    async def test_cdp_minimize_window(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_minimize_window(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         await driver.minimize_window()
 
     @mark.asyncio
-    async def test_cdp_maximize_window_asynchronous(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_maximize_window_asynchronous(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         await driver.maximize_window()
 
     @mark.asyncio
-    async def test_cdp_new_window(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_new_window(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         assert await driver.switch_to.new_window() is not None
 
     @mark.asyncio
-    async def test_cdp_take_screenshot_element(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_take_screenshot_element(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.CSS_SELECTOR
         locator_value = "#alert-button"
@@ -82,12 +82,12 @@ class TestCDPDriver:
         await element.screenshot("/tmp/picture.png")
 
     @mark.asyncio
-    async def test_cdp_take_screenshot(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_take_screenshot(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         await driver.save_screenshot("/tmp/picture.png")
 
     @mark.asyncio
-    async def test_cdp_get_computed_label(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_get_computed_label(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.CSS_SELECTOR
         locator_value = "#alert-button"
@@ -98,7 +98,7 @@ class TestCDPDriver:
         assert await element.get_computed_label() == expected
 
     @mark.asyncio
-    async def test_cdp_get_computed_role(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_get_computed_role(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.XPATH
         locator_value = "//input"
@@ -109,7 +109,7 @@ class TestCDPDriver:
         assert await element.get_computed_role() == expected
 
     @mark.asyncio
-    async def test_cdp_get_tag_name(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_get_tag_name(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.XPATH
         locator_value = "//input"
@@ -120,7 +120,7 @@ class TestCDPDriver:
         assert await element.get_tag_name() == expected
 
     @mark.asyncio
-    async def test_cdp_get_rect(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_get_rect(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.XPATH
         locator_value = "//input"
@@ -134,7 +134,7 @@ class TestCDPDriver:
         assert actual["y"]
 
     @mark.asyncio
-    async def test_cdp_move_to_element(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_move_to_element(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.XPATH
         locator_value = "//button"
@@ -143,7 +143,7 @@ class TestCDPDriver:
         await driver.actions.move_to_element(element).perform()
 
     @mark.asyncio
-    async def test_cdp_actions_scroll_to_element(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_actions_scroll_to_element(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.XPATH
         locator_value = "//button"
@@ -152,7 +152,7 @@ class TestCDPDriver:
         await driver.actions.scroll_to_element(element).perform()
 
     @mark.asyncio
-    async def test_cdp_submit_foo(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_submit_foo(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.NAME
         locator_value = "my-form"
@@ -161,7 +161,7 @@ class TestCDPDriver:
         await element.submit()
 
     @mark.asyncio
-    async def test_cdp_actions_click(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_actions_click(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.XPATH
         locator_value = "//button"
@@ -171,7 +171,7 @@ class TestCDPDriver:
 
     @mark.asyncio
     async def test_cdp_raise_exception_when_element_not_found(
-        self, setup_cdp_playground: AsyncDriver
+        self, setup_cdp_playground: AsyncDriverCDP
     ):
         driver = setup_cdp_playground
         locator_type = By.XPATH
@@ -181,7 +181,7 @@ class TestCDPDriver:
             await driver.find_element(locator_type, locator_value)
 
     @mark.asyncio
-    async def test_cdp_find_children_elements(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_find_children_elements(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         expected = 1  # parent inclusive
         locator_type = By.XPATH
@@ -194,7 +194,7 @@ class TestCDPDriver:
         assert len(children_elements) > expected
 
     @mark.asyncio
-    async def test_cdp_find_child_element(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_find_child_element(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         expected = "any4"
         locator_type = By.XPATH
@@ -206,14 +206,14 @@ class TestCDPDriver:
         assert text == expected
 
     @mark.asyncio
-    async def test_cdp_get_page_source(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_get_page_source(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         expected = "Sample page"
 
         assert expected in await driver.get_page_source()
 
     @mark.asyncio
-    async def test_cdp_execute_script_asynchronous(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_execute_script_asynchronous(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         script = "alert('any warn')"
         script = "style.background='#000000'"
@@ -221,7 +221,7 @@ class TestCDPDriver:
         assert await driver.execute_script(script) is None
 
     @mark.asyncio
-    async def test_cdp_get_alert_text(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_get_alert_text(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.CSS_SELECTOR
         locator_value = "#alert-button"
@@ -230,7 +230,7 @@ class TestCDPDriver:
         assert await driver.alert.get_text() == expected
 
     @mark.asyncio
-    async def test_cdp_get_active_element(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_get_active_element(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.XPATH
         locator_value = "//input"
@@ -243,7 +243,7 @@ class TestCDPDriver:
         assert await element.get_text() == await element.get_text()
 
     @mark.asyncio
-    async def test_cdp_clear_element_foo(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_clear_element_foo(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.XPATH
         locator_value = "//input"

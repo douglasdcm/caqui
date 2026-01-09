@@ -1,12 +1,12 @@
 from pytest import mark
 
 from caqui.cdp.by import By
-from caqui.easy.cdp.drivers import AsyncDriver
+from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
 
 
 class TestCDPAlert:
     @mark.asyncio
-    async def test_cdp_send_alert_text(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_send_alert_text(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.CSS_SELECTOR
         locator_value = "#alert-button-prompt"
@@ -14,7 +14,7 @@ class TestCDPAlert:
         await driver.alert.send_keys(text="any1")
 
     @mark.asyncio
-    async def test_cdp_accept_alert(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_accept_alert(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.CSS_SELECTOR
         locator_value = "#alert-button"
@@ -22,7 +22,7 @@ class TestCDPAlert:
         await driver.alert.accept()
 
     @mark.asyncio
-    async def test_cdp_dismiss_alert(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_dismiss_alert(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.CSS_SELECTOR
         locator_value = "#alert-button"

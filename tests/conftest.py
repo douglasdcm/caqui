@@ -1,11 +1,12 @@
 import pytest_asyncio
 from pytest import fixture
 
-from caqui import asynchronous
-from caqui.cdp.connection import CDPConnection
+from caqui.cdp.connection import SyncCDPConnection
 from caqui.easy.capabilities import ChromeCapabilitiesBuilder
-from caqui.easy.cdp.drivers import AsyncDriver as AsyncDriverCDP
-from caqui.easy.cdp.launcher import close_chrome, get_ws_url, launch_chrome
+from caqui.easy.cdp.asynchronous.connection import AsyncCDPConnection
+from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
+from caqui.easy.cdp.server import LocalServerCDP, get_ws_url
+from caqui.easy.cdp.synchronous.drivers import SyncDriverCDP
 from caqui.easy.drivers import AsyncDriver
 from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL
@@ -74,18 +75,25 @@ async def setup_environment():
 ## CDP ##
 @fixture(autouse=True, scope="session")
 def launch_browser():
-    launch_chrome()
-    yield
-    close_chrome()
+    server = LocalServerCDP()
+    server.start_chrome()
+    yield server
+    server.dispose()
 
 
 @pytest_asyncio.fixture
 async def setup_cdp_playground():
-    # launch_chrome()
-    async with CDPConnection(get_ws_url()) as conn:
-        driver = AsyncDriverCDP(conn, PAGE_URL)
+    async with AsyncCDPConnection(get_ws_url()) as conn:
+        driver = AsyncDriverCDP(conn)
         await driver.get(PAGE_URL)
         await driver.set_window_size(1000, 1000)
         yield driver
-        # await driver.close()
-    # close_chrome()
+
+
+@fixture
+def setup_sync_cdp_playground():
+    with SyncCDPConnection(get_ws_url()) as conn:
+        driver = SyncDriverCDP(conn)
+        driver.get(PAGE_URL)
+        driver.set_window_size(1000, 1000)
+        yield driver

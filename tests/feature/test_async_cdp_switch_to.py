@@ -3,19 +3,19 @@ import time
 from pytest import mark
 
 from caqui.cdp.by import By
-from caqui.easy.cdp.drivers import AsyncDriver
+from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
 
 
 class TestCDPSwitchTo:
     @mark.asyncio
-    async def test_cdp_switch_to_window_foo(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_switch_to_window_foo(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         await driver.switch_to.new_window()
         handles = await driver.get_window_handles()
         sample_page = handles[0]
         new_page = handles[1]
         assert await driver.switch_to.window(window_handle=new_page) is None
-        # Retry the operation if the page  is not ready
+        # Retry the operation if the page is not ready
         for _ in range(10):
             try:
                 assert await driver.get_title() == "about:blank"
@@ -28,7 +28,9 @@ class TestCDPSwitchTo:
         assert await driver.get_title() == "Sample page"
 
     @mark.asyncio
-    async def test_cdp_switch_to_parent_frame_asynchronous(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_switch_to_parent_frame_asynchronous(
+        self, setup_cdp_playground: AsyncDriverCDP
+    ):
         driver = setup_cdp_playground
         locator_type = By.ID
         locator_value = "my-iframe"
@@ -37,7 +39,7 @@ class TestCDPSwitchTo:
         await driver.switch_to.frame(element_frame)
 
     @mark.asyncio
-    async def test_cdp_switch_to_frame_asynchronous(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_switch_to_frame_asynchronous(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         locator_type = By.ID
         locator_value = "my-iframe"

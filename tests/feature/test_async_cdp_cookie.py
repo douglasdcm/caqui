@@ -1,13 +1,13 @@
 from pytest import mark
 
 from caqui.cdp.by import By
-from caqui.easy.cdp.drivers import AsyncDriver
+from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
 from tests.constants import COOKIE
 
 
 class TestCDPCookies:
     @mark.asyncio
-    async def test_cdp_add_cookie(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_add_cookie(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         # Need to navigate to a web page. If use 'playgound.html' the error
         # 'Document is cookie-averse' happens
@@ -31,7 +31,7 @@ class TestCDPCookies:
         assert len(cookies_after) > len(cookies_before)
 
     @mark.asyncio
-    async def test_cdp_delete_cookie_asynchronous(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_delete_cookie_asynchronous(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         driver = setup_cdp_playground
         await driver.get(
@@ -46,7 +46,7 @@ class TestCDPCookies:
         assert len(cookies) == 0
 
     @mark.asyncio
-    async def test_cdp_delete_cookies_asynchronous(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_delete_cookies_asynchronous(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         await driver.get(
             "https://example.org/",
@@ -59,7 +59,7 @@ class TestCDPCookies:
         assert len(cookies_before) != len(cookies_after)
 
     @mark.asyncio
-    async def test_cdp_get_named_cookie(self, setup_cdp_playground: AsyncDriver):
+    async def test_cdp_get_named_cookie(self, setup_cdp_playground: AsyncDriverCDP):
         driver = setup_cdp_playground
         cookie = COOKIE
         expected = "John Doe"

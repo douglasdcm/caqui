@@ -25,15 +25,15 @@ from cdp import (
 )
 
 from caqui.cdp.by import By
-from caqui.cdp.connection import CDPConnection
 from caqui.constants import TIME_FORMAT_MICROSECONDS, TIMEOUT
+from caqui.easy.cdp.asynchronous.connection import AsyncCDPConnection
 from caqui.exceptions import WebDriverError
 from caqui.helper import convert_locator_to_css_selector_or_xpath, save_picture
 
 
 class GlobalValues:
     _doc: Optional[dom.Node] = None
-    conn: CDPConnection = None
+    conn: AsyncCDPConnection = None
 
     async def get_document_node(refresh=False) -> dom.Node:
         if refresh:
@@ -56,7 +56,7 @@ async def _get_element_center(conn, element):
 
 
 async def _find_element_by_xpath(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     xpath: str,
     root_id: Optional[dom.NodeId] = None,
 ) -> dom.NodeId:
@@ -95,7 +95,7 @@ async def _find_element_by_xpath(
 
 
 async def _find_all_elements_by_xpath(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     xpath: str,
     root_id: Optional[dom.NodeId] = None,
 ) -> List[dom.NodeId]:
@@ -162,14 +162,14 @@ async def _find_all_elements_by_xpath(
     return nodes
 
 
-async def describe_node_id(conn: CDPConnection, node_id: dom.NodeId):
+async def describe_node_id(conn: AsyncCDPConnection, node_id: dom.NodeId):
     if not node_id:
         raise WebDriverError(f"Invalid node id '{node_id}'")
     return await conn.execute(dom.describe_node(node_id))
 
 
 async def _find_element_by_css_selector(
-    conn: CDPConnection, root_id: dom.NodeId, depth: int, pierce: bool, selector: str
+    conn: AsyncCDPConnection, root_id: dom.NodeId, depth: int, pierce: bool, selector: str
 ):
     if root_id:
         node = await conn.execute(dom.describe_node(root_id))
@@ -182,7 +182,7 @@ async def _find_element_by_css_selector(
 
 
 async def _find_element(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     locator_type,
     locator_value: str,
     root_id: dom.NodeId = None,
@@ -201,7 +201,7 @@ async def _find_element(
 
 
 async def _find_all_elements(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     locator_type,
     locator_value: str,
     root_id: dom.NodeId = None,
@@ -224,7 +224,9 @@ async def _find_all_elements(
         return node_id
 
 
-async def _handle_alert(conn: CDPConnection, alert_element, timeout, function_callback, text=None):
+async def _handle_alert(
+    conn: AsyncCDPConnection, alert_element, timeout, function_callback, text=None
+):
     click_task = asyncio.create_task(click(conn, alert_element))
     current_datetime = datetime.datetime.now()
     time_to_add = datetime.timedelta(seconds=timeout)
@@ -242,15 +244,15 @@ async def _handle_alert(conn: CDPConnection, alert_element, timeout, function_ca
     await click_task
 
 
-async def _send_test_to_prompt_alert(conn: CDPConnection, text):
+async def _send_test_to_prompt_alert(conn: AsyncCDPConnection, text):
     await conn.execute(page.handle_java_script_dialog(accept=True, prompt_text=text))
 
 
-async def _accept_alert(conn: CDPConnection, text):
+async def _accept_alert(conn: AsyncCDPConnection, text):
     await conn.execute(page.handle_java_script_dialog(accept=True))
 
 
-async def _dismiss_alert(conn: CDPConnection, text):
+async def _dismiss_alert(conn: AsyncCDPConnection, text):
     await conn.execute(page.handle_java_script_dialog(accept=False))
 
 
@@ -261,7 +263,7 @@ async def _set_screen(conn, screen_type: str = "fullscreen"):
     await conn.execute(browser.set_window_bounds(window_id=window_id, bounds=bounds))
 
 
-async def get(conn: CDPConnection, page_url: str) -> None:
+async def get(conn: AsyncCDPConnection, page_url: str) -> None:
     """Does the same of 'go_to_page'. Added to be compatible with selenium method name'"""
     try:
         await conn.execute(page.enable())
@@ -274,7 +276,7 @@ async def get(conn: CDPConnection, page_url: str) -> None:
         raise WebDriverError(f"Failed to navigate to page '{page_url}'.") from e
 
 
-async def _refresh_agents(conn: CDPConnection):
+async def _refresh_agents(conn: AsyncCDPConnection):
     await conn.execute(page.enable())
     await conn.execute(dom.enable())
     await conn.execute(runtime.enable())
@@ -290,7 +292,7 @@ async def go_to_page(conn, page_url: str) -> None:
 
 
 async def find_element(
-    conn: CDPConnection, locator_type: str, locator_value: str, root_id: dom.NodeId = None
+    conn: AsyncCDPConnection, locator_type: str, locator_value: str, root_id: dom.NodeId = None
 ) -> dom.NodeId:
     """Find an element by a 'selector', for example an 'xpath' like '//div[@id="example"]'
 
@@ -303,7 +305,7 @@ async def find_element(
         raise WebDriverError(f"Could not find element with selector: {locator_value}") from e
 
 
-async def find_elements(conn: CDPConnection, locator_type, locator_value: str):
+async def find_elements(conn: AsyncCDPConnection, locator_type, locator_value: str):
     """Find an element by a 'selector', for example an 'xpath' like '//div[@id="example"]'"""
     try:
         return await _find_all_elements(conn, locator_type, locator_value)
@@ -311,7 +313,7 @@ async def find_elements(conn: CDPConnection, locator_type, locator_value: str):
         raise WebDriverError(f"Could not find element with selector: {locator_value}") from e
 
 
-async def click(conn: CDPConnection, element):
+async def click(conn: AsyncCDPConnection, element):
     """Click on an element"""
     try:
         center_x, center_y = await _get_element_center(conn, element)
@@ -333,7 +335,7 @@ async def click(conn: CDPConnection, element):
         raise WebDriverError("Failed to click on element.") from e
 
 
-async def send_keys(conn: CDPConnection, element, text: str):
+async def send_keys(conn: AsyncCDPConnection, element, text: str):
     """Send keys to an element"""
     try:
         await conn.execute(dom.focus(node_id=element))
@@ -360,7 +362,7 @@ async def send_keys(conn: CDPConnection, element, text: str):
         raise WebDriverError("Failed to send keys to element.") from e
 
 
-async def get_text(conn: CDPConnection, element) -> str:
+async def get_text(conn: AsyncCDPConnection, element) -> str:
     """Get the text of an element"""
     try:
         result = await execute_script(conn, element, "value")
@@ -373,7 +375,7 @@ async def get_text(conn: CDPConnection, element) -> str:
         raise WebDriverError("Failed to get text from element.") from e
 
 
-async def get_attribute(conn: CDPConnection, element, attribute: str) -> str:
+async def get_attribute(conn: AsyncCDPConnection, element, attribute: str) -> str:
     """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
     try:
         attributes = await conn.execute(dom.get_attributes(node_id=element))
@@ -386,7 +388,7 @@ async def get_attribute(conn: CDPConnection, element, attribute: str) -> str:
         raise WebDriverError("Failed to get value from element.") from e
 
 
-async def get_title(conn: CDPConnection) -> str:
+async def get_title(conn: AsyncCDPConnection) -> str:
     """Get the page title"""
     try:
         target_info = await conn.execute(target.get_target_info())
@@ -404,7 +406,7 @@ async def get_title(conn: CDPConnection) -> str:
         raise WebDriverError("Failed to get page title.") from e
 
 
-async def get_url(conn: CDPConnection) -> str:
+async def get_url(conn: AsyncCDPConnection) -> str:
     """Returns the URL from web page:"""
     try:
         frame_tree = await conn.execute(page.get_frame_tree())
@@ -414,7 +416,7 @@ async def get_url(conn: CDPConnection) -> str:
         raise WebDriverError("Failed to get page url.") from e
 
 
-async def go_back(conn: CDPConnection):
+async def go_back(conn: AsyncCDPConnection):
     try:
         result = await conn.execute(page.get_navigation_history())
         current = result[0]
@@ -427,7 +429,7 @@ async def go_back(conn: CDPConnection):
         raise WebDriverError("Failed to go back to page.") from e
 
 
-async def is_element_selected(conn: CDPConnection, element) -> bool:
+async def is_element_selected(conn: AsyncCDPConnection, element) -> bool:
     """Check if element is selected"""
     try:
         try:
@@ -445,7 +447,7 @@ async def is_element_selected(conn: CDPConnection, element) -> bool:
         raise WebDriverError("Failed to check if element is selected.") from e
 
 
-async def get_css_value(conn: CDPConnection, element, property_name) -> str:
+async def get_css_value(conn: AsyncCDPConnection, element, property_name) -> str:
     """Get CSS value"""
     try:
         styles = await get_attribute(conn, element, "style")
@@ -462,7 +464,7 @@ async def get_css_value(conn: CDPConnection, element, property_name) -> str:
         raise WebDriverError("Failed to get css value.") from e
 
 
-async def get_property(conn: CDPConnection, element: dom.NodeId, property_name) -> str:
+async def get_property(conn: AsyncCDPConnection, element: dom.NodeId, property_name) -> str:
     try:
         result = await get_attribute(conn, element, property_name)
         if result is None:
@@ -472,7 +474,7 @@ async def get_property(conn: CDPConnection, element: dom.NodeId, property_name) 
         raise WebDriverError("Failed to get property.") from e
 
 
-async def get_cookies(conn: CDPConnection) -> list:
+async def get_cookies(conn: AsyncCDPConnection) -> list:
     """Get the page cookies"""
     try:
         cookies = await conn.execute(storage.get_cookies())
@@ -481,7 +483,7 @@ async def get_cookies(conn: CDPConnection) -> list:
         raise WebDriverError("Failed to get page cookies.") from e
 
 
-async def add_cookie(conn: CDPConnection, cookie: Dict[str, Any]):
+async def add_cookie(conn: AsyncCDPConnection, cookie: Dict[str, Any]):
     """Add cookie
 
     This function adds a cookie to the WebDriver session.
@@ -524,7 +526,7 @@ async def add_cookie(conn: CDPConnection, cookie: Dict[str, Any]):
 
 
 async def delete_cookie(
-    conn: CDPConnection, name: str, url: Optional[str] = None, domanin: Optional[str] = None
+    conn: AsyncCDPConnection, name: str, url: Optional[str] = None, domanin: Optional[str] = None
 ):
     """
     Delete cookie by name
@@ -548,7 +550,7 @@ async def delete_cookie(
         raise WebDriverError(f"Failed to delete cookie '{name}'.") from e
 
 
-async def refresh_page(conn: CDPConnection):
+async def refresh_page(conn: AsyncCDPConnection):
     """
     Refreshes the current page by making an HTTP POST request to the server URL.
 
@@ -564,7 +566,7 @@ async def refresh_page(conn: CDPConnection):
         raise WebDriverError("Failed to refresh page.") from e
 
 
-async def go_forward(conn: CDPConnection):
+async def go_forward(conn: AsyncCDPConnection):
     """
     Go to page forward.
 
@@ -588,7 +590,7 @@ async def go_forward(conn: CDPConnection):
 
 
 async def set_window_rectangle(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     width: int,
     height: int,
     left: Optional[int] = None,
@@ -626,7 +628,7 @@ async def set_window_rectangle(
         raise WebDriverError("Failed to set window rectangle.") from e
 
 
-async def fullscreen_window(conn: CDPConnection):
+async def fullscreen_window(conn: AsyncCDPConnection):
     """
     Fullscreen window.
 
@@ -648,7 +650,7 @@ async def fullscreen_window(conn: CDPConnection):
         raise WebDriverError("Failed to fullscreen window.") from e
 
 
-async def minimize_window(conn: CDPConnection):
+async def minimize_window(conn: AsyncCDPConnection):
     """
     Minimize window.
 
@@ -670,7 +672,7 @@ async def minimize_window(conn: CDPConnection):
         raise WebDriverError("Failed to minimize window.") from e
 
 
-async def maximize_window(conn: CDPConnection):
+async def maximize_window(conn: AsyncCDPConnection):
     """
     Maximize window.
 
@@ -692,7 +694,7 @@ async def maximize_window(conn: CDPConnection):
         raise WebDriverError("Failed to maximize window.") from e
 
 
-async def switch_to_window(conn: CDPConnection, handle: target.TargetInfo):
+async def switch_to_window(conn: AsyncCDPConnection, handle: target.TargetInfo):
     """
     Switch to window.
 
@@ -732,7 +734,7 @@ async def switch_to_window(conn: CDPConnection, handle: target.TargetInfo):
         raise WebDriverError("Failed to switch to window.") from e
 
 
-async def new_window(conn: CDPConnection) -> str:
+async def new_window(conn: AsyncCDPConnection) -> str:
     """
     Open a new window.
 
@@ -758,7 +760,7 @@ async def new_window(conn: CDPConnection) -> str:
         raise WebDriverError("Failed to open window.") from e
 
 
-async def switch_to_parent_frame(conn: CDPConnection):
+async def switch_to_parent_frame(conn: AsyncCDPConnection):
     """
     Switch to parent frame of 'element_frame'.
 
@@ -783,7 +785,7 @@ async def switch_to_parent_frame(conn: CDPConnection):
         raise WebDriverError("Failed to switch to parent frame.") from e
 
 
-async def switch_to_frame(conn: CDPConnection, element_frame: str) -> dom.NodeId:
+async def switch_to_frame(conn: AsyncCDPConnection, element_frame: str) -> dom.NodeId:
     """
     Switch to frame 'element_frame'.
 
@@ -807,7 +809,7 @@ async def switch_to_frame(conn: CDPConnection, element_frame: str) -> dom.NodeId
         raise WebDriverError("Failed to switch to frame.") from e
 
 
-async def delete_all_cookies(conn: CDPConnection):
+async def delete_all_cookies(conn: AsyncCDPConnection):
     """
     Delete all cookies for the current session.
 
@@ -830,7 +832,7 @@ async def delete_all_cookies(conn: CDPConnection):
         raise WebDriverError("Failed to delete cookies.") from e
 
 
-async def get_alert_text(conn: CDPConnection, element: dom.NodeId) -> str:
+async def get_alert_text(conn: AsyncCDPConnection, element: dom.NodeId) -> str:
     """Get the text from an alert"""
     try:
         return await _handle_alert(conn, element, timeout=TIMEOUT, function_callback=_accept_alert)
@@ -839,7 +841,7 @@ async def get_alert_text(conn: CDPConnection, element: dom.NodeId) -> str:
 
 
 async def send_alert_text(
-    conn: CDPConnection, alert_element: dom.NodeId, text, timeout: float = TIMEOUT
+    conn: AsyncCDPConnection, alert_element: dom.NodeId, text, timeout: float = TIMEOUT
 ):
     """
     Send text to an alert dialog.
@@ -864,7 +866,9 @@ async def send_alert_text(
         raise WebDriverError("Failed to sent text to alert.") from e
 
 
-async def accept_alert(conn: CDPConnection, alert_element: dom.NodeId, timeout: float = TIMEOUT):
+async def accept_alert(
+    conn: AsyncCDPConnection, alert_element: dom.NodeId, timeout: float = TIMEOUT
+):
     """
     Accept alert.
 
@@ -887,7 +891,9 @@ async def accept_alert(conn: CDPConnection, alert_element: dom.NodeId, timeout: 
         raise WebDriverError("Failed to accept alert.") from e
 
 
-async def dismiss_alert(conn: CDPConnection, alert_element: dom.NodeId, timeout: float = TIMEOUT):
+async def dismiss_alert(
+    conn: AsyncCDPConnection, alert_element: dom.NodeId, timeout: float = TIMEOUT
+):
     """Dismiss alert
 
     This function dismisses the currently open alert dialog.
@@ -910,7 +916,7 @@ async def dismiss_alert(conn: CDPConnection, alert_element: dom.NodeId, timeout:
 
 
 async def take_screenshot_element(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     element,
     path="/tmp",
     file_name="caqui",
@@ -965,7 +971,7 @@ async def take_screenshot_element(
 
 
 async def take_screenshot(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     path: str = "/tmp",
     file_name: str = "caqui",
 ):
@@ -1042,7 +1048,7 @@ async def get_named_cookie(conn, name) -> dict:
         raise WebDriverError(f"Failed to get cookie '{name}'.") from e
 
 
-async def get_computed_label(conn: CDPConnection, element: dom.NodeId) -> str:
+async def get_computed_label(conn: AsyncCDPConnection, element: dom.NodeId) -> str:
     """Get the element tag computed label. Get the accessibility name.
 
     Args:
@@ -1071,7 +1077,7 @@ async def get_computed_label(conn: CDPConnection, element: dom.NodeId) -> str:
         raise WebDriverError("Failed to get element computed label.") from e
 
 
-async def get_computed_role(conn: CDPConnection, element: dom.NodeId) -> str:
+async def get_computed_role(conn: AsyncCDPConnection, element: dom.NodeId) -> str:
     """Get the element tag computed role (the element role).
 
     Args:
@@ -1100,7 +1106,7 @@ async def get_computed_role(conn: CDPConnection, element: dom.NodeId) -> str:
         raise WebDriverError("Failed to get element computed label.") from e
 
 
-async def get_tag_name(conn: CDPConnection, element: dom.NodeId) -> str:
+async def get_tag_name(conn: AsyncCDPConnection, element: dom.NodeId) -> str:
     """
     Get the tag name of a specified element in a WebDriver session.
 
@@ -1155,7 +1161,7 @@ async def get_tag_name(conn: CDPConnection, element: dom.NodeId) -> str:
 
 
 async def get_shadow_element(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     shadow_element,
     locator_type: str,
     locator_value: str,
@@ -1184,7 +1190,7 @@ async def get_shadow_element(
 
 
 async def get_shadow_elements(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     shadow_element: str,
     locator_type: str,
     locator_value: str,
@@ -1213,7 +1219,7 @@ async def get_shadow_elements(
         raise WebDriverError("Failed to get the element shadow.") from e
 
 
-async def get_rect(conn: CDPConnection, element) -> dict:
+async def get_rect(conn: AsyncCDPConnection, element) -> dict:
     """Get the element rectangle"""
     try:
         result = await conn.execute(dom.get_box_model(node_id=element))
@@ -1228,7 +1234,7 @@ async def get_rect(conn: CDPConnection, element) -> dict:
         raise WebDriverError("Failed to get element rect.") from e
 
 
-async def actions_move_to_element(conn: CDPConnection, element: str) -> bool:
+async def actions_move_to_element(conn: AsyncCDPConnection, element: str) -> bool:
     """
     Move to an element simulating a mouse movement.
 
@@ -1265,7 +1271,7 @@ async def actions_move_to_element(conn: CDPConnection, element: str) -> bool:
 
 
 async def actions_scroll_to_element(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     element,
 ):
     """Scroll to an element simulating a mouse movement"""
@@ -1288,7 +1294,7 @@ async def actions_scroll_to_element(
         raise WebDriverError("Failed to scroll to element.") from e
 
 
-async def submit(conn: CDPConnection, element):
+async def submit(conn: AsyncCDPConnection, element):
     """Submit a form. It is similar to 'submit' funtion in Seleniu
     It is not part of W3C WebDriver. Just added for convenience
     """
@@ -1308,7 +1314,7 @@ async def submit(conn: CDPConnection, element):
 
 
 async def find_children_elements(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     parent_element: str,
     locator_type: str,
     locator_value: str,
@@ -1327,7 +1333,7 @@ async def find_children_elements(
 
 
 async def find_child_element(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     parent_element: str,
     locator_type: str,
     locator_value: str,
@@ -1339,7 +1345,7 @@ async def find_child_element(
         raise WebDriverError(f"Failed to find the child element from '{parent_element}'.") from e
 
 
-async def get_page_source(conn: CDPConnection) -> str:
+async def get_page_source(conn: AsyncCDPConnection) -> str:
     """Get the page source (all content)"""
     try:
         doc = await GlobalValues.get_document_node()
@@ -1349,7 +1355,7 @@ async def get_page_source(conn: CDPConnection) -> str:
 
 
 async def execute_script(
-    conn: CDPConnection,
+    conn: AsyncCDPConnection,
     element: dom.NodeId,
     script: str,
     positive=True,
@@ -1377,7 +1383,7 @@ async def execute_script(
         raise WebDriverError("Failed to execute script.") from e
 
 
-async def get_active_element(conn: CDPConnection):
+async def get_active_element(conn: AsyncCDPConnection):
     """Get the active element"""
     try:
         eval_result = await conn.execute(runtime.evaluate(expression="document.activeElement"))
@@ -1390,7 +1396,7 @@ async def get_active_element(conn: CDPConnection):
         raise WebDriverError("Failed to check if element is selected.") from e
 
 
-async def clear_element(conn: CDPConnection, element: dom.NodeId):
+async def clear_element(conn: AsyncCDPConnection, element: dom.NodeId):
     """Clear the element text"""
     try:
         resolved = await conn.execute(dom.resolve_node(node_id=element))
@@ -1411,7 +1417,7 @@ async def clear_element(conn: CDPConnection, element: dom.NodeId):
         raise WebDriverError("Failed to clear the element text.") from e
 
 
-async def is_element_enabled(conn: CDPConnection, element) -> bool:
+async def is_element_enabled(conn: AsyncCDPConnection, element) -> bool:
     """Check if element is enabled"""
     try:
         script = "disabled"
@@ -1421,7 +1427,7 @@ async def is_element_enabled(conn: CDPConnection, element) -> bool:
         raise WebDriverError("Failed to check if element is enabled.") from e
 
 
-async def get_window_rectangle(conn: CDPConnection) -> dict:
+async def get_window_rectangle(conn: AsyncCDPConnection) -> dict:
     """Get window rectangle"""
     try:
         _, bounds = await conn.execute(browser.get_window_for_target())
@@ -1435,7 +1441,7 @@ async def get_window_rectangle(conn: CDPConnection) -> dict:
         raise WebDriverError("Failed to get window rectangle.") from e
 
 
-async def get_window_handles(conn: CDPConnection) -> List[target.TargetInfo]:
+async def get_window_handles(conn: AsyncCDPConnection) -> List[target.TargetInfo]:
     """Get window handles"""
     try:
         targets = await conn.execute(target.get_targets())
@@ -1444,7 +1450,7 @@ async def get_window_handles(conn: CDPConnection) -> List[target.TargetInfo]:
         raise WebDriverError("Failed to get window handles.") from e
 
 
-async def close_window(conn: CDPConnection):
+async def close_window(conn: AsyncCDPConnection):
     """Close active window"""
     try:
         await new_window(conn)
@@ -1462,7 +1468,7 @@ async def get_window(conn) -> str:
         raise WebDriverError("Failed to get window.") from e
 
 
-async def get_status(conn: CDPConnection) -> dict:
+async def get_status(conn: AsyncCDPConnection) -> dict:
     """Returns the status and details of the WebDriver"""
     try:
         await conn.execute(target.get_targets())

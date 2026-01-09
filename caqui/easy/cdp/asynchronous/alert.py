@@ -8,11 +8,11 @@ from typing import TYPE_CHECKING
 from caqui.cdp import asynchronous
 
 if TYPE_CHECKING:
-    from caqui.easy.cdp.drivers import AsyncDriver
+    from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
 
 
 class Alert:
-    def __init__(self, driver: "AsyncDriver") -> None:
+    def __init__(self, driver: "AsyncDriverCDP") -> None:
         self._conn = driver.conn
         self._current_element = driver._current_element.element_id
 

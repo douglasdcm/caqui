@@ -69,7 +69,7 @@ class PendingCommand:
     params: T_JSON_DICT
 
 
-class CDPConnection:
+class AsyncCDPConnection:
     """
     Manages a WebSocket connection to Chrome DevTools Protocol.
 
@@ -134,7 +134,6 @@ class CDPConnection:
         except Exception as e:
             raise CDPConnectionError(f"Failed to connect to {self.url}: {e}")
 
-
     async def close(self) -> None:
         """Close the WebSocket connection."""
         if self._closed:
@@ -165,8 +164,7 @@ class CDPConnection:
 
         logger.info("Connection closed")
 
-
-    async def __aenter__(self) -> CDPConnection:
+    async def __aenter__(self) -> AsyncCDPConnection:
         """Async context manager entry."""
         await self.connect()
         return self
@@ -322,7 +320,6 @@ class CDPConnection:
             self._pending_commands.pop(cmd_id, None)
             raise
 
-
     async def listen(self) -> typing.AsyncIterator[typing.Any]:
         """
         Listen for events from the browser.
@@ -369,14 +366,26 @@ class CDPConnection:
         """Get the number of pending commands (for debugging/monitoring)."""
         return len(self._pending_commands)
 
+
 from websocket import create_connection
-class CDPConnectionSync:
+
+
+class SyncCDPConnection:
     def __init__(self, url: str, timeout: float = 30.0):
         self._url = url
         self._timeout = timeout
-        self._ws= None
+        self._ws = None
         self._request_id = 0
         self._message_queue = queue.Queue()
+
+    def __enter__(self) -> SyncCDPConnection:
+        """Sync context manager entry."""
+        self.connect()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        """Sync context manager exit."""
+        self.close()
 
     @property
     def url(self):
@@ -407,8 +416,6 @@ class CDPConnectionSync:
         except queue.Empty:
             return None
 
-
-
     def execute(self, command, wait=True):
         try:
             result = None
@@ -419,7 +426,7 @@ class CDPConnectionSync:
             self._ws.send(json.dumps(request))
             if not wait:
                 return
-            timeout = 10 # seconds
+            timeout = 10  # seconds
             start_time = time.time()
             request_id = self._request_id
             pending_requests[request_id] = None
@@ -431,7 +438,7 @@ class CDPConnectionSync:
                 while not message_queue.empty():
                     process_incoming_message()
                 # time.sleep(0.1) # Prevents busy waiting
-                
+
             response = pending_requests[request_id]
             raw = response
             del pending_requests[request_id]
@@ -456,12 +463,14 @@ class CDPConnectionSync:
     def close(self):
         self._ws.close()
 
-import websocket
-import threading
+
 import json
+import queue
+import threading
 import time
 import uuid
-import queue
+
+import websocket
 
 # A dictionary to store pending requests and their expected responses
 pending_requests = {}
@@ -469,8 +478,10 @@ pending_requests = {}
 message_queue = queue.Queue()
 _event_queue = queue.Queue()
 
+
 def on_message(ws, message):
     message_queue.put(message)
+
 
 def _handle_event(data: T_JSON_DICT) -> None:
     """Handle an event notification."""
@@ -498,17 +509,18 @@ def run_receive_thread(ws):
             logging.exception(f"Error in receive thread: {e}")
             break
 
+
 def send_request_and_wait_for_response(ws, request_data):
-    request_id = str(uuid.uuid4()) # Generate a unique ID
+    request_id = str(uuid.uuid4())  # Generate a unique ID
     request_data["id"] = request_id
-    
+
     # Store a placeholder for the response
     pending_requests[request_id] = None
 
     ws.send(json.dumps(request_data))
-    
+
     # Wait for the response in a blocking manner
-    timeout = 10 # seconds
+    timeout = 10  # seconds
     start_time = time.time()
     while pending_requests[request_id] is None:
         if time.time() - start_time > timeout:
@@ -518,10 +530,11 @@ def send_request_and_wait_for_response(ws, request_data):
         while not message_queue.empty():
             process_incoming_message()
         # time.sleep(0.1) # Prevents busy waiting
-        
+
     response = pending_requests[request_id]
     del pending_requests[request_id]
     return response
+
 
 def process_incoming_message():
     # Called by the main thread to handle messages received by the receive thread
@@ -534,19 +547,3 @@ def process_incoming_message():
             pending_requests[msg_id] = message
     except json.JSONDecodeError:
         logging.exception(f"Could not decode JSON: {message_str}")
-
-
-# Main code execution
-# ws = websocket.WebSocket()
-# ws.connect("ws://your_server_address")
-# t = threading.Thread(target=run_receive_thread, args=(ws,))
-# t.daemon = True
-# t.start()
-
-# try:
-#     response1 = send_request_and_wait_for_response(ws, {"type": "data_request_1"})
-#     print(f"Response 1: {response1}")
-#     response2 = send_request_and_wait_for_response(ws, {"type": "data_request_2"})
-#     print(f"Response 2: {response2}")
-# except Exception as e:
-#     print(f"Failed to get response: {e}")

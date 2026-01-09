@@ -1,37 +1,53 @@
 from typing import Tuple
 
 import pytest_asyncio
-from pytest import mark, raises
+from pytest import mark, raises, fixture
 
-from caqui.cdp.by import By
 from caqui.cdp import asynchronous
-from caqui.cdp.connection import CDPConnection
-from caqui.easy.cdp.launcher import close_chrome, get_ws_url, launch_chrome
+from caqui.cdp.by import By
+from caqui.cdp.connection import AsyncCDPConnection
+from caqui.easy.cdp.server import LocalServerCDP, get_ws_url
 from caqui.exceptions import WebDriverError
 from tests.constants import COOKIE, PAGE_URL
 
 
-class TestCDPAsyncFunctions:
+class TestCDPASyncFunctionsBlankPage:
+    PORT = 9224
+
+    @fixture(autouse=True, scope="class")
+    def launch_browser_(self):
+        server = LocalServerCDP(self.PORT)
+        server.start_edge()
+        yield
+        server.dispose()
+
     @pytest_asyncio.fixture
     async def setup_env(self):
-        async with CDPConnection(get_ws_url()) as conn:
+        async with AsyncCDPConnection(get_ws_url()) as conn:
             assert await asynchronous.get(conn, PAGE_URL) is None
             await asynchronous.set_window_rectangle(conn, 1000, 1000, 0, 0)
             yield conn
 
     @mark.asyncio
     async def test_cdp_async_get_title_from_blank_page(self, setup_env):
-        await asynchronous.new_window(setup_env)
-        handle = (await asynchronous.get_window_handles(setup_env))[1]
+        handle = (await asynchronous.get_window_handles(setup_env))[0]
         new_conn = await asynchronous.switch_to_window(setup_env, handle)
         assert await asynchronous.get_title(new_conn) == "about:blank"
-
+    
     @mark.asyncio
     async def test_cdp_async_get_body_from_blank_page(self, setup_env):
-        await asynchronous.new_window(setup_env)
-        handle = (await asynchronous.get_window_handles(setup_env))[1]
+        handle = (await asynchronous.get_window_handles(setup_env))[0]
         new_conn = await asynchronous.switch_to_window(setup_env, handle)
         assert await asynchronous.find_element(new_conn, By.TAG_NAME, "body") is not None
+
+
+class TestCDPAsyncFunctions:
+    @pytest_asyncio.fixture
+    async def setup_env(self):
+        async with AsyncCDPConnection(get_ws_url()) as conn:
+            assert await asynchronous.get(conn, PAGE_URL) is None
+            await asynchronous.set_window_rectangle(conn, 1000, 1000, 0, 0)
+            yield conn
 
     @mark.asyncio
     async def test_cdp_async_find_element_by_xpath(self, setup_env):

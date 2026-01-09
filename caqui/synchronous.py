@@ -3,9 +3,9 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
+from json import dumps
 from typing import Any, Dict, List, Optional
 
-from orjson import dumps
 from requests import Response, request
 
 from caqui.constants import ELEMENT_JSONWIRE, ELEMENT_W3C, HEADERS

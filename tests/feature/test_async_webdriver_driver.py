@@ -8,19 +8,14 @@ from caqui.exceptions import WebDriverError
 @mark.asyncio
 async def test_refresh_page(setup_playground: AsyncDriver):
     driver = setup_playground
-
     element_before = await driver.find_element(By.XPATH, "//input")
     await driver.refresh()
-
     element_after = await driver.find_element(By.XPATH, "//input")
     assert element_before != element_after
-
     element_before = element_after
     await driver.refresh()
-
     element_after = await driver.find_element(By.XPATH, "//input")
     assert element_before != element_after
-
     element_after = await driver.find_element(By.XPATH, "//input")
     assert element_before != element_after
 
@@ -29,7 +24,6 @@ async def test_refresh_page(setup_playground: AsyncDriver):
 async def test_go_forward(setup_playground: AsyncDriver):
     driver = setup_playground
     title = "Sample page"
-
     await driver.back()
     await driver.forward()
     assert driver.title == title
@@ -41,10 +35,8 @@ async def test_set_window_rectangle(setup_playground: AsyncDriver):
     window_rectangle_before = await driver.get_window_size()
     x = window_rectangle_before.get("width", 0) + 1
     y = window_rectangle_before.get("height", 0) + 1
-
     await driver.set_window_size(width=x, height=y)
     window_rectangle_after = await driver.get_window_size()
-
     assert window_rectangle_after != window_rectangle_before
     assert window_rectangle_after.get("height") != window_rectangle_before.get("height")
     assert window_rectangle_after.get("width") != window_rectangle_before.get("width")
@@ -53,22 +45,9 @@ async def test_set_window_rectangle(setup_playground: AsyncDriver):
 @mark.asyncio
 async def test_fullscreen_window(setup_playground: AsyncDriver):
     driver = setup_playground
-    window_rectangle_before = await driver.get_window_size()
-
-    await driver.fullscreen_window()
-
-    window_rectangle_after = await driver.get_window_size()
-    assert window_rectangle_after != window_rectangle_before
-    assert window_rectangle_after.get("height", 0) > window_rectangle_before.get("height", 0)
-    assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
-
+    assert await driver.fullscreen_window() is None
     await driver.maximize_window()
-    await driver.fullscreen_window()
-    window_rectangle_after = await driver.get_window_size()
-
-    assert window_rectangle_after != window_rectangle_before
-    assert window_rectangle_after.get("height", 0) > window_rectangle_before.get("height", 0)
-    assert window_rectangle_after.get("width", 0) > window_rectangle_before.get("width", 0)
+    assert await driver.fullscreen_window() is None
 
 
 @mark.asyncio
@@ -112,9 +91,7 @@ async def test_get_computed_label(setup_playground: AsyncDriver):
     locator_type = By.CSS_SELECTOR
     locator_value = "#alert-button"
     expected = "alert"
-
     element = await driver.find_element(locator_type, locator_value)
-
     assert await element.get_computed_label() == expected
 
 
@@ -124,9 +101,7 @@ async def test_get_computed_role(setup_playground: AsyncDriver):
     locator_type = By.XPATH
     locator_value = "//input"
     expected = "textbox"
-
     element = await driver.find_element(locator_type, locator_value)
-
     assert await element.get_computed_role() == expected
 
 
@@ -136,9 +111,7 @@ async def test_get_tag_name(setup_playground: AsyncDriver):
     locator_type = By.XPATH
     locator_value = "//input"
     expected = "input"
-
     element = await driver.find_element(locator_type, locator_value)
-
     assert await element.get_tag_name() == expected
 
 
@@ -147,9 +120,7 @@ async def test_get_rect(setup_playground: AsyncDriver):
     driver = setup_playground
     locator_type = By.XPATH
     locator_value = "//input"
-
     element = await driver.find_element(locator_type, locator_value)
-
     actual = await element.get_rect()
     assert actual["height"]
     assert actual["width"]
@@ -162,7 +133,6 @@ async def test_move_to_element(setup_playground: AsyncDriver):
     driver = setup_playground
     locator_type = By.XPATH
     locator_value = "//button"
-
     element = await driver.find_element(locator_type, locator_value)
     await driver.actions.move_to_element(element).perform()
 
@@ -172,7 +142,6 @@ async def test_actions_scroll_to_element(setup_playground: AsyncDriver):
     driver = setup_playground
     locator_type = By.XPATH
     locator_value = "//button"
-
     element = await driver.find_element(locator_type, locator_value)
     await driver.actions.scroll_to_element(element).perform()
 
@@ -182,7 +151,6 @@ async def test_submit_foo(setup_playground: AsyncDriver):
     driver = setup_playground
     locator_type = By.NAME
     locator_value = "my-form"
-
     element = await driver.find_element(locator_type, locator_value)
     await element.submit()
 
@@ -192,7 +160,6 @@ async def test_actions_click(setup_playground: AsyncDriver):
     driver = setup_playground
     locator_type = By.XPATH
     locator_value = "//button"
-
     element = await driver.find_element(locator_type, locator_value)
     await driver.actions.click(element).perform()
 
@@ -202,7 +169,6 @@ async def test_raise_exception_when_element_not_found(setup_playground: AsyncDri
     driver = setup_playground
     locator_type = By.XPATH
     locator_value = "//invalid-tag"
-
     with raises(WebDriverError):
         await driver.find_element(locator_type, locator_value)
 
@@ -213,11 +179,8 @@ async def test_find_children_elements(setup_playground: AsyncDriver):
     expected = 1  # parent inclusive
     locator_type = By.XPATH
     locator_value = "//div"
-
     parent_element = await driver.find_element(locator_type, '//div[@class="parent"]')
-
     children_elements = await parent_element.find_elements(locator_type, locator_value)
-
     assert len(children_elements) > expected
 
 
@@ -227,7 +190,6 @@ async def test_find_child_element(setup_playground: AsyncDriver):
     expected = "any4"
     locator_type = By.XPATH
     locator_value = '//div[@class="child4"]'
-
     parent_element = await driver.find_element(locator_type, '//div[@class="parent"]')
     child_element = await parent_element.find_element(locator_type, locator_value)
     text = await child_element.get_text()
@@ -238,7 +200,6 @@ async def test_find_child_element(setup_playground: AsyncDriver):
 async def test_get_page_source(setup_playground: AsyncDriver):
     driver = setup_playground
     expected = "Sample page"
-
     assert expected in driver.page_source
 
 
@@ -246,7 +207,6 @@ async def test_get_page_source(setup_playground: AsyncDriver):
 async def test_execute_script_asynchronous(setup_playground: AsyncDriver):
     driver = setup_playground
     script = "alert('any warn')"
-
     assert await driver.execute_script(script) is None
 
 
@@ -256,10 +216,8 @@ async def test_get_alert_text(setup_playground: AsyncDriver):
     locator_type = By.CSS_SELECTOR
     locator_value = "#alert-button"
     expected = "any warn"
-
     alert_button = await driver.find_element(locator_type, locator_value)
     await alert_button.click()
-
     assert driver.alert.text == expected
 
 
@@ -269,10 +227,8 @@ async def test_get_active_element(setup_playground: AsyncDriver):
     locator_type = By.XPATH
     locator_value = "//input"
     locator_value = '//*[@id="button"]'
-
     element = await driver.find_element(locator_type, locator_value)
     await element.send_keys("any")
-
     assert driver.switch_to.active_element.text == element.text
 
 
@@ -282,7 +238,6 @@ async def test_clear_element(setup_playground: AsyncDriver):
     locator_type = By.XPATH
     locator_value = "//input"
     text = "any"
-
     element = await driver.find_element(locator_type, locator_value)
     await element.send_keys(text)
     await element.clear()

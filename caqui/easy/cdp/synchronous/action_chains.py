@@ -3,19 +3,19 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
-from typing import TYPE_CHECKING, Coroutine, List, Union
+from typing import TYPE_CHECKING, List, Union
 
-from caqui.cdp import asynchronous
+from caqui.cdp import synchronous
 
 if TYPE_CHECKING:
-    from caqui.easy.cdp.drivers import AsyncDriver
-    from caqui.easy.cdp.element import Element
+    from caqui.easy.cdp.synchronous.drivers import SyncDriverCDP
+    from caqui.easy.cdp.synchronous.element import Element
 
 
 class ActionChains:
-    def __init__(self, driver: "AsyncDriver") -> None:
+    def __init__(self, driver: "SyncDriverCDP") -> None:
         self._conn = driver.conn
-        self._coroutines: List[Coroutine] = []
+        self._commands: List = []
         self._element = Union["Element", None]
 
     def click(self, element: "Element") -> "ActionChains":
@@ -23,33 +23,33 @@ class ActionChains:
         Clicks on the element `element`
         """
         self._element = element
-        coroutine = asynchronous.click(
+        coroutine = synchronous.click(
             self._conn,
             element.element_id,
         )
-        self._coroutines.append(coroutine)
+        self._commands.append(coroutine)
         return self
 
     def move_to_element(self, element: "Element") -> "ActionChains":
         """Move the mouse to the element `element`"""
         self._element = element
-        coroutine = asynchronous.actions_move_to_element(
+        coroutine = synchronous.actions_move_to_element(
             self._conn,
             element.element_id,
         )
-        self._coroutines.append(coroutine)
+        self._commands.append(coroutine)
         return self
 
     def scroll_to_element(self, element: "Element", delta_y: int = 1000) -> "ActionChains":
         """Scrolls the screen to the element `element`"""
         self._element = element
-        coroutine = asynchronous.actions_scroll_to_element(
+        coroutine = synchronous.actions_scroll_to_element(
             self._conn,
             element.element_id,
         )
-        self._coroutines.append(coroutine)
+        self._commands.append(coroutine)
         return self
 
-    async def perform(self) -> None:
-        """Executes the chain of Coroutines"""
-        [await coroutine for coroutine in self._coroutines]
+    def perform(self) -> None:
+        """Executes the chain of Commands"""
+        [command for command in self._commands]

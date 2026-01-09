@@ -40,7 +40,7 @@ setup(
         "aiohttp",
         "webdriver_manager",
         "types-requests",
-        "orjson",
+        "json",
         "Cython",
     ],
     ext_modules=cythonize(

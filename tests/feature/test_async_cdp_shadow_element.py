@@ -1,14 +1,14 @@
 from pytest import mark
 
 from caqui.cdp.by import By
-from caqui.easy.cdp.drivers import AsyncDriver
+from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
 
 
 class TestCDPShadowElement:
     @mark.parametrize("locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")])
     @mark.asyncio
     async def test_cdp_find_elements_from_shadow_root(
-        self, setup_cdp_playground: AsyncDriver, locator, value
+        self, setup_cdp_playground: AsyncDriverCDP, locator, value
     ):
         driver = setup_cdp_playground
         locator_type = By.ID
@@ -25,7 +25,7 @@ class TestCDPShadowElement:
     @mark.parametrize("locator, value", [(By.ID, "shadow-button"), (By.CSS_SELECTOR, "button")])
     @mark.asyncio
     async def test_cdp_find_element_from_shadow_root(
-        self, setup_cdp_playground: AsyncDriver, locator, value
+        self, setup_cdp_playground: AsyncDriverCDP, locator, value
     ):
         driver = setup_cdp_playground
         locator_type = By.ID

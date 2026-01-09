@@ -3,7 +3,6 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
-import asyncio
 import datetime
 import json
 import threading
@@ -26,7 +25,7 @@ from cdp import (
 )
 
 from caqui.cdp.by import By
-from caqui.cdp.connection import CDPConnectionSync
+from caqui.cdp.connection import SyncCDPConnection
 from caqui.constants import TIME_FORMAT_MICROSECONDS, TIMEOUT
 from caqui.exceptions import WebDriverError
 from caqui.helper import convert_locator_to_css_selector_or_xpath, save_picture
@@ -34,7 +33,7 @@ from caqui.helper import convert_locator_to_css_selector_or_xpath, save_picture
 
 class GlobalValues:
     _doc: Optional[dom.Node] = None
-    conn: CDPConnectionSync = None
+    conn: SyncCDPConnection = None
 
     def get_document_node(refresh=False) -> dom.Node:
         if refresh:
@@ -42,9 +41,7 @@ class GlobalValues:
         if not GlobalValues.conn:
             raise WebDriverError("No connection")
         if not GlobalValues._doc:
-            GlobalValues._doc = GlobalValues.conn.execute(
-                dom.get_document(depth=-1, pierce=True)
-            )
+            GlobalValues._doc = GlobalValues.conn.execute(dom.get_document(depth=-1, pierce=True))
         return GlobalValues._doc
 
 
@@ -57,7 +54,7 @@ def _get_element_center(conn, element):
 
 
 def _find_element_by_xpath(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     xpath: str,
     root_id: Optional[dom.NodeId] = None,
 ) -> dom.NodeId:
@@ -96,7 +93,7 @@ def _find_element_by_xpath(
 
 
 def _find_all_elements_by_xpath(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     xpath: str,
     root_id: Optional[dom.NodeId] = None,
 ) -> List[dom.NodeId]:
@@ -163,14 +160,14 @@ def _find_all_elements_by_xpath(
     return nodes
 
 
-def describe_node_id(conn: CDPConnectionSync, node_id: dom.NodeId):
+def describe_node_id(conn: SyncCDPConnection, node_id: dom.NodeId):
     if not node_id:
         raise WebDriverError(f"Invalid node id '{node_id}'")
     return conn.execute(dom.describe_node(node_id))
 
 
 def _find_element_by_css_selector(
-    conn: CDPConnectionSync, root_id: dom.NodeId, depth: int, pierce: bool, selector: str
+    conn: SyncCDPConnection, root_id: dom.NodeId, depth: int, pierce: bool, selector: str
 ):
     if root_id:
         node = conn.execute(dom.describe_node(root_id))
@@ -183,7 +180,7 @@ def _find_element_by_css_selector(
 
 
 def _find_element(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     locator_type,
     locator_value: str,
     root_id: dom.NodeId = None,
@@ -202,7 +199,7 @@ def _find_element(
 
 
 def _find_all_elements(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     locator_type,
     locator_value: str,
     root_id: dom.NodeId = None,
@@ -217,15 +214,13 @@ def _find_all_elements(
             node = conn.execute(dom.describe_node(root_id))
         else:
             node = GlobalValues.get_document_node()
-        node_id = conn.execute(
-            dom.query_selector_all(node_id=node.node_id, selector=locator_value)
-        )
+        node_id = conn.execute(dom.query_selector_all(node_id=node.node_id, selector=locator_value))
         if not node_id:
             raise WebDriverError()
         return node_id
 
 
-def _handle_alert(conn: CDPConnectionSync, alert_element, timeout, function_callback, text=None):
+def _handle_alert(conn: SyncCDPConnection, alert_element, timeout, function_callback, text=None):
     click_task = threading.Thread(target=click, args=(conn, alert_element))
     click_task.daemon = True
     click_task.start()
@@ -245,15 +240,15 @@ def _handle_alert(conn: CDPConnectionSync, alert_element, timeout, function_call
     click_task
 
 
-def _send_test_to_prompt_alert(conn: CDPConnectionSync, text):
+def _send_test_to_prompt_alert(conn: SyncCDPConnection, text):
     conn.execute(page.handle_java_script_dialog(accept=True, prompt_text=text))
 
 
-def _accept_alert(conn: CDPConnectionSync, text):
+def _accept_alert(conn: SyncCDPConnection, text):
     conn.execute(page.handle_java_script_dialog(accept=True))
 
 
-def _dismiss_alert(conn: CDPConnectionSync, text):
+def _dismiss_alert(conn: SyncCDPConnection, text):
     conn.execute(page.handle_java_script_dialog(accept=False))
 
 
@@ -264,7 +259,7 @@ def _set_screen(conn, screen_type: str = "fullscreen"):
     conn.execute(browser.set_window_bounds(window_id=window_id, bounds=bounds))
 
 
-def get(conn: CDPConnectionSync, page_url: str) -> None:
+def get(conn: SyncCDPConnection, page_url: str) -> None:
     """Does the same of 'go_to_page'. Added to be compatible with selenium method name'"""
     try:
         conn.execute(page.enable())
@@ -277,7 +272,7 @@ def get(conn: CDPConnectionSync, page_url: str) -> None:
         raise WebDriverError(f"Failed to navigate to page '{page_url}'.") from e
 
 
-def _refresh_agents(conn: CDPConnectionSync):
+def _refresh_agents(conn: SyncCDPConnection):
     conn.execute(page.enable())
     conn.execute(dom.enable())
     conn.execute(runtime.enable())
@@ -293,7 +288,7 @@ def go_to_page(conn, page_url: str) -> None:
 
 
 def find_element(
-    conn: CDPConnectionSync, locator_type: str, locator_value: str, root_id: dom.NodeId = None
+    conn: SyncCDPConnection, locator_type: str, locator_value: str, root_id: dom.NodeId = None
 ) -> dom.NodeId:
     """Find an element by a 'selector', for example an 'xpath' like '//div[@id="example"]'
 
@@ -306,7 +301,7 @@ def find_element(
         raise WebDriverError(f"Could not find element with selector: {locator_value}") from e
 
 
-def find_elements(conn: CDPConnectionSync, locator_type, locator_value: str):
+def find_elements(conn: SyncCDPConnection, locator_type, locator_value: str):
     """Find an element by a 'selector', for example an 'xpath' like '//div[@id="example"]'"""
     try:
         return _find_all_elements(conn, locator_type, locator_value)
@@ -314,7 +309,7 @@ def find_elements(conn: CDPConnectionSync, locator_type, locator_value: str):
         raise WebDriverError(f"Could not find element with selector: {locator_value}") from e
 
 
-def click(conn: CDPConnectionSync, element):
+def click(conn: SyncCDPConnection, element):
     """Click on an element"""
     try:
         center_x, center_y = _get_element_center(conn, element)
@@ -336,7 +331,7 @@ def click(conn: CDPConnectionSync, element):
         raise WebDriverError("Failed to click on element.") from e
 
 
-def send_keys(conn: CDPConnectionSync, element, text: str):
+def send_keys(conn: SyncCDPConnection, element, text: str):
     """Send keys to an element"""
     try:
         conn.execute(dom.focus(node_id=element))
@@ -363,7 +358,7 @@ def send_keys(conn: CDPConnectionSync, element, text: str):
         raise WebDriverError("Failed to send keys to element.") from e
 
 
-def get_text(conn: CDPConnectionSync, element) -> str:
+def get_text(conn: SyncCDPConnection, element) -> str:
     """Get the text of an element"""
     try:
         result = execute_script(conn, element, "value")
@@ -376,7 +371,7 @@ def get_text(conn: CDPConnectionSync, element) -> str:
         raise WebDriverError("Failed to get text from element.") from e
 
 
-def get_attribute(conn: CDPConnectionSync, element, attribute: str) -> str:
+def get_attribute(conn: SyncCDPConnection, element, attribute: str) -> str:
     """Get the given HTML attribute of an element, for example, 'aria-valuenow'"""
     try:
         attributes = conn.execute(dom.get_attributes(node_id=element))
@@ -389,7 +384,7 @@ def get_attribute(conn: CDPConnectionSync, element, attribute: str) -> str:
         raise WebDriverError("Failed to get value from element.") from e
 
 
-def get_title(conn: CDPConnectionSync) -> str:
+def get_title(conn: SyncCDPConnection) -> str:
     """Get the page title"""
     try:
         target_info = conn.execute(target.get_target_info())
@@ -407,7 +402,7 @@ def get_title(conn: CDPConnectionSync) -> str:
         raise WebDriverError("Failed to get page title.") from e
 
 
-def get_url(conn: CDPConnectionSync) -> str:
+def get_url(conn: SyncCDPConnection) -> str:
     """Returns the URL from web page:"""
     try:
         frame_tree = conn.execute(page.get_frame_tree())
@@ -417,7 +412,7 @@ def get_url(conn: CDPConnectionSync) -> str:
         raise WebDriverError("Failed to get page url.") from e
 
 
-def go_back(conn: CDPConnectionSync):
+def go_back(conn: SyncCDPConnection):
     try:
         result = conn.execute(page.get_navigation_history())
         current = result[0]
@@ -430,7 +425,7 @@ def go_back(conn: CDPConnectionSync):
         raise WebDriverError("Failed to go back to page.") from e
 
 
-def is_element_selected(conn: CDPConnectionSync, element) -> bool:
+def is_element_selected(conn: SyncCDPConnection, element) -> bool:
     """Check if element is selected"""
     try:
         try:
@@ -448,7 +443,7 @@ def is_element_selected(conn: CDPConnectionSync, element) -> bool:
         raise WebDriverError("Failed to check if element is selected.") from e
 
 
-def get_css_value(conn: CDPConnectionSync, element, property_name) -> str:
+def get_css_value(conn: SyncCDPConnection, element, property_name) -> str:
     """Get CSS value"""
     try:
         styles = get_attribute(conn, element, "style")
@@ -465,7 +460,7 @@ def get_css_value(conn: CDPConnectionSync, element, property_name) -> str:
         raise WebDriverError("Failed to get css value.") from e
 
 
-def get_property(conn: CDPConnectionSync, element: dom.NodeId, property_name) -> str:
+def get_property(conn: SyncCDPConnection, element: dom.NodeId, property_name) -> str:
     try:
         result = get_attribute(conn, element, property_name)
         if result is None:
@@ -475,7 +470,7 @@ def get_property(conn: CDPConnectionSync, element: dom.NodeId, property_name) ->
         raise WebDriverError("Failed to get property.") from e
 
 
-def get_cookies(conn: CDPConnectionSync) -> list:
+def get_cookies(conn: SyncCDPConnection) -> list:
     """Get the page cookies"""
     try:
         cookies = conn.execute(storage.get_cookies())
@@ -484,7 +479,7 @@ def get_cookies(conn: CDPConnectionSync) -> list:
         raise WebDriverError("Failed to get page cookies.") from e
 
 
-def add_cookie(conn: CDPConnectionSync, cookie: Dict[str, Any]):
+def add_cookie(conn: SyncCDPConnection, cookie: Dict[str, Any]):
     """Add cookie
 
     This function adds a cookie to the WebDriver session.
@@ -527,7 +522,7 @@ def add_cookie(conn: CDPConnectionSync, cookie: Dict[str, Any]):
 
 
 def delete_cookie(
-    conn: CDPConnectionSync, name: str, url: Optional[str] = None, domanin: Optional[str] = None
+    conn: SyncCDPConnection, name: str, url: Optional[str] = None, domanin: Optional[str] = None
 ):
     """
     Delete cookie by name
@@ -551,7 +546,7 @@ def delete_cookie(
         raise WebDriverError(f"Failed to delete cookie '{name}'.") from e
 
 
-def refresh_page(conn: CDPConnectionSync):
+def refresh_page(conn: SyncCDPConnection):
     """
     Refreshes the current page by making an HTTP POST request to the server URL.
 
@@ -567,7 +562,7 @@ def refresh_page(conn: CDPConnectionSync):
         raise WebDriverError("Failed to refresh page.") from e
 
 
-def go_forward(conn: CDPConnectionSync):
+def go_forward(conn: SyncCDPConnection):
     """
     Go to page forward.
 
@@ -591,7 +586,7 @@ def go_forward(conn: CDPConnectionSync):
 
 
 def set_window_rectangle(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     width: int,
     height: int,
     left: Optional[int] = None,
@@ -629,7 +624,7 @@ def set_window_rectangle(
         raise WebDriverError("Failed to set window rectangle.") from e
 
 
-def fullscreen_window(conn: CDPConnectionSync):
+def fullscreen_window(conn: SyncCDPConnection):
     """
     Fullscreen window.
 
@@ -651,7 +646,7 @@ def fullscreen_window(conn: CDPConnectionSync):
         raise WebDriverError("Failed to fullscreen window.") from e
 
 
-def minimize_window(conn: CDPConnectionSync):
+def minimize_window(conn: SyncCDPConnection):
     """
     Minimize window.
 
@@ -673,7 +668,7 @@ def minimize_window(conn: CDPConnectionSync):
         raise WebDriverError("Failed to minimize window.") from e
 
 
-def maximize_window(conn: CDPConnectionSync):
+def maximize_window(conn: SyncCDPConnection):
     """
     Maximize window.
 
@@ -695,7 +690,7 @@ def maximize_window(conn: CDPConnectionSync):
         raise WebDriverError("Failed to maximize window.") from e
 
 
-def switch_to_window(conn: CDPConnectionSync, handle: target.TargetInfo):
+def switch_to_window(conn: SyncCDPConnection, handle: target.TargetInfo):
     """
     Switch to window.
 
@@ -735,7 +730,7 @@ def switch_to_window(conn: CDPConnectionSync, handle: target.TargetInfo):
         raise WebDriverError("Failed to switch to window.") from e
 
 
-def new_window(conn: CDPConnectionSync) -> str:
+def new_window(conn: SyncCDPConnection) -> str:
     """
     Open a new window.
 
@@ -761,7 +756,7 @@ def new_window(conn: CDPConnectionSync) -> str:
         raise WebDriverError("Failed to open window.") from e
 
 
-def switch_to_parent_frame(conn: CDPConnectionSync):
+def switch_to_parent_frame(conn: SyncCDPConnection):
     """
     Switch to parent frame of 'element_frame'.
 
@@ -786,7 +781,7 @@ def switch_to_parent_frame(conn: CDPConnectionSync):
         raise WebDriverError("Failed to switch to parent frame.") from e
 
 
-def switch_to_frame(conn: CDPConnectionSync, element_frame: str) -> dom.NodeId:
+def switch_to_frame(conn: SyncCDPConnection, element_frame: str) -> dom.NodeId:
     """
     Switch to frame 'element_frame'.
 
@@ -810,7 +805,7 @@ def switch_to_frame(conn: CDPConnectionSync, element_frame: str) -> dom.NodeId:
         raise WebDriverError("Failed to switch to frame.") from e
 
 
-def delete_all_cookies(conn: CDPConnectionSync):
+def delete_all_cookies(conn: SyncCDPConnection):
     """
     Delete all cookies for the current session.
 
@@ -833,7 +828,7 @@ def delete_all_cookies(conn: CDPConnectionSync):
         raise WebDriverError("Failed to delete cookies.") from e
 
 
-def get_alert_text(conn: CDPConnectionSync, element: dom.NodeId) -> str:
+def get_alert_text(conn: SyncCDPConnection, element: dom.NodeId) -> str:
     """Get the text from an alert"""
     try:
         return _handle_alert(conn, element, timeout=TIMEOUT, function_callback=_accept_alert)
@@ -842,7 +837,7 @@ def get_alert_text(conn: CDPConnectionSync, element: dom.NodeId) -> str:
 
 
 def send_alert_text(
-    conn: CDPConnectionSync, alert_element: dom.NodeId, text, timeout: float = TIMEOUT
+    conn: SyncCDPConnection, alert_element: dom.NodeId, text, timeout: float = TIMEOUT
 ):
     """
     Send text to an alert dialog.
@@ -867,7 +862,7 @@ def send_alert_text(
         raise WebDriverError("Failed to sent text to alert.") from e
 
 
-def accept_alert(conn: CDPConnectionSync, alert_element: dom.NodeId, timeout: float = TIMEOUT):
+def accept_alert(conn: SyncCDPConnection, alert_element: dom.NodeId, timeout: float = TIMEOUT):
     """
     Accept alert.
 
@@ -890,7 +885,7 @@ def accept_alert(conn: CDPConnectionSync, alert_element: dom.NodeId, timeout: fl
         raise WebDriverError("Failed to accept alert.") from e
 
 
-def dismiss_alert(conn: CDPConnectionSync, alert_element: dom.NodeId, timeout: float = TIMEOUT):
+def dismiss_alert(conn: SyncCDPConnection, alert_element: dom.NodeId, timeout: float = TIMEOUT):
     """Dismiss alert
 
     This function dismisses the currently open alert dialog.
@@ -913,7 +908,7 @@ def dismiss_alert(conn: CDPConnectionSync, alert_element: dom.NodeId, timeout: f
 
 
 def take_screenshot_element(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     element,
     path="/tmp",
     file_name="caqui",
@@ -968,7 +963,7 @@ def take_screenshot_element(
 
 
 def take_screenshot(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     path: str = "/tmp",
     file_name: str = "caqui",
 ):
@@ -1045,7 +1040,7 @@ def get_named_cookie(conn, name) -> dict:
         raise WebDriverError(f"Failed to get cookie '{name}'.") from e
 
 
-def get_computed_label(conn: CDPConnectionSync, element: dom.NodeId) -> str:
+def get_computed_label(conn: SyncCDPConnection, element: dom.NodeId) -> str:
     """Get the element tag computed label. Get the accessibility name.
 
     Args:
@@ -1074,7 +1069,7 @@ def get_computed_label(conn: CDPConnectionSync, element: dom.NodeId) -> str:
         raise WebDriverError("Failed to get element computed label.") from e
 
 
-def get_computed_role(conn: CDPConnectionSync, element: dom.NodeId) -> str:
+def get_computed_role(conn: SyncCDPConnection, element: dom.NodeId) -> str:
     """Get the element tag computed role (the element role).
 
     Args:
@@ -1090,9 +1085,7 @@ def get_computed_role(conn: CDPConnectionSync, element: dom.NodeId) -> str:
     try:
         # Get accessibility information for the node, including the role
         # We use getAXNodeAndAncestors to retrieve the AXNode object which holds computed properties
-        ax_nodes_response = conn.execute(
-            accessibility.get_ax_node_and_ancestors(node_id=element)
-        )
+        ax_nodes_response = conn.execute(accessibility.get_ax_node_and_ancestors(node_id=element))
 
         # The response is a list of nodes, the first one is the target node
         if ax_nodes_response:
@@ -1103,7 +1096,7 @@ def get_computed_role(conn: CDPConnectionSync, element: dom.NodeId) -> str:
         raise WebDriverError("Failed to get element computed label.") from e
 
 
-def get_tag_name(conn: CDPConnectionSync, element: dom.NodeId) -> str:
+def get_tag_name(conn: SyncCDPConnection, element: dom.NodeId) -> str:
     """
     Get the tag name of a specified element in a WebDriver session.
 
@@ -1158,7 +1151,7 @@ def get_tag_name(conn: CDPConnectionSync, element: dom.NodeId) -> str:
 
 
 def get_shadow_element(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     shadow_element,
     locator_type: str,
     locator_value: str,
@@ -1187,7 +1180,7 @@ def get_shadow_element(
 
 
 def get_shadow_elements(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     shadow_element: str,
     locator_type: str,
     locator_value: str,
@@ -1216,7 +1209,7 @@ def get_shadow_elements(
         raise WebDriverError("Failed to get the element shadow.") from e
 
 
-def get_rect(conn: CDPConnectionSync, element) -> dict:
+def get_rect(conn: SyncCDPConnection, element) -> dict:
     """Get the element rectangle"""
     try:
         result = conn.execute(dom.get_box_model(node_id=element))
@@ -1231,7 +1224,7 @@ def get_rect(conn: CDPConnectionSync, element) -> dict:
         raise WebDriverError("Failed to get element rect.") from e
 
 
-def actions_move_to_element(conn: CDPConnectionSync, element: str) -> bool:
+def actions_move_to_element(conn: SyncCDPConnection, element: str) -> bool:
     """
     Move to an element simulating a mouse movement.
 
@@ -1268,7 +1261,7 @@ def actions_move_to_element(conn: CDPConnectionSync, element: str) -> bool:
 
 
 def actions_scroll_to_element(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     element,
 ):
     """Scroll to an element simulating a mouse movement"""
@@ -1291,7 +1284,7 @@ def actions_scroll_to_element(
         raise WebDriverError("Failed to scroll to element.") from e
 
 
-def submit(conn: CDPConnectionSync, element):
+def submit(conn: SyncCDPConnection, element):
     """Submit a form. It is similar to 'submit' funtion in Seleniu
     It is not part of W3C WebDriver. Just added for convenience
     """
@@ -1311,7 +1304,7 @@ def submit(conn: CDPConnectionSync, element):
 
 
 def find_children_elements(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     parent_element: str,
     locator_type: str,
     locator_value: str,
@@ -1330,7 +1323,7 @@ def find_children_elements(
 
 
 def find_child_element(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     parent_element: str,
     locator_type: str,
     locator_value: str,
@@ -1342,7 +1335,7 @@ def find_child_element(
         raise WebDriverError(f"Failed to find the child element from '{parent_element}'.") from e
 
 
-def get_page_source(conn: CDPConnectionSync) -> str:
+def get_page_source(conn: SyncCDPConnection) -> str:
     """Get the page source (all content)"""
     try:
         doc = GlobalValues.get_document_node()
@@ -1352,7 +1345,7 @@ def get_page_source(conn: CDPConnectionSync) -> str:
 
 
 def execute_script(
-    conn: CDPConnectionSync,
+    conn: SyncCDPConnection,
     element: dom.NodeId,
     script: str,
     positive=True,
@@ -1380,7 +1373,7 @@ def execute_script(
         raise WebDriverError("Failed to execute script.") from e
 
 
-def get_active_element(conn: CDPConnectionSync):
+def get_active_element(conn: SyncCDPConnection):
     """Get the active element"""
     try:
         eval_result = conn.execute(runtime.evaluate(expression="document.activeElement"))
@@ -1393,7 +1386,7 @@ def get_active_element(conn: CDPConnectionSync):
         raise WebDriverError("Failed to check if element is selected.") from e
 
 
-def clear_element(conn: CDPConnectionSync, element: dom.NodeId):
+def clear_element(conn: SyncCDPConnection, element: dom.NodeId):
     """Clear the element text"""
     try:
         resolved = conn.execute(dom.resolve_node(node_id=element))
@@ -1414,7 +1407,7 @@ def clear_element(conn: CDPConnectionSync, element: dom.NodeId):
         raise WebDriverError("Failed to clear the element text.") from e
 
 
-def is_element_enabled(conn: CDPConnectionSync, element) -> bool:
+def is_element_enabled(conn: SyncCDPConnection, element) -> bool:
     """Check if element is enabled"""
     try:
         script = "disabled"
@@ -1424,7 +1417,7 @@ def is_element_enabled(conn: CDPConnectionSync, element) -> bool:
         raise WebDriverError("Failed to check if element is enabled.") from e
 
 
-def get_window_rectangle(conn: CDPConnectionSync) -> dict:
+def get_window_rectangle(conn: SyncCDPConnection) -> dict:
     """Get window rectangle"""
     try:
         _, bounds = conn.execute(browser.get_window_for_target())
@@ -1438,7 +1431,7 @@ def get_window_rectangle(conn: CDPConnectionSync) -> dict:
         raise WebDriverError("Failed to get window rectangle.") from e
 
 
-def get_window_handles(conn: CDPConnectionSync) -> List[target.TargetInfo]:
+def get_window_handles(conn: SyncCDPConnection) -> List[target.TargetInfo]:
     """Get window handles"""
     try:
         targets = conn.execute(target.get_targets())
@@ -1447,7 +1440,7 @@ def get_window_handles(conn: CDPConnectionSync) -> List[target.TargetInfo]:
         raise WebDriverError("Failed to get window handles.") from e
 
 
-def close_window(conn: CDPConnectionSync):
+def close_window(conn: SyncCDPConnection):
     """Close active window"""
     try:
         new_window(conn)
@@ -1465,7 +1458,7 @@ def get_window(conn) -> str:
         raise WebDriverError("Failed to get window.") from e
 
 
-def get_status(conn: CDPConnectionSync) -> dict:
+def get_status(conn: SyncCDPConnection) -> dict:
     """Returns the status and details of the WebDriver"""
     try:
         conn.execute(target.get_targets())

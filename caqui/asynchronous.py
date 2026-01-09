@@ -3,10 +3,10 @@
 # terms of the MIT license.
 # Visit: https://github.com/douglasdcm/caqui
 
+from json import dumps
 from typing import Any, Dict, List, Optional, Union
 
 from aiohttp import ClientSession
-from orjson import dumps
 
 from caqui.constants import ELEMENT_JSONWIRE, ELEMENT_W3C, HEADERS
 from caqui.exceptions import WebDriverError

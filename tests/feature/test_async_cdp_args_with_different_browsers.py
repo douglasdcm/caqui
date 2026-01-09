@@ -8,7 +8,7 @@ from caqui.easy.capabilities import (
     FirefoxCapabilitiesBuilder,
     OperaCapabilitiesBuilder,
 )
-from caqui.easy.cdp.drivers import AsyncDriver
+from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
 from caqui.easy.server import LocalServer
 from tests.constants import PAGE_URL
 
@@ -93,7 +93,7 @@ class TestArgs:
         try:
             server_url = capabilities["url"]
             capabilities["capability"].args(["headless"])
-            driver = AsyncDriver(server_url, capabilities["capability"])
+            driver = AsyncDriverCDP(server_url, capabilities["capability"])
             await driver.get(
                 PAGE_URL,
             )
