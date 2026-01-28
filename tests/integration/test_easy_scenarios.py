@@ -5,7 +5,7 @@ from caqui.webdriver.capabilities import ChromeCapabilitiesBuilder
 from caqui.webdriver.drivers import AsyncDriver
 from caqui.webdriver.engine import synchronous
 
-# from caqui.easy.options import ChromeOptionsBuilder
+# from caqui.webdriver.options import ChromeOptionsBuilder
 from tests.constants import COOKIE, PAGE_URL
 
 SERVER_PORT = 9999

@@ -402,7 +402,7 @@ async def switch_to_window(
         session: The session identifier for the current WebDriver session.
         handle: The window handle to switch to.
         session_http: Optional HTTP client session for making requests. If not provided,
-                      a default session will be used.
+        a default session will be used.
 
     Returns:
         True if the window switch was successful.
@@ -433,7 +433,7 @@ async def switch_to_window_jsonwire(
         session: The session identifier for the current WebDriver session.
         handle: The window handle to switch to.
         session_http: Optional HTTP client session for making requests. If not provided,
-                      a default session will be used.
+        a default session will be used.
 
     Returns:
         True if the window switch was successful.
@@ -615,7 +615,7 @@ async def delete_all_cookies(server_url, session, session_http: Union[ClientSess
         server_url: The base URL of the WebDriver server.
         session: The session identifier for the current WebDriver session.
         session_http: An optional ClientSession instance used to make HTTP requests.
-                      If None, a default session will be used.
+        If None, a default session will be used.
 
     Returns:
         True if cookies were successfully deleted.
@@ -1085,7 +1085,7 @@ async def actions_move_to_element(
         session: The session identifier for the WebDriver session.
         element: The element identifier (W3C element reference) to move the pointer to.
         session_http: Optional HTTP client session for making requests. If not provided,
-                      a new session will be created.
+        a new session will be created.
 
     Returns:
         A boolean indicating whether the move action was successfully executed.
