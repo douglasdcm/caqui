@@ -1,7 +1,7 @@
 from pytest import mark
 
 from caqui.cdp.by import By
-from caqui.easy.drivers import AsyncDriver
+from caqui.webdriver.drivers import AsyncDriver
 
 
 @mark.asyncio

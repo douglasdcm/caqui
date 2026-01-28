@@ -3,7 +3,7 @@ import time
 from pytest import raises
 
 from caqui.cdp.by import By
-from caqui.easy.cdp.synchronous.drivers import SyncDriverCDP
+from caqui.cdp.synchronous.drivers import SyncDriverCDP
 from caqui.exceptions import WebDriverError
 from tests.constants import OTHER_URL
 

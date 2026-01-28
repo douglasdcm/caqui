@@ -1,7 +1,7 @@
 from pytest import mark
 
+from caqui.cdp.asynchronous.drivers import AsyncDriverCDP
 from caqui.cdp.by import By
-from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
 
 
 class TestCDPAlert:

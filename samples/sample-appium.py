@@ -3,7 +3,7 @@
 # Appium configured using docker for simplicity
 # https://hub.docker.com/r/appium/appium/
 # sample app in ./tests/apk folder
-from caqui import synchronous
+from caqui.webdriver.engine import synchronous
 
 
 def main():

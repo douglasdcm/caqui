@@ -1,6 +1,6 @@
 from pytest import mark
 
-from caqui import asynchronous, synchronous
+from caqui.webdriver.engine import asynchronous, synchronous
 
 
 @mark.asyncio

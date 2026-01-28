@@ -2,8 +2,8 @@ import time
 
 from pytest import mark
 
+from caqui.cdp.asynchronous.drivers import AsyncDriverCDP
 from caqui.cdp.by import By
-from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
 
 
 class TestCDPSwitchTo:
@@ -14,7 +14,7 @@ class TestCDPSwitchTo:
         handles = await driver.get_window_handles()
         sample_page = handles[0]
         new_page = handles[1]
-        assert await driver.switch_to.window(window_handle=new_page) is None
+        await driver.switch_to.window(window_handle=new_page)
         # Retry the operation if the page is not ready
         for _ in range(10):
             try:
@@ -24,7 +24,7 @@ class TestCDPSwitchTo:
                 time.sleep(0.1)
         await driver.get("http://example.com")
         assert await driver.get_title() == "Example Domain"
-        await driver.switch_to.window(window_handle=sample_page) is None
+        await driver.switch_to.window(window_handle=sample_page)
         assert await driver.get_title() == "Sample page"
 
     @mark.asyncio

@@ -1,15 +1,15 @@
 from pytest import fixture, mark
 
+from caqui.cdp.asynchronous.drivers import AsyncDriverCDP
 from caqui.cdp.by import By
 from caqui.constants import Specification
-from caqui.easy.capabilities import (
+from caqui.webdriver.capabilities import (
     ChromeCapabilitiesBuilder,
     EdgeCapabilitiesBuilder,
     FirefoxCapabilitiesBuilder,
     OperaCapabilitiesBuilder,
 )
-from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
-from caqui.easy.server import LocalServer
+from caqui.webdriver.server import LocalServer
 from tests.constants import PAGE_URL
 
 CAPABILITIES = {

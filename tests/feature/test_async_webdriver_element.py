@@ -1,8 +1,8 @@
 from pytest import mark, raises
 
 from caqui.by import By
-from caqui.easy.drivers import AsyncDriver
 from caqui.exceptions import WebDriverError
+from caqui.webdriver.drivers import AsyncDriver
 from tests.constants import OTHER_URL
 
 

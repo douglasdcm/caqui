@@ -1,7 +1,7 @@
 import time
 
 from caqui.cdp.by import By
-from caqui.easy.cdp.synchronous.drivers import SyncDriverCDP
+from caqui.cdp.synchronous.drivers import SyncDriverCDP
 
 
 class TestSyncCDPSwitchTo:
@@ -24,7 +24,9 @@ class TestSyncCDPSwitchTo:
         driver.switch_to.window(window_handle=sample_page) is None
         assert driver.get_title() == "Sample page"
 
-    def test_cdp_switch_to_parent_frame_asynchronous(self, setup_sync_cdp_playground: SyncDriverCDP):
+    def test_cdp_switch_to_parent_frame_asynchronous(
+        self, setup_sync_cdp_playground: SyncDriverCDP
+    ):
         driver = setup_sync_cdp_playground
         locator_type = By.ID
         locator_value = "my-iframe"

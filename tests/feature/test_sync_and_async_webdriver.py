@@ -2,9 +2,9 @@ import time
 
 from pytest import mark, raises
 
-from caqui import asynchronous, synchronous
 from caqui.by import By
 from caqui.exceptions import WebDriverError
+from caqui.webdriver.engine import asynchronous, synchronous
 from tests.constants import COOKIE
 
 

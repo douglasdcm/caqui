@@ -3,10 +3,10 @@ from typing import Tuple
 import pytest
 from pytest import mark, raises
 
-from caqui.cdp import synchronous
 from caqui.cdp.by import By
-from caqui.easy.cdp.server import LocalServerCDP, get_ws_url
-from caqui.easy.cdp.synchronous.connection import SyncCDPConnection
+from caqui.cdp.engine import synchronous
+from caqui.cdp.server import LocalServerCDP, get_ws_url
+from caqui.cdp.synchronous.connection import SyncCDPConnection
 from caqui.exceptions import WebDriverError
 from tests.constants import COOKIE, PAGE_URL
 

@@ -9,9 +9,9 @@
 import asyncio
 import time
 from tests.constants import PAGE_URL
-from caqui.easy.capabilities import BaseCapabilitiesBuilder, ChromeCapabilitiesBuilder
-from caqui.easy.server import LocalServer
-from caqui.easy.drivers import AsyncDriver
+from caqui.webdriver.capabilities import BaseCapabilitiesBuilder, ChromeCapabilitiesBuilder
+from caqui.webdriver.server import LocalServer
+from caqui.webdriver.drivers import AsyncDriver
 
 
 async def get_all_links(server):

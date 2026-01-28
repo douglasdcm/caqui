@@ -1,7 +1,7 @@
 from pytest import mark
 
-from caqui import synchronous
 from caqui.by import By
+from caqui.webdriver.engine import synchronous
 
 
 @mark.parametrize(

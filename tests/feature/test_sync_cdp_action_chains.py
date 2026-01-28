@@ -1,5 +1,5 @@
 from caqui.cdp.by import By
-from caqui.easy.cdp.synchronous.drivers import SyncDriverCDP
+from caqui.cdp.synchronous.drivers import SyncDriverCDP
 
 
 class TestSyncCDPActionsChains:
@@ -28,7 +28,9 @@ class TestSyncCDPActionsChains:
         driver.actions.scroll_to_element(element).perform()
         element.click()
 
-    def test_sync_cdp_click_without_scroll_to_element(self, setup_sync_cdp_playground: SyncDriverCDP):
+    def test_sync_cdp_click_without_scroll_to_element(
+        self, setup_sync_cdp_playground: SyncDriverCDP
+    ):
         driver = setup_sync_cdp_playground
         element = driver.find_element(By.CSS_SELECTOR, "#app>button")
         element.click()

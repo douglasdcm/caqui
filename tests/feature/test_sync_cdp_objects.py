@@ -1,5 +1,5 @@
 from caqui.cdp.by import By
-from caqui.easy.cdp.synchronous.drivers import SyncDriverCDP
+from caqui.cdp.synchronous.drivers import SyncDriverCDP
 
 
 class TestSyncCDPObject:

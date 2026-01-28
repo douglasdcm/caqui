@@ -1,7 +1,5 @@
-from pytest import mark
-
 from caqui.cdp.by import By
-from caqui.easy.cdp.synchronous.drivers import SyncDriverCDP
+from caqui.cdp.synchronous.drivers import SyncDriverCDP
 
 
 class TestSyncCDPAlert:

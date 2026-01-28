@@ -1,12 +1,12 @@
 from typing import Tuple
 
 import pytest_asyncio
-from pytest import mark, raises, fixture
+from pytest import fixture, mark, raises
 
-from caqui.cdp import asynchronous
 from caqui.cdp.by import By
 from caqui.cdp.connection import AsyncCDPConnection
-from caqui.easy.cdp.server import LocalServerCDP, get_ws_url
+from caqui.cdp.engine import asynchronous
+from caqui.cdp.server import LocalServerCDP, get_ws_url
 from caqui.exceptions import WebDriverError
 from tests.constants import COOKIE, PAGE_URL
 
@@ -33,7 +33,7 @@ class TestCDPASyncFunctionsBlankPage:
         handle = (await asynchronous.get_window_handles(setup_env))[0]
         new_conn = await asynchronous.switch_to_window(setup_env, handle)
         assert await asynchronous.get_title(new_conn) == "about:blank"
-    
+
     @mark.asyncio
     async def test_cdp_async_get_body_from_blank_page(self, setup_env):
         handle = (await asynchronous.get_window_handles(setup_env))[0]

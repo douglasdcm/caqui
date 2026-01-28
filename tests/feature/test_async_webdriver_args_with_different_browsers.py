@@ -2,14 +2,14 @@ from pytest import fixture, mark
 
 from caqui.by import By
 from caqui.constants import Specification
-from caqui.easy.capabilities import (
+from caqui.webdriver.capabilities import (
     ChromeCapabilitiesBuilder,
     EdgeCapabilitiesBuilder,
     FirefoxCapabilitiesBuilder,
     OperaCapabilitiesBuilder,
 )
-from caqui.easy.drivers import AsyncDriver
-from caqui.easy.server import LocalServer
+from caqui.webdriver.drivers import AsyncDriver
+from caqui.webdriver.server import LocalServer
 from tests.constants import PAGE_URL
 
 CAPABILITIES = {

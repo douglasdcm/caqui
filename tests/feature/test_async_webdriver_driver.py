@@ -1,8 +1,8 @@
 from pytest import mark, raises
 
 from caqui.by import By
-from caqui.easy.drivers import AsyncDriver
 from caqui.exceptions import WebDriverError
+from caqui.webdriver.drivers import AsyncDriver
 
 
 @mark.asyncio
@@ -45,9 +45,9 @@ async def test_set_window_rectangle(setup_playground: AsyncDriver):
 @mark.asyncio
 async def test_fullscreen_window(setup_playground: AsyncDriver):
     driver = setup_playground
-    assert await driver.fullscreen_window() is None
+    await driver.fullscreen_window()
     await driver.maximize_window()
-    assert await driver.fullscreen_window() is None
+    await driver.fullscreen_window()
 
 
 @mark.asyncio

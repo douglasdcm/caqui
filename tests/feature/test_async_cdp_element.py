@@ -2,8 +2,8 @@ import time
 
 from pytest import mark, raises
 
+from caqui.cdp.asynchronous.drivers import AsyncDriverCDP
 from caqui.cdp.by import By
-from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
 from caqui.exceptions import WebDriverError
 from tests.constants import OTHER_URL
 

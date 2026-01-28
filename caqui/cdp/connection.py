@@ -20,9 +20,15 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import queue
+import threading
 import time
 import typing
+import uuid
 from dataclasses import dataclass
+
+import websocket
+from websocket import create_connection
 
 try:
     import websockets
@@ -367,9 +373,6 @@ class AsyncCDPConnection:
         return len(self._pending_commands)
 
 
-from websocket import create_connection
-
-
 class SyncCDPConnection:
     def __init__(self, url: str, timeout: float = 30.0):
         self._url = url
@@ -463,14 +466,6 @@ class SyncCDPConnection:
     def close(self):
         self._ws.close()
 
-
-import json
-import queue
-import threading
-import time
-import uuid
-
-import websocket
 
 # A dictionary to store pending requests and their expected responses
 pending_requests = {}

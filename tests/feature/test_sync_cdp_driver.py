@@ -3,7 +3,7 @@ import time
 from pytest import raises
 
 from caqui.cdp.by import By
-from caqui.easy.cdp.synchronous.drivers import SyncDriverCDP
+from caqui.cdp.synchronous.drivers import SyncDriverCDP
 from caqui.exceptions import WebDriverError
 
 
@@ -152,7 +152,9 @@ class TestSyncCDPDriver:
         element = driver.find_element(locator_type, locator_value)
         driver.actions.click(element).perform()
 
-    def test_cdp_raise_exception_when_element_not_found(self, setup_sync_cdp_playground: SyncDriverCDP):
+    def test_cdp_raise_exception_when_element_not_found(
+        self, setup_sync_cdp_playground: SyncDriverCDP
+    ):
         driver = setup_sync_cdp_playground
         locator_type = By.XPATH
         locator_value = "//invalid-tag"

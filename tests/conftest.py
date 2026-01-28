@@ -1,14 +1,14 @@
 import pytest_asyncio
 from pytest import fixture
 
+from caqui.cdp.asynchronous.connection import AsyncCDPConnection
+from caqui.cdp.asynchronous.drivers import AsyncDriverCDP
 from caqui.cdp.connection import SyncCDPConnection
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder
-from caqui.easy.cdp.asynchronous.connection import AsyncCDPConnection
-from caqui.easy.cdp.asynchronous.drivers import AsyncDriverCDP
-from caqui.easy.cdp.server import LocalServerCDP, get_ws_url
-from caqui.easy.cdp.synchronous.drivers import SyncDriverCDP
-from caqui.easy.drivers import AsyncDriver
-from caqui.easy.server import LocalServer
+from caqui.cdp.server import LocalServerCDP, get_ws_url
+from caqui.cdp.synchronous.drivers import SyncDriverCDP
+from caqui.webdriver.capabilities import ChromeCapabilitiesBuilder
+from caqui.webdriver.drivers import AsyncDriver
+from caqui.webdriver.server import LocalServer
 from tests.constants import PAGE_URL
 
 SERVER_PORT = 9999
@@ -72,7 +72,7 @@ async def setup_environment():
         pass
 
 
-## CDP ##
+# CDP
 @fixture(autouse=True, scope="session")
 def launch_browser():
     server = LocalServerCDP()

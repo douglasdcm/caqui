@@ -12,10 +12,10 @@ Subpackages
 Submodules
 ----------
 
-caqui.asynchronous module
+caqui.webdriver.engine.asynchronous module
 -------------------------
 
-.. automodule:: caqui.asynchronous
+.. automodule:: caqui..webdriver.engine.asynchronous
    :members:
    :undoc-members:
    :show-inheritance:
@@ -52,10 +52,10 @@ caqui.helper module
    :undoc-members:
    :show-inheritance:
 
-caqui.synchronous module
+caqui.webdriver.engine.synchronous module
 ------------------------
 
-.. automodule:: caqui.synchronous
+.. automodule:: caqui.webdriver.engine.synchronous
    :members:
    :undoc-members:
    :show-inheritance:
