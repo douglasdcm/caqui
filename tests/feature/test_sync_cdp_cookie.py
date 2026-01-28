@@ -6,7 +6,6 @@ from tests.constants import COOKIE
 
 
 class TestSyncCDPCookies:
-    @mark.asyncio
     def test_sync_cdp_add_cookie(self, setup_sync_cdp_playground: SyncDriverCDP):
         driver = setup_sync_cdp_playground
         # Need to navigate to a web page. If use 'playgound.html' the error
@@ -30,7 +29,6 @@ class TestSyncCDPCookies:
         cookies_after = driver.get_cookies()
         assert len(cookies_after) > len(cookies_before)
 
-    @mark.asyncio
     def test_sync_cdp_delete_cookie_asynchronous(self, setup_sync_cdp_playground: SyncDriverCDP):
         driver = setup_sync_cdp_playground
         driver = setup_sync_cdp_playground
@@ -45,7 +43,6 @@ class TestSyncCDPCookies:
         cookies = driver.get_cookies()
         assert len(cookies) == 0
 
-    @mark.asyncio
     def test_sync_cdp_delete_cookies_asynchronous(self, setup_sync_cdp_playground: SyncDriverCDP):
         driver = setup_sync_cdp_playground
         driver.get(
@@ -58,7 +55,6 @@ class TestSyncCDPCookies:
         cookies_after = driver.get_cookies()
         assert len(cookies_before) != len(cookies_after)
 
-    @mark.asyncio
     def test_sync_cdp_get_named_cookie(self, setup_sync_cdp_playground: SyncDriverCDP):
         driver = setup_sync_cdp_playground
         cookie = COOKIE
