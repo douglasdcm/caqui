@@ -3,10 +3,11 @@
 [![Python application](https://github.com/douglasdcm/caqui/actions/workflows/python-app.yml/badge.svg)](https://github.com/douglasdcm/caqui/actions/workflows/python-app.yml)
 [![PyPI Downloads](https://static.pepy.tech/badge/caqui)](https://pepy.tech/projects/caqui)
 
-**Caqui** is a Python library for browser, mobile, and desktop automation that works with any driver that exposes a WebDriver-style REST API. It lets you send commands **synchronously or asynchronously**, and you don’t need to think about which underlying driver you’re using.
+**Caqui** is a Python library for browser, mobile, and desktop automation that works with any driver that exposes a WebDriver-style REST API or Chrome Devtools Protocol. It lets you send commands **synchronously or asynchronously**, and you don’t need to think about which underlying driver you’re using.
 
 Caqui is designed for developers who want a unified automation API that can run:
 
+* Chrome Devtools Protocol ((Chrome, Opera, Edge))
 * WebDriver (Chrome, Firefox, Opera, Edge)
 * Appium (Android, iOS)
 * Winium / WinAppDriver (Windows desktop applications)
@@ -16,7 +17,7 @@ Caqui runs seamlessly on a local machine or across remote hosts, and supports bo
 
 ---
 
-# Supported Drivers
+# Supported Web Drivers
 
 | WebDriver             | Version | Remote* | If remote                                                       |
 | --------------------- | ------- | ------- | ------------------------------------------------------------- |
@@ -44,15 +45,49 @@ pip install caqui
 From version **2.0.0+**, Caqui includes a high-level API that mirrors Selenium’s object model and exposes async methods for browser, mobile, and desktop automation.
 [Full documentation:](https://caqui.readthedocs.io/en/latest/caqui.html)
 
-Example:
+Chrome Devtools Protocol example:
+```python
+import time
+from pytest import raises
+from caqui.cdp.by import By
+from caqui.cdp.synchronous.drivers import SyncDriverCDP
+from caqui.exceptions import WebDriverError
+from tests.constants import OTHER_URL
+from caqui.cdp.server import LocalServerCDP, get_ws_url
+
+@fixture(autouse=True, scope="session")
+def launch_browser():
+    server = LocalServerCDP()
+    server.start_chrome()
+    yield server
+    server.dispose()
+
+@fixture
+def setup_sync_cdp_playground():
+    with SyncCDPConnection(get_ws_url()) as conn:
+        driver = SyncDriverCDP(conn)
+        driver.get(PAGE_URL)
+        driver.set_window_size(1000, 1000)
+        yield driver
+
+class TestSyncCDPElement:
+    def test_cdp_is_element_enabled(self, setup_sync_cdp_playground: SyncDriverCDP):
+        driver = setup_sync_cdp_playground
+        locator_type = By.XPATH
+        locator_value = "//input"
+        element = driver.find_element(locator_type, locator_value)
+        assert element.is_enabled() is True
+```
+
+Web Driver example:
 
 ```python
 from os import getcwd
 from pytest import mark, fixture
-from caqui.easy.drivers import AsyncDriver
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder
+from caqui.webdriver.drivers import AsyncDriver
+from caqui.webdriver.capabilities import ChromeCapabilitiesBuilder
 from caqui.by import By
-from caqui.easy.server import LocalServer
+from caqui.webdriver.server import LocalServer
 
 BASE_DIR = getcwd()
 PAGE_URL = f"file:///{BASE_DIR}/html/playground.html"

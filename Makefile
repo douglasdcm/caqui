@@ -5,14 +5,16 @@ build:
 	python setup.py bdist_wheel
 
 setenv:
+	# Get the list of envs and run on all of them
 	python3.7 -m venv venv
 	. venv/bin/activate
 	pip install --upgrade pip setuptools wheel
 	pip install -r test-requirements.txt
 	pip install -r dev-requirements.txt
 
+PARAMS ?= ''
 test:
-	pytest -n auto
+	pytest $(PARAMS)
 
 linter:
 	black -l 100 .
@@ -21,7 +23,7 @@ linter:
 	mypy caqui tests --config=pyproject.toml    
 
 coverage:
-	coverage run --source='caqui' -m pytest -n auto
+	coverage run --source='caqui' -m pytest
 	coverage report
 	coverage html
 

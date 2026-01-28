@@ -5,7 +5,7 @@ from unittest.mock import patch
 from pytest import mark
 
 import caqui  # noqa F401
-from caqui import asynchronous
+from caqui.webdriver.engine import asynchronous
 from tests import fake_responses
 
 
@@ -20,7 +20,7 @@ async def test_get_rect():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_RECT
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.get_rect("", "", "") == expected
 
 
@@ -29,7 +29,7 @@ async def test_actions_scroll_to_element():
     async def mock_request(*args, **kwargs):
         return fake_responses.ACTIONS
 
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.actions_scroll_to_element("", "", "") is True
 
 
@@ -38,7 +38,7 @@ async def test_submit():
     async def mock_request(*args, **kwargs):
         return fake_responses.CLICK
 
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.submit("", "", "") is True
 
 
@@ -47,7 +47,7 @@ async def test_actions_click():
     async def mock_request(*args, **kwargs):
         return fake_responses.ACTIONS
 
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.actions_click("", "", "") is True
 
 
@@ -56,7 +56,7 @@ async def test_set_timeouts():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_TIMEOUTS
 
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.set_timeouts("", "", "") is True
 
 
@@ -67,8 +67,8 @@ async def test_find_children_elements():
     async def mock_request(*args, **kwargs):
         return fake_responses.FIND_ELEMENTS
 
-    with patch("caqui.asynchronous._post", mock_request):
-        assert element in await asynchronous.find_children_elements("", "", "", "", "")
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
+        assert element in await asynchronous.find_children_elements("", "", "", "xpath", "")
 
 
 @mark.asyncio
@@ -78,8 +78,8 @@ async def test_find_child_element():
     async def mock_request(*args, **kwargs):
         return fake_responses.FIND_ELEMENT
 
-    with patch("caqui.asynchronous._post", mock_request):
-        assert await asynchronous.find_child_element("", "", "", "", "") == element
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
+        assert await asynchronous.find_child_element("", "", "", "xpath", "") == element
 
 
 @mark.asyncio
@@ -89,7 +89,7 @@ async def test_execute_script():
     async def mock_request(*args, **kwargs):
         return fake_responses.EXECUTE_SCRIPT
 
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.execute_script("", "", "", []) == expected
 
 
@@ -100,7 +100,7 @@ async def test_get_page_source():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_PAGE_SOURCE
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert expected in await asynchronous.get_page_source("", "")
 
 
@@ -111,7 +111,7 @@ async def test_get_alert_text():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_ALERT_TEXT
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.get_alert_text("", "") == expected
 
 
@@ -122,7 +122,7 @@ async def test_get_active_element():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_ACTIVE_ELEMENT
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.get_active_element("", "") == expected
 
 
@@ -131,7 +131,7 @@ async def test_clear_element():
     async def mock_request(*args, **kwargs):
         return fake_responses.CLEAR_ELEMENT
 
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.clear_element("", "", "") is True
 
 
@@ -140,7 +140,7 @@ async def test_is_element_enabled():
     async def mock_request(*args, **kwargs):
         return fake_responses.IS_ELEMENT_ENABLED
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.is_element_enabled("", "", "") is True
 
 
@@ -151,7 +151,7 @@ async def test_get_css_value():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_CSS_COLOR_VALUE
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert expected in await asynchronous.get_css_value("", "", "", "")
 
 
@@ -160,7 +160,7 @@ async def test_is_element_selected():
     async def mock_request(*args, **kwargs):
         return fake_responses.IS_ELEMENT_SELECTED
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.is_element_selected("", "", "") is False
 
 
@@ -171,7 +171,7 @@ async def test_get_window_rectangle():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_WINDOW_RECTANGLE
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert expected in await asynchronous.get_window_rectangle("", "")
 
 
@@ -182,7 +182,7 @@ async def test_get_window_handles():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_WINDOW_HANDLES
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.get_window_handles("", "") == expected
 
 
@@ -193,7 +193,7 @@ async def test_close_window() -> None:
     async def mock_request(*args, **kwargs):
         return fake_responses.CLOSE_WINDOW
 
-    with patch("caqui.asynchronous._delete", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._delete", mock_request):
         assert await asynchronous.close_window("", "") == expected
 
 
@@ -204,13 +204,13 @@ async def test_get_window():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_WINDOW
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.get_window("", "") == expected
 
 
 @mark.asyncio
 async def test_go_back():
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.go_back("", "") is True
 
 
@@ -221,7 +221,7 @@ async def test_get_property():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_PROPERTY_VALUE
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.get_property("", "", "", "") == expected
 
 
@@ -232,7 +232,7 @@ async def test_get_attribute():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_ATTRIBUTE_VALUE
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.get_attribute("", "", "", "") == expected
 
 
@@ -243,7 +243,7 @@ async def test_get_url():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_URL
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         response = await asynchronous.get_url("", "")
         assert expected in response
 
@@ -255,7 +255,7 @@ async def test_get_timeouts():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_TIMEOUTS
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         response = await asynchronous.get_timeouts("", "")
         assert expected in response
 
@@ -265,7 +265,7 @@ async def test_get_status():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_STATUS
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         response = await asynchronous.get_status("")
         assert response.get("value", {}).get("ready", False) is True
 
@@ -277,7 +277,7 @@ async def test_get_title():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_TITLE
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.get_title("", "") == expected
 
 
@@ -288,7 +288,7 @@ async def test_get_cookies() -> None:
     async def mock_request(*args: Any, **kwargs: Any) -> Any:
         return fake_responses.GET_COOKIES
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.get_cookies("", "") == expected
 
 
@@ -299,31 +299,31 @@ async def test_get_text():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_TEXT
 
-    with patch("caqui.asynchronous._get", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._get", mock_request):
         assert await asynchronous.get_text("", "", "") == expected
 
 
 @mark.asyncio
 async def test_close_session():
-    with patch("caqui.asynchronous._delete", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._delete", mock_request):
         assert await asynchronous.close_session("", "") is True
 
 
 @mark.asyncio
 async def test_go_to_page():
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.go_to_page("", "", "") is True
 
 
 @mark.asyncio
 async def test_send_keys():
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.send_keys("", "", "", "") is True
 
 
 @mark.asyncio
 async def test_click():
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.click("", "", "") is True
 
 
@@ -334,8 +334,8 @@ async def test_find_elements():
     async def mock_request(*args, **kwargs):
         return fake_responses.FIND_ELEMENTS
 
-    with patch("caqui.asynchronous._post", mock_request):
-        assert element in await asynchronous.find_elements("", "", "", "")
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
+        assert element in await asynchronous.find_elements("", "", "xpath", "")
 
 
 @mark.asyncio
@@ -345,8 +345,8 @@ async def test_find_element():
     async def mock_request(*args, **kwargs):
         return fake_responses.FIND_ELEMENT
 
-    with patch("caqui.asynchronous._post", mock_request):
-        assert await asynchronous.find_element("", "", "", "") == element
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
+        assert await asynchronous.find_element("", "", "xpath", "") == element
 
 
 @mark.asyncio
@@ -356,5 +356,5 @@ async def test_get_session():
     async def mock_request(*args, **kwargs):
         return fake_responses.GET_SESSION
 
-    with patch("caqui.asynchronous._post", mock_request):
+    with patch("caqui.webdriver.engine.asynchronous._post", mock_request):
         assert await asynchronous.get_session(server_url="", capabilities={}) == expected

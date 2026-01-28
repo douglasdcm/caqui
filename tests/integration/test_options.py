@@ -1,4 +1,4 @@
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder
+from caqui.webdriver.capabilities import ChromeCapabilitiesBuilder, FirefoxCapabilitiesBuilder
 
 
 def test_firefox_options():

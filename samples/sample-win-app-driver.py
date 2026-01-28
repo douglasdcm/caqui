@@ -1,7 +1,7 @@
 # Simple example of usage of caqui with Windows Calculator
 # It opens the Calculator and clicks the number "8"
 # Test works just in Windows environment. Tested with Windows 10
-from caqui import synchronous
+from caqui.webdriver.engine import synchronous
 
 
 def main():

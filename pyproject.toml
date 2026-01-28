@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.8", "wheel", "Cython>=0.29"]
+requires = ["setuptools>=61.8", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
@@ -8,7 +8,7 @@ exclude = ["tests*", "utils", ".vscode", ".git*", "dist"]
 
 [project]
 name = "caqui"
-version = "4.0.0"
+version = "5.0.0-rc"
 authors = [
   { name="Douglas Cardoso", email="noemail@noemail.com" },
 ]
@@ -29,46 +29,10 @@ dependencies = [
   "aiohttp",
   "webdriver_manager",
   "types-requests",
-  "orjson",
-  "Cython",
+  "beautifulsoup4",
+  "git+https://github.com/HyperionGray/python-chrome-devtools-protocol.git@5915dce242d4f0cd8c5f8a5e843a535dacc57fc3"
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/douglasdcm/caqui"
 "Bug Tracker" = "https://github.com/douglasdcm/caqui/issues"
-
-[tool.mypy]
-exclude=["tests/performance/test_process_data.py", "tests/test_sniffer.py"]
-disallow_any_unimported = false
-disallow_any_expr = false
-disallow_any_decorated = false
-disallow_any_explicit = false
-disallow_any_generics = false
-disallow_subclassing_any = false
-disallow_untyped_calls = false
-disallow_untyped_defs=false
-check_untyped_defs = true
-
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-# requires = virtualenv<20.22.0
-envlist = py{37,38,39,310,311,312}, linter
-
-[testenv]
-deps =
-    -r test-requirements.txt
-    -r dev-requirements.txt
-commands =
-    pytest -n auto {posargs}
-
-[testenv:linter]
-deps = 
-    -r test-requirements.txt
-    -r dev-requirements.txt
-commands = 
-    black -l 100 .
-    isort --profile black --line-length 100 caqui tests
-    flake8 --exclude venv*,.tox,build,*/test_process_data.py --max-line-length 100
-    mypy caqui tests --config=pyproject.toml    
-"""

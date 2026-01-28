@@ -15,3 +15,4 @@ class By:
     CLASS_NAME: str = "class name"
     LINK_TEXT: str = "link text"
     PARTIAL_LINK_TEXT: str = "partial link text"
+    # TODO add TEXT and expose to CDP

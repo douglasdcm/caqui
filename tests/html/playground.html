@@ -8,18 +8,119 @@
     </script>
 
     <title>Sample page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-section h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea, button {
+            margin-bottom: 15px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .checkbox-group, .radio-group {
+            margin-bottom: 15px;
+        }
+        .hidden-element {
+            display: none;
+        }
+        .delayed-element {
+            transition: opacity 0.5s;
+        }
+        #ajax-content {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            min-height: 50px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+            cursor: help;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
 </head>
 
 <body onload="setCookie()">
     <h1>Basic page</h1>
+    <p>any4</p>
     <p> This is a sample page to be used to sanity check </p>
-    <input id="input">
+    <input id="input" value="">
     <button id="button" onclick="myFunction(this, 'red')" class="my-class">test</button>
     <br>
     <a href="http://any1.com" id="a1">any1.com</a><br>
     <a href="http://any2.com" id="a2">any2.com</a><br>
     <a href="http://any3.com" id="a3">any3.com</a><br>
     <a href="http://any4.com" id="a4">any4.com</a><br>
+    <a href="http://noid.com">no-id.com</a><br>
+    <a href="http://parent.com">parent.com
+        <div class="child4">any4</div>   
+    </a><br>
     <br>
     <button id="alert-button" onclick="openAlert()" any="any">alert</button>
     <br>
@@ -28,8 +129,46 @@
     <p id="demo"></p>
     <button hidden id="hidden-button" style="display: none;" onclick="openAlert()">hidden</button>
     <br>
+
+    <!-- Checkboxes and Radio Buttons Section -->
+    <div class="form-section">
+        <h2>Checkboxes and Radio Buttons</h2>
+        
+        <div class="checkbox-group">
+            <label>Interests:</label>
+            <input type="checkbox" id="interest-tech" name="interest" value="technology" checked>
+            <label for="interest-tech" style="display: inline;">Technology</label>
+            
+            <input type="checkbox" id="interest-sports" name="interest" value="sports">
+            <label for="interest-sports" style="display: inline;">Sports</label>
+            
+            <input type="checkbox" id="interest-music" name="interest" value="music">
+            <label for="interest-music" style="display: inline;">Music</label>
+        </div>
+        
+        <div class="radio-group">
+            <label>Gender:</label>
+            <input type="radio" id="gender-male" name="gender" value="male" checked>
+            <label for="gender-male" style="display: inline;">Male</label>
+            
+            <input type="radio" id="gender-female" name="gender" value="female">
+            <label for="gender-female" style="display: inline;">Female</label>
+            
+            <input type="radio" id="gender-other" name="gender" value="other">
+            <label for="gender-other" style="display: inline;">Other</label>
+        </div>
+        
+        <div class="checkbox-group">
+            <label>
+                <input type="checkbox" id="terms" name="terms">
+                I agree to the terms and conditions
+            </label>
+        </div>
+    </div>
+    
+
     <p id="end">end</p>
-    <div class="parent">
+    <div class="parent" id="parent" name="parent">
         any0
         <div class="child1">any1</div>
         <div class="child2">any2</div>
@@ -37,7 +176,7 @@
         <div class="child4">any4</div>
     </div>
     <br>
-    <form name="my-form" action="#">
+    <form name="my-form" action="dead-road">
         <label for="fname">First name:</label><br>
         <input type="text" id="fname" name="fname" value="John"><br>
         <label for="lname">Last name:</label><br>
@@ -45,10 +184,27 @@
         <input type="submit" value="Submit">
     </form>
 
+
     <!-- shadow element -->
     <div id="app">
-        <button type="button">Click</button>
+        <button type="button" onclick="myFunction(this, 'black')">Click</button>
         <p>Paragraph</p>
+    </div>
+    <button id="alert-button-other" onclick="openAlert()" any="any">alert</button>
+    <!-- Tooltips and Popovers Section -->
+    <div class="form-section">
+        <h2>Tooltips and Popovers</h2>
+        
+        <div class="tooltip">Hover over me
+            <span class="tooltiptext">This is a tooltip</span>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <button id="show-popover-btn" type="button">Show Popover</button>
+            <div id="popover-content" style="display: none; padding: 10px; background: #fff; border: 1px solid #ccc; margin-top: 10px;">
+                This is a popover content that appears when the button is clicked.
+            </div>
+        </div>
     </div>
     <div id="shadow-root"></div>
     <!---->

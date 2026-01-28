@@ -2,12 +2,12 @@ import pytest_asyncio
 from aiohttp import ClientSession
 from pytest import mark
 
-from caqui import synchronous
 from caqui.by import By
-from caqui.easy.drivers import AsyncDriver
-from caqui.easy.capabilities import ChromeCapabilitiesBuilder
+from caqui.webdriver.capabilities import ChromeCapabilitiesBuilder
+from caqui.webdriver.drivers import AsyncDriver
+from caqui.webdriver.engine import synchronous
 
-# from caqui.easy.options import ChromeOptionsBuilder
+# from caqui.webdriver.options import ChromeOptionsBuilder
 from tests.constants import PAGE_URL
 
 SERVER_PORT = 9999
