@@ -1,28 +1,23 @@
 [build-system]
-requires = ["setuptools>=61.8", "wheel"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages.find]
-include = ["caqui*"]
-exclude = ["tests*", "utils", ".vscode", ".git*", "dist"]
 
 [project]
 name = "caqui"
-version = "5.0.0-rc"
-authors = [
-  { name="Douglas Cardoso", email="noemail@noemail.com" },
-]
+version = "5.0.0rc2"
 description = "Run asynchronous commands in WebDrivers"
-keywords = ["automation", "asynchronous", "test", "crawler", "robotic process automation", "rpa"]
 readme = "README.md"
 requires-python = ">=3.7"
+
+authors = [
+  { name="Douglas Cardoso", email="noemail@noemail.com" }
+]
+
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-[project.license]
-"file" = "LICENSE"
 
 dependencies = [
   "requests",
@@ -30,9 +25,15 @@ dependencies = [
   "webdriver_manager",
   "types-requests",
   "beautifulsoup4",
-  "git+https://github.com/HyperionGray/python-chrome-devtools-protocol.git@5915dce242d4f0cd8c5f8a5e843a535dacc57fc3"
+  "chrome-devtools-protocol @ git+https://github.com/HyperionGray/python-chrome-devtools-protocol.git@5915dce242d4f0cd8c5f8a5e843a535dacc57fc3"
 ]
 
+license = { file = "LICENSE" }
+
 [project.urls]
-"Homepage" = "https://github.com/douglasdcm/caqui"
+Homepage = "https://github.com/douglasdcm/caqui"
 "Bug Tracker" = "https://github.com/douglasdcm/caqui/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["caqui*"]

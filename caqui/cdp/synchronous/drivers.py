@@ -13,6 +13,7 @@ from caqui.cdp.synchronous.alert import Alert
 from caqui.cdp.synchronous.element import Element
 from caqui.cdp.synchronous.switch_to import SwitchTo
 from caqui.cdp.synchronous.window import Window
+from caqui.helper import deprecated
 
 TIMEOUT = 120  # seconds
 
@@ -56,6 +57,7 @@ class SyncDriverCDP:
     def switch_to(self) -> SwitchTo:
         """Returns the `SwithTo` object"""
         return SwitchTo(self)
+
 
     # TODO test it
     def get_current_window_handle(self) -> str:
@@ -186,6 +188,11 @@ class SyncDriverCDP:
             self._conn,
             cookie,
         )
+
+    @deprecated
+    def implicitly_wait(self, timeouts: int) -> None:
+        """Set implicty timeouts.`Note` Present for backward-compatibility only"""
+        pass
 
     def back(self) -> None:
         """This command causes the browser to traverse one step backward

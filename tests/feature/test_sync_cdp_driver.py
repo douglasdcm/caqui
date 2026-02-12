@@ -26,6 +26,10 @@ class TestSyncCDPDriver:
         element_after = driver.find_element(By.XPATH, "//input")
         assert element_before != element_after
 
+    def test_cdp_implicity_wait_is_deprecated(self, setup_sync_cdp_playground: SyncDriverCDP):
+        driver = setup_sync_cdp_playground
+        assert driver.implicitly_wait(3) is None
+
     def test_cdp_go_forward(self, setup_sync_cdp_playground: SyncDriverCDP):
         driver = setup_sync_cdp_playground
         title = "Sample page"
