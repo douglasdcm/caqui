@@ -48,8 +48,9 @@ From version **2.0.0+**, Caqui includes a high-level API that mirrors Seleniumâ€
 Chrome Devtools Protocol example:
 ```python
 import time
-from pytest import raises
+from pytest import raises, fixture
 from caqui.cdp.by import By
+from caqui.cdp.connection import SyncCDPConnection
 from caqui.cdp.synchronous.drivers import SyncDriverCDP
 from caqui.exceptions import WebDriverError
 from tests.constants import OTHER_URL

@@ -4,6 +4,7 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 import base64
+import warnings
 from functools import lru_cache
 
 from caqui.by import By
@@ -159,3 +160,16 @@ def convert_locator_to_css_selector_or_xpath(locator_type: str, locator_value: s
         locator_type = By.XPATH
         return locator_type, locator_value
     return locator_type, locator_value
+
+def deprecated(func):
+    """Use this decorator to mark functions as deprecated.
+    Every time the decorated function runs, it will emit
+    a "deprecation" warning."""
+    def new_func(*args, **kwargs):
+        warnings.simplefilter('always', DeprecationWarning)  # turn off filter
+        warnings.warn(f"Call to a deprecated function '{func.__name__}'.",
+                    category=DeprecationWarning,
+                    stacklevel=2)
+        warnings.simplefilter('default', DeprecationWarning)  # reset filter
+        return func(*args, **kwargs)
+    return new_func

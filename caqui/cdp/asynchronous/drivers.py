@@ -14,6 +14,7 @@ from caqui.cdp.asynchronous.window import Window
 from caqui.cdp.by import By
 from caqui.cdp.connection import AsyncCDPConnection
 from caqui.cdp.engine import asynchronous
+from caqui.helper import deprecated
 
 TIMEOUT = 120  # seconds
 
@@ -189,6 +190,11 @@ class AsyncDriverCDP:
             self._conn,
             cookie,
         )
+
+    @deprecated
+    async def implicitly_wait(self, timeouts: int) -> None:
+        """Set implicty timeouts. `NOte` Present for backward-compatibility only"""
+        pass
 
     async def back(self) -> None:
         """This command causes the browser to traverse one step backward

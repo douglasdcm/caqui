@@ -23,6 +23,11 @@ class Element:
     def __str__(self) -> str:
         return f"type: Element. NodeId: {self._element}"
 
+
+    @property
+    def text(self):
+        return self.get_text()
+
     @property
     def element_id(self) -> str:
         return self._element
