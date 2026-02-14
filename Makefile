@@ -17,7 +17,7 @@ test:
 	pytest $(PARAMS)
 
 linter:
-	black -l 100 .
+	black -l 100 . --include caqui,tests
 	isort --profile black --line-length 100 caqui tests
 	flake8 --exclude venv*,.tox,build,*/test_process_data.py,_vendor --max-line-length 100
 	mypy caqui tests --config=pyproject.toml    

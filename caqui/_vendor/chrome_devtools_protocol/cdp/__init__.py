@@ -3,9 +3,6 @@
 # This file is generated from the CDP specification. If you need to make
 # changes, edit the generator and regenerate all of the modules.
 
-import cdp.util
-import cdp.connection
-
 import cdp.accessibility
 import cdp.animation
 import cdp.audits
@@ -13,17 +10,18 @@ import cdp.autofill
 import cdp.background_service
 import cdp.bluetooth_emulation
 import cdp.browser
-import cdp.css
 import cdp.cache_storage
 import cdp.cast
+import cdp.connection
 import cdp.console
+import cdp.css
+import cdp.debugger
+import cdp.device_access
+import cdp.device_orientation
 import cdp.dom
 import cdp.dom_debugger
 import cdp.dom_snapshot
 import cdp.dom_storage
-import cdp.debugger
-import cdp.device_access
-import cdp.device_orientation
 import cdp.emulation
 import cdp.event_breakpoints
 import cdp.extensions
@@ -32,22 +30,22 @@ import cdp.fetch
 import cdp.file_system
 import cdp.headless_experimental
 import cdp.heap_profiler
-import cdp.io
 import cdp.indexed_db
 import cdp.input_
 import cdp.inspector
+import cdp.io
 import cdp.layer_tree
 import cdp.log
 import cdp.media
 import cdp.memory
 import cdp.network
 import cdp.overlay
-import cdp.pwa
 import cdp.page
 import cdp.performance
 import cdp.performance_timeline
 import cdp.preload
 import cdp.profiler
+import cdp.pwa
 import cdp.runtime
 import cdp.schema
 import cdp.security
@@ -57,5 +55,6 @@ import cdp.system_info
 import cdp.target
 import cdp.tethering
 import cdp.tracing
+import cdp.util
 import cdp.web_audio
 import cdp.web_authn

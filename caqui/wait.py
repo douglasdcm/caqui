@@ -1,7 +1,8 @@
 import datetime
-from time import sleep
 from asyncio import sleep as async_sleep
+from time import sleep
 from typing import Callable, Coroutine
+
 from caqui.constants import TIMEOUT
 
 
@@ -21,7 +22,7 @@ class WebDriverWait:
                 return
             sleep(self._pooling_time)
         raise TimeoutError()
-    
+
     async def async_until(self, condition: Coroutine):
         """Waits a condition be true or raises a TimeoutError exception"""
         current_datetime = datetime.datetime.now()

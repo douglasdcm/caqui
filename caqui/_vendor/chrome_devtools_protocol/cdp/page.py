@@ -6,18 +6,15 @@
 # CDP domain: Page
 
 from __future__ import annotations
-from cdp.util import event_class, T_JSON_DICT
-from dataclasses import dataclass
+
 import enum
 import typing
+from dataclasses import dataclass
 
-from . import debugger
-from . import dom
-from . import emulation
-from . import io
-from . import network
-from . import runtime
-from deprecated.sphinx import deprecated # type: ignore
+from cdp.util import T_JSON_DICT, event_class
+from deprecated.sphinx import deprecated  # type: ignore
+
+from . import debugger, dom, emulation, io, network, runtime
 
 
 class FrameId(str):

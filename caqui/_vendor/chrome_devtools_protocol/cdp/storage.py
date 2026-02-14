@@ -6,16 +6,15 @@
 # CDP domain: Storage (experimental)
 
 from __future__ import annotations
-from cdp.util import event_class, T_JSON_DICT
-from dataclasses import dataclass
+
 import enum
 import typing
+from dataclasses import dataclass
 
-from . import browser
-from . import network
-from . import page
-from . import target
-from deprecated.sphinx import deprecated # type: ignore
+from cdp.util import T_JSON_DICT, event_class
+from deprecated.sphinx import deprecated  # type: ignore
+
+from . import browser, network, page, target
 
 
 class SerializedStorageKey(str):

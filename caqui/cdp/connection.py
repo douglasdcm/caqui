@@ -41,7 +41,6 @@ except ImportError:
 
 from caqui._vendor.chrome_devtools_protocol.cdp.util import T_JSON_DICT, parse_json_event
 
-
 logger = logging.getLogger(__name__)
 
 

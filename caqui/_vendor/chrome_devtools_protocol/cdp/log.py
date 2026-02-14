@@ -6,13 +6,14 @@
 # CDP domain: Log
 
 from __future__ import annotations
-from cdp.util import event_class, T_JSON_DICT
-from dataclasses import dataclass
+
 import enum
 import typing
+from dataclasses import dataclass
 
-from . import network
-from . import runtime
+from cdp.util import T_JSON_DICT, event_class
+
+from . import network, runtime
 
 
 @dataclass

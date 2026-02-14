@@ -6,18 +6,15 @@
 # CDP domain: Network
 
 from __future__ import annotations
-from cdp.util import event_class, T_JSON_DICT
-from dataclasses import dataclass
+
 import enum
 import typing
+from dataclasses import dataclass
 
-from . import debugger
-from . import emulation
-from . import io
-from . import page
-from . import runtime
-from . import security
-from deprecated.sphinx import deprecated # type: ignore
+from cdp.util import T_JSON_DICT, event_class
+from deprecated.sphinx import deprecated  # type: ignore
+
+from . import debugger, emulation, io, page, runtime, security
 
 
 class ResourceType(enum.Enum):

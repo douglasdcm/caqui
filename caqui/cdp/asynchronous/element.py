@@ -7,7 +7,6 @@ import os
 from typing import TYPE_CHECKING, Dict, List, Tuple
 
 from caqui._vendor.chrome_devtools_protocol.cdp import dom
-
 from caqui.cdp.connection import AsyncCDPConnection
 from caqui.cdp.engine import asynchronous
 

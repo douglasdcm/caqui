@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
+
 from caqui._vendor.chrome_devtools_protocol.cdp import (
     accessibility,
     browser,
@@ -23,7 +24,6 @@ from caqui._vendor.chrome_devtools_protocol.cdp import (
     storage,
     target,
 )
-
 from caqui.cdp.by import By
 from caqui.cdp.connection import SyncCDPConnection
 from caqui.constants import TIME_FORMAT_MICROSECONDS, TIMEOUT

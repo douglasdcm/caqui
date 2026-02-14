@@ -10,8 +10,9 @@ This example shows how to:
 """
 
 import asyncio
-from cdp.connection import CDPConnection
+
 from cdp import page, runtime
+from cdp.connection import CDPConnection
 
 
 async def basic_example():

@@ -7,6 +7,7 @@ and event dispatching.
 """
 
 from __future__ import annotations
+
 import asyncio
 import json
 import logging
@@ -21,8 +22,7 @@ except ImportError:
     WEBSOCKETS_AVAILABLE = False
     WebSocketClientProtocol = typing.Any  # type: ignore
 
-from cdp.util import parse_json_event, T_JSON_DICT
-
+from cdp.util import T_JSON_DICT, parse_json_event
 
 logger = logging.getLogger(__name__)
 

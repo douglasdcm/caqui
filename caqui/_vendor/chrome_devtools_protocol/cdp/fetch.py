@@ -6,14 +6,14 @@
 # CDP domain: Fetch
 
 from __future__ import annotations
-from cdp.util import event_class, T_JSON_DICT
-from dataclasses import dataclass
+
 import enum
 import typing
+from dataclasses import dataclass
 
-from . import io
-from . import network
-from . import page
+from cdp.util import T_JSON_DICT, event_class
+
+from . import io, network, page
 
 
 class RequestId(str):

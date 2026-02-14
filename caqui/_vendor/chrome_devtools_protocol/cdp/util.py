@@ -1,6 +1,6 @@
-import cdp
 import typing
 
+import cdp
 
 T_JSON_DICT = typing.Dict[str, typing.Any]
 _event_parsers = dict()
