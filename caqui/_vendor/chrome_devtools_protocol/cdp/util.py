@@ -1,6 +1,6 @@
 import typing
 
-import cdp
+import caqui._vendor.chrome_devtools_protocol.cdp
 
 T_JSON_DICT = typing.Dict[str, typing.Any]
 _event_parsers = dict()

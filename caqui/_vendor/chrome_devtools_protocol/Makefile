@@ -24,4 +24,4 @@ test-generate:
 	pytest generator/
 
 test-import:
-	python -c 'import cdp; print(cdp.accessibility)'
+	python -c 'import caqui._vendor.chrome_devtools_protocol.cdp; print(cdp.accessibility)'
