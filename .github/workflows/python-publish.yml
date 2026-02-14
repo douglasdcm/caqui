@@ -21,9 +21,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: [actions/checkout](https://github.com)@v4
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: [actions/setup-python](https://github.com/actions/setup-python)@v5
+      uses: actions/setup-python@v3
       with:
         python-version: '3.7'
     - name: Install dependencies
