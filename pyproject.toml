@@ -2,6 +2,7 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+
 [project]
 name = "caqui"
 version = "5.0.0rc2"
@@ -25,7 +26,7 @@ dependencies = [
   "webdriver_manager",
   "types-requests",
   "beautifulsoup4",
-  "chrome-devtools-protocol @ git+https://github.com/HyperionGray/python-chrome-devtools-protocol.git@5915dce242d4f0cd8c5f8a5e843a535dacc57fc3"
+  "chrome-devtools-protocol>=0.5.1rc0"
 ]
 
 license = { file = "LICENSE" }
