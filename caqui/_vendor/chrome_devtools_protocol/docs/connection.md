@@ -14,8 +14,8 @@ pip install chrome-devtools-protocol[io]
 
 ```python
 import asyncio
-from cdp.connection import CDPConnection
-from cdp import page, runtime
+from caqui._vendor.chrome_devtools_protocol.cdp.connection import CDPConnection
+from caqui._vendor.chrome_devtools_protocol.cdp import page, runtime
 
 async def main():
     # Connect using async context manager
@@ -125,7 +125,7 @@ if event:
 The connection module provides typed exceptions:
 
 ```python
-from cdp.connection import CDPError, CDPConnectionError, CDPCommandError
+from caqui._vendor.chrome_devtools_protocol.cdp.connection import CDPError, CDPConnectionError, CDPCommandError
 
 try:
     async with CDPConnection(url) as conn:

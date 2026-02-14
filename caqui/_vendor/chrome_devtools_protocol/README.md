@@ -50,8 +50,8 @@ pip install chrome-devtools-protocol[io]
 
 ```python
 import asyncio
-from cdp.connection import CDPConnection
-from cdp import page
+from caqui._vendor.chrome_devtools_protocol.cdp.connection import CDPConnection
+from caqui._vendor.chrome_devtools_protocol.cdp import page
 
 async def main():
     # Connect to a Chrome DevTools Protocol endpoint
@@ -84,7 +84,7 @@ For users who prefer to manage their own I/O:
 For users who prefer to manage their own I/O:
 
 ```python
-from cdp import page
+from caqui._vendor.chrome_devtools_protocol.cdp import page
 
 frame_id = page.FrameId('my id')
 assert repr(frame_id) == "FrameId('my id')"

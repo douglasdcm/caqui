@@ -195,11 +195,11 @@ Test alternatives to third-party cookies:
 ### For Users of cdp.database
 ```python
 # Old (no longer works)
-from cdp import database
+from caqui._vendor.chrome_devtools_protocol.cdp import database
 await conn.execute(database.some_command())
 
 # New - Use IndexedDB instead
-from cdp import indexed_db
+from caqui._vendor.chrome_devtools_protocol.cdp import indexed_db
 await conn.execute(indexed_db.request_database_names(security_origin="https://example.com"))
 ```
 

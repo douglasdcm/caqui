@@ -266,7 +266,7 @@ multiple commands concurrently.
 .. code-block:: python
     :linenos:
 
-    from cdp import target
+    from caqui._vendor.chrome_devtools_protocol.cdp import target
 
     def run_command(cmd):
         # Run the generator once to get a request.

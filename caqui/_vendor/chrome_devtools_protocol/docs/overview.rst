@@ -41,7 +41,7 @@ Chrome package:
 
 .. code-block:: python
 
-    from cdp import page
+    from caqui._vendor.chrome_devtools_protocol.cdp import page
 
     frame_id = page.FrameId('my id')
     assert repr(frame_id) == "FrameId('my id')"

@@ -11,8 +11,8 @@ This example shows how to:
 
 import asyncio
 
-from cdp import page, runtime
-from cdp.connection import CDPConnection
+from caqui._vendor.chrome_devtools_protocol.cdp import page, runtime
+from caqui._vendor.chrome_devtools_protocol.cdp.connection import CDPConnection
 
 
 async def basic_example():

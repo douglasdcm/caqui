@@ -11,7 +11,7 @@ import enum
 import typing
 from dataclasses import dataclass
 
-from cdp.util import T_JSON_DICT, event_class
+from caqui._vendor.chrome_devtools_protocol.cdp.util import T_JSON_DICT, event_class
 
 
 class StorageArea(enum.Enum):
