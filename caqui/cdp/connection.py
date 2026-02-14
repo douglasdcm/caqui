@@ -39,7 +39,8 @@ except ImportError:
     WEBSOCKETS_AVAILABLE = False
     WebSocketClientProtocol = typing.Any  # type: ignore
 
-from cdp.util import T_JSON_DICT, parse_json_event
+from caqui._vendor.chrome_devtools_protocol.cdp.util import T_JSON_DICT, parse_json_event
+
 
 logger = logging.getLogger(__name__)
 
@@ -275,7 +276,7 @@ class AsyncCDPConnection:
             CDPConnectionError: If there's a connection error
 
         Example:
-            from cdp import page
+            from caqui._vendor.chrome_devtools_protocol.cdp import page
             result = await conn.execute(page.navigate(url="https://example.com"))
         """
         if self._ws is None:

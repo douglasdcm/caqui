@@ -18,9 +18,10 @@ PORT = 9222
 
 
 class LocalServerCDP:
-    def __init__(self, port=PORT):
+    def __init__(self, port=PORT, headless=True):
         self._port = port
         self._process = None
+        self._headless = headless
 
     @property
     def port(self):
@@ -40,19 +41,21 @@ class LocalServerCDP:
         return self._start_browser("microsoft-edge")
 
     def _start_browser(self, browser):
-        self._process = subprocess.Popen(
-            [
+        args = [
                 browser,
                 f"--remote-debugging-port={self._port}",
                 f"--user-data-dir=/tmp/cdp-profile-{self._port}",
                 "--no-first-run",
                 "--no-default-browser-check",
-                "--headless",
                 "--no-zygote",
                 "--no-sandbox",
                 "about:blank",
                 f"--remote-allow-origins={WS_URL}:{self._port}",
-            ],
+            ]
+        if self._headless:
+            args.append("--headless")
+        self._process = subprocess.Popen(
+            args,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             start_new_session=True,

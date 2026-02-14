@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "chrome-devtools-protocol"
+packages = [{include = "cdp"}]
+version = "0.5.1-rc"
+description = "Python type wrappers for Chrome DevTools Protocol (CDP)"
+authors = ["Mark E. Haase <mehaase@gmail.com>", "Brian Mackintosh <bcmackintosh@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/hyperiongray/python-chrome-devtools-protocol"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Internet"
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+deprecated = "^1.2.9"
+websockets = {version = "^10.0", optional = true}
+
+[tool.poetry.extras]
+io = ["websockets"]
+
+[tool.poetry.group.dev.dependencies]
+inflection = "^0.5.0"
+mypy = "^1.0"
+pytest = "^7.0"
+pytest-asyncio = "^0.21.0"
+sphinx = "^5.0"
+sphinx-autodoc-typehints = "^1.21"
+sphinx-rtd-theme = "^1.2"
+websockets = "^10.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

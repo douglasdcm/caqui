@@ -5,7 +5,7 @@
 
 from typing import TYPE_CHECKING, Union
 
-from cdp import dom, target
+from caqui._vendor.chrome_devtools_protocol.cdp import dom, target
 
 from caqui.cdp.asynchronous.alert import Alert
 from caqui.cdp.asynchronous.element import Element

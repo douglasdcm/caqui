@@ -3,6 +3,4 @@ aiohttp
 webdriver_manager
 types-requests
 beautifulsoup4
-# git+https://github.com/HyperionGray/python-chrome-devtools-protocol.git@a0de75faa29c1e0e7ca00bdb39a42d5bb9e1ae0b
 websockets
-chrome-devtools-protocol==0.5.1rc0

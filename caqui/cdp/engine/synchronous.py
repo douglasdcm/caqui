@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
-from cdp import (
+from caqui._vendor.chrome_devtools_protocol.cdp import (
     accessibility,
     browser,
     dom,

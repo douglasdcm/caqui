@@ -26,7 +26,6 @@ dependencies = [
   "webdriver_manager",
   "types-requests",
   "beautifulsoup4",
-  "chrome-devtools-protocol>=0.5.1rc0"
 ]
 
 license = { file = "LICENSE" }
