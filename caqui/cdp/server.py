@@ -7,6 +7,7 @@ import json
 import subprocess
 import time
 import urllib.request
+from typing import List
 
 import requests
 
@@ -18,9 +19,20 @@ PORT = 9222
 
 
 class LocalServerCDP:
-    def __init__(self, port=PORT):
+    def __init__(self, port=PORT, headless=True):
         self._port = port
         self._process = None
+        self._headless = headless
+        self._flags = [
+            f"--remote-debugging-port={self._port}",
+            f"--user-data-dir=/tmp/cdp-profile-{self._port}",
+            "--no-first-run",
+            "--no-default-browser-check",
+            "--no-zygote",
+            "--no-sandbox",
+            "about:blank",
+            f"--remote-allow-origins={WS_URL}:{self._port}",
+        ]
 
     @property
     def port(self):
@@ -29,6 +41,10 @@ class LocalServerCDP:
     @property
     def ws_url(self):
         return self.get_ws_url()
+
+    def override_browser_flags(self, flags: List):
+        """Inform a list of flags to be passed to the browser. For example [--no-first-run]"""
+        self._flags = flags
 
     def start_chrome(self):
         self._start_browser("google-chrome")
@@ -40,19 +56,11 @@ class LocalServerCDP:
         return self._start_browser("microsoft-edge")
 
     def _start_browser(self, browser):
+        self._flags.insert(0, browser)
+        if self._headless:
+            self._flags.append("--headless")
         self._process = subprocess.Popen(
-            [
-                browser,
-                f"--remote-debugging-port={self._port}",
-                f"--user-data-dir=/tmp/cdp-profile-{self._port}",
-                "--no-first-run",
-                "--no-default-browser-check",
-                "--headless",
-                "--no-zygote",
-                "--no-sandbox",
-                "about:blank",
-                f"--remote-allow-origins={WS_URL}:{self._port}",
-            ],
+            self._flags,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             start_new_session=True,
