@@ -11,8 +11,9 @@ import enum
 import typing
 from dataclasses import dataclass
 
-from caqui._vendor.chrome_devtools_protocol.cdp.util import T_JSON_DICT, event_class
 from deprecated.sphinx import deprecated  # type: ignore
+
+from caqui._vendor.chrome_devtools_protocol.cdp.util import T_JSON_DICT, event_class
 
 from . import dom, runtime
 

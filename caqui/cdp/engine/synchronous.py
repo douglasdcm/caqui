@@ -4,11 +4,9 @@
 # Visit: https://github.com/douglasdcm/caqui
 
 import datetime
-import json
 import threading
-import urllib.request
+import time
 from typing import Any, Dict, List, Optional
-from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 
@@ -240,6 +238,19 @@ def _handle_alert(conn: SyncCDPConnection, alert_element, timeout, function_call
     click_task
 
 
+def dismiss_all_alerts(conn: SyncCDPConnection, timeout=2):
+    """Closes all alerts open in page. It may take some time"""
+    current_datetime = datetime.datetime.now()
+    time_to_add = datetime.timedelta(seconds=timeout)
+    new_datetime = current_datetime + time_to_add
+    while datetime.datetime.now() < new_datetime:
+        event = conn.get_event_nowait()
+        if isinstance(event, page.JavascriptDialogOpening):
+            conn.execute(page.handle_java_script_dialog(accept=False))
+        else:
+            time.sleep(0.05)
+
+
 def _send_test_to_prompt_alert(conn: SyncCDPConnection, text):
     conn.execute(page.handle_java_script_dialog(accept=True, prompt_text=text))
 
@@ -257,6 +268,11 @@ def _set_screen(conn, screen_type: str = "fullscreen"):
     window_id = window_for_target[0]
     bounds = browser.Bounds.from_json({"windowState": screen_type})
     conn.execute(browser.set_window_bounds(window_id=window_id, bounds=bounds))
+
+
+def get_current_tab(conn: SyncCDPConnection):
+    targets = conn.execute(target.get_targets())
+    return next(t for t in targets if t.type_ == "page")
 
 
 def get(conn: SyncCDPConnection, page_url: str) -> None:
@@ -277,9 +293,24 @@ def _refresh_agents(conn: SyncCDPConnection):
     conn.execute(dom.enable())
     conn.execute(runtime.enable())
     conn.execute(network.enable())
-    conn.execute(accessibility.enable()),
+    conn.execute(accessibility.enable())
+    conn.execute(target.set_discover_targets(True))
     GlobalValues.conn = conn
     GlobalValues.get_document_node(refresh=True)
+
+
+def wait_for_new_page(conn: SyncCDPConnection, timeout=5):
+    end = time.time() + timeout
+
+    while time.time() < end:
+        event = conn.get_event_nowait()
+        if isinstance(event, target.TargetCreated):
+            if event.target_info.type_ == "page":
+                info = event.target_info
+                conn.execute(target.attach_to_target(target_id=info.target_id, flatten=True))
+                _refresh_agents(conn)
+                return
+    raise TimeoutError("New tab not detected")
 
 
 def go_to_page(conn, page_url: str) -> None:
@@ -301,7 +332,7 @@ def find_element(
         raise WebDriverError(f"Could not find element with selector: {locator_value}") from e
 
 
-def find_elements(conn: SyncCDPConnection, locator_type, locator_value: str):
+def find_elements(conn: SyncCDPConnection, locator_type, locator_value: str) -> List[dom.NodeId]:
     """Find an element by a 'selector', for example an 'xpath' like '//div[@id="example"]'"""
     try:
         return _find_all_elements(conn, locator_type, locator_value)
@@ -709,23 +740,9 @@ def switch_to_window(conn: SyncCDPConnection, handle: target.TargetInfo):
     if not handle:
         raise WebDriverError("Handle not informed")
     try:
-        handles = get_window_handles(conn)
-        index = 0
-        for h in handles:
-            if h.target_id == handle.target_id:
-                break
-            index += 1
-        port = urlparse(conn.url).port
-        with urllib.request.urlopen(f"http://127.0.0.1:{port}/json") as r:
-            targets = json.loads(r.read())
-            targets_page = [p for p in targets if p.get("type") == "page"]
-            targets_page.reverse()
-            ws_url = targets_page[index]["webSocketDebuggerUrl"]
-            conn.set_url(ws_url)
-            conn.connect()
-            new_conn = conn
-            _refresh_agents(new_conn)
-            return new_conn
+        conn.execute(target.attach_to_target(target_id=handle.target_id, flatten=True))
+        _refresh_agents(conn)
+        return conn
     except Exception as e:
         raise WebDriverError("Failed to switch to window.") from e
 
@@ -1310,7 +1327,7 @@ def find_children_elements(
     parent_element: str,
     locator_type: str,
     locator_value: str,
-):
+) -> List[dom.NodeId]:
     """Find the children elements by 'locator_type'
 
     If the 'parent_element' is a shadow element, set the 'locator_type' as 'id' or
@@ -1329,7 +1346,7 @@ def find_child_element(
     parent_element: str,
     locator_type: str,
     locator_value: str,
-):
+) -> dom.NodeId:
     """Find the child element by 'locator_type'"""
     try:
         return find_element(conn, locator_type, locator_value, parent_element)
@@ -1354,7 +1371,15 @@ def execute_script(
     return_by_value=False,
 ):
     """Executes a script, like 'style.background='#000000'' to change
-    the background of the element"""
+    the background of the element
+
+    Args:
+        script: the Javascript script to be executed over the element
+        positive: if True the current script is executed. If False, the negative flag (!)
+        is placed in front of the script
+        return_by_value: Whether the result is expected to be a JSON object which should
+        be sent by value.
+    """
     positive = "" if positive else "!"
     try:
         remote_object = conn.execute(dom.resolve_node(node_id=element))
@@ -1446,8 +1471,15 @@ def get_window_handles(conn: SyncCDPConnection) -> List[target.TargetInfo]:
 def close_window(conn: SyncCDPConnection):
     """Close active window"""
     try:
-        new_window(conn)
         conn.execute(target.page.close())
+    except Exception as e:
+        raise WebDriverError("Failed to close active window.") from e
+
+
+def close_tab(conn: SyncCDPConnection, tab: target.TargetInfo):
+    """Close tab"""
+    try:
+        conn.execute(target.close_target(tab.target_id))
     except Exception as e:
         raise WebDriverError("Failed to close active window.") from e
 
