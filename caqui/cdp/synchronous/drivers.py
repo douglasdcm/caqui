@@ -58,7 +58,6 @@ class SyncDriverCDP:
         """Returns the `SwithTo` object"""
         return SwitchTo(self)
 
-
     # TODO test it
     def get_current_window_handle(self) -> str:
         """Returns the current window handle"""

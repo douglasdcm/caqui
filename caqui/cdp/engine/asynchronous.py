@@ -11,7 +11,8 @@ from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
-from cdp import (
+
+from caqui._vendor.chrome_devtools_protocol.cdp import (
     accessibility,
     browser,
     dom,
@@ -23,7 +24,6 @@ from cdp import (
     storage,
     target,
 )
-
 from caqui.cdp.asynchronous.connection import AsyncCDPConnection
 from caqui.cdp.by import By
 from caqui.constants import TIME_FORMAT_MICROSECONDS, TIMEOUT
@@ -222,6 +222,19 @@ async def _find_all_elements(
         if not node_id:
             raise WebDriverError()
         return node_id
+
+
+async def dismiss_all_alerts(conn: AsyncCDPConnection, timeout=2):
+    """Closes all alerts open in page. It may take some time"""
+    current_datetime = datetime.datetime.now()
+    time_to_add = datetime.timedelta(seconds=timeout)
+    new_datetime = current_datetime + time_to_add
+    while datetime.datetime.now() < new_datetime:
+        event = conn.get_event_nowait()
+        if isinstance(event, page.JavascriptDialogOpening):
+            conn.execute(page.handle_java_script_dialog(accept=False))
+        else:
+            asyncio.sleep(0.05)
 
 
 async def _handle_alert(
@@ -1364,7 +1377,15 @@ async def execute_script(
     return_by_value=False,
 ):
     """Executes a script, like 'style.background='#000000''
-    to change the background of the element"""
+    to change the background of the element
+
+    Args:
+        script: the Javascript script to be executed over the element
+        positive: if True the current script is executed. If False, the negative flag (!)
+        is placed in front of the script
+        return_by_value: Whether the result is expected to be a JSON object which should
+        be sent by value.
+    """
     positive = "" if positive else "!"
     try:
         remote_object = await conn.execute(dom.resolve_node(node_id=element))

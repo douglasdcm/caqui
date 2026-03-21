@@ -1,0 +1,6 @@
+requests
+aiohttp
+webdriver_manager
+types-requests
+beautifulsoup4
+websockets

@@ -39,7 +39,7 @@ except ImportError:
     WEBSOCKETS_AVAILABLE = False
     WebSocketClientProtocol = typing.Any  # type: ignore
 
-from cdp.util import T_JSON_DICT, parse_json_event
+from caqui._vendor.chrome_devtools_protocol.cdp.util import T_JSON_DICT, parse_json_event
 
 logger = logging.getLogger(__name__)
 
@@ -275,7 +275,7 @@ class AsyncCDPConnection:
             CDPConnectionError: If there's a connection error
 
         Example:
-            from cdp import page
+            from caqui._vendor.chrome_devtools_protocol.cdp import page
             result = await conn.execute(page.navigate(url="https://example.com"))
         """
         if self._ws is None:
@@ -374,7 +374,34 @@ class AsyncCDPConnection:
 
 
 class SyncCDPConnection:
+    """
+    Manages a WebSocket connection to Chrome DevTools Protocol.
+
+    This class handles:
+    - WebSocket connection management
+    - JSON-RPC message framing (request ID assignment)
+    - Command multiplexing (tracking multiple concurrent commands)
+    - Event dispatching
+    - Error handling
+
+    Example:
+        async with CDPConnection("ws://localhost:9222/devtools/page/...") as conn:
+            # Send a command
+            result = await conn.execute(some_command())
+
+            # Listen for events
+            async for event in conn.listen():
+                print(event)
+    """
+
     def __init__(self, url: str, timeout: float = 30.0):
+        """
+        Initialize a CDP connection.
+
+        Args:
+            url: WebSocket URL for the CDP endpoint
+            timeout: Default timeout for commands in seconds
+        """
         self._url = url
         self._timeout = timeout
         self._ws = None
